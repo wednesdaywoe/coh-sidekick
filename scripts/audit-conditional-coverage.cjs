@@ -311,7 +311,12 @@ const EXPECTED = {
   // 11/539 -> 10/535 on both Homecoming forks when the literal-`0` gate stopped minting a
   // toggle: Cross Punch's never-true group (pool) and Personal Force Field's `Display` group
   // on its four Force Field copies (powerset), each surfaced as a "Conditional" adjuster.
-  homecoming: { pool: 10, epic: 7, powerset: 535 },
+  //
+  // 535 -> 556 on both Homecoming forks when Attune's `SMAttune` family was selected: its
+  // bonus rows ship at `chance: 0` and were never promoted, so none surfaced. The 21 are the
+  // Sonic Melee attacks that carry one — six each for Brute, Scrapper and Tanker, three for
+  // Stalker — each a single `sonicatuneself` entry.
+  homecoming: { pool: 10, epic: 7, powerset: 556 },
   rebirth: { pool: 16, epic: 2, powerset: 473 },
   thunderspy: { pool: 10, epic: 3, powerset: 618 },
   // Brainstorm, measured 2026-08-21 off the i28p4 open beta. Its pool and epic
@@ -336,7 +341,8 @@ const EXPECTED = {
   // 217 -> 219 mode renumber in the same patch cannot reach it.
   //
   // 11/539 -> 10/535 with Homecoming, above: the literal-`0` gate is no toggle.
-  brainstorm: { pool: 10, epic: 7, powerset: 535 },
+  // 535 -> 556 with Homecoming, above: Attune's bonus rows.
+  brainstorm: { pool: 10, epic: 7, powerset: 556 },
 };
 
 /**

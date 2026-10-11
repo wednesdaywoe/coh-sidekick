@@ -1141,10 +1141,16 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "enttype",
       "target>",
       "critter",
       "eq",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true
@@ -1178,10 +1184,16 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "enttype",
       "target>",
       "player",
       "eq",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true,
@@ -1227,6 +1239,13 @@
      "expires": 10,
      "maxCount": 3
     }
+   ],
+   "targetModes": [
+    "SonicAtune1Foe"
+   ],
+   "setsModes": [
+    "SonicAtune1Foe",
+    "SonicAtune1Self"
    ]
   },
   {
@@ -2363,10 +2382,16 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "enttype",
       "target>",
       "critter",
       "eq",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true
@@ -2400,10 +2425,16 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "enttype",
       "target>",
       "player",
       "eq",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true,
@@ -2449,6 +2480,13 @@
      "expires": 10,
      "maxCount": 3
     }
+   ],
+   "targetModes": [
+    "SonicAtune2Foe"
+   ],
+   "setsModes": [
+    "SonicAtune2Foe",
+    "SonicAtune2Self"
    ]
   },
   {
@@ -3625,6 +3663,14 @@
      "chance": 0.20000000298023224,
      "label": "Energy_Dmg"
     }
+   ],
+   "targetModes": [
+    "SonicAtuneFoe"
+   ],
+   "setsModes": [
+    "SonicAtuneFoe",
+    "SonicAtuneSelf",
+    "SMAttune"
    ]
   },
   {
@@ -6668,9 +6714,35 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
+      "&&",
+      "kSMAttune",
+      "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "sonicatuneself"
     ],
     [
      "Damage",
@@ -6705,9 +6777,35 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
+      "&&",
+      "kSMAttune",
+      "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "sonicatuneself"
     ],
     [
      "Damage",
@@ -6742,11 +6840,17 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&",
       "kMeter",
       "source>",
       "0",
       ">",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true,
@@ -6793,11 +6897,17 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&",
       "kMeter",
       "source>",
       ".9",
       "<",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true,
@@ -7060,7 +7170,7 @@
      2,
      null,
      null,
-     0,
+     1,
      null,
      null,
      null,
@@ -7072,6 +7182,9 @@
       "Source.Mode?",
       "kSonicAtuneFoe",
       "target.mode?",
+      "&&",
+      "kSMAttune",
+      "Source.Mode?",
       "&&"
      ],
      true,
@@ -7083,8 +7196,39 @@
      null,
      null,
      null,
-     "SMAttune"
+     "SMAttune",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "sonicatuneself"
     ]
+   ],
+   "conditionalEffects": [
+    {
+     "id": "sonicatuneself",
+     "label": "Sonic Atune Self",
+     "scope": "global",
+     "defaultActive": false,
+     "damage": [
+      {
+       "type": "Smashing",
+       "scale": 0.4312,
+       "table": "Melee_Damage"
+      },
+      {
+       "type": "Energy",
+       "scale": 0.4312,
+       "table": "Melee_Damage"
+      }
+     ]
+    }
    ],
    "specialEffects": [
     {
@@ -7493,9 +7637,35 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
+      "&&",
+      "kSMAttune",
+      "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "sonicatuneself"
     ],
     [
      "Damage",
@@ -7530,9 +7700,35 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
+      "&&",
+      "kSMAttune",
+      "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "sonicatuneself"
     ],
     [
      "Damage",
@@ -7567,11 +7763,17 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&",
       "kMeter",
       "source>",
       "0",
       ">",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true,
@@ -7618,11 +7820,17 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&",
       "kMeter",
       "source>",
       ".9",
       "<",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true,
@@ -7845,7 +8053,7 @@
      2,
      null,
      null,
-     0,
+     1,
      null,
      null,
      null,
@@ -7857,6 +8065,9 @@
       "Source.Mode?",
       "kSonicAtuneFoe",
       "target.mode?",
+      "&&",
+      "kSMAttune",
+      "Source.Mode?",
       "&&"
      ],
      true,
@@ -7868,8 +8079,39 @@
      null,
      null,
      null,
-     "SMAttune"
+     "SMAttune",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "sonicatuneself"
     ]
+   ],
+   "conditionalEffects": [
+    {
+     "id": "sonicatuneself",
+     "label": "Sonic Atune Self",
+     "scope": "global",
+     "defaultActive": false,
+     "damage": [
+      {
+       "type": "Smashing",
+       "scale": 0.4671,
+       "table": "Melee_Damage"
+      },
+      {
+       "type": "Energy",
+       "scale": 0.4671,
+       "table": "Melee_Damage"
+      }
+     ]
+    }
    ],
    "specialEffects": [
     {
@@ -8571,9 +8813,35 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
+      "&&",
+      "kSMAttune",
+      "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "sonicatuneself"
     ],
     [
      "Damage",
@@ -8608,9 +8876,35 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
+      "&&",
+      "kSMAttune",
+      "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "sonicatuneself"
     ],
     [
      "Damage",
@@ -8645,11 +8939,17 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&",
       "kMeter",
       "source>",
       "0",
       ">",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true,
@@ -8696,11 +8996,17 @@
       "kSonicAtuneFoe",
       "target.mode?",
       "&&",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&",
       "kMeter",
       "source>",
       ".9",
       "<",
+      "kSMAttune",
+      "Source.Mode?",
+      "&&",
       "&&"
      ],
      true,
@@ -9186,6 +9492,26 @@
      null,
      "SoundBoost"
     ]
+   ],
+   "conditionalEffects": [
+    {
+     "id": "sonicatuneself",
+     "label": "Sonic Atune Self",
+     "scope": "global",
+     "defaultActive": false,
+     "damage": [
+      {
+       "type": "Smashing",
+       "scale": 1.56,
+       "table": "Melee_Damage"
+      },
+      {
+       "type": "Energy",
+       "scale": 1.56,
+       "table": "Melee_Damage"
+      }
+     ]
+    }
    ],
    "specialEffects": [
     {

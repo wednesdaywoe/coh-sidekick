@@ -2343,6 +2343,9 @@
      "label": "Recovery"
     }
    ],
+   "targetModes": [
+    "Chain_Jolt_Mode"
+   ],
    "setsModes": [
     "Chain_Jolt_Mode"
    ]
@@ -3379,6 +3382,9 @@
      "chance": 0.20000000298023224,
      "label": "Confuse"
     }
+   ],
+   "targetModes": [
+    "Chain_Confuse_Mode"
    ],
    "setsModes": [
     "Chain_Confuse_Mode"

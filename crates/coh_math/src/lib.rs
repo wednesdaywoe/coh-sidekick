@@ -122,6 +122,7 @@ pub fn recalculate_in_cast_context(
     g.errors.extend(gathered.unresolved);
     let powers = gathered.powers;
     let source_modes = gathered.source_modes;
+    let target_modes = gathered.target_modes;
     let archetype = state.archetype.id.as_deref().unwrap_or("");
     let level = state.level as i32;
 
@@ -483,6 +484,7 @@ pub fn recalculate_in_cast_context(
     let power_projection = projection::project_powers(
         state,
         &source_modes,
+        &target_modes,
         &g,
         effective_level_diff,
         &alpha,
@@ -510,7 +512,8 @@ pub fn recalculate_in_cast_context(
     // The damage-bar scale (RB5-d). Runs after the projection because it reads the sealed global
     // damage buff the projections' own final tier used, so a power's bar and the ceiling it is
     // drawn against agree by construction.
-    let damage_ceiling = projection::damage_ceiling(state, &source_modes, &g, db, &owned);
+    let damage_ceiling =
+        projection::damage_ceiling(state, &source_modes, &target_modes, &g, db, &owned);
 
     CalculatedTotals {
         bonuses: g,

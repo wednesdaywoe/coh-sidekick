@@ -342,9 +342,14 @@ fn reachable_global_range(power: &Power, global_range: f64) -> f64 {
 /// ceiling it would.
 ///
 /// With no target chosen the target readers stay Indeterminate, which is the honest answer: the
-/// gates ask who is being hit and nobody has said. `owned_powers` answers the caster-ownership
-/// gates from the build's own picks and from the transient states its conditional toggles declare
-/// ([`crate::gather::owned_powers`]); a path neither producer carries is state this build is not
+/// gates ask who is being hit and nobody has said.
+///
+/// `target_modes` are the modes the build's running powers set on what they hit, so a Sonic
+/// Melee attack against a target Attune is running on reads its bonus (`kSonicAtuneFoe
+/// target.mode?`). Attune holds on one foe, and the planner's target is the foe being hit.
+///
+/// `owned_powers` answers the caster-ownership gates from the build's own picks and from the
+/// transient states its conditional toggles declare ([`crate::gather::owned_powers`]); a path neither producer carries is state this build is not
 /// in, and absent still means not owned. Homecoming's fast snipe reads
 /// `Set_Bonus.Global_Bonus.Experienced_Marksman source.ownPower?`, which stays false because
 /// nothing in any fork's export GRANTS that power — 34 unique-IO boosts grant their
@@ -360,6 +365,7 @@ fn reachable_global_range(power: &Power, global_range: f64) -> f64 {
 fn gate_context(
     state: &CharacterState,
     source_modes: &HashSet<String>,
+    target_modes: &HashSet<String>,
     g: &GlobalBonuses,
     db: &PowerDatabase,
     owned: &HashMap<String, f64>,
@@ -402,6 +408,7 @@ fn gate_context(
         target: Some(TargetIdentity {
             archetype_class: target_class,
             entity_type: target_entity.to_string(),
+            modes: target_modes.clone(),
         }),
         source_modes: crate::gather::live_modes(source_modes, state.combat.in_combat),
         source_attributes,
@@ -718,6 +725,7 @@ pub struct ToggleEndurance {
 pub fn project_powers(
     state: &CharacterState,
     source_modes: &HashSet<String>,
+    target_modes: &HashSet<String>,
     g: &GlobalBonuses,
     effective_level_diff: i32,
     alpha: &AlphaEnhancement,
@@ -729,7 +737,7 @@ pub fn project_powers(
     // The reduction clamps and the gate context are properties of the build, not of a power:
     // resolve each once here rather than re-reading the caps for every projection.
     let clamps = ReductionClamps::for_build(state, db);
-    let gate = gate_context(state, source_modes, g, db, owned);
+    let gate = gate_context(state, source_modes, target_modes, g, db, owned);
     let mut projections: Vec<PowerProjection> = state
         .all_selected()
         .filter_map(|selection| {
@@ -804,13 +812,14 @@ pub fn project_powers(
 pub fn damage_ceiling(
     state: &CharacterState,
     source_modes: &HashSet<String>,
+    target_modes: &HashSet<String>,
     g: &GlobalBonuses,
     db: &PowerDatabase,
     owned: &HashMap<String, f64>,
 ) -> Option<f64> {
     let archetype = state.archetype.id.as_deref()?;
     let level = state.level as i32;
-    let gate = gate_context(state, source_modes, g, db, owned);
+    let gate = gate_context(state, source_modes, target_modes, g, db, owned);
     let global_damage = g.damage / 100.0;
 
     // A candidate that cannot resolve drops out of the maximum rather than filing a marker: these

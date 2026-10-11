@@ -741,11 +741,13 @@ pub fn schedule_chain(
 
     let defs = candidate_defs(state, db);
     let base_owned = crate::gather::owned_powers(state, db);
-    let source_modes = crate::gather::gather_active_powers(state, db).source_modes;
+    let gathered = crate::gather::gather_active_powers(state, db);
+    let source_modes = gathered.source_modes;
     let (archetype_class, entity_type) = state.combat.target_identity();
     let target = Some(crate::expr::TargetIdentity {
         archetype_class,
         entity_type: entity_type.to_string(),
+        modes: gathered.target_modes,
     });
 
     let base_key = CtxKey::new(meter.map(|_| declared_hidden), &BTreeMap::new());

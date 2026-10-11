@@ -958,6 +958,12 @@ pub struct TargetIdentity {
     pub archetype_class: Option<String>,
     /// `enttype target>`: `critter` or `player`, the PvE/PvP fork every fork's damage atoms carry.
     pub entity_type: String,
+    /// `<mode> target.mode?`: the modes the build's own running powers set on whoever they are
+    /// aimed at — Attune marks its target `SonicAtuneFoe`, and every Sonic Melee bonus asks for
+    /// it. Both spellings, bare and `k`-prefixed, as [`SourceContext::source_modes`] holds them.
+    /// A mode absent here is Indeterminate rather than false: a teammate, or the target itself,
+    /// can set it too, and the build cannot say whether one has.
+    pub modes: HashSet<String>,
 }
 
 impl EvalContext for SourceContext {
@@ -1014,6 +1020,13 @@ impl EvalContext for SourceContext {
             }
             "source.Mode?" | "Source.Mode?" | "source.mode?" => {
                 Ok(boolean(self.source_modes.contains(&name(0)?)))
+            }
+            "target.mode?" | "target.Mode?" => {
+                let mode = name(0)?;
+                match &self.target {
+                    Some(target) if target.modes.contains(&mode) => Ok(boolean(true)),
+                    _ => indeterminate(),
+                }
             }
             "isPVPMap?" => self
                 .is_pvp_map
