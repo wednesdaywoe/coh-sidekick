@@ -51,6 +51,7 @@ mod pinned_powers;
 mod popover;
 mod power_art;
 mod powerset_compare;
+mod proc_potential_store;
 mod quickbar;
 mod reorder_menu;
 mod shell;

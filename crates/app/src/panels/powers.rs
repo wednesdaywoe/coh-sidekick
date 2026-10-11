@@ -58,6 +58,104 @@ pub struct SlotLevelsView(pub Memo<Option<std::rc::Rc<coh_data::slot_levels::Slo
 #[derive(Clone, Copy)]
 pub struct ShowSlotLevels(pub Signal<bool>);
 
+/// The "Proc potential badges" option, held at the shell root and saved by
+/// [`crate::proc_potential_store`]. Off by default: it is an analysis overlay.
+#[derive(Clone, Copy)]
+pub struct ShowProcPotential(pub Signal<bool>);
+
+/// The proc-potential badge beside a power's name, or nothing: when the option is off, and for
+/// the ~85% of powers that are not proc vehicles ([`coh_math::proc_potential::ProcPotential::tier`]).
+///
+/// Shows the count of procs that reach the 90% ceiling at base recharge, and in its tooltip the
+/// composition behind it. No score: which effects matter is the player's build goal, not the
+/// app's.
+fn proc_potential_badge(
+    def: Option<&coh_data::Power>,
+    database: &coh_data::PowerDatabase,
+) -> Element {
+    use coh_math::proc_potential::{proc_potential, ProcTier};
+    // `consume_context`, not the hook: the available row returns early on a fault, so a hook
+    // here would run on some renders and not others.
+    let shown = consume_context::<ShowProcPotential>().0;
+    if !shown() {
+        return rsx! {};
+    }
+    let Some(potential) = def.and_then(|def| proc_potential(def, database)) else {
+        return rsx! {};
+    };
+    let tier = potential.tier();
+    let class = match tier {
+        ProcTier::Unremarkable => return rsx! {},
+        ProcTier::ProcBomb => "proc-potential",
+        ProcTier::Exceptional => "proc-potential proc-potential--exceptional",
+    };
+    let label = format!(
+        "{}: {} procs at the 90% ceiling",
+        tier.label(),
+        potential.at_cap
+    );
+    rsx! {
+        span {
+            class,
+            title: "{proc_potential_tooltip(&potential)}",
+            "aria-label": "{label}",
+            span { "aria-hidden": "true", "⚡" }
+            "{potential.at_cap}"
+        }
+    }
+}
+
+/// The badge's tooltip: the headline count, one line per effect category, then the inputs the
+/// chances were scored from.
+fn proc_potential_tooltip(p: &coh_math::proc_potential::ProcPotential) -> String {
+    let mut lines = vec![
+        p.tier().label().to_string(),
+        format!(
+            "{} of {} slottable procs reach the 90% ceiling at base recharge",
+            p.at_cap,
+            p.entries.len()
+        ),
+        String::new(),
+    ];
+    for row in &p.composition {
+        let kinds = match row.effect_types.is_empty() {
+            true => String::new(),
+            false => format!(" ({})", row.effect_types.join(", ")),
+        };
+        lines.push(format!(
+            "{}: {}/{} at cap{kinds}",
+            row.category, row.at_cap, row.total
+        ));
+    }
+    lines.push(String::new());
+    if p.rolls_in_executed_children {
+        // No one window: each proc was scored against the sub-power that accepts its set.
+        lines.push("Rolls in this power's executed sub-powers, each on its own radius.".into());
+    } else {
+        let mut basis = format!("Base recharge {}s + {}s cast", p.window, p.cast_time);
+        if p.area_factor > 1.0 {
+            basis.push_str(&format!(" · AoE penalty ÷{:.2}", p.area_factor));
+        }
+        lines.push(basis);
+    }
+    if p.main_target_only {
+        lines.push("Procs roll single-target despite the AoE.".into());
+    }
+    if p.from_patch {
+        lines.push("Rolls on the summoned patch, not the caster.".into());
+    }
+    if !p.purple_sets.is_empty() {
+        lines.push(format!("Purple procs: {}", p.purple_sets.join(", ")));
+    }
+    if p.global_count > 0 {
+        lines.push(format!(
+            "{} always-on globals also available.",
+            p.global_count
+        ));
+    }
+    lines.join("\n")
+}
+
 /// What one slot's level badge says.
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum SlotLevelBadge {
@@ -2201,6 +2299,7 @@ fn AvailablePowerRow(
                 img { class: "power-row__art", src: "{icon_url}", alt: "" }
             }
             span { class: "power-row__name", "{power_name}" }
+            {proc_potential_badge(Some(&power), &database)}
         }
     }
 }
@@ -2735,6 +2834,7 @@ pub fn PickedPowerCard(
                     span { class: "power-level", "L{power.level}" }
                 }
                 span { class: "power-name", "{power_def.map(|p| p.name.as_str()).unwrap_or(&power_id)}" }
+                {proc_potential_badge(power_def, &database)}
                 if let Some(reason) = out_of_order.clone() {
                     span {
                         class: "power-order-mark",

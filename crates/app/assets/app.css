@@ -2076,6 +2076,24 @@ button.power-pick--empty {
    look and only the name changes. The tooltip says what is missing. */
 .power-row.is-out-of-order .power-row__name { color: var(--action-danger); font-style: italic; }
 
+/* Proc potential (Options ▸ Powers): every slot could hold a proc at the 90% ceiling. The
+   proc cyan for a proc bomb; the brand magenta, louder, for an exceptional one. */
+.proc-potential {
+  flex: none; margin-left: 4px;
+  display: inline-flex; align-items: center; gap: 1px;
+  padding: 1px 3px; border-radius: 3px;
+  font-size: 9px; font-weight: 700; line-height: 1;
+  color: var(--proc-damage);
+  border: 1px solid color-mix(in srgb, var(--proc-damage) 50%, transparent);
+  background: color-mix(in srgb, var(--proc-damage) 10%, transparent);
+  cursor: help;
+}
+.proc-potential--exceptional {
+  color: var(--brand);
+  border-color: color-mix(in srgb, var(--brand) 60%, transparent);
+  background: color-mix(in srgb, var(--brand) 15%, transparent);
+}
+
 /* The same state on the picked card: one small mark after the name, so the card's slots and
    chrome are untouched. */
 .power-order-mark {

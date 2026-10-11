@@ -138,6 +138,7 @@ fn PreferenceEntries() -> Element {
         div { class: "options-group",
             span { class: "field-label", "Powers" }
             ShowSlotLevelsToggle {}
+            ShowProcPotentialToggle {}
         }
         div { class: "options-group",
             span { class: "field-label", "UI scale" }
@@ -722,6 +723,25 @@ fn ShowSlotLevelsToggle() -> Element {
                 onchange: move |evt| shown.set(evt.checked()),
             }
             "Show the level each slot is added at"
+        }
+    }
+}
+
+/// Whether powers that are unusually good proc vehicles wear a badge beside their name.
+#[component]
+fn ShowProcPotentialToggle() -> Element {
+    let mut shown = use_context::<crate::panels::powers::ShowProcPotential>().0;
+    rsx! {
+        label {
+            class: "options-check",
+            title: "Badge powers where every slot could hold a proc at the 90% chance ceiling, \
+                    at the power's base recharge",
+            input {
+                r#type: "checkbox",
+                checked: shown(),
+                onchange: move |evt| shown.set(evt.checked()),
+            }
+            "Show proc potential badges"
         }
     }
 }

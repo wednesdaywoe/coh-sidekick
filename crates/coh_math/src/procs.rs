@@ -70,7 +70,7 @@ pub(crate) struct ProcArea {
 
 impl ProcArea {
     /// Single target: the geometry every power with no radius resolves to.
-    fn single_target() -> Self {
+    pub(crate) fn single_target() -> Self {
         Self {
             radius: 0.0,
             arc_degrees: 360.0,
@@ -98,7 +98,7 @@ impl ProcArea {
 /// `0.25 + 0.75 × AF` conversion. A `Chain` power's factor is `1 + 0.15 × radius × targets / 10`
 /// (HC's 2026 change, from the bug report that found the engine scoring chains as spheres), the
 /// radius being the jump distance.
-fn ppm_area_denominator(area: ProcArea) -> f64 {
+pub(crate) fn ppm_area_denominator(area: ProcArea) -> f64 {
     if area.only_main_target {
         return 1.0;
     }
@@ -180,7 +180,12 @@ fn proc_recharge_window(
 ///
 /// `ppm` is the piece's own; `area.ppm_mod` is applied here, so the minimum clamp sees the
 /// modified rate too.
-fn calculate_proc_chance(ppm: f64, recharge_window: f64, cast_time: f64, area: ProcArea) -> f64 {
+pub(crate) fn calculate_proc_chance(
+    ppm: f64,
+    recharge_window: f64,
+    cast_time: f64,
+    area: ProcArea,
+) -> f64 {
     let ppm = ppm * area.ppm_mod;
     let area_denom = ppm_area_denominator(area);
     let raw = (ppm * (recharge_window + cast_time)) / (60.0 * area_denom);
@@ -195,7 +200,11 @@ fn calculate_proc_chance(ppm: f64, recharge_window: f64, cast_time: f64, area: P
 /// `ptemplate->ppowBase` is "the power which contains this AttribModTemplate". For a proc that's
 /// the BOOST's own power, which the host toggle only borrows templates from
 /// (`character_combat.c:2932`).
-fn calculate_auto_toggle_proc_chance(ppm: f64, activate_period: f64, area: ProcArea) -> f64 {
+pub(crate) fn calculate_auto_toggle_proc_chance(
+    ppm: f64,
+    activate_period: f64,
+    area: ProcArea,
+) -> f64 {
     let ppm = ppm * area.ppm_mod;
     let area_denom = ppm_area_denominator(area);
     let raw = (ppm * activate_period) / (60.0 * area_denom);
@@ -322,11 +331,11 @@ fn def_num(def: &Power, subobject: &str, key: &str) -> Option<f64> {
 /// effective one [`crate::effective::with_active_conditionals`] writes a bag onto. The
 /// contract has carried no power-level bag on any fork since 2026-09-03, so the fallback
 /// read an object that was never there.
-fn stat_or_default(def: &Power, key: &str, fallback: f64) -> f64 {
+pub(crate) fn stat_or_default(def: &Power, key: &str, fallback: f64) -> f64 {
     def_num(def, "stats", key).unwrap_or(fallback)
 }
 
-fn power_type_lower(def: &Power) -> String {
+pub(crate) fn power_type_lower(def: &Power) -> String {
     def.extra
         .get("powerType")
         .and_then(Value::as_str)
@@ -443,7 +452,7 @@ fn site_for_piece<'a>(
 /// are granted by slotting the piece: the always-on pass never asks the host power to fire, and
 /// applies a `Global` whatever the host is doing. Gating them on this flag would be a wider rule
 /// than the evidence carries, and would strip real globals off 65 flagged powers.
-fn proc_fires_in(
+pub(crate) fn proc_fires_in(
     def: &Power,
     proc: &ProcData,
     set_name: &str,
@@ -480,7 +489,7 @@ fn proc_fires_in(
 /// live NaN swallowed by this exact shape, so the two are not interchangeable and the current one
 /// is the behaviour graded.
 #[allow(clippy::manual_clamp)]
-fn roll_area(site: Option<&ProcRollSite>, own: ProcArea) -> ProcArea {
+pub(crate) fn roll_area(site: Option<&ProcRollSite>, own: ProcArea) -> ProcArea {
     match site {
         Some(s) => ProcArea {
             radius: if s.procs_only_on_main_target {
@@ -499,7 +508,7 @@ fn roll_area(site: Option<&ProcRollSite>, own: ProcArea) -> ProcArea {
 }
 
 /// The summon block a power's pseudo-pet facts come off, or `None` when it summons nothing.
-fn power_summon(def: &Power) -> Option<&Value> {
+pub(crate) fn power_summon(def: &Power) -> Option<&Value> {
     def.summon()
 }
 
@@ -682,7 +691,7 @@ pub struct ProcRollSchedule {
 /// This function is the CLICK path's. An auto/toggle host is already scored on the piece's period
 /// by [`calculate_auto_toggle_proc_chance`], so giving the schedule an arm for it would be a second
 /// home for a rule that already has one.
-fn proc_roll_schedule(
+pub(crate) fn proc_roll_schedule(
     def: &Power,
     db: &PowerDatabase,
     base_recharge: f64,
@@ -743,7 +752,7 @@ fn widest_pseudo_pet_ability<'a>(def: &'a Power, db: &'a PowerDatabase) -> Optio
 /// `procsOnlyOnMainTarget` is emitted sparse-true (the converters write the key only when the
 /// binary's `ProcMainTargetOnly` bool is set), so an absent key is the authored `false` and not a
 /// dropped read. That's the emitter's own encoding, not a guess at an unstated axis.
-fn proc_area(def: &Power, db: &PowerDatabase) -> ProcArea {
+pub(crate) fn proc_area(def: &Power, db: &PowerDatabase) -> ProcArea {
     let only_main_target = def
         .extra
         .get("procsOnlyOnMainTarget")

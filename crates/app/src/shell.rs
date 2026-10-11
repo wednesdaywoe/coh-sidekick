@@ -492,6 +492,24 @@ pub fn Shell() -> Element {
         }
     });
     use_context_provider(|| panels::powers::SlotLevelsView(slot_levels));
+    // Whether powers wear a proc-potential badge — an Options preference, off by default.
+    let show_proc_potential = use_signal(|| false);
+    use_context_provider(|| panels::powers::ShowProcPotential(show_proc_potential));
+    let mut show_proc_potential_restored = use_signal(|| false);
+    use_future(move || async move {
+        let mut shown = show_proc_potential;
+        if let Some(saved) = crate::proc_potential_store::load().await {
+            shown.set(saved);
+        }
+        show_proc_potential_restored.set(true);
+    });
+    use_effect(move || {
+        let shown = *show_proc_potential.read();
+        if !*show_proc_potential_restored.read() {
+            return;
+        }
+        crate::proc_potential_store::persist(shown);
+    });
     // The perma-tracked powers (beta `permaTrackedPowers`), in-memory exactly as there: the
     // tracked set is UI state, not part of the build, so it is not persisted.
     let perma_tracked = use_signal(Vec::new);

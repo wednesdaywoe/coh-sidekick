@@ -26,6 +26,7 @@ pub mod incarnates;
 pub mod inherents;
 pub mod movement;
 pub mod perma;
+pub mod proc_potential;
 pub mod procs;
 pub mod projection;
 pub mod purple_patch;
