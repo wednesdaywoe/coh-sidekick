@@ -1312,6 +1312,30 @@ pub fn AvailablePanel(database: Db) -> Element {
         &database,
         &build.read()
     )));
+    // Only the shown branch's pair is drawn, each half under the column it extends — the
+    // primary select chooses it ([`crate::panels::branch_view`]). An offer the gate drops
+    // (`BranchClosed`) has no half to draw, so it simply finds nothing here.
+    let browsed = use_context::<crate::panels::branch_view::BranchView>().0;
+    let archetype_branches =
+        crate::panels::branch_view::archetype_branches(&database, &build.read());
+    let shown = crate::panels::branch_view::shown_branch(
+        &archetype_branches,
+        &build.read(),
+        browsed.read().as_deref(),
+    )
+    .cloned();
+    let branch_half = |set: Option<&String>| -> Option<BranchSetOffer> {
+        let set = set?;
+        branches()
+            .into_iter()
+            .find(|offer| offer.set_id.eq_ignore_ascii_case(set))
+    };
+    let primary_branch = shown
+        .as_ref()
+        .and_then(|branch| branch_half(branch.primary_set.as_ref()));
+    let secondary_branch = shown
+        .as_ref()
+        .and_then(|branch| branch_half(branch.secondary_set.as_ref()));
 
     rsx! {
         div { class: "powers",
@@ -1333,39 +1357,59 @@ pub fn AvailablePanel(database: Db) -> Element {
                 // The two powerset columns lead, always both, chosen or not: the head IS the
                 // select (LAY4), so an unchosen set is an empty column offering itself rather
                 // than a column that does not exist yet.
-                AvailablePowersGroup {
-                    key: "avail-primary",
-                    database: database.clone(),
-                    set_id: primary_id.unwrap_or_default(),
-                    origin: SetOrigin::Powerset,
-                    select_role: BuildRole::Primary,
-                    current_level,
-                    taken_levels: taken_levels.clone(),
-                    picked_levels: picked_levels.clone(),
-                }
-                AvailablePowersGroup {
-                    key: "avail-secondary",
-                    database: database.clone(),
-                    set_id: secondary_id.unwrap_or_default(),
-                    origin: SetOrigin::Powerset,
-                    select_role: BuildRole::Secondary,
-                    current_level,
-                    taken_levels: taken_levels.clone(),
-                    picked_levels: picked_levels.clone(),
-                }
-                // The VEAT branch sets, beside the base pair rather than in place of it — the
-                // branch adds two sets to a build that keeps everything it already took.
-                for offer in branches().iter() {
+                //
+                // A VEAT's branch set continues the column it belongs to, under a divider,
+                // rather than standing as a column of its own: the branch adds to a build that
+                // keeps everything it already took, and six side-by-side columns read as six
+                // independent choices when they are two.
+                div { class: "available-column",
                     AvailablePowersGroup {
-                        key: "avail-{offer.set_id}",
+                        key: "avail-primary",
                         database: database.clone(),
-                        set_id: offer.set_id.clone(),
+                        set_id: primary_id.unwrap_or_default(),
                         origin: SetOrigin::Powerset,
-                        branch_role: offer.role,
-                        set_blocked: offer.blocked.clone(),
+                        select_role: BuildRole::Primary,
                         current_level,
                         taken_levels: taken_levels.clone(),
                         picked_levels: picked_levels.clone(),
+                    }
+                    if let Some(offer) = primary_branch {
+                        AvailablePowersGroup {
+                            key: "avail-{offer.set_id}",
+                            database: database.clone(),
+                            set_id: offer.set_id.clone(),
+                            origin: SetOrigin::Powerset,
+                            branch_role: offer.role,
+                            set_blocked: offer.blocked.clone(),
+                            current_level,
+                            taken_levels: taken_levels.clone(),
+                            picked_levels: picked_levels.clone(),
+                        }
+                    }
+                }
+                div { class: "available-column",
+                    AvailablePowersGroup {
+                        key: "avail-secondary",
+                        database: database.clone(),
+                        set_id: secondary_id.unwrap_or_default(),
+                        origin: SetOrigin::Powerset,
+                        select_role: BuildRole::Secondary,
+                        current_level,
+                        taken_levels: taken_levels.clone(),
+                        picked_levels: picked_levels.clone(),
+                    }
+                    if let Some(offer) = secondary_branch {
+                        AvailablePowersGroup {
+                            key: "avail-{offer.set_id}",
+                            database: database.clone(),
+                            set_id: offer.set_id.clone(),
+                            origin: SetOrigin::Powerset,
+                            branch_role: offer.role,
+                            set_blocked: offer.blocked.clone(),
+                            current_level,
+                            taken_levels: taken_levels.clone(),
+                            picked_levels: picked_levels.clone(),
+                        }
                     }
                 }
             }
@@ -1819,7 +1863,14 @@ fn AvailablePowersGroup(
     let removable = matches!(origin, SetOrigin::Pool | SetOrigin::Epic);
 
     rsx! {
-        section { class: "powerset-group",
+        // A branch set is the lower half of the column it extends, so its head reads as a
+        // divider inside that column rather than as the head of a set of its own.
+        section {
+            class: if branch_role.is_some() {
+                "powerset-group powerset-group--branch"
+            } else {
+                "powerset-group"
+            },
             header { class: "powerset-group__header",
                 // Two heads, and the difference is only what names the set. A pool names itself
                 // in a label that also folds the group; a powerset names itself in the select
@@ -1845,6 +1896,7 @@ fn AvailablePowersGroup(
                         database: database.clone(),
                         role,
                         class: "powerset-group__select".to_string(),
+                        offer_branches: true,
                         placeholder: match role {
                             BuildRole::Primary => "— primary —".to_string(),
                             BuildRole::Secondary => "— secondary —".to_string(),

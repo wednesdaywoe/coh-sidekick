@@ -1822,10 +1822,15 @@ button.power-pick--empty {
    nothing to put in, so a build holding one pool would stretch that one list across the full
    rail while the two powersets above it sat in columns. Holding the empty track keeps a pool
    list the same width as a powerset list however many pools the build has. The powersets keep
-   auto-fit because there are always exactly two of them (plus a VEAT's branches), so there is
+   auto-fit because there are always exactly two of them (a VEAT's branch sits inside its column), so there is
    never a track to collapse and stretching to fill is what that container wants. */
 .available-powers--pools {
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+}
+/* One powerset column: the set, then (for a VEAT) the shown branch's set under it. A grid item
+   of `.available-powers`, so the two columns keep the auto-fit track the sets used to fill. */
+.available-column {
+  display: flex; flex-direction: column; gap: var(--gap-section); min-width: 0;
 }
 
 /* A powerset's available powers: a quiet header (name + remaining count) over a tight
@@ -1862,6 +1867,20 @@ button.power-pick--empty {
 }
 .powerset-group__count {
   font-size: 11px; color: var(--text-faint); font-variant-numeric: tabular-nums;
+}
+/* A VEAT branch set, read as the lower half of its column: the head is a divider with the
+   branch's name set into it (Mids' `~ Night Widow Training ~`), not a second column head. */
+.powerset-group--branch .powerset-group__header { border-bottom: none; padding-bottom: 0; }
+.powerset-group--branch .powerset-group__toggle { align-items: center; }
+/* The rules give way before the name does: a branch name is long ("Night Widow Training") and
+   the column is ~190px, so the name drops the head's uppercase tracking to fit whole. */
+.powerset-group--branch .powerset-group__toggle::before,
+.powerset-group--branch .powerset-group__toggle::after {
+  content: ""; flex: 1 1 0; min-width: 6px; border-top: 1px solid var(--seam);
+}
+.powerset-group--branch .powerset-group__toggle .powerset-group__name {
+  flex: 0 1 auto; text-align: center;
+  text-transform: none; letter-spacing: 0;
 }
 
 /* ---- the powerset column head (LAY4) ----

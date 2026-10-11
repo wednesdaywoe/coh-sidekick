@@ -1,6 +1,7 @@
 pub mod accolade_picker;
 pub mod adjusters;
 pub mod attack_chain;
+pub mod branch_view;
 pub mod combat;
 pub mod dashboards;
 pub mod detailed_totals;
