@@ -383,6 +383,7 @@ pub fn BuildHandoffEntries(database: Option<Db>) -> Element {
         SaveToCloudEntry { database: database.clone() }
         CopyShortLinkEntry { database: database.clone() }
         ShareToForumEntry { database: database.clone() }
+        PrintEntry { database: database.clone() }
         ExportImageEntry { database }
         UnbuiltEntries {}
     }
@@ -709,6 +710,28 @@ fn ShareToForumEntry(database: Option<Db>) -> Element {
             },
             span { class: "main-menu__label", "Share to a forum…" }
             span { class: "main-menu__hint", "The build as a post — BBCode, Markdown or plain" }
+        }
+    }
+}
+
+/// Put the build on paper. Opens a surface, as the forum export does: the layout is the user's
+/// to pick and see before the print dialog. See [`crate::print_sheet`].
+#[component]
+fn PrintEntry(database: Option<Db>) -> Element {
+    let mut print = use_context::<crate::print_sheet::PrintSheetOpen>().0;
+    let mut menu = use_context::<crate::popover::PopoverOpen>().0;
+
+    rsx! {
+        button {
+            class: "main-menu__item",
+            r#type: "button",
+            disabled: database.is_none(),
+            onclick: move |_| {
+                print.set(true);
+                menu.set(false);
+            },
+            span { class: "main-menu__label", "Print…" }
+            span { class: "main-menu__hint", "A sheet of the powers, slots and totals" }
         }
     }
 }

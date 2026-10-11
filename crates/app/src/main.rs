@@ -52,6 +52,7 @@ mod popover;
 mod power_art;
 mod power_tooltip;
 mod powerset_compare;
+mod print_sheet;
 mod proc_potential_store;
 mod quickbar;
 mod reorder_menu;

@@ -346,6 +346,9 @@ pub fn Shell() -> Element {
     // the poster is derived from the same three things the post is.
     let export_image_open = use_signal(|| false);
     use_context_provider(|| crate::export_image::ExportImageOpen(export_image_open));
+    // The print sheet's open flag, owned here for the same reason and owning as little.
+    let print_sheet_open = use_signal(|| false);
+    use_context_provider(|| crate::print_sheet::PrintSheetOpen(print_sheet_open));
     // The enhancement list's open flag, owned here for the same reason. Its tick state is not
     // here: that belongs to a shopping trip rather than to the build, so it lives in the body
     // and goes when the modal closes.
@@ -1331,6 +1334,15 @@ pub fn Shell() -> Element {
         // The image-export modal, hosted here for the same reason, and taking the database for
         // the same one: the poster draws power names, and a build stores ids.
         crate::export_image::ExportImageHost {
+            database: match &*db.read() {
+                Some(Ok(database)) => Some(Db(database.clone())),
+                _ => None,
+            },
+        }
+
+        // The print sheet, hosted here for the same reason, and taking the database for the same
+        // one the forum post does.
+        crate::print_sheet::PrintSheetHost {
             database: match &*db.read() {
                 Some(Ok(database)) => Some(Db(database.clone())),
                 _ => None,
