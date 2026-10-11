@@ -151,9 +151,10 @@ pub fn effective_recharge(
 pub enum PowerMetric {
     /// Per-cast damage (direct + full DoT) — "how big is the hit".
     Damage,
-    /// Damage ÷ cast time — damage per second of animation (the classic attack-chain metric
-    /// for choosing fillers).
-    DamagePerActivation,
+    /// Damage ÷ ArcanaTime — damage per second of animation lock (the classic attack-chain
+    /// metric for choosing fillers). Per animation, not per activation: `ChainPower::cast` is
+    /// already the ArcanaTime figure.
+    DamagePerAnimation,
     /// Damage ÷ (cast + recharge) — sustained single-power throughput.
     DamagePerSecond,
 }
@@ -184,7 +185,7 @@ pub fn power_metric_value(
     let damage = nominal_damage(power);
     match metric {
         PowerMetric::Damage => damage,
-        PowerMetric::DamagePerActivation => {
+        PowerMetric::DamagePerAnimation => {
             if power.cast > 0.0 {
                 damage / power.cast
             } else {

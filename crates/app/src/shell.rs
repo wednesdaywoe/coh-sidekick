@@ -510,6 +510,27 @@ pub fn Shell() -> Element {
         }
         crate::proc_potential_store::persist(shown);
     });
+    // The floating power card — an Options preference, off by default — and the power under
+    // the pointer it reads.
+    let power_tooltip_enabled = use_signal(|| false);
+    use_context_provider(|| crate::power_tooltip::PowerTooltipEnabled(power_tooltip_enabled));
+    let power_hover = use_signal(|| Option::<crate::power_tooltip::PowerHoverTarget>::None);
+    use_context_provider(|| crate::power_tooltip::PowerHover(power_hover));
+    let mut power_tooltip_restored = use_signal(|| false);
+    use_future(move || async move {
+        let mut enabled = power_tooltip_enabled;
+        if let Some(saved) = crate::power_tooltip::load().await {
+            enabled.set(saved);
+        }
+        power_tooltip_restored.set(true);
+    });
+    use_effect(move || {
+        let enabled = *power_tooltip_enabled.read();
+        if !*power_tooltip_restored.read() {
+            return;
+        }
+        crate::power_tooltip::persist(enabled);
+    });
     // The perma-tracked powers (beta `permaTrackedPowers`), in-memory exactly as there: the
     // tracked set is UI state, not part of the build, so it is not persisted.
     let perma_tracked = use_signal(Vec::new);
@@ -1222,6 +1243,11 @@ pub fn Shell() -> Element {
         // contained/clipped by a free-grid surface's `transform` (see `powers::SlotTooltipHost`).
         if let Some(Ok(database)) = &*db.read() {
             panels::powers::SlotTooltipHost { database: Db(database.clone()) }
+        }
+
+        // The floating power card, hosted OUTSIDE both layout roots for the same reason.
+        if let Some(Ok(database)) = &*db.read() {
+            crate::power_tooltip::PowerTooltipHost { database: Db(database.clone()) }
         }
 
         // The one ⋮ menu on a picked power, hosted OUTSIDE both layout roots for the same reason.

@@ -50,6 +50,7 @@ mod picker_store;
 mod pinned_powers;
 mod popover;
 mod power_art;
+mod power_tooltip;
 mod powerset_compare;
 mod proc_potential_store;
 mod quickbar;

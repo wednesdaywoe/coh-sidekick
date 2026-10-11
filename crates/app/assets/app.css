@@ -2504,6 +2504,38 @@ button.power-pick--empty {
   line-height: 1.4;
 }
 .slot-tooltip-name { font-weight: 600; color: var(--text); }
+
+/* The floating power card (`power_tooltip.rs`): the hovered power, and a Shift-pinned one beside
+   it. One fixed box holding both cards, so the on-screen script places them as one. Ignores the
+   pointer like the slot tooltip, so it never steals the hover it is describing. */
+.power-tooltip {
+  position: fixed;
+  z-index: 1100;
+  transform: translate(14px, 14px);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+.power-tooltip__card {
+  width: 320px;
+  max-height: calc(100vh - 16px);
+  overflow: hidden;
+  padding: 8px 10px;
+  border: 1px solid var(--seam-raised);
+  border-radius: 8px;
+  background: var(--surface-panel);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .4);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.power-tooltip__card.is-pinned { border-color: var(--action-active); }
+.power-tooltip__note {
+  margin-top: 6px;
+  color: var(--text-faint);
+  font-family: var(--font-chrome);
+  font-size: 11px;
+}
 /* Too tall for the window: the set part stands beside the piece's own lines, and the hint
    stays under them. Set by `KEEP_SLOT_TOOLTIP_ON_SCREEN`. */
 .slot-tooltip.is-split {

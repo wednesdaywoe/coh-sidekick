@@ -2104,10 +2104,15 @@ fn AvailablePowerRow(
         power: power_internal.clone(),
     };
     let info_locked = info_lock.holds(&set_id, &power_internal);
+    let power_hover = use_context::<crate::power_tooltip::PowerHover>();
     let on_hover = {
         let this_power = this_power.clone();
-        move |_| selection.set(Some(this_power.clone()))
+        move |evt: Event<MouseData>| {
+            selection.set(Some(this_power.clone()));
+            power_hover.enter(this_power.clone(), &evt);
+        }
     };
+    let on_leave = move |_| power_hover.leave();
     let on_lock = {
         let this_power = this_power.clone();
         move |evt: Event<MouseData>| {
@@ -2185,6 +2190,7 @@ fn AvailablePowerRow(
                 class: faulted_class,
                 title: "{error}",
                 onmouseenter: on_hover,
+                onmouseleave: on_leave,
                 oncontextmenu: on_lock,
                 span { class: "power-row__level", "!" }
                 span { class: "power-row__icon", "⚠" }
@@ -2237,6 +2243,7 @@ fn AvailablePowerRow(
             // about. The click already does nothing for `Refused`, so only the attribute moves.
             "aria-disabled": action == RowAction::Refused,
             onmouseenter: on_hover,
+            onmouseleave: on_leave,
             oncontextmenu: on_lock,
             onclick: {
                 let set_id = set_id.clone();
@@ -2778,6 +2785,7 @@ pub fn PickedPowerCard(
     // `setInfoPanelContent`) via the shared selection signal — sticky, matching the beta (no clear
     // on leave). The Info panel reads the same signal, so the projection stays single-source.
     let mut selection = use_context::<crate::shell::PowerSelection>().0;
+    let power_hover = use_context::<crate::power_tooltip::PowerHover>();
     // Right-click locks the Info panel to this power (beta `onContextMenu` → `lockInfoPanel`).
     // The slot cells inside keep right-click for clearing a slot and stop it there, so a
     // right-click on a slot never also locks.
@@ -2811,13 +2819,16 @@ pub fn PickedPowerCard(
             onmouseenter: {
                 let powerset_id = powerset_id.clone();
                 let power_id = power_id.clone();
-                move |_| {
-                    selection.set(Some(crate::shell::PowerRef {
+                move |evt: Event<MouseData>| {
+                    let target = crate::shell::PowerRef {
                         powerset_id: powerset_id.clone(),
                         power: power_id.clone(),
-                    }));
+                    };
+                    selection.set(Some(target.clone()));
+                    power_hover.enter(target, &evt);
                 }
             },
+            onmouseleave: move |_| power_hover.leave(),
             // Top row: level, name, toggle, tools, remove.
             div { class: "power-card-top",
                 // A granted power has no pick level to show — `level` is 0 on one, and "L0"

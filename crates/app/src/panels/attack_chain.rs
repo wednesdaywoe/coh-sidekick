@@ -631,16 +631,17 @@ fn AttackChainBody(database: Db) -> Element {
                         "Rank by"
                         select {
                             class: "select-compact",
+                            title: metric_title(metric()),
                             onchange: move |evt| {
                                 metric.set(match evt.value().as_str() {
-                                    "dpa" => PowerMetric::DamagePerActivation,
+                                    "dpa" => PowerMetric::DamagePerAnimation,
                                     "dps" => PowerMetric::DamagePerSecond,
                                     _ => PowerMetric::Damage,
                                 });
                             },
-                            option { value: "damage", selected: metric() == PowerMetric::Damage, "Damage" }
-                            option { value: "dpa", selected: metric() == PowerMetric::DamagePerActivation, "DPA" }
-                            option { value: "dps", selected: metric() == PowerMetric::DamagePerSecond, "DPS" }
+                            option { value: "damage", title: metric_title(PowerMetric::Damage), selected: metric() == PowerMetric::Damage, "Damage" }
+                            option { value: "dpa", title: metric_title(PowerMetric::DamagePerAnimation), selected: metric() == PowerMetric::DamagePerAnimation, "DPA" }
+                            option { value: "dps", title: metric_title(PowerMetric::DamagePerSecond), selected: metric() == PowerMetric::DamagePerSecond, "DPS" }
                         }
                     }
                 }
@@ -845,7 +846,7 @@ fn ChainWhatIfRow(row: coh_math::chain_build::ChainWhatIf) -> Element {
 /// position — the meter state, an alternate form, the charges banked or spent.
 fn cast_title(row: &ChainPower, activation: &Activation, note: Option<&CastNote>) -> String {
     let mut title = format!(
-        "{} at {:.1}s · cast {:.2}s · {:.1} dmg",
+        "{} at {:.1}s · anim {:.2}s · {:.1} dmg",
         row.name, activation.start, row.cast, row.damage
     );
     if let Some(note) = note {
@@ -883,6 +884,17 @@ fn kind_class(kind: ChainPowerKind) -> &'static str {
     }
 }
 
+/// The Rank-by option's hover text, worded as the Info card's matching reading so the two
+/// surfaces describe one number the same way.
+fn metric_title(metric: PowerMetric) -> &'static str {
+    use crate::view::power_view::DamageMetric;
+    match metric {
+        PowerMetric::Damage => DamageMetric::Damage.title(),
+        PowerMetric::DamagePerAnimation => DamageMetric::PerAnimation.title(),
+        PowerMetric::DamagePerSecond => DamageMetric::PerSecond.title(),
+    }
+}
+
 fn chip_title(
     power: &ChainPower,
     metric: PowerMetric,
@@ -897,7 +909,7 @@ fn chip_title(
         String::new()
     };
     format!(
-        "{} — {:.1} dmg/cast · cast {:.2}s · recharge {:.1}s · {:.1} end · metric {:.1}{}",
+        "{} — {:.1} dmg/cast · anim {:.2}s (Arcana) · recharge {:.1}s · {:.1} end · metric {:.1}{}",
         power.name,
         nominal_damage(power),
         power.cast,

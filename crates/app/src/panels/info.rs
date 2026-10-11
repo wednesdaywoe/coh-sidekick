@@ -71,18 +71,7 @@ pub fn PowerViewCard(
     let mut tab = use_signal(|| InfoTab::Info);
     // What the slotted damage procs add to one cast on average, before the reader's switch:
     // `None` when nothing slotted here deals damage per cast, so the switch is not offered.
-    let proc_per_cast = slotted_procs
-        .iter()
-        .any(|row| {
-            row.proc
-                .damage
-                .as_ref()
-                .is_some_and(|d| d.per_cast.is_some())
-        })
-        .then(|| {
-            let pieces: Vec<_> = slotted_procs.iter().map(|row| row.proc.clone()).collect();
-            coh_math::procs::proc_damage_per_cast(&pieces)
-        });
+    let proc_per_cast = proc_per_cast(&slotted_procs);
 
     let has_details = view.damage.is_some()
         || !view.sections.is_empty()
@@ -292,6 +281,86 @@ pub fn PowerViewCard(
                     p { class: "short-help", "{help}" }
                 },
                 (true, None) => rsx! {},
+            }
+        }
+    }
+}
+
+/// The proc pieces slotted in `selected`, each paired with what the last recalculate measured
+/// it contributing. Shared by the Info panel and the floating power card, so the two can never
+/// disagree about a power's procs.
+pub fn slotted_proc_rows(
+    database: &Db,
+    build: &coh_data::CharacterState,
+    totals: &coh_math::CalculatedTotals,
+    selected: &crate::shell::PowerRef,
+) -> Vec<SlottedProcRow> {
+    let Some(power) = resolve_power_def(database, &selected.powerset_id, &selected.power) else {
+        return Vec::new();
+    };
+    let pieces =
+        coh_math::procs::slotted_procs(build, database, &selected.powerset_id, power.ident());
+    crate::panels::slotted_procs::rows(pieces, &totals.proc_breakdown)
+}
+
+/// What the slotted damage procs add to one cast on average: `None` when nothing slotted here
+/// deals damage per cast, so the Procs switch is not offered.
+fn proc_per_cast(slotted_procs: &[SlottedProcRow]) -> Option<f64> {
+    slotted_procs
+        .iter()
+        .any(|row| {
+            row.proc
+                .damage
+                .as_ref()
+                .is_some_and(|d| d.per_cast.is_some())
+        })
+        .then(|| {
+            let pieces: Vec<_> = slotted_procs.iter().map(|row| row.proc.clone()).collect();
+            coh_math::procs::proc_damage_per_cast(&pieces)
+        })
+}
+
+/// The floating power card (beta `PowerInfoTooltip`): the Info face of [`PowerViewCard`] cut
+/// to what a glance needs — name, tags, the designers' one-line summary, damage, effects and
+/// cost. Built from the same [`PowerView`], so it reads the same numbers as the panel. No
+/// tabs, adjusters or description: the card ignores the pointer, so nothing on it can be used.
+#[component]
+pub fn PowerTooltipCard(view: PowerView, slotted_procs: Vec<SlottedProcRow>) -> Element {
+    rsx! {
+        div { class: "info-power info-power--tooltip",
+            div { class: "info-power__head",
+                img {
+                    class: "info-power__icon",
+                    src: crate::view::icons::power_icon_url(view.icon.as_deref()),
+                    alt: "",
+                }
+                h3 { "{view.name}" }
+            }
+            if !view.tags.is_empty() {
+                div { class: "info-tags",
+                    for tag in &view.tags {
+                        span { class: "info-tag", "{tag}" }
+                    }
+                }
+            }
+            if let Some(help) = &view.short_help {
+                p { class: "short-help", "{help}" }
+            }
+            if let Some(fault) = &view.fault {
+                div { class: "load-state error", "{fault}" }
+            }
+            if let Some(damage) = &view.damage {
+                DamageBlock {
+                    damage: damage.clone(),
+                    rank_options: Vec::new(),
+                    proc_per_cast: proc_per_cast(&slotted_procs),
+                }
+            }
+            if !view.headline_rows.is_empty() {
+                EffectLines { title: "Effects", rows: view.headline_rows.clone() }
+            }
+            for group in &view.execution_groups {
+                StatTiles { title: group.title, rows: group.rows.clone() }
             }
         }
     }
@@ -1003,14 +1072,7 @@ pub fn Info(database: Db, selection: Signal<Selection>) -> Element {
         let Some(selected) = shown() else {
             return Vec::new();
         };
-        let build = session.build.read();
-        let Some(power) = resolve_power_def(&database, &selected.powerset_id, &selected.power)
-        else {
-            return Vec::new();
-        };
-        let pieces =
-            coh_math::procs::slotted_procs(&build, &database, &selected.powerset_id, power.ident());
-        crate::panels::slotted_procs::rows(pieces, &totals.read().proc_breakdown)
+        slotted_proc_rows(&database, &session.build.read(), &totals.read(), &selected)
     }));
 
     rsx! {

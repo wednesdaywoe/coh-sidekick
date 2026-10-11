@@ -139,6 +139,7 @@ fn PreferenceEntries() -> Element {
             span { class: "field-label", "Powers" }
             ShowSlotLevelsToggle {}
             ShowProcPotentialToggle {}
+            PowerTooltipToggle {}
         }
         div { class: "options-group",
             span { class: "field-label", "UI scale" }
@@ -742,6 +743,25 @@ fn ShowProcPotentialToggle() -> Element {
                 onchange: move |evt| shown.set(evt.checked()),
             }
             "Show proc potential badges"
+        }
+    }
+}
+
+/// Whether hovering a power shows its stats in a card beside the pointer (the beta's Info
+/// panel "Tooltips" switch).
+#[component]
+fn PowerTooltipToggle() -> Element {
+    let mut enabled = use_context::<crate::power_tooltip::PowerTooltipEnabled>().0;
+    rsx! {
+        label {
+            class: "options-check",
+            title: "Hold Shift over a power to pin its card and compare it with the next one",
+            input {
+                r#type: "checkbox",
+                checked: enabled(),
+                onchange: move |evt| enabled.set(evt.checked()),
+            }
+            "Show a power's stats beside the pointer"
         }
     }
 }
