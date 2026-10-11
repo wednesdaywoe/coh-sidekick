@@ -116,6 +116,9 @@
      ],
      true
     ]
+   ],
+   "setsModes": [
+    "PersonalAttack1"
    ]
   },
   {
@@ -542,6 +545,9 @@
      ],
      true
     ]
+   ],
+   "setsModes": [
+    "PersonalAttack2"
    ]
   },
   {
@@ -1169,6 +1175,9 @@
      ],
      true
     ]
+   ],
+   "setsModes": [
+    "PersonalAttack3"
    ]
   },
   {

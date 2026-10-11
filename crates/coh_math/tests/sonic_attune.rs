@@ -14,7 +14,8 @@ use coh_math::damage::DamageApplication;
 use std::path::PathBuf;
 
 /// The forks that ship Sonic Melee.
-const DATASETS: [DatasetId; 2] = [DatasetId::Homecoming, DatasetId::Brainstorm];
+// dataset-absent: rebirth, thunderspy — neither ships Sonic Melee.
+const DATASETS: &[DatasetId] = &[DatasetId::Homecoming, DatasetId::Brainstorm];
 
 const SET: &str = "brute/sonic-melee";
 
@@ -78,7 +79,7 @@ fn attune_bonus(state: &CharacterState, db: &PowerDatabase) -> (f64, usize) {
 
 #[test]
 fn attune_switches_on_sonic_thrusts_bonus() {
-    for dataset in DATASETS {
+    for &dataset in DATASETS {
         let db = load(dataset);
         let (off, off_unresolved) = attune_bonus(&build(dataset, &db, false), &db);
         assert_eq!(off, 0.0, "{dataset:?}: Attune off, the bonus still lands");

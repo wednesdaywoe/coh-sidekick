@@ -8,7 +8,8 @@ use coh_math::effect_registry::EffectCategory;
 use std::path::PathBuf;
 
 /// The forks that ship Sonic Melee.
-const DATASETS: [DatasetId; 2] = [DatasetId::Homecoming, DatasetId::Brainstorm];
+// dataset-absent: rebirth, thunderspy — neither ships Sonic Melee.
+const DATASETS: &[DatasetId] = &[DatasetId::Homecoming, DatasetId::Brainstorm];
 
 const SET: &str = "brute/sonic-melee";
 
@@ -36,7 +37,7 @@ fn build(dataset: DatasetId, db: &PowerDatabase) -> CharacterState {
 
 #[test]
 fn sonic_thrusts_foe_debuff_resistance_is_a_debuff() {
-    for dataset in DATASETS {
+    for &dataset in DATASETS {
         let db = load(dataset);
         let totals = coh_math::recalculate(&build(dataset, &db), &db);
 

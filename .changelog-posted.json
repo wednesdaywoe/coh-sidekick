@@ -310,6 +310,26 @@
       "id": "fix-vengeance-buff",
       "date": "2026-10-09",
       "preview": "Fix for Vengeance not affecting totals"
+    },
+    {
+      "id": "sonic-attune-bonuses",
+      "date": "2026-10-11",
+      "preview": "Homecoming and Brainstorm: Attune now switches on the extra damage and effects S"
+    },
+    {
+      "id": "distance-to-target",
+      "date": "2026-10-11",
+      "preview": "Savage Leap and Feral Charge get a Distance to target choice in the Info panel, "
+    },
+    {
+      "id": "foe-debuff-res-is-debuff",
+      "date": "2026-10-11",
+      "preview": "Homecoming and Brainstorm: Attune, Sonic Thrust, Strident Echo, Earsplitter, Son"
+    },
+    {
+      "id": "target-alive-damage",
+      "date": "2026-10-11",
+      "preview": "DNA Siphon and Glitz now show the damage they deal, instead of listing it as wai"
     }
   ]
 }

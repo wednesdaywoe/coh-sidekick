@@ -1245,6 +1245,9 @@
    "requires": [
     "Stalker_Defense.Shield_Defense",
     "!"
+   ],
+   "setsModes": [
+    "DD_BonusDoTMode_1"
    ]
   },
   {
@@ -1953,7 +1956,222 @@
      null,
      null,
      null,
-     "Sweep"
+     "Sweep",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "dd_bonusaoemode_2"
+    ],
+    [
+     "Mez",
+     "Knockback",
+     0.67,
+     1,
+     0,
+     "Melee_Ones",
+     "Cur",
+     "Magnitude",
+     "Target",
+     "Any",
+     true,
+     "Stack",
+     2,
+     null,
+     null,
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "enttype",
+      "target>",
+      "critter",
+      "eq"
+     ],
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "Foe"
+     ],
+     0.125,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "dd_bonusaoemode_2"
+    ],
+    [
+     "Damage",
+     "Lethal",
+     0.57,
+     1,
+     0,
+     "Melee_Damage",
+     "Abs",
+     "Magnitude",
+     "Target",
+     "Any",
+     true,
+     "Stack",
+     2,
+     null,
+     null,
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "enttype",
+      "target>",
+      "critter",
+      "eq"
+     ],
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "Foe"
+     ],
+     0.125,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "dd_bonusaoemode_2"
+    ],
+    [
+     "Mez",
+     "Knockback",
+     0.67,
+     1,
+     0,
+     "Melee_Ones",
+     "Cur",
+     "Magnitude",
+     "Target",
+     "Any",
+     true,
+     "Stack",
+     2,
+     null,
+     null,
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "kDD_BonusAoEMode_2",
+      "Source.Mode?",
+      "enttype",
+      "target>",
+      "player",
+      "eq",
+      "&&"
+     ],
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "Foe"
+     ],
+     0.125
+    ],
+    [
+     "Damage",
+     "Lethal",
+     0.5877,
+     1,
+     0,
+     "Melee_PvPDamage",
+     "Abs",
+     "Magnitude",
+     "Target",
+     "Any",
+     true,
+     "Stack",
+     2,
+     null,
+     null,
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "kDD_BonusAoEMode_2",
+      "Source.Mode?",
+      "enttype",
+      "target>",
+      "player",
+      "eq",
+      "&&"
+     ],
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "Foe"
+     ],
+     0.125
     ],
     [
      "Meta",
@@ -1993,8 +2211,37 @@
      null,
      "Sweep",
      null,
-     "cancel_mods"
+     "cancel_mods",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "dd_bonusaoemode_2"
     ]
+   ],
+   "conditionalEffects": [
+    {
+     "id": "dd_bonusaoemode_2",
+     "label": "DD Bonus Ao E Mode 2",
+     "scope": "global",
+     "defaultActive": false,
+     "sourceMode": "DD_BonusAoEMode_2",
+     "damage": {
+      "type": "Lethal",
+      "scale": 0.57,
+      "table": "Melee_Damage"
+     },
+     "effects": {
+      "knockback": {
+       "scale": 0.67,
+       "table": "Melee_Ones"
+      }
+     }
+    }
    ],
    "specialEffects": [
     {
@@ -3954,6 +4201,10 @@
      null,
      "cancel_mods"
     ]
+   ],
+   "setsModes": [
+    "DD_StatusMode_1",
+    "DD_BonusAoEMode_1"
    ]
   },
   {
@@ -5140,6 +5391,7 @@
      "label": "DD Status Mode 2",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DD_StatusMode_2",
      "effects": {
       "buffDuration": 20,
       "damageBuff": {
@@ -6230,6 +6482,7 @@
      "label": "DD Bonus Do T Mode 2",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DD_BonusDoTMode_2",
      "damage": {
       "type": "Lethal",
       "scale": 0.2,
@@ -6930,6 +7183,9 @@
      "expires": 10,
      "maxCount": 3
     }
+   ],
+   "setsModes": [
+    "DD_DebuffMode_1"
    ]
   },
   {
@@ -7935,6 +8191,7 @@
      "label": "DD Debuff Mode 2",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DD_DebuffMode_2",
      "effects": {
       "buffDuration": 20,
       "defenseDebuff": {

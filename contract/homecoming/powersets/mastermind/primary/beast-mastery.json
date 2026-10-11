@@ -328,6 +328,9 @@
      "expiresInGame": 15,
      "maxCount": 10
     }
+   ],
+   "setsModes": [
+    "PersonalAttack1"
    ]
   },
   {
@@ -1011,6 +1014,9 @@
      "expiresInGame": 15,
      "maxCount": 10
     }
+   ],
+   "setsModes": [
+    "PersonalAttack2"
    ]
   },
   {
@@ -2006,6 +2012,9 @@
      "expiresInGame": 15,
      "maxCount": 10
     }
+   ],
+   "setsModes": [
+    "PersonalAttack3"
    ]
   },
   {

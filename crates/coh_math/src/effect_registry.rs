@@ -192,6 +192,18 @@ pub fn lookup(effect_key: &str) -> Option<&'static EffectDisplayConfig> {
     REGISTRY.effects.get(effect_key)
 }
 
+/// Whether two instances of this effect add up in the game: a second -ToHit or absorb stands
+/// beside the first and both count. A mez magnitude does not (two holds are not one stronger
+/// hold), and neither does an execution stat or a duration.
+pub fn stacks_additively(effect_key: &str) -> bool {
+    lookup(effect_key).is_some_and(|config| {
+        matches!(
+            config.category,
+            EffectCategory::Buff | EffectCategory::Debuff | EffectCategory::Protection
+        ) && matches!(config.format, EffectFormat::Percent | EffectFormat::Value)
+    })
+}
+
 /// Every registered effect key. Used by the drift gate.
 pub fn registered_keys() -> impl Iterator<Item = &'static String> {
     REGISTRY.effects.keys()

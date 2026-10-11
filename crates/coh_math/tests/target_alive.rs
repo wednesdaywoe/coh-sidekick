@@ -55,6 +55,7 @@ fn dna_siphon_lands_its_hit() {
         DatasetId::Homecoming,
         DatasetId::Rebirth,
         DatasetId::Thunderspy,
+        DatasetId::Brainstorm,
     ] {
         let (base, unresolved) = damage(dataset, "tanker", "tanker/bio-armor", "DNA_Siphon");
         assert!(base > 0.0, "{dataset:?}: DNA Siphon deals nothing");

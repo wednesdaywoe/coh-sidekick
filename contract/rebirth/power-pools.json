@@ -18693,6 +18693,7 @@
       "label": "Group Flying",
       "scope": "global",
       "defaultActive": false,
+      "sourceMode": "GroupFlying",
       "effects": {
        "buffDuration": 0.75,
        "durations": {
@@ -25918,6 +25919,7 @@
       "label": "Flight Active",
       "scope": "global",
       "defaultActive": false,
+      "sourceMode": "FlightActive",
       "effects": {
        "buffDuration": 0.75,
        "debuffResistance": {
@@ -25954,6 +25956,7 @@
       "label": "Group Flying",
       "scope": "global",
       "defaultActive": false,
+      "sourceMode": "GroupFlying",
       "effects": {
        "buffDuration": 0.75,
        "durations": {
@@ -26694,6 +26697,7 @@
       "label": "Flight Active",
       "scope": "global",
       "defaultActive": false,
+      "sourceMode": "FlightActive",
       "effects": {
        "buffDuration": 0.75,
        "durations": {
@@ -26717,6 +26721,7 @@
       "label": "Group Flying",
       "scope": "global",
       "defaultActive": false,
+      "sourceMode": "GroupFlying",
       "effects": {
        "buffDuration": 0.75,
        "durations": {
@@ -39544,6 +39549,7 @@
       "label": "Shapeshift Active",
       "scope": "global",
       "defaultActive": false,
+      "sourceMode": "ShapeshiftActive",
       "effects": {
        "buffDuration": 2,
        "durations": {

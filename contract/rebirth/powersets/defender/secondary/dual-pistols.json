@@ -2757,6 +2757,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": [
       {
        "type": "Fire",
@@ -2779,6 +2780,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.3,
@@ -2821,6 +2823,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.3,
@@ -4132,6 +4135,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 0.396,
@@ -4143,6 +4147,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.396,
@@ -4185,6 +4190,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.396,
@@ -5545,6 +5551,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 0.078,
@@ -5558,6 +5565,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.078,
@@ -5602,6 +5610,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.078,
@@ -6989,6 +6998,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 0.1,
@@ -7002,6 +7012,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.1,
@@ -7046,6 +7057,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.1,
@@ -8491,6 +8503,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.05,
@@ -8510,6 +8523,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 0.05,
@@ -8529,6 +8543,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.05,
@@ -9872,6 +9887,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 0.636,
@@ -9883,6 +9899,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.636,
@@ -9925,6 +9942,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.636,
@@ -11433,6 +11451,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": [
       {
        "type": "Fire",
@@ -11455,6 +11474,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.69,
@@ -11497,6 +11517,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.69,
@@ -12968,6 +12989,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "effects": {
       "buffDuration": 10,
       "durations": {
@@ -13005,6 +13027,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "effects": {
       "buffDuration": 8,
       "damageDebuff": {

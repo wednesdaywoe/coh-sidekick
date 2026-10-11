@@ -3288,9 +3288,10 @@
    "conditionalEffects": [
     {
      "id": "fireammo",
-     "label": "Fire Ammo",
+     "label": "Incendiary Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireAmmo",
      "damage": [
       {
        "type": "Fire",
@@ -3310,9 +3311,10 @@
     },
     {
      "id": "iceammo",
-     "label": "Ice Ammo",
+     "label": "Cryo Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "IceAmmo",
      "damage": {
       "type": "Cold",
       "scale": 1,
@@ -3352,9 +3354,10 @@
     },
     {
      "id": "toxicammo",
-     "label": "Toxic Ammo",
+     "label": "Chemical Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicAmmo",
      "damage": {
       "type": "Toxic",
       "scale": 1,
@@ -5615,9 +5618,10 @@
    "conditionalEffects": [
     {
      "id": "fireammo",
-     "label": "Fire Ammo",
+     "label": "Incendiary Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireAmmo",
      "damage": [
       {
        "type": "Fire",
@@ -5635,9 +5639,10 @@
     },
     {
      "id": "iceammo",
-     "label": "Ice Ammo",
+     "label": "Cryo Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "IceAmmo",
      "damage": {
       "type": "Cold",
       "scale": 1.32,
@@ -5677,9 +5682,10 @@
     },
     {
      "id": "toxicammo",
-     "label": "Toxic Ammo",
+     "label": "Chemical Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicAmmo",
      "damage": {
       "type": "Toxic",
       "scale": 1.32,
@@ -8049,9 +8055,10 @@
    "conditionalEffects": [
     {
      "id": "fireammo",
-     "label": "Fire Ammo",
+     "label": "Incendiary Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireAmmo",
      "damage": [
       {
        "type": "Fire",
@@ -8071,9 +8078,10 @@
     },
     {
      "id": "iceammo",
-     "label": "Ice Ammo",
+     "label": "Cryo Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "IceAmmo",
      "damage": {
       "type": "Cold",
       "scale": 0.26,
@@ -8115,9 +8123,10 @@
     },
     {
      "id": "toxicammo",
-     "label": "Toxic Ammo",
+     "label": "Chemical Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicAmmo",
      "damage": {
       "type": "Toxic",
       "scale": 0.26,
@@ -10453,9 +10462,10 @@
    "conditionalEffects": [
     {
      "id": "fireammo",
-     "label": "Fire Ammo",
+     "label": "Incendiary Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireAmmo",
      "damage": [
       {
        "type": "Fire",
@@ -10475,9 +10485,10 @@
     },
     {
      "id": "iceammo",
-     "label": "Ice Ammo",
+     "label": "Cryo Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "IceAmmo",
      "damage": {
       "type": "Cold",
       "scale": 0.3323,
@@ -10519,9 +10530,10 @@
     },
     {
      "id": "toxicammo",
-     "label": "Toxic Ammo",
+     "label": "Chemical Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicAmmo",
      "damage": {
       "type": "Toxic",
       "scale": 0.3323,
@@ -12157,9 +12169,10 @@
     },
     {
      "id": "fireammo",
-     "label": "Fire Ammo",
+     "label": "Incendiary Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireAmmo",
      "damage": [
       {
        "type": "Fire",
@@ -12187,9 +12200,10 @@
     },
     {
      "id": "iceammo",
-     "label": "Ice Ammo",
+     "label": "Cryo Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "IceAmmo",
      "damage": [
       {
        "type": "Cold",
@@ -12217,9 +12231,10 @@
     },
     {
      "id": "toxicammo",
-     "label": "Toxic Ammo",
+     "label": "Chemical Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicAmmo",
      "damage": [
       {
        "type": "Toxic",
@@ -14579,9 +14594,10 @@
    "conditionalEffects": [
     {
      "id": "fireammo",
-     "label": "Fire Ammo",
+     "label": "Incendiary Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireAmmo",
      "damage": [
       {
        "type": "Fire",
@@ -14599,9 +14615,10 @@
     },
     {
      "id": "iceammo",
-     "label": "Ice Ammo",
+     "label": "Cryo Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "IceAmmo",
      "damage": {
       "type": "Cold",
       "scale": 2.12,
@@ -14641,9 +14658,10 @@
     },
     {
      "id": "toxicammo",
-     "label": "Toxic Ammo",
+     "label": "Chemical Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicAmmo",
      "damage": {
       "type": "Toxic",
       "scale": 2.12,
@@ -17023,9 +17041,10 @@
    "conditionalEffects": [
     {
      "id": "fireammo",
-     "label": "Fire Ammo",
+     "label": "Incendiary Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireAmmo",
      "damage": [
       {
        "type": "Fire",
@@ -17045,9 +17064,10 @@
     },
     {
      "id": "iceammo",
-     "label": "Ice Ammo",
+     "label": "Cryo Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "IceAmmo",
      "damage": {
       "type": "Cold",
       "scale": 2.3,
@@ -17087,9 +17107,10 @@
     },
     {
      "id": "toxicammo",
-     "label": "Toxic Ammo",
+     "label": "Chemical Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicAmmo",
      "damage": {
       "type": "Toxic",
       "scale": 2.3,
@@ -19548,9 +19569,10 @@
    "conditionalEffects": [
     {
      "id": "iceammo",
-     "label": "Ice Ammo",
+     "label": "Cryo Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "IceAmmo",
      "damage": {
       "type": "Cold",
       "scale": 0.1362,
@@ -19592,9 +19614,10 @@
     },
     {
      "id": "toxicammo",
-     "label": "Toxic Ammo",
+     "label": "Chemical Ammunition",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicAmmo",
      "damage": {
       "type": "Toxic",
       "scale": 0.1362,

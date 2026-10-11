@@ -1662,6 +1662,7 @@
      "label": "Defensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DefensiveAdaptation",
      "effects": {
       "buffDuration": 0.75,
       "durations": {
@@ -1692,6 +1693,7 @@
      "label": "Offensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "OffensiveAdaptation",
      "effects": {
       "buffDuration": 0.75,
       "damageBuff": {
@@ -1707,9 +1709,10 @@
     },
     {
      "id": "restedadaptation",
-     "label": "Rested Adaptation",
+     "label": "Efficient Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "RestedAdaptation",
      "effects": {
       "buffDuration": 0.75,
       "durations": {
@@ -2105,6 +2108,7 @@
      "label": "Defensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DefensiveAdaptation",
      "effects": {
       "buffDuration": 5.25,
       "durations": {
@@ -2120,9 +2124,10 @@
     },
     {
      "id": "restedadaptation",
-     "label": "Rested Adaptation",
+     "label": "Efficient Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "RestedAdaptation",
      "effects": {
       "buffDuration": 5.25,
       "durations": {
@@ -2993,6 +2998,7 @@
      "label": "Defensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DefensiveAdaptation",
      "effects": {
       "buffDuration": 0.75,
       "defenseBuff": {
@@ -3049,6 +3055,7 @@
      "label": "Offensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "OffensiveAdaptation",
      "effects": {
       "buffDuration": 0.75,
       "durations": {
@@ -3334,6 +3341,7 @@
      "label": "Defensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DefensiveAdaptation",
      "effects": {
       "absorb": {
        "maxHPFraction": 0.09,
@@ -3348,9 +3356,10 @@
     },
     {
      "id": "restedadaptation",
-     "label": "Rested Adaptation",
+     "label": "Efficient Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "RestedAdaptation",
      "effects": {
       "buffDuration": 30,
       "durations": {
@@ -3708,6 +3717,7 @@
      "label": "Defensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DefensiveAdaptation",
      "damage": {
       "type": "Heal",
       "scale": 0.9,
@@ -3718,9 +3728,10 @@
     },
     {
      "id": "restedadaptation",
-     "label": "Rested Adaptation",
+     "label": "Efficient Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "RestedAdaptation",
      "effects": {
       "enduranceGain": {
        "scale": 7.5,
@@ -3734,6 +3745,7 @@
      "label": "Offensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "OffensiveAdaptation",
      "effects": {
       "buffDuration": 30,
       "debuffResistance": {
@@ -4142,6 +4154,7 @@
      "label": "Defensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DefensiveAdaptation",
      "effects": {
       "buffDuration": 2.25,
       "debuffResistance": {
@@ -4162,6 +4175,7 @@
      "label": "Offensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "OffensiveAdaptation",
      "effects": {
       "buffDuration": 2.25,
       "durations": {
@@ -4184,9 +4198,10 @@
     },
     {
      "id": "restedadaptation",
-     "label": "Rested Adaptation",
+     "label": "Efficient Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "RestedAdaptation",
      "effects": {
       "buffDuration": 2.25,
       "durations": {
@@ -4876,6 +4891,7 @@
      "label": "Offensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "OffensiveAdaptation",
      "effects": {
       "buffDuration": 5.25,
       "durations": {
@@ -4891,9 +4907,10 @@
     },
     {
      "id": "restedadaptation",
-     "label": "Rested Adaptation",
+     "label": "Efficient Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "RestedAdaptation",
      "effects": {
       "buffDuration": 5.25,
       "durations": {
@@ -4912,6 +4929,7 @@
      "label": "Defensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DefensiveAdaptation",
      "effects": {
       "buffDuration": 5.25,
       "durations": {
@@ -5804,6 +5822,7 @@
      "label": "Offensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "OffensiveAdaptation",
      "effects": {
       "buffDuration": 30,
       "durations": {
@@ -5819,9 +5838,10 @@
     },
     {
      "id": "restedadaptation",
-     "label": "Rested Adaptation",
+     "label": "Efficient Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "RestedAdaptation",
      "effects": {
       "buffDuration": 45,
       "durations": {
@@ -5846,6 +5866,7 @@
      "label": "Defensive Adaptation",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "DefensiveAdaptation",
      "effects": {
       "absorb": {
        "maxHPFraction": 0.043,
