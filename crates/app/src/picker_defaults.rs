@@ -114,12 +114,8 @@ impl CraftBand {
         self.levels[next].get()
     }
 }
-/// Catalyst boosters stack up to +5…
+/// Catalyst boosters stack up to +5.
 pub const BOOST_MAX: u8 = 5;
-/// …and combine only into a level-50+ IO. Defined beside its enforcing reader
-/// ([`coh_data::Enhancement::takes_booster`], upstream of the UI); re-exported here so the
-/// picker's named game constants stay one family.
-pub use coh_data::BOOSTER_LEVEL_FLOOR;
 
 /// Shared picker defaults. `Copy` (every field is a `Copy` `Signal`), so panels
 /// pull it from context and pass it by value.

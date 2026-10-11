@@ -31,6 +31,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 2,
@@ -195,6 +198,9 @@
    "targetType": "Self",
    "effectArea": "SingleTarget",
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -376,6 +382,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -591,6 +600,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -1340,6 +1352,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "None"
+   ],
    "stats": {
     "accuracy": 1.2,
     "radius": 20,
@@ -1659,6 +1674,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "Foe"
+   ],
    "stats": {
     "accuracy": 1,
     "radius": 12,
@@ -1973,6 +1991,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 120,
@@ -2063,6 +2084,9 @@
    "targetsAffected": [
     "Friend",
     "Foe"
+   ],
+   "targetsAutohit": [
+    "Friend"
    ],
    "stats": {
     "accuracy": 1.2,
@@ -2353,6 +2377,9 @@
    "targetType": "Self",
    "effectArea": "SingleTarget",
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {

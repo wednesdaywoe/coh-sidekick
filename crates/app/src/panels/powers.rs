@@ -1312,6 +1312,30 @@ pub fn AvailablePanel(database: Db) -> Element {
         &database,
         &build.read()
     )));
+    // Only the shown branch's pair is drawn, each half under the column it extends — the
+    // primary select chooses it ([`crate::panels::branch_view`]). An offer the gate drops
+    // (`BranchClosed`) has no half to draw, so it simply finds nothing here.
+    let browsed = use_context::<crate::panels::branch_view::BranchView>().0;
+    let archetype_branches =
+        crate::panels::branch_view::archetype_branches(&database, &build.read());
+    let shown = crate::panels::branch_view::shown_branch(
+        &archetype_branches,
+        &build.read(),
+        browsed.read().as_deref(),
+    )
+    .cloned();
+    let branch_half = |set: Option<&String>| -> Option<BranchSetOffer> {
+        let set = set?;
+        branches()
+            .into_iter()
+            .find(|offer| offer.set_id.eq_ignore_ascii_case(set))
+    };
+    let primary_branch = shown
+        .as_ref()
+        .and_then(|branch| branch_half(branch.primary_set.as_ref()));
+    let secondary_branch = shown
+        .as_ref()
+        .and_then(|branch| branch_half(branch.secondary_set.as_ref()));
 
     rsx! {
         div { class: "powers",
@@ -1333,39 +1357,59 @@ pub fn AvailablePanel(database: Db) -> Element {
                 // The two powerset columns lead, always both, chosen or not: the head IS the
                 // select (LAY4), so an unchosen set is an empty column offering itself rather
                 // than a column that does not exist yet.
-                AvailablePowersGroup {
-                    key: "avail-primary",
-                    database: database.clone(),
-                    set_id: primary_id.unwrap_or_default(),
-                    origin: SetOrigin::Powerset,
-                    select_role: BuildRole::Primary,
-                    current_level,
-                    taken_levels: taken_levels.clone(),
-                    picked_levels: picked_levels.clone(),
-                }
-                AvailablePowersGroup {
-                    key: "avail-secondary",
-                    database: database.clone(),
-                    set_id: secondary_id.unwrap_or_default(),
-                    origin: SetOrigin::Powerset,
-                    select_role: BuildRole::Secondary,
-                    current_level,
-                    taken_levels: taken_levels.clone(),
-                    picked_levels: picked_levels.clone(),
-                }
-                // The VEAT branch sets, beside the base pair rather than in place of it — the
-                // branch adds two sets to a build that keeps everything it already took.
-                for offer in branches().iter() {
+                //
+                // A VEAT's branch set continues the column it belongs to, under a divider,
+                // rather than standing as a column of its own: the branch adds to a build that
+                // keeps everything it already took, and six side-by-side columns read as six
+                // independent choices when they are two.
+                div { class: "available-column",
                     AvailablePowersGroup {
-                        key: "avail-{offer.set_id}",
+                        key: "avail-primary",
                         database: database.clone(),
-                        set_id: offer.set_id.clone(),
+                        set_id: primary_id.unwrap_or_default(),
                         origin: SetOrigin::Powerset,
-                        branch_role: offer.role,
-                        set_blocked: offer.blocked.clone(),
+                        select_role: BuildRole::Primary,
                         current_level,
                         taken_levels: taken_levels.clone(),
                         picked_levels: picked_levels.clone(),
+                    }
+                    if let Some(offer) = primary_branch {
+                        AvailablePowersGroup {
+                            key: "avail-{offer.set_id}",
+                            database: database.clone(),
+                            set_id: offer.set_id.clone(),
+                            origin: SetOrigin::Powerset,
+                            branch_role: offer.role,
+                            set_blocked: offer.blocked.clone(),
+                            current_level,
+                            taken_levels: taken_levels.clone(),
+                            picked_levels: picked_levels.clone(),
+                        }
+                    }
+                }
+                div { class: "available-column",
+                    AvailablePowersGroup {
+                        key: "avail-secondary",
+                        database: database.clone(),
+                        set_id: secondary_id.unwrap_or_default(),
+                        origin: SetOrigin::Powerset,
+                        select_role: BuildRole::Secondary,
+                        current_level,
+                        taken_levels: taken_levels.clone(),
+                        picked_levels: picked_levels.clone(),
+                    }
+                    if let Some(offer) = secondary_branch {
+                        AvailablePowersGroup {
+                            key: "avail-{offer.set_id}",
+                            database: database.clone(),
+                            set_id: offer.set_id.clone(),
+                            origin: SetOrigin::Powerset,
+                            branch_role: offer.role,
+                            set_blocked: offer.blocked.clone(),
+                            current_level,
+                            taken_levels: taken_levels.clone(),
+                            picked_levels: picked_levels.clone(),
+                        }
                     }
                 }
             }
@@ -1819,7 +1863,14 @@ fn AvailablePowersGroup(
     let removable = matches!(origin, SetOrigin::Pool | SetOrigin::Epic);
 
     rsx! {
-        section { class: "powerset-group",
+        // A branch set is the lower half of the column it extends, so its head reads as a
+        // divider inside that column rather than as the head of a set of its own.
+        section {
+            class: if branch_role.is_some() {
+                "powerset-group powerset-group--branch"
+            } else {
+                "powerset-group"
+            },
             header { class: "powerset-group__header",
                 // Two heads, and the difference is only what names the set. A pool names itself
                 // in a label that also folds the group; a powerset names itself in the select
@@ -1845,6 +1896,7 @@ fn AvailablePowersGroup(
                         database: database.clone(),
                         role,
                         class: "powerset-group__select".to_string(),
+                        offer_branches: true,
                         placeholder: match role {
                             BuildRole::Primary => "— primary —".to_string(),
                             BuildRole::Secondary => "— secondary —".to_string(),
@@ -3668,10 +3720,6 @@ fn EnhancementPickerModal(
     // and shows the level a pick would actually mint (BOOST-6).
     let craft_band =
         crate::picker_defaults::CraftBand::from_boost_index(database.boost_index.as_ref());
-    // The stamp reads the floor per piece (a set's own band can clamp below it); this is the
-    // half the header CAN know from the dial alone, so the control says so instead of
-    // letting a boost be dialled that no pick would keep.
-    let boostable = io_level() >= crate::picker_defaults::BOOSTER_LEVEL_FLOOR;
 
     // In level-up mode the craft level can't be raised past the character's own level — you
     // can't make a level 50 IO at level 12. The band's floor (10) still applies below that: a
@@ -3813,25 +3861,19 @@ fn EnhancementPickerModal(
                         } else if !relative_axis {
                             div {
                                 class: "picker-control",
-                                title: if boostable {
-                                    "Catalyst boosters (+0 to +5) combined into an IO."
-                                } else {
-                                    "Catalyst boosters (+0 to +5) combined into an IO. Boosters only combine into a level-50+ IO — raise the craft level to use them."
-                                },
+                                title: "Catalyst boosters (+0 to +5) combined into an IO.",
                                 span { class: "picker-control-label", "Boost" }
                                 button {
                                     class: "picker-step",
-                                    disabled: !boostable,
                                     onclick: move |_| defaults.adjust_boost(-1),
                                     "−"
                                 }
                                 span {
-                                    class: if boost() > 0 && boostable { "picker-step-value picker-step-value-on" } else { "picker-step-value" },
+                                    class: if boost() > 0 { "picker-step-value picker-step-value-on" } else { "picker-step-value" },
                                     if boost() > 0 { "+{boost}" } else { "0" }
                                 }
                                 button {
                                     class: "picker-step",
-                                    disabled: !boostable,
                                     onclick: move |_| defaults.adjust_boost(1),
                                     "+"
                                 }
@@ -5041,6 +5083,16 @@ fn should_show_toggle(
         // `specialBuff` is a legacy -Special foe debuff (Benumb, Weaken), not a self-buff.
         if !is_self && key == "specialBuff" {
             return false;
+        }
+        // The slot router files mez protection without asking who gets it, so a foe teleport's
+        // protection for its victims (Fold Space, Wormhole) lands here too. Only a row that
+        // reaches the caster is a caster state.
+        if key == "mezResistance" {
+            return power.atoms.iter().any(|a| {
+                a.effect_type == Some(coh_data::EffectType::MezResist)
+                    && coh_math::window_slots::bag_subset(a)
+                    && coh_data::reaches_caster(a, power)
+            });
         }
         true
     })

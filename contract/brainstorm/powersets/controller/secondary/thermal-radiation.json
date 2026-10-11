@@ -27,6 +27,10 @@
     "Friend",
     "Self"
    ],
+   "targetsAutohit": [
+    "Friend",
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "radius": 25,
@@ -83,6 +87,9 @@
    "targetType": "Ally (Alive)",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Friend"
+   ],
+   "targetsAutohit": [
     "Friend"
    ],
    "stats": {
@@ -194,6 +201,9 @@
    "targetsAffected": [
     "Friend"
    ],
+   "targetsAutohit": [
+    "Friend"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 80,
@@ -250,6 +260,9 @@
    "targetType": "Ally (Alive)",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Friend"
+   ],
+   "targetsAutohit": [
     "Friend"
    ],
    "stats": {
@@ -341,6 +354,9 @@
    "targetType": "Dead Teammate",
    "effectArea": "SingleTarget",
    "targetsAffected": [
+    "DeadPlayerFriend"
+   ],
+   "targetsAutohit": [
     "DeadPlayerFriend"
    ],
    "stats": {
@@ -580,6 +596,9 @@
    "targetType": "Ally (Alive)",
    "effectArea": "SingleTarget",
    "targetsAffected": [
+    "Friend"
+   ],
+   "targetsAutohit": [
     "Friend"
    ],
    "stats": {
@@ -1276,6 +1295,9 @@
    "targetsAffected": [
     "Friend"
    ],
+   "targetsAutohit": [
+    "Friend"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 80,
@@ -1488,6 +1510,9 @@
    "effectArea": "SingleTarget",
    "targetsAffected": [
     "Foe"
+   ],
+   "targetsAutohit": [
+    "None"
    ],
    "stats": {
     "accuracy": 1,
@@ -1899,6 +1924,9 @@
    "effectArea": "AoE",
    "targetsAffected": [
     "Foe"
+   ],
+   "targetsAutohit": [
+    "None"
    ],
    "stats": {
     "accuracy": 1,

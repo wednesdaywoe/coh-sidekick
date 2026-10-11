@@ -156,9 +156,9 @@ pub fn select_active(builds: &StoredBuilds, dataset: DatasetId) -> CharacterStat
     // Belt to [`compose`]'s braces: an envelope written by an older build (or a foreign one)
     // could still hold a what-if layer, and a build must never LOAD already simulating.
     build.combat.what_if_buffs.clear();
-    // Same reason, other axis: an envelope written before the booster floor landed can hold
-    // a +5 on a sub-50 IO — a combine the game refuses — and a build must never LOAD showing
-    // a number the game cannot reach.
+    // Same reason, other axis: a foreign or hand-edited envelope can hold a booster on an
+    // attuned piece or a pure proc — a combine the game refuses — and a build must never LOAD
+    // showing a number the game cannot reach.
     for power in build.all_selected_mut() {
         for piece in power.slots.iter_mut().flatten() {
             if piece.holds_refused_booster() {

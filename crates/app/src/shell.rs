@@ -232,6 +232,17 @@ pub fn Shell() -> Element {
     // The one ⋮ menu on a picked power, hosted below both layout roots for the same reason.
     let power_menu = use_signal(|| Option::<panels::powers::PowerMenuTarget>::None);
     use_context_provider(|| panels::powers::PowerMenu(power_menu));
+    // The VEAT branch the rail browses, and a switch waiting on its confirm — view state, held
+    // here because the confirm is a modal and is hosted below both layout roots
+    // (`branch_view::BranchSwitchHost`).
+    let branch_view = use_signal(|| Option::<String>::None);
+    use_context_provider(|| panels::branch_view::BranchView(branch_view));
+    let branch_switch = use_signal(|| Option::<panels::branch_view::BranchSwitch>::None);
+    let branch_answered = use_signal(|| 0u32);
+    use_context_provider(|| panels::branch_view::PendingBranchSwitch {
+        switch: branch_switch,
+        answered: branch_answered,
+    });
     // The single pool/epic picker, hosted below both layout roots for the same containment
     // reason as the enhancement picker. The Available panel's triggers set this; the host
     // reads it. See `pool_picker::PoolPickerOpen`.
@@ -1240,6 +1251,11 @@ pub fn Shell() -> Element {
         // is not contained by a free-grid surface's `transform` (see `powers::PickerTarget`).
         if let Some(Ok(database)) = &*db.read() {
             panels::powers::EnhancementPickerHost { database: Db(database.clone()) }
+        }
+
+        // The VEAT branch-switch confirm, hosted here for the same containment reason.
+        if let Some(Ok(database)) = &*db.read() {
+            panels::branch_view::BranchSwitchHost { database: Db(database.clone()) }
         }
 
         // The one slot hover-tooltip, hosted OUTSIDE both layout roots so its fixed card isn't

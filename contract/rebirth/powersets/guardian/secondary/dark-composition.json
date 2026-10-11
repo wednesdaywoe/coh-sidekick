@@ -31,6 +31,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 4,
@@ -364,6 +367,9 @@
    "effectArea": "SingleTarget",
    "targetsAffected": [
     "Foe"
+   ],
+   "targetsAutohit": [
+    "None"
    ],
    "stats": {
     "accuracy": 1,
@@ -851,6 +857,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 90,
@@ -940,6 +949,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -1615,6 +1627,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 4,
@@ -1907,6 +1922,10 @@
     "stun"
    ],
    "targetsAffected": [
+    "Friend",
+    "Self"
+   ],
+   "targetsAutohit": [
     "Friend",
     "Self"
    ],
@@ -2659,6 +2678,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "None"
+   ],
    "stats": {
     "accuracy": 0.67,
     "radius": 8,
@@ -2816,6 +2838,9 @@
    "targetsAffected": [
     "DeadFoe",
     "Foe"
+   ],
+   "targetsAutohit": [
+    "DeadFoe"
    ],
    "stats": {
     "accuracy": 1.2,
@@ -3047,6 +3072,9 @@
    "targetType": "Foe",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Foe"
+   ],
+   "targetsAutohit": [
     "Foe"
    ],
    "stats": {

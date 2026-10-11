@@ -320,6 +320,10 @@
     "Friend",
     "Self"
    ],
+   "targetsAutohit": [
+    "Friend",
+    "Self"
+   ],
    "chainTargetExpression": [
     "101",
     "kHitPoints%",
@@ -478,6 +482,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 80,
@@ -563,6 +570,10 @@
    "targetType": "Ally (Alive)",
    "effectArea": "Chain",
    "targetsAffected": [
+    "Friend",
+    "Self"
+   ],
+   "targetsAutohit": [
     "Friend",
     "Self"
    ],
@@ -716,6 +727,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -895,6 +909,10 @@
    "targetType": "Ally (Alive)",
    "effectArea": "Chain",
    "targetsAffected": [
+    "Friend",
+    "Self"
+   ],
+   "targetsAutohit": [
     "Friend",
     "Self"
    ],
@@ -1225,6 +1243,9 @@
    "targetType": "Any",
    "effectArea": "SingleTarget",
    "targetsAffected": [
+    "DeadOrAliveAny"
+   ],
+   "targetsAutohit": [
     "DeadOrAliveAny"
    ],
    "stats": {
@@ -1694,6 +1715,10 @@
     "Friend",
     "Self"
    ],
+   "targetsAutohit": [
+    "Friend",
+    "Self"
+   ],
    "chainTargetExpression": [
     "101",
     "kHitPoints%",
@@ -1840,6 +1865,9 @@
    "targetType": "Ally (Alive)",
    "effectArea": "SingleTarget",
    "targetsAffected": [
+    "Friend"
+   ],
+   "targetsAutohit": [
     "Friend"
    ],
    "stats": {

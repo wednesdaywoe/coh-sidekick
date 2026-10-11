@@ -253,6 +253,9 @@
    ],
    "targetsAffected": [
     "Foe"
+   ],
+   "targetsAutohit": [
+    "None"
    ]
   },
   {
@@ -591,6 +594,9 @@
     ]
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ]
   },
@@ -1369,6 +1375,9 @@
     ]
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ]
   }

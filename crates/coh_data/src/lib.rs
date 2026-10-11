@@ -83,7 +83,7 @@ pub use character::{
     ArchetypeSelection, AspectValue, AttackChain, CharacterState, CombatContext, ContentMode,
     Enhancement, EnhancementKind, IncarnateLoadout, IncarnateSlot, InherentCategory, IoSlotting,
     PoolSelection, PowersetSelection, ProcOverride, SelectedPower, SlotOrderEntry, ValidationError,
-    BOOSTER_LEVEL_FLOOR, MAX_USER_SLOTS_PER_POWER,
+    MAX_USER_SLOTS_PER_POWER,
 };
 pub use database::{DatasetId, LoadError, PowerDatabase};
 pub use enhancement_curves::{

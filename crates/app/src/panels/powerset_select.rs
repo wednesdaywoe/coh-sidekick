@@ -13,6 +13,7 @@
 //! the desync this module exists to make unrepresentable.
 
 use crate::build_session::BuildSession;
+use crate::panels::branch_view;
 use crate::panels::powers::BuildRole;
 use crate::shell::Db;
 use coh_data::PowersetSelection;
@@ -36,9 +37,10 @@ pub struct SetChoice {
 /// silently offered (Rule 1). Graded by a synthetic gate, since the corpus holds no violating
 /// case — see the tests below.
 ///
-/// The sets that DO carry the gate are the VEAT branch pairs, and they are not chosen here:
-/// nothing declares a branch, the game confers the set when a power is bought out of it, so
-/// they are offered on the picking surface instead (`powers::branch_offers`).
+/// The sets that DO carry the gate are the VEAT branch pairs, and they are not rostered here:
+/// nothing declares a branch, the game confers the set when a power is bought out of it. The
+/// rail's primary select still lists them, as a choice of which branch to SHOW
+/// ([`crate::panels::branch_view`]), but that choice writes no set into the build.
 ///
 /// The listed-vs-disabled split is the game's (`Game/src/UI/uiPowers.c:395`): a refused
 /// specialization set is dropped from the list, and any other refusal is drawn disabled with
@@ -147,6 +149,12 @@ pub fn PowersetSelect(
     /// What an empty selection reads as. The rail's heads say it in fewer words than the
     /// popover's fields, because a column head is not a form label.
     placeholder: String,
+    /// List the archetype's VEAT branches after the primary sets, Mids-style, so the column
+    /// that shows a branch is the one that chooses it. The rail's primary head only: the
+    /// branch it chooses is the rail's view ([`crate::panels::branch_view`]), and the
+    /// popover has no branch half to show.
+    #[props(default)]
+    offer_branches: bool,
 ) -> Element {
     let session = use_context::<BuildSession>();
     let build = session.build;
@@ -187,18 +195,67 @@ pub fn PowersetSelect(
     .unwrap_or_default();
     let has_archetype = build.read().archetype.id.is_some();
     let choices = choices();
+
+    // The branch options, and which one the select stands on.
+    // Read unconditionally (hooks keep their order), then kept only where the prop asks.
+    let view_ctx = try_use_context::<branch_view::BranchView>();
+    let pending_ctx = try_use_context::<branch_view::PendingBranchSwitch>();
+    let branch_ctx = view_ctx
+        .zip(pending_ctx)
+        .filter(|_| offer_branches && role == BuildRole::Primary)
+        .map(|(view, pending)| (view.0, pending));
+    let branches = if branch_ctx.is_some() {
+        branch_view::archetype_branches(&database, &build.read())
+    } else {
+        Vec::new()
+    };
+    let shown_id = branch_ctx.and_then(|(browsed, _)| {
+        branch_view::shown_branch(&branches, &build.read(), browsed.read().as_deref())
+            .map(|branch| branch.id.clone())
+    });
+    let held_id = branch_view::held_branch(&branches, &build.read()).map(|b| b.id.clone());
+    let branch_options: Vec<(String, String)> = branches
+        .iter()
+        .map(|branch| {
+            let name = branch
+                .primary_set
+                .as_deref()
+                .and_then(|set| database.find_powerset(set))
+                .map_or_else(|| branch.name.clone(), |set| set.name.clone());
+            (
+                format!("{}{}", branch_view::BRANCH_VALUE_PREFIX, branch.id),
+                name,
+            )
+        })
+        .collect();
+    // What the select stands on: the shown branch when there is one, else the set itself.
+    let current_value = match &shown_id {
+        Some(id) => format!("{}{id}", branch_view::BRANCH_VALUE_PREFIX),
+        None => current.clone(),
+    };
+    // Bumped when a switch is answered, so a refused switch remounts the select onto the
+    // branch the build still holds (see `PendingBranchSwitch`).
+    let answered = branch_ctx.map_or(0, |(_, pending)| (pending.answered)());
     // A `<select>` clips rather than ellipsises, and the rail's heads are ~220px against set
     // names like "Darkness Manipulation" — so the full name lives in the tooltip, which is the
     // only place a native select will carry it.
-    let current_name = choices
+    let current_name = branch_options
         .iter()
-        .find(|choice| choice.id == current)
-        .map(|choice| choice.name.clone())
+        .find(|(value, _)| *value == current_value)
+        .map(|(_, name)| name.clone())
+        .or_else(|| {
+            choices
+                .iter()
+                .find(|choice| choice.id == current)
+                .map(|choice| choice.name.clone())
+        })
         .unwrap_or_else(|| placeholder.clone());
 
     rsx! {
+        for answered in std::iter::once(answered) {
         select {
-            class,
+            key: "{answered}",
+            class: class.clone(),
             title: "{current_name}",
             disabled: !has_archetype,
             "aria-label": match role {
@@ -208,8 +265,32 @@ pub fn PowersetSelect(
             onchange: {
                 let choices = choices.clone();
                 let database = database.clone();
+                let current = current.clone();
+                let held_id = held_id.clone();
+                let branches = branches.clone();
                 move |evt: Event<FormData>| {
-                    let selection = resolve_set(&choices, &database, &evt.value());
+                    let value = evt.value();
+                    // A branch option, or the set itself while a branch is shown: a choice of
+                    // which branch to show, which only reaches the build through the confirm.
+                    if let Some((mut browsed, pending)) = branch_ctx {
+                        let to = value
+                            .strip_prefix(branch_view::BRANCH_VALUE_PREFIX)
+                            .map(str::to_string);
+                        if to.is_some() || value == current {
+                            let held = held_id
+                                .as_deref()
+                                .and_then(|id| branches.iter().find(|b| b.id == id));
+                            let mut switch = pending.switch;
+                            match branch_view::choose_branch(held, to) {
+                                branch_view::BranchChoice::Browse(to) => browsed.set(to),
+                                branch_view::BranchChoice::Confirm(to) => {
+                                    switch.set(Some(branch_view::BranchSwitch { to }))
+                                }
+                            }
+                            return;
+                        }
+                    }
+                    let selection = resolve_set(&choices, &database, &value);
                     let database = database.clone();
                     session.commit(move |state| {
                         match role {
@@ -224,10 +305,14 @@ pub fn PowersetSelect(
             // the options are derived from the archetype, and a `value` set before those
             // options exist (e.g. on a restore render) does not stick. Per-option `selected`
             // is applied with the option, so it always does.
-            option { value: "", selected: current.is_empty(), "{placeholder}" }
+            option { value: "", selected: current_value.is_empty(), "{placeholder}" }
             for choice in choices.iter().cloned() {
-                SetOption { choice, current: current.clone() }
+                SetOption { choice, current: current_value.clone() }
             }
+            for (value, name) in branch_options.iter() {
+                option { value: "{value}", selected: *value == current_value, "{name}" }
+            }
+        }
         }
     }
 }

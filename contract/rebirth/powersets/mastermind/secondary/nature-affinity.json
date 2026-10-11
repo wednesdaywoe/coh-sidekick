@@ -26,6 +26,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "None"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 80,
@@ -979,6 +982,10 @@
     "Friend",
     "Self"
    ],
+   "targetsAutohit": [
+    "Friend",
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 45,
@@ -1174,6 +1181,10 @@
    "targetType": "Self",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Friend",
+    "Self"
+   ],
+   "targetsAutohit": [
     "Friend",
     "Self"
    ],
@@ -1562,6 +1573,9 @@
    "targetType": "Foe",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Foe"
+   ],
+   "targetsAutohit": [
     "Foe"
    ],
    "stats": {
@@ -2358,6 +2372,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 60,
@@ -2495,6 +2512,10 @@
    "targetType": "Self",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Self",
+    "Friend"
+   ],
+   "targetsAutohit": [
     "Self",
     "Friend"
    ],
@@ -2685,6 +2706,9 @@
    "targetType": "Teammate",
    "effectArea": "SingleTarget",
    "targetsAffected": [
+    "DeadOrAliveLeaguemate"
+   ],
+   "targetsAutohit": [
     "DeadOrAliveLeaguemate"
    ],
    "stats": {
@@ -2966,6 +2990,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "Foe"
+   ],
    "stats": {
     "accuracy": 1,
     "radius": 15,
@@ -3133,6 +3160,10 @@
    "targetType": "Self",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Friend",
+    "Self"
+   ],
+   "targetsAutohit": [
     "Friend",
     "Self"
    ],

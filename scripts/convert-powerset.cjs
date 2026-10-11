@@ -9315,6 +9315,11 @@ function convertPower(powerJson, availableLevel, archetypeId, powerType, provena
   if (Array.isArray(powerJson.targets_affected) && powerJson.targets_affected.length) {
     power.targetsAffected = powerJson.targets_affected;
   }
+  // EntsAutoHit — the affected kinds hit without a roll. A power whose every affected kind is
+  // listed here (Tough, Hasten) never rolls to hit, so it has no hit chance to show.
+  if (Array.isArray(powerJson.targets_autohit) && powerJson.targets_autohit.length) {
+    power.targetsAutohit = powerJson.targets_autohit;
+  }
 
   // Chain / target-cap RPN expressions (bin fields 43b / 38 — Electrical Affinity
   // circuits, Chain Lightning, Gauntlet, …). Raw token lists carried through for
