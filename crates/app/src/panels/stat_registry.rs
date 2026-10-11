@@ -583,11 +583,13 @@ pub fn in_section(section: StatSection) -> impl Iterator<Item = &'static StatDef
 ///
 /// The original showed Smashing resistance alone. The six paired types are all here instead
 /// (2026-10-06, user-requested): they are the ones a set's two halves can disagree on, and a
-/// panel showing one half invites reading it as the pair.
+/// panel showing one half invites reading it as the pair. Psionic and Toxic joined them
+/// (2026-10-11, user-reported): the panel is the build's whole resistance picture, and leaving
+/// two types out reads as the build having none.
 ///
 /// The seven-row set this replaced (2026-07-27) left out to-hit, regeneration and the endurance
 /// rows, which a new user had to find in the organizer before the dashboard said much.
-pub const DEFAULT_VISIBLE: [&str; 18] = [
+pub const DEFAULT_VISIBLE: [&str; 20] = [
     // Offense
     "damage",
     "accuracy",
@@ -604,6 +606,8 @@ pub const DEFAULT_VISIBLE: [&str; 18] = [
     "res_cold",
     "res_energy",
     "res_negative",
+    "res_psionic",
+    "res_toxic",
     // Survival
     "health",
     "regeneration",

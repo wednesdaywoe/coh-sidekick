@@ -569,7 +569,7 @@ mod tests {
             [
                 (1, "Offense", 5),
                 (2, "Defense", 2),
-                (3, "Resistance", 6),
+                (3, "Resistance", 8),
                 (4, "Survival", 5)
             ]
         );
