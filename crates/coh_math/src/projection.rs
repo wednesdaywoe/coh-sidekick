@@ -214,10 +214,11 @@ pub struct PowerProjection {
     /// else `effects.enduranceCost`.
     pub endurance_cost: Option<ThreeTier>,
     /// Accuracy multiplier (multiplicative). Base is `stats.accuracy` else `effects.accuracy`.
+    /// `None` for a power with no roll ([`Power::has_hit_roll`]).
     pub accuracy: Option<ThreeTier>,
     /// The chance this power lands on the build's chosen target, read at the target's level net
-    /// of the incarnate level shift. `None` when the power has no accuracy (it never rolls to
-    /// hit) or the purple-patch tables are empty.
+    /// of the incarnate level shift. `None` when the power has no roll
+    /// ([`Power::has_hit_roll`]), no accuracy, or the purple-patch tables are empty.
     pub hit_chance: Option<HitChance>,
     /// Activation / cast seconds (multiplicative). No enhancement aspect exists for cast time,
     /// so today base == enhanced == final; kept three-tier for uniformity with the beta.
@@ -510,7 +511,11 @@ fn project_one(
             clamps.for_aspect(ENDURANCE_ASPECT),
         )
     });
+    // A power with no roll (Tough, Hasten) has no accuracy or hit chance to show, though the
+    // export gives every power an accuracy.
+    let has_hit_roll = shown.has_hit_roll();
     let accuracy = truthy_stat(shown, "accuracy", "accuracy")
+        .filter(|_| has_hit_roll)
         .map(|base| ThreeTier::multiplicative(base, enhancement.get("accuracy"), global_accuracy));
     // The build-wide hit chance uses only the global accuracy; a power's own roll uses its final
     // accuracy, slotting included, against the same base ToHit and ToHit buffs.
@@ -560,7 +565,7 @@ fn project_one(
     // The bag comes from the shown power; the stacking slider reads the BASE one, because that
     // is the power the slider itself is offered for (the beta's `getStackingInfo(power)` and
     // `withTargetsHit(power, …)` both read the base while the bag comes from the merged one).
-    let granted_magnitudes = resolve_granted_magnitudes(
+    let mut granted_magnitudes = resolve_granted_magnitudes(
         shown,
         power,
         archetype,
@@ -571,6 +576,9 @@ fn project_one(
         targets_hit,
         state.dataset,
     );
+    if !has_hit_roll {
+        granted_magnitudes.retain(|row| row.effect_key != "accuracy");
+    }
 
     // Damage reads the SHOWN power for the same reason every tier above does — a snipe fired
     // in combat is a different attack — and the build's chosen target, which its atoms' gates

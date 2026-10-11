@@ -26,6 +26,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "None"
+   ],
    "stats": {
     "accuracy": 1.2,
     "range": 80,
@@ -568,6 +571,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "None"
+   ],
    "stats": {
     "accuracy": 1.2,
     "range": 80,
@@ -916,6 +922,9 @@
    "effectArea": "AoE",
    "targetsAffected": [
     "Foe"
+   ],
+   "targetsAutohit": [
+    "None"
    ],
    "stats": {
     "accuracy": 0.9,
@@ -1461,6 +1470,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "Foe"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 70,
@@ -1685,6 +1697,9 @@
    "effectArea": "Cone",
    "targetsAffected": [
     "Foe"
+   ],
+   "targetsAutohit": [
+    "None"
    ],
    "stats": {
     "accuracy": 1,
@@ -1913,6 +1928,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 70,
@@ -2049,6 +2067,9 @@
    "effectArea": "SingleTarget",
    "procsAllowed": false,
    "targetsAffected": [
+    "Foe"
+   ],
+   "targetsAutohit": [
     "Foe"
    ],
    "stats": {
@@ -2252,6 +2273,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 80,
@@ -2447,6 +2471,9 @@
    "effectArea": "Location",
    "procsAllowed": false,
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {

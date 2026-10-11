@@ -3668,10 +3668,6 @@ fn EnhancementPickerModal(
     // and shows the level a pick would actually mint (BOOST-6).
     let craft_band =
         crate::picker_defaults::CraftBand::from_boost_index(database.boost_index.as_ref());
-    // The stamp reads the floor per piece (a set's own band can clamp below it); this is the
-    // half the header CAN know from the dial alone, so the control says so instead of
-    // letting a boost be dialled that no pick would keep.
-    let boostable = io_level() >= crate::picker_defaults::BOOSTER_LEVEL_FLOOR;
 
     // In level-up mode the craft level can't be raised past the character's own level — you
     // can't make a level 50 IO at level 12. The band's floor (10) still applies below that: a
@@ -3813,25 +3809,19 @@ fn EnhancementPickerModal(
                         } else if !relative_axis {
                             div {
                                 class: "picker-control",
-                                title: if boostable {
-                                    "Catalyst boosters (+0 to +5) combined into an IO."
-                                } else {
-                                    "Catalyst boosters (+0 to +5) combined into an IO. Boosters only combine into a level-50+ IO — raise the craft level to use them."
-                                },
+                                title: "Catalyst boosters (+0 to +5) combined into an IO.",
                                 span { class: "picker-control-label", "Boost" }
                                 button {
                                     class: "picker-step",
-                                    disabled: !boostable,
                                     onclick: move |_| defaults.adjust_boost(-1),
                                     "−"
                                 }
                                 span {
-                                    class: if boost() > 0 && boostable { "picker-step-value picker-step-value-on" } else { "picker-step-value" },
+                                    class: if boost() > 0 { "picker-step-value picker-step-value-on" } else { "picker-step-value" },
                                     if boost() > 0 { "+{boost}" } else { "0" }
                                 }
                                 button {
                                     class: "picker-step",
-                                    disabled: !boostable,
                                     onclick: move |_| defaults.adjust_boost(1),
                                     "+"
                                 }
@@ -5041,6 +5031,16 @@ fn should_show_toggle(
         // `specialBuff` is a legacy -Special foe debuff (Benumb, Weaken), not a self-buff.
         if !is_self && key == "specialBuff" {
             return false;
+        }
+        // The slot router files mez protection without asking who gets it, so a foe teleport's
+        // protection for its victims (Fold Space, Wormhole) lands here too. Only a row that
+        // reaches the caster is a caster state.
+        if key == "mezResistance" {
+            return power.atoms.iter().any(|a| {
+                a.effect_type == Some(coh_data::EffectType::MezResist)
+                    && coh_math::window_slots::bag_subset(a)
+                    && coh_data::reaches_caster(a, power)
+            });
         }
         true
     })

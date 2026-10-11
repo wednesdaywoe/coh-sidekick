@@ -31,6 +31,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 2,
@@ -1437,6 +1440,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 2,
@@ -1652,6 +1658,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -1904,6 +1913,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 120,
@@ -1984,6 +1996,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -2985,6 +3000,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "Foe"
+   ],
    "stats": {
     "accuracy": 1,
     "radius": 15,
@@ -3335,6 +3353,10 @@
     "Teammate",
     "Self"
    ],
+   "targetsAutohit": [
+    "Teammate",
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "radius": 15,
@@ -3589,6 +3611,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 200,
@@ -3803,6 +3828,9 @@
     "terror"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {

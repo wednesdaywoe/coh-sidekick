@@ -384,6 +384,39 @@ impl Power {
             .is_some_and(|targets| targets.contains(&"Self"))
     }
 
+    /// Does this power roll to hit anything it affects? The export's `targetsAutohit` lists
+    /// the affected kinds hit without a roll; a power rolls when some kind in
+    /// [`targets_affected`](Self::targets_affected) is missing from it. Tough (`["Self"]` in
+    /// both) never rolls; Boxing (`["Foe"]` against `["None"]`) does.
+    ///
+    /// `true` when either list is absent: every power carries an accuracy, so an unstated list
+    /// falls back to the roll that accuracy implies rather than hiding one.
+    pub fn rolls_to_hit(&self) -> bool {
+        let autohit: Option<Vec<&str>> = self
+            .extra
+            .get("targetsAutohit")
+            .and_then(Value::as_array)
+            .map(|list| list.iter().filter_map(Value::as_str).collect());
+        match (self.targets_affected(), autohit) {
+            (Some(affected), Some(autohit)) => affected.iter().any(|kind| !autohit.contains(kind)),
+            _ => true,
+        }
+    }
+
+    /// Does accuracy mean anything for this power — should a planner show its accuracy and hit
+    /// chance at all? Yes when it [rolls to hit](Self::rolls_to_hit), and also when it takes
+    /// Accuracy enhancements: a summon's power is autohit while its pet does the rolling with
+    /// the caster's slotting (Rain of Fire, Ice Storm). Only a power that does neither (Tough,
+    /// Hasten, Aim) has no roll to show. An absent `allowedEnhancements` states no restriction,
+    /// so it counts as taking Accuracy.
+    pub fn has_hit_roll(&self) -> bool {
+        self.rolls_to_hit()
+            || self
+                .allowed_enhancements
+                .as_ref()
+                .is_none_or(|allowed| allowed.iter().any(|e| e == "Accuracy"))
+    }
+
     /// Must the game have an entity in the caster's sights before this power can be used at
     /// all — so that "used, and reached nobody" is not a state it can be in?
     ///

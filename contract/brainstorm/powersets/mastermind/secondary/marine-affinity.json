@@ -26,6 +26,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "None"
+   ],
    "stats": {
     "accuracy": 1.2,
     "range": 80,
@@ -207,6 +210,10 @@
    "targetType": "Self",
    "effectArea": "Cone",
    "targetsAffected": [
+    "Friend",
+    "Self"
+   ],
+   "targetsAutohit": [
     "Friend",
     "Self"
    ],
@@ -658,6 +665,10 @@
     "Friend",
     "Self"
    ],
+   "targetsAutohit": [
+    "Friend",
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "radius": 40,
@@ -951,6 +962,9 @@
    ],
    "targetsAffected": [
     "Location"
+   ],
+   "targetsAutohit": [
+    "Self"
    ],
    "stats": {
     "accuracy": 1,
@@ -1954,6 +1968,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 80,
@@ -2140,6 +2157,9 @@
    "effectArea": "SingleTarget",
    "targetsAffected": [
     "Foe"
+   ],
+   "targetsAutohit": [
+    "None"
    ],
    "stats": {
     "accuracy": 1,
@@ -2451,6 +2471,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "DeadOrAliveAny"
+   ],
+   "targetsAutohit": [
     "DeadOrAliveAny"
    ],
    "stats": {
@@ -3220,6 +3243,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 40,
@@ -3306,6 +3332,10 @@
    "targetType": "Self",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Friend",
+    "Self"
+   ],
+   "targetsAutohit": [
     "Friend",
     "Self"
    ],

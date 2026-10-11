@@ -31,6 +31,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 4,
@@ -244,6 +247,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "activatePeriod": 10
@@ -342,6 +348,9 @@
    "targetType": "Self",
    "effectArea": "SingleTarget",
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -522,6 +531,9 @@
    "targetType": "Self",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Foe"
+   ],
+   "targetsAutohit": [
     "Foe"
    ],
    "stats": {
@@ -962,6 +974,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -1863,6 +1878,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 4,
@@ -1970,6 +1988,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -2188,6 +2209,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -2442,6 +2466,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {

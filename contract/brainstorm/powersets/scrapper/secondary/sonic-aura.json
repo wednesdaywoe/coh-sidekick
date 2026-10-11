@@ -31,6 +31,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 2,
@@ -246,6 +249,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -498,6 +504,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "recharge": 120,
@@ -578,6 +587,9 @@
     "stun"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {
@@ -1579,6 +1591,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "Foe"
+   ],
    "stats": {
     "accuracy": 1,
     "radius": 15,
@@ -1996,6 +2011,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "activatePeriod": 10
@@ -2165,6 +2183,10 @@
     "stun"
    ],
    "targetsAffected": [
+    "Friend",
+    "Self"
+   ],
+   "targetsAutohit": [
     "Friend",
     "Self"
    ],
@@ -2422,6 +2444,9 @@
    "targetsAffected": [
     "Self"
    ],
+   "targetsAutohit": [
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 200,
@@ -2636,6 +2661,9 @@
     "terror"
    ],
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {

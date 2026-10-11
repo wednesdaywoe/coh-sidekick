@@ -539,23 +539,6 @@ pub struct Enhancement {
     pub kind: EnhancementKind,
 }
 
-/// An Enhancement Booster combines only into a level-50+ IO in-game — sub-50 IOs
-/// (including a set piece whose set tops out lower) cannot accept one, which the beta's
-/// own tools state outright ("Attuned IOs and sub-50 IOs cannot accept boosters
-/// in-game"). The export does not carry the rule — the catalog describes items, not the
-/// combine economy — so it is a named game constant like the IO level band, and it lives
-/// here rather than in the UI's `picker_defaults` family because its enforcing reader is
-/// [`Enhancement::takes_booster`], upstream of the UI.
-pub const BOOSTER_LEVEL_FLOOR: u8 = 50;
-
-/// The floor test for one piece's stated craft level. An absent level defers to the
-/// build's global craft level (the wire's `slot.level || globalIOLevel` idiom), which the
-/// beta reads as 50 (`level ?? 50`) — refusing absence here would strip boosters off
-/// every deferred-level generic IO, so absence passes.
-fn booster_floor_met(level: Option<Level>) -> bool {
-    level.is_none_or(|level| level.get() >= BOOSTER_LEVEL_FLOOR)
-}
-
 impl Enhancement {
     /// A generic ("common") IO enhancing one aspect, mirroring the beta
     /// `createGenericIOEnhancement`. `level` `None` defers to the build's global
@@ -576,7 +559,6 @@ impl Enhancement {
             None => format!("generic-io-{stat}"),
         };
         let name = format!("{stat} IO");
-        let boost = if booster_floor_met(level) { boost } else { 0 };
         Enhancement {
             id,
             name,
@@ -606,11 +588,8 @@ impl Enhancement {
     ///   `[min, max]` band (beta `Math.max(minLevel, Math.min(level, maxLevel))`).
     /// - Pure procs (a proc with no aspects) and attuned pieces don't scale with
     ///   boosters, so their booster level is dropped.
-    /// - The booster floor reads the level the piece actually lands at, AFTER the
-    ///   set-band clamp ([`BOOSTER_LEVEL_FLOOR`]). The beta enforced the floor only
-    ///   in its bulk tools, not at pick time — so its pick path stamped the global
-    ///   boost onto a piece the band had just clamped below 50, a state its own
-    ///   tools call impossible (the v4 corpus holds one: Basilisk's Gaze +5 at 30).
+    /// - A booster combines into an IO at any craft level, so a set that tops out
+    ///   below 50 (Explosive Strike at 20) still takes one.
     ///
     /// The stored `name` is the raw piece label, NOT the set name: it is the proc
     /// lookup key the calc engine matches on (the beta's `findProcData`), so resolving
@@ -647,12 +626,11 @@ impl Enhancement {
                     .max(set_min_level),
             )
         };
-        let boost =
-            if slotting.boost > 0 && !kind.is_pure_proc() && !attuned && booster_floor_met(level) {
-                slotting.boost
-            } else {
-                0
-            };
+        let boost = if slotting.boost > 0 && !kind.is_pure_proc() && !attuned {
+            slotting.boost
+        } else {
+            0
+        };
         Enhancement {
             id: format!("{set_id}-{piece_index}"),
             name: piece.name.clone(),
@@ -685,10 +663,9 @@ impl Enhancement {
 
     /// Whether an Enhancement Booster can be combined into this piece — the rule
     /// [`Self::io_set`] stamps at pick time, asked of a piece that already exists. An attuned
-    /// piece cannot take one, neither can a pure proc, which has no magnitude to scale, and
-    /// neither can a piece crafted below [`BOOSTER_LEVEL_FLOOR`].
+    /// piece cannot take one, and neither can a pure proc, which has no magnitude to scale.
     pub fn takes_booster(&self) -> bool {
-        self.takes_craft_level() && !self.kind.is_pure_proc() && booster_floor_met(self.level)
+        self.takes_craft_level() && !self.kind.is_pure_proc()
     }
 
     /// A stored booster the game refuses: the piece rides the booster axis (a set or generic

@@ -201,11 +201,6 @@ impl Retune {
                 CraftLevel::At(level) => {
                     if piece.level != Some(level) {
                         piece.level = Some(level);
-                        // Re-crafting below the booster floor burns the boosters with it,
-                        // the way attuning does — the sub-50 copy cannot hold them.
-                        if piece.holds_refused_booster() {
-                            piece.boost = 0;
-                        }
                         touched.craft_level += 1;
                     }
                 }

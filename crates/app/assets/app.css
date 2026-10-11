@@ -1533,6 +1533,9 @@
      leave the wrapper the wrong size for it. */
   width: calc(var(--slot-size) + 2 * var(--perma-band));
   height: calc(var(--slot-size) + 2 * var(--perma-band));
+  /* The band draws outside the icon's footprint, so a ringed row's slots line up with a
+     bare icon's. */
+  margin: calc(-1 * var(--perma-band));
 }
 .perma-ring::before {
   content: "";
@@ -2379,9 +2382,8 @@ button.power-pick--empty {
    kind of statement — a corner dot you notice and then hover. Colour is the only thing telling
    the two apart, which is what the opposite corners are for.
 
-   The booster pip cannot co-occur with this on a build the picker made: a booster needs level 50
-   (`BOOSTER_LEVEL_FLOOR`) and this needs below 50. Only a foreign or older file holds both, and
-   `holds_refused_booster` is the reader that reconciles it. Opposite corners either way. */
+   The booster pip can sit on the same chip (a boosted level-20 Explosive Strike), so the two
+   take opposite corners. */
 .slot-underlevel {
   position: absolute;
   z-index: 1;

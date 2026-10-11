@@ -26,6 +26,9 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "None"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 80,
@@ -1234,6 +1237,9 @@
    "targetsAffected": [
     "Friend"
    ],
+   "targetsAutohit": [
+    "Friend"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 80,
@@ -1363,6 +1369,9 @@
    "targetType": "Ally (Alive)",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Friend"
+   ],
+   "targetsAutohit": [
     "Friend"
    ],
    "stats": {
@@ -1513,6 +1522,9 @@
    "effectArea": "SingleTarget",
    "targetsAffected": [
     "Foe",
+    "Friend"
+   ],
+   "targetsAutohit": [
     "Friend"
    ],
    "stats": {
@@ -2446,6 +2458,10 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "Friend",
+    "Foe"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 70,
@@ -2973,6 +2989,10 @@
     "Friend",
     "Self"
    ],
+   "targetsAutohit": [
+    "Friend",
+    "Self"
+   ],
    "stats": {
     "accuracy": 1,
     "radius": 25,
@@ -3298,6 +3318,10 @@
    "targetsAffected": [
     "Foe"
    ],
+   "targetsAutohit": [
+    "Leaguemate",
+    "Foe"
+   ],
    "stats": {
     "accuracy": 1,
     "range": 70,
@@ -3527,6 +3551,9 @@
    "targetType": "Ally (Alive)",
    "effectArea": "AoE",
    "targetsAffected": [
+    "Friend"
+   ],
+   "targetsAutohit": [
     "Friend"
    ],
    "stats": {
@@ -4328,6 +4355,9 @@
    "targetType": "Location",
    "effectArea": "Location",
    "targetsAffected": [
+    "Self"
+   ],
+   "targetsAutohit": [
     "Self"
    ],
    "stats": {

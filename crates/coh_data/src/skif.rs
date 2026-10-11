@@ -1046,11 +1046,9 @@ pub(crate) fn branch_powersets(archetype: Option<&str>, database: &PowerDatabase
 /// An unmatched set or special is retained with an EMPTY definition and reported rather than
 /// dropped (rule 8). Empty is what makes that honest twice over: it contributes nothing to any
 /// total, and it carries no fabricated name for a proc lookup to match on.
-/// A stored booster the piece's own slotting rules refuse — a sub-50 craft level, an attuned
-/// piece, a pure proc ([`Enhancement::takes_booster`]) — is read without it, and the drop is
-/// reported, never silent: the state was written by the beta's pick path (which stamped the
-/// global boost after the set-band clamp) or by hand, and honouring it would show a number
-/// the game cannot reach.
+/// A stored booster the piece's own slotting rules refuse — an attuned piece or a pure proc
+/// ([`Enhancement::takes_booster`]) — is read without it, and the drop is reported, never
+/// silent: honouring it would show a number the game cannot reach.
 fn reconcile_refused_booster(enhancement: &mut Enhancement, unresolved: &mut Vec<Unresolved>) {
     if !enhancement.holds_refused_booster() {
         return;
@@ -1065,9 +1063,8 @@ fn reconcile_refused_booster(enhancement: &mut Enhancement, unresolved: &mut Vec
         context,
         detail: format!(
             "a +{} booster on a piece that cannot take one (boosters combine only into an \
-             unattuned, non-proc IO at level {}+); the piece was read without it",
+             unattuned, non-proc IO); the piece was read without it",
             enhancement.boost,
-            crate::BOOSTER_LEVEL_FLOOR,
         ),
     });
     enhancement.boost = 0;
