@@ -252,14 +252,9 @@
       "preview": "Fixed the default layout to not be a complete 💩show"
     },
     {
-      "id": "freeform-build-guidance",
-      "date": "2026-10-10",
-      "preview": "Freeform building should now indicate which powers are available without restric"
-    },
-    {
-      "id": "epic-pool-gating",
-      "date": "2026-10-10",
-      "preview": "Fixed epic pools failing to be gating by your AT selection."
+      "id": "floating-tool-panel",
+      "date": "2026-10-11",
+      "preview": "Beginning to implement floating tool panels: The Detailed Totals tool now appear"
     },
     {
       "id": "veat-branch-columns",
@@ -302,9 +297,14 @@
       "preview": "Powers with the perma tracker ring around their icon should no longer push slots"
     },
     {
-      "id": "floating-tool-panel",
-      "date": "2026-10-11",
-      "preview": "Beginning to implement floating tool panels: The Detailed Totals tool now appear"
+      "id": "freeform-build-guidance",
+      "date": "2026-10-10",
+      "preview": "Freeform building should now indicate which powers are available without restric"
+    },
+    {
+      "id": "epic-pool-gating",
+      "date": "2026-10-10",
+      "preview": "Fixed epic pools failing to be gating by your AT selection."
     },
     {
       "id": "fix-vengeance-buff",
