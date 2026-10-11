@@ -26,7 +26,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -434,7 +434,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],
@@ -970,7 +970,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "stats": {
@@ -2395,7 +2395,7 @@
    "targetsAffected": [
     "Friend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend"
    ],
    "stats": {
@@ -2892,7 +2892,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -2985,7 +2985,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -3340,7 +3340,7 @@
     "Teammate",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate",
     "Self"
    ],
@@ -3836,7 +3836,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -4734,7 +4734,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],

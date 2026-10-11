@@ -244,10 +244,10 @@ function convertInherentPower(rawJson) {
   if (Array.isArray(rawJson.targets_affected) && rawJson.targets_affected.length) {
     power.targetsAffected = rawJson.targets_affected;
   }
-  // EntsAutoHit — the affected kinds hit without a roll. A power whose every affected kind is
-  // listed here (Tough, Hasten) never rolls to hit, so it has no hit chance to show.
-  if (Array.isArray(rawJson.targets_autohit) && rawJson.targets_autohit.length) {
-    power.targetsAutohit = rawJson.targets_autohit;
+  // EntsAutoHit — whom the power lands on without rolling to hit (`['None']` or an
+  // authored `[]` when every affected target rolls; Blazing Aura carries `[]`).
+  if (Array.isArray(rawJson.targets_autohit)) {
+    power.targetsAutoHit = rawJson.targets_autohit;
   }
 
   if (datasetId === 'thunderspy') {

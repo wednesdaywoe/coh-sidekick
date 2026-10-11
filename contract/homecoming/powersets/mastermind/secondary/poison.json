@@ -26,7 +26,7 @@
    "targetsAffected": [
     "Friend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend"
    ],
    "stats": {
@@ -107,7 +107,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -991,7 +991,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -3209,7 +3209,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -3493,7 +3493,7 @@
    "targetsAffected": [
     "DeadPlayerFriend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "DeadPlayerFriend"
    ],
    "stats": {
@@ -4308,7 +4308,7 @@
    "targetsAffected": [
     "Friend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend"
    ],
    "stats": {
@@ -4986,7 +4986,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -5086,7 +5086,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -5180,7 +5180,7 @@
    "targetsAffected": [
     "MyPet"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "MyPet"
    ],
    "stats": {

@@ -26,7 +26,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -1102,7 +1102,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -2136,7 +2136,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "chainTargetExpression": [
@@ -3207,7 +3207,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -3376,7 +3376,13 @@
      "radius": 70,
      "arc": 0.7853981852531433,
      "effectArea": "Cone",
-     "maxTargets": 16
+     "maxTargets": 16,
+     "targetsAffected": [
+      "Foe"
+     ],
+     "targetsAutoHit": [
+      "Foe"
+     ]
     },
     {
      "power": "Redirects.Pyrotechnic_Control.HypnotizingLights_Narrow",
@@ -3388,13 +3394,19 @@
      "radius": 20,
      "arc": 0.7853981852531433,
      "effectArea": "Cone",
-     "maxTargets": 5
+     "maxTargets": 5,
+     "targetsAffected": [
+      "Foe"
+     ],
+     "targetsAutoHit": [
+      "None"
+     ]
     }
    ],
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "stats": {
@@ -3807,7 +3819,7 @@
    "targetsAffected": [
     "DeadOrAliveFoe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -4626,7 +4638,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "stats": {
@@ -5202,7 +5214,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -5864,7 +5876,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {

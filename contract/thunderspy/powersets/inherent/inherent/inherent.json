@@ -113,7 +113,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -182,7 +182,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -1454,7 +1454,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -1523,7 +1523,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -1968,7 +1968,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -2362,7 +2362,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -2431,7 +2431,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -3311,7 +3311,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -3385,7 +3385,7 @@
    "targetsAffected": [
     "MyPet"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "MyPet"
    ]
   },
@@ -3454,7 +3454,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -4663,7 +4663,7 @@
    "targetsAffected": [
     "Teammate"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate"
    ]
   },
@@ -5872,7 +5872,7 @@
    "targetsAffected": [
     "Teammate"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate"
    ]
   },
@@ -6044,7 +6044,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -6216,7 +6216,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -6436,7 +6436,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "maxSlots": 0
@@ -6840,7 +6840,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -7301,7 +7301,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -7942,7 +7942,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -8206,7 +8206,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -8815,7 +8815,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -9069,7 +9069,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -9242,7 +9242,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -9585,7 +9585,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -9761,7 +9761,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -10403,7 +10403,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 6
@@ -10752,7 +10752,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -11065,7 +11065,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -11416,7 +11416,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -11733,7 +11733,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -12140,7 +12140,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 6
@@ -12221,7 +12221,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -12422,7 +12422,7 @@
     "Teammate",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate",
     "Self"
    ],
@@ -13315,7 +13315,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 6
@@ -13471,7 +13471,7 @@
    "targetsAffected": [
     "MyPet"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "MyPet"
    ],
    "maxSlots": 0
@@ -13925,7 +13925,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -14230,7 +14230,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "maxSlots": 0
@@ -14451,7 +14451,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "maxSlots": 0
@@ -14718,7 +14718,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "maxSlots": 0
@@ -15720,7 +15720,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 6
@@ -15843,7 +15843,7 @@
    "targetsAffected": [
     "DeadOrAliveLeaguemate"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "DeadOrAliveLeaguemate"
    ],
    "maxSlots": 6
@@ -16087,7 +16087,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 6
@@ -16273,7 +16273,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 6
@@ -16349,7 +16349,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -16829,7 +16829,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 6
@@ -16906,7 +16906,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -17127,7 +17127,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "maxSlots": 0
@@ -17424,7 +17424,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -17925,7 +17925,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -18189,7 +18189,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -18658,7 +18658,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "maxSlots": 0
@@ -18747,7 +18747,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -19242,7 +19242,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -19737,7 +19737,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -20191,7 +20191,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -20264,7 +20264,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -20656,7 +20656,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -21048,7 +21048,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -21440,7 +21440,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0
@@ -21935,7 +21935,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "maxSlots": 0

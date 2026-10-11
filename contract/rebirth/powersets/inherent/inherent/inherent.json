@@ -69,7 +69,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -138,7 +138,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -1460,7 +1460,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -1529,7 +1529,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -1598,7 +1598,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -1667,7 +1667,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -2061,7 +2061,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -2130,7 +2130,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -3011,7 +3011,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -3529,7 +3529,7 @@
    "targetsAffected": [
     "MyPet"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "MyPet"
    ]
   },
@@ -3598,7 +3598,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -4817,7 +4817,7 @@
    "targetsAffected": [
     "Teammate"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate"
    ]
   },
@@ -6066,7 +6066,7 @@
    "targetsAffected": [
     "Teammate"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate"
    ]
   },
@@ -6135,7 +6135,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   },
@@ -6204,7 +6204,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ]
   }

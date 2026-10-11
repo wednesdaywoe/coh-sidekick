@@ -26,7 +26,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -1216,7 +1216,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -1286,7 +1286,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -1394,7 +1394,7 @@
     "Teammate",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate",
     "Self"
    ],
@@ -2190,7 +2190,7 @@
     "Teammate",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate",
     "Self"
    ],
@@ -2582,7 +2582,7 @@
     "Teammate",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Teammate",
     "Self"
    ],
@@ -2953,7 +2953,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -3264,7 +3264,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {

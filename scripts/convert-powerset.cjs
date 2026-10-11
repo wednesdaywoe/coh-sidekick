@@ -874,6 +874,10 @@ function collectProcRollSites(powerJson) {
         ...(child.max_targets_hit > 0 ? { maxTargets: child.max_targets_hit } : {}),
         ...(child.area_factor_override ? { areaFactorOverride: child.area_factor_override } : {}),
         ...(child.ppm_mod ? { ppmMod: child.ppm_mod } : {}),
+        // Who the child lands on, and whom it hits without rolling: Spring Attack's
+        // own power only teleports the caster; this child is the attack that rolls.
+        ...(child.targets_affected?.length ? { targetsAffected: child.targets_affected } : {}),
+        ...(Array.isArray(child.targets_autohit) ? { targetsAutoHit: child.targets_autohit } : {}),
       });
     }
   }
@@ -9315,10 +9319,10 @@ function convertPower(powerJson, availableLevel, archetypeId, powerType, provena
   if (Array.isArray(powerJson.targets_affected) && powerJson.targets_affected.length) {
     power.targetsAffected = powerJson.targets_affected;
   }
-  // EntsAutoHit — the affected kinds hit without a roll. A power whose every affected kind is
-  // listed here (Tough, Hasten) never rolls to hit, so it has no hit chance to show.
-  if (Array.isArray(powerJson.targets_autohit) && powerJson.targets_autohit.length) {
-    power.targetsAutohit = powerJson.targets_autohit;
+  // EntsAutoHit — whom the power lands on without rolling to hit (`['None']` or an
+  // authored `[]` when every affected target rolls; Blazing Aura carries `[]`).
+  if (Array.isArray(powerJson.targets_autohit)) {
+    power.targetsAutoHit = powerJson.targets_autohit;
   }
 
   // Chain / target-cap RPN expressions (bin fields 43b / 38 — Electrical Affinity

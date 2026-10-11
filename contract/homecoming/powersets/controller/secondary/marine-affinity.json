@@ -26,7 +26,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -213,7 +213,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],
@@ -665,7 +665,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],
@@ -957,13 +957,19 @@
      "radius": 20,
      "arc": 0,
      "effectArea": "Sphere",
-     "maxTargets": 16
+     "maxTargets": 16,
+     "targetsAffected": [
+      "Foe"
+     ],
+     "targetsAutoHit": [
+      "None"
+     ]
     }
    ],
    "targetsAffected": [
     "Location"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -1967,7 +1973,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -2157,7 +2163,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -2472,7 +2478,7 @@
    "targetsAffected": [
     "DeadOrAliveAny"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "DeadOrAliveAny"
    ],
    "stats": {
@@ -3241,7 +3247,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -3333,7 +3339,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],

@@ -26,7 +26,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -710,7 +710,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],
@@ -823,7 +823,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],
@@ -1051,7 +1051,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "stats": {
@@ -1659,7 +1659,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -1787,7 +1787,7 @@
     "Self",
     "Friend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self",
     "Friend"
    ],
@@ -1909,7 +1909,7 @@
    "targetsAffected": [
     "DeadOrAliveLeaguemate"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "DeadOrAliveLeaguemate"
    ],
    "stats": {
@@ -2169,7 +2169,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Foe"
    ],
    "stats": {
@@ -2313,7 +2313,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],

@@ -21,7 +21,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -401,7 +401,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -799,7 +799,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -1055,7 +1055,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -1233,7 +1233,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -1398,7 +1398,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -1726,7 +1726,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -1861,7 +1861,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -2970,7 +2970,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -3399,7 +3399,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -3606,7 +3606,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -3982,7 +3982,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -4507,7 +4507,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -4691,7 +4691,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -4876,7 +4876,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -5240,7 +5240,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -5474,7 +5474,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -5799,7 +5799,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -5910,7 +5910,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -6216,7 +6216,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -6515,7 +6515,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -7170,7 +7170,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -7785,7 +7785,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -8462,7 +8462,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -8694,7 +8694,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -9484,7 +9484,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -9547,7 +9547,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -9691,7 +9691,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 3,
@@ -10344,7 +10344,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -10426,7 +10426,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -11123,7 +11123,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -11184,7 +11184,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -11328,7 +11328,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 3,
@@ -11952,7 +11952,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -12034,7 +12034,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -12498,7 +12498,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -13082,7 +13082,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -13507,7 +13507,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -13780,7 +13780,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -14406,7 +14406,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -14534,7 +14534,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -14780,7 +14780,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -15209,7 +15209,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -15354,7 +15354,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -15584,7 +15584,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -15710,7 +15710,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -15987,7 +15987,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -16355,7 +16355,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -16708,7 +16708,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -16970,7 +16970,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -17094,7 +17094,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -17297,7 +17297,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -17682,7 +17682,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 3,
@@ -18241,7 +18241,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -18424,7 +18424,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -18545,7 +18545,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -18728,7 +18728,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -19012,7 +19012,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -19466,7 +19466,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -19799,7 +19799,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -20144,7 +20144,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -20357,7 +20357,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 2,
@@ -20647,7 +20647,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -20776,7 +20776,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -21237,7 +21237,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -21663,7 +21663,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 1,
@@ -21856,7 +21856,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 2,
@@ -22248,7 +22248,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -22377,7 +22377,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -22838,7 +22838,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -23264,7 +23264,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -23592,7 +23592,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -23876,7 +23876,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -24230,7 +24230,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -24697,7 +24697,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -24904,7 +24904,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -25430,7 +25430,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -25955,7 +25955,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -26281,7 +26281,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -26426,7 +26426,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -26553,7 +26553,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -26761,7 +26761,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -27051,7 +27051,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -27380,7 +27380,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -27628,7 +27628,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -27920,7 +27920,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -28387,7 +28387,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -28716,7 +28716,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -29125,7 +29125,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -29549,7 +29549,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -29677,7 +29677,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -30165,7 +30165,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -30694,7 +30694,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -30839,7 +30839,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -31320,7 +31320,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -31448,7 +31448,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 1,
@@ -31634,7 +31634,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -31963,7 +31963,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -32353,7 +32353,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -32462,7 +32462,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -32590,7 +32590,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -32899,7 +32899,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -33246,7 +33246,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -34418,7 +34418,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -35024,7 +35024,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -35153,7 +35153,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -35295,7 +35295,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -35463,7 +35463,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -35792,7 +35792,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 4,
@@ -36164,7 +36164,7 @@
     "targetsAffected": [
      "DeadOrAliveFoe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -36789,7 +36789,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -37447,7 +37447,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -38039,7 +38039,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -38628,7 +38628,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -39224,7 +39224,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -40077,7 +40077,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -40231,7 +40231,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -40413,7 +40413,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -40742,7 +40742,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -40990,7 +40990,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -41174,7 +41174,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -41638,7 +41638,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 2,
@@ -41904,7 +41904,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -42033,7 +42033,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -42256,7 +42256,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -42381,7 +42381,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -42709,7 +42709,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -42813,7 +42813,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 3,
@@ -43372,7 +43372,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -43577,7 +43577,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -43784,7 +43784,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -43910,7 +43910,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -44262,7 +44262,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -44671,7 +44671,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -44982,7 +44982,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -45105,7 +45105,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -45631,7 +45631,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -46156,7 +46156,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -46482,7 +46482,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -47325,7 +47325,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -47452,7 +47452,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 1,
@@ -47638,7 +47638,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -47967,7 +47967,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -48381,7 +48381,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -48714,7 +48714,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -48839,7 +48839,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -49115,7 +49115,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -49462,7 +49462,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -49746,7 +49746,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -50387,7 +50387,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -50510,7 +50510,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -50851,7 +50851,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 2,
@@ -51082,7 +51082,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -51328,7 +51328,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -51429,7 +51429,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -51694,7 +51694,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -51877,7 +51877,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -52140,7 +52140,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -52451,7 +52451,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -52784,7 +52784,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -53149,7 +53149,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -53564,7 +53564,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -54237,7 +54237,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -54548,7 +54548,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -54950,7 +54950,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 5,
@@ -55135,7 +55135,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -55198,7 +55198,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -55342,7 +55342,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 3,
@@ -55784,7 +55784,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -55866,7 +55866,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -56175,7 +56175,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -56236,7 +56236,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -56380,7 +56380,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 3,
@@ -56822,7 +56822,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -56904,7 +56904,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -57213,7 +57213,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -57505,7 +57505,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -57753,7 +57753,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -58005,7 +58005,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -58269,7 +58269,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -58558,7 +58558,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -58868,7 +58868,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -59316,7 +59316,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -59645,7 +59645,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -59890,7 +59890,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 5,
@@ -60205,7 +60205,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -60307,7 +60307,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -60755,7 +60755,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -61084,7 +61084,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -61329,7 +61329,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -61578,7 +61578,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -61685,7 +61685,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -61867,7 +61867,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -62196,7 +62196,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -62428,7 +62428,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -62690,7 +62690,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -63532,7 +63532,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 2,
@@ -63653,7 +63653,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -63946,7 +63946,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -64664,7 +64664,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -64953,7 +64953,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -65060,7 +65060,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -65227,7 +65227,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -65463,7 +65463,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -65646,7 +65646,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -65908,7 +65908,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -66264,7 +66264,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -66672,7 +66672,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -67133,7 +67133,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -67495,7 +67495,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -67616,7 +67616,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -67727,7 +67727,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -68135,7 +68135,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -68596,7 +68596,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -68725,7 +68725,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -68846,7 +68846,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -69174,7 +69174,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -69431,7 +69431,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -69545,7 +69545,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -70651,7 +70651,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -70858,7 +70858,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -71197,7 +71197,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -71409,7 +71409,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -71652,7 +71652,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -71963,7 +71963,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -72276,7 +72276,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -72652,7 +72652,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -73177,7 +73177,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -73361,7 +73361,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -74533,7 +74533,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -74897,7 +74897,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -75131,7 +75131,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -75459,7 +75459,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -75915,7 +75915,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -76221,7 +76221,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -76520,7 +76520,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -76682,7 +76682,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -77029,7 +77029,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -77204,7 +77204,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -77525,7 +77525,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -77725,7 +77725,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -78254,7 +78254,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -78742,7 +78742,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -79271,7 +79271,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -79353,7 +79353,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -79482,7 +79482,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -79859,7 +79859,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -80175,7 +80175,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 3,
@@ -80389,7 +80389,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -80655,7 +80655,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -81040,7 +81040,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -81107,7 +81107,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -82464,7 +82464,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -82757,7 +82757,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -83029,7 +83029,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -83402,7 +83402,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -83793,7 +83793,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -83856,7 +83856,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -84149,7 +84149,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -84544,7 +84544,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -85736,7 +85736,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -86027,7 +86027,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -86090,7 +86090,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -86383,7 +86383,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -86778,7 +86778,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -87015,7 +87015,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -87295,7 +87295,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -87590,7 +87590,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -87901,7 +87901,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -88146,7 +88146,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -88520,7 +88520,7 @@
      "Teammate",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Teammate",
      "Self"
     ],
@@ -88804,7 +88804,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -89099,7 +89099,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -89410,7 +89410,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -89682,7 +89682,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -89902,7 +89902,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -90194,7 +90194,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 2,
@@ -90345,7 +90345,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -90656,7 +90656,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -90809,6 +90809,7 @@
     "targetsAffected": [
      "Foe"
     ],
+    "targetsAutoHit": [],
     "rank": 5,
     "available": 43,
     "autoIssue": false,
@@ -91264,7 +91265,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -91534,7 +91535,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -91764,7 +91765,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -92018,7 +92019,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -92250,7 +92251,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -92638,7 +92639,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -93243,7 +93244,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -94147,7 +94148,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -94325,7 +94326,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -94933,7 +94934,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -95058,7 +95059,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -95449,7 +95450,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -95824,7 +95825,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -96113,7 +96114,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -96443,7 +96444,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 5,
@@ -97019,7 +97020,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -97430,7 +97431,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -97947,7 +97948,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -98297,7 +98298,7 @@
      "Foe",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -98739,7 +98740,7 @@
      "Friend",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Friend",
      "Self"
     ],
@@ -98831,7 +98832,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -99165,7 +99166,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -99460,7 +99461,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -99732,7 +99733,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -100032,7 +100033,7 @@
      "Friend",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Friend",
      "Self"
     ],
@@ -100123,7 +100124,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -100553,7 +100554,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -100932,7 +100933,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -101372,7 +101373,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 4,
@@ -101778,7 +101779,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 5,
@@ -101989,7 +101990,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -102507,7 +102508,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -102851,7 +102852,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -103327,7 +103328,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -104043,7 +104044,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -104165,7 +104166,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -104633,7 +104634,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -104981,7 +104982,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -105426,7 +105427,7 @@
      "Teammate",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Teammate",
      "Self"
     ],
@@ -105574,7 +105575,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -105701,7 +105702,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -106113,7 +106114,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -106734,7 +106735,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -107105,7 +107106,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -107412,7 +107413,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -107541,7 +107542,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -107648,7 +107649,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -107889,7 +107890,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -108277,7 +108278,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -108612,7 +108613,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -109278,7 +109279,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 1,
@@ -109428,7 +109429,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -109651,7 +109652,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -109919,7 +109920,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -110208,7 +110209,7 @@
      "Teammate",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Teammate",
      "Self"
     ],
@@ -110510,7 +110511,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -111028,7 +111029,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -111422,7 +111423,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -111694,7 +111695,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 4,
@@ -112253,7 +112254,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -112382,7 +112383,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -113369,7 +113370,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -113495,7 +113496,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -113904,7 +113905,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -114688,7 +114689,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -114816,7 +114817,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -115470,7 +115471,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -116001,7 +116002,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -116628,7 +116629,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -117378,7 +117379,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -117580,7 +117581,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -118259,7 +118260,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -118934,7 +118935,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -119690,7 +119691,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -120416,7 +120417,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -120544,7 +120545,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -121130,7 +121131,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -121637,7 +121638,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -121903,7 +121904,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -122518,7 +122519,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -122642,7 +122643,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -122958,7 +122959,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -123369,7 +123370,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -123848,7 +123849,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -124164,7 +124165,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -124331,7 +124332,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -124578,7 +124579,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -124762,7 +124763,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -124943,7 +124944,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -125087,7 +125088,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -125209,7 +125210,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 1,
@@ -125501,7 +125502,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -125732,7 +125733,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -125814,7 +125815,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -125999,7 +126000,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -126266,7 +126267,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -126768,7 +126769,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -127107,7 +127108,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -127298,7 +127299,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -127842,7 +127843,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -127970,7 +127971,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -128169,7 +128170,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -128549,7 +128550,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -128732,7 +128733,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -129046,7 +129047,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -129172,7 +129173,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -129407,7 +129408,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -129731,7 +129732,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -130002,7 +130003,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -130222,7 +130223,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -130346,7 +130347,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -130505,7 +130506,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -130844,7 +130845,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -130985,7 +130986,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 4,
@@ -131544,7 +131545,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -131665,7 +131666,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -132192,7 +132193,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -132295,7 +132296,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -132629,7 +132630,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -132774,7 +132775,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -133127,7 +133128,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -133664,7 +133665,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -133745,7 +133746,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -134047,7 +134048,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -134192,7 +134193,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,

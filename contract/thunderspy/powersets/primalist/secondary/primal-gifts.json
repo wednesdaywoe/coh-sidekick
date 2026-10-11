@@ -27,7 +27,7 @@
     "Friend",
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Friend",
     "Self"
    ],
@@ -1969,7 +1969,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -2407,7 +2407,7 @@
     "Self",
     "Friend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self",
     "Friend"
    ],
@@ -2722,7 +2722,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -3134,7 +3134,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -4148,7 +4148,7 @@
     "Self",
     "Friend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self",
     "Friend"
    ],
@@ -5513,7 +5513,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -6024,7 +6024,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {
@@ -6305,7 +6305,7 @@
    "targetsAffected": [
     "Foe"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "None"
    ],
    "stats": {
@@ -6778,7 +6778,7 @@
     "Self",
     "Friend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self",
     "Friend"
    ],
@@ -6938,7 +6938,7 @@
     "Self",
     "Friend"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self",
     "Friend"
    ],
@@ -7426,7 +7426,7 @@
    "targetsAffected": [
     "Self"
    ],
-   "targetsAutohit": [
+   "targetsAutoHit": [
     "Self"
    ],
    "stats": {

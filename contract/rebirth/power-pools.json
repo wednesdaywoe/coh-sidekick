@@ -44,7 +44,7 @@
     "targetsAffected": [
      "Friend"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Friend"
     ],
     "rank": 1,
@@ -672,7 +672,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -2133,7 +2133,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -2498,7 +2498,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 4,
@@ -2614,7 +2614,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -3104,7 +3104,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 6,
@@ -3280,7 +3280,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -5455,7 +5455,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -7384,7 +7384,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -9021,7 +9021,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -12555,7 +12555,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -14763,7 +14763,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -14872,7 +14872,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -14980,7 +14980,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -15095,7 +15095,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -15198,7 +15198,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -16503,7 +16503,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -17978,7 +17978,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -18717,7 +18717,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -25978,7 +25978,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -26149,7 +26149,7 @@
      "Teammate",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Teammate",
      "Self"
     ],
@@ -26428,7 +26428,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 7,
@@ -26780,7 +26780,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -27184,7 +27184,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -29269,7 +29269,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -29789,7 +29789,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -31889,7 +31889,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -32556,7 +32556,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 6,
@@ -32723,7 +32723,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -33170,7 +33170,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -34609,7 +34609,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -35192,7 +35192,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -37166,7 +37166,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -37301,7 +37301,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 6,
@@ -37499,7 +37499,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 1,
@@ -39565,7 +39565,7 @@
     "targetsAffected": [
      "Leaguemate"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Leaguemate"
     ],
     "rank": 2,
@@ -40456,7 +40456,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -41493,7 +41493,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -41974,7 +41974,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -42421,7 +42421,7 @@
      "Teammate",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Teammate",
      "Self"
     ],
@@ -43347,7 +43347,7 @@
      "Teammate",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Teammate",
      "Self"
     ],
@@ -43829,7 +43829,7 @@
      "Teammate",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Teammate",
      "Self"
     ],
@@ -44210,7 +44210,7 @@
      "Teammate",
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Teammate",
      "Self"
     ],
@@ -45570,7 +45570,7 @@
     "targetsAffected": [
      "DeadFoe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "DeadFoe"
     ],
     "rank": 5,
@@ -46095,7 +46095,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -47696,7 +47696,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -52104,7 +52104,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -52631,7 +52631,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 4,
@@ -58830,7 +58830,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -59096,7 +59096,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -59223,7 +59223,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -59354,7 +59354,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 3,
@@ -59722,7 +59722,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -60058,7 +60058,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -60650,7 +60650,7 @@
     "targetsAffected": [
      "Friend"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Friend"
     ],
     "rank": 1,
@@ -60880,7 +60880,7 @@
      "Friend",
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Friend"
     ],
     "rank": 2,
@@ -62268,7 +62268,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -62469,7 +62469,7 @@
     "targetsAffected": [
      "DeadPlayerFriend"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "DeadPlayerFriend"
     ],
     "rank": 4,
@@ -62612,7 +62612,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -62790,7 +62790,7 @@
     "targetsAffected": [
      "Friend"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Friend"
     ],
     "rank": 1,
@@ -63256,7 +63256,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -64699,7 +64699,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -65282,7 +65282,7 @@
     "targetsAffected": [
      "Any"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Any"
     ],
     "rank": 4,
@@ -65592,7 +65592,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -66518,7 +66518,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 6,
@@ -66655,7 +66655,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -68149,7 +68149,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 2,
@@ -68373,7 +68373,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -68738,7 +68738,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Foe"
     ],
     "rank": 4,
@@ -69336,7 +69336,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -71731,7 +71731,7 @@
      "DeadOrAliveLeaguemate",
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "DeadOrAliveLeaguemate"
     ],
     "rank": 1,
@@ -72795,7 +72795,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -74606,7 +74606,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -76992,7 +76992,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -78782,7 +78782,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 5,
@@ -79320,7 +79320,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 6,
@@ -79565,7 +79565,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 7,
@@ -79811,7 +79811,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 1,
@@ -80058,7 +80058,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 2,
@@ -81752,7 +81752,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 3,
@@ -82398,7 +82398,7 @@
     "targetsAffected": [
      "Foe"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "None"
     ],
     "rank": 4,
@@ -84107,7 +84107,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 5,
@@ -84271,7 +84271,7 @@
     "targetsAffected": [
      "Self"
     ],
-    "targetsAutohit": [
+    "targetsAutoHit": [
      "Self"
     ],
     "rank": 6,

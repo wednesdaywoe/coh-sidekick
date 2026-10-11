@@ -242,6 +242,11 @@
       "preview": "Soul Absorption now adds its Regeneration and Recovery bonus for each enemy it h"
     },
     {
+      "id": "max-endurance-full-pool",
+      "date": "2026-10-09",
+      "preview": "Max Endurance in the Survival panel should now show your whole endurance pool"
+    },
+    {
       "id": "cant-believe-that-shipped",
       "date": "2026-10-10",
       "preview": "Fixed the default layout to not be a complete 💩show"
