@@ -24,6 +24,7 @@ mod enhancement_tools;
 mod export_font;
 mod export_image;
 mod feedback;
+mod floating;
 mod forum_export;
 mod granted_powers;
 mod grid;

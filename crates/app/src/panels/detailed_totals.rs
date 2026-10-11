@@ -34,7 +34,7 @@
 //! sum to. That also keeps the reconciliation meaningful: it is a per-key claim, and this
 //! renders it per key.
 
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::naming::power_label;
 use crate::panels::stat_registry::{self, StatDef, StatSection};
 use crate::panels::stats::BuildTotals;
@@ -378,16 +378,20 @@ pub fn is_expandable(breakdowns: &[KeyBreakdown]) -> bool {
 }
 
 // ============================================================
-// The modal.
+// The floating panel.
 // ============================================================
 
 /// The sheet's open state, held at the shell root for the containment reason every modal here
-/// shares: a `fixed` backdrop is contained by the grid's `transform`ed surfaces, so a modal
-/// rendered inside a panel is clipped to that panel (see [`crate::modal`]).
+/// shares: each grid surface is its own stacking context, so anything rendered inside one is
+/// trapped beneath its neighbours (see [`crate::modal`]).
 #[derive(Clone, Copy)]
 pub struct DetailedTotalsOpen(pub Signal<bool>);
 
-/// The modal, mounted by the shell above both layout roots. Renders nothing while closed.
+/// The sheet, mounted by the shell above both layout roots. Renders nothing while closed.
+///
+/// A floating panel rather than a modal: this is Mids' "View Totals" window, which players keep
+/// open beside the build and watch while they slot. A modal would have to be closed to make
+/// the change it is explaining. The body reads the shared build memo, so it follows every edit.
 #[component]
 pub fn DetailedTotalsHost(database: Option<Db>) -> Element {
     let mut open = use_context::<DetailedTotalsOpen>().0;
@@ -395,11 +399,11 @@ pub fn DetailedTotalsHost(database: Option<Db>) -> Element {
         return rsx! {};
     }
     rsx! {
-        Modal {
+        FloatingPanel {
+            id: "detailed-totals",
             title: "Detailed Totals".to_string(),
-            // Full rather than Xl: the sections sit side by side, and two columns of stat rows
-            // with their bars need the width.
-            size: ModalSize::Full,
+            // Wide enough for the sections to sit two abreast, as the modal had them.
+            default_size: (960.0, 720.0),
             on_close: move |_| open.set(false),
             DetailedTotalsBody { database }
         }

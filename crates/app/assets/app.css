@@ -2785,6 +2785,69 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   overflow-y: auto;
 }
 
+/* ---- floating panel (floating.rs): the modal card with no backdrop ----
+   z 800: over every grid surface, under the header popovers (900) and the modals (1000), so a
+   menu or a picker opened while a panel floats still lands on top of it. Position and size are
+   inline styles the component owns. */
+.floating-panel {
+  position: fixed;
+  z-index: 800;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-panel);
+  border: 1px solid var(--seam-raised);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .45);
+  overflow: hidden;
+  outline: none;
+}
+.floating-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px var(--pad-modal);
+  border-bottom: 1px solid var(--seam-raised);
+  flex-shrink: 0;
+  cursor: move;
+  user-select: none;
+  touch-action: none;
+}
+.floating-header .modal-close { cursor: pointer; }
+.floating-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+/* The corner grip: two short diagonal strokes, drawn rather than an icon. */
+.floating-resize {
+  position: absolute; right: 0; bottom: 0;
+  width: 16px; height: 16px;
+  cursor: nwse-resize;
+  touch-action: none;
+  background:
+    linear-gradient(135deg, transparent 55%, var(--text-faint) 55% 62%, transparent 62% 75%,
+      var(--text-faint) 75% 82%, transparent 82%);
+}
+/* Over the panel while a gesture runs, so the pointer never lands on the body mid-drag. */
+.floating-drag-layer { position: fixed; inset: 0; z-index: 801; cursor: move; }
+.floating-drag-layer--resize { cursor: nwse-resize; }
+
+/* No room to float on a phone: pinned to the screen above the bottom bar, with the gestures
+   (switched off in floating.rs too) hidden. Under the bar's z so its tabs stay reachable. */
+@media (max-width: 899.98px) {
+  .floating-panel {
+    left: 8px !important; top: 8px !important; right: 8px;
+    bottom: calc(60px + env(safe-area-inset-bottom));
+    width: auto !important; height: auto !important;
+    z-index: 99;
+  }
+  .floating-header { cursor: default; }
+  .floating-resize { display: none; }
+}
+
 /* The shared confirm (the beta's ConfirmModal): the message states the consequence, the
    answers sit at the card's foot, and the go answer takes the colour of the act. */
 .confirm { display: flex; flex-direction: column; gap: 12px; padding: 4px var(--pad-modal) 12px; }
@@ -5744,7 +5807,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 
 /* ---- Detailed totals: the stat sheet with its sources (panels/detailed_totals.rs) ---- */
 .detailed-totals {
-  /* The modal's one scroll container, the `.stats-config` arrangement — the card gives it the
+  /* The panel's one scroll container, the `.stats-config` arrangement — the card gives it the
      remaining height and everything inside scrolls together, so no section fights for room. */
   flex: 1; min-height: 0; overflow-y: auto;
   display: flex; flex-direction: column;

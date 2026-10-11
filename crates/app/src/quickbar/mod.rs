@@ -648,7 +648,10 @@ fn DetailedTotalsAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Every stat with the sources behind it",
-            onclick: move |_| open.set(true),
+            // A toggle: the sheet floats rather than covering the row, so this button is still
+            // reachable while it is open, and a second press is the natural way to put it away.
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {ToolId::DetailedTotals.mark()}
             span { "{ToolId::DetailedTotals.title()}" }
         }
