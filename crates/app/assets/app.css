@@ -840,6 +840,15 @@
   #desktop-grid[data-drag=""] .surface { transition: none; }
 }
 
+/* A pinned surface (the top-row readouts, Info) follows the page's scroll through `top`
+   (`GridSurface`), so animating `top` would make it trail the scroll. It rides above the
+   surfaces scrolling under it. The shadow is the page colour across half the grid's 8px
+   margin, so two pinned neighbours close the gap between them and nothing scrolls through. */
+.surface--pinned { z-index: 2; box-shadow: 0 0 0 4px var(--surface-app); }
+#desktop-grid[data-drag=""] .surface--pinned {
+  transition: height 120ms cubic-bezier(0.4, 0.1, 0.3, 1);
+}
+
 /* The measured box of a surface that fits its content (`PanelKind::fits_content`). It holds
    the body OUT of the panel's flex sizing — `flex: 0 0 auto` neither grows into the surface's
    height nor shrinks under it — so the height a ResizeObserver reports here is the height the

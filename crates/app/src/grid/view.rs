@@ -463,6 +463,13 @@ pub fn GridContainer(
         if let Some(band_rows) = band_rows {
             crate::grid::model::fit_band(&mut items, band_rows);
         }
+        // Then every other fitted surface, for the same reason. A fitted column pushes what
+        // sits under it (Pools under Available), so a candidate left at the authored heights
+        // differs from the live layout in those positions, and re-authoring it would undo the
+        // fit, which re-pushes, which re-authors: the page never settles.
+        for (panel, rows) in shared_row_heights(&items, &fit_rows.read()) {
+            fit_item(&mut items, panel, rows);
+        }
         // Compared on every authored rectangle, not on one height standing in for them: a
         // re-seat moves the columns while Info, the tallest surface, keeps its height, so a
         // tallest-surface key would see no change and keep the overflowing layout. Fitted
@@ -597,6 +604,29 @@ pub fn GridContainer(
                 available.set(room);
             }
         }
+    });
+
+    // How far the page has scrolled past the grid's top edge, as `--grid-scroll` on the root
+    // element, for the pinned surfaces' `top` (see `GridSurface`). CSS `position: sticky` does
+    // nothing for an absolutely placed box, so the stick is computed. Written on `<html>`
+    // rather than the grid, whose `style` Dioxus rewrites whenever the grid's height changes.
+    // Capture-phase, so a scroll of any ancestor counts, not only the window's.
+    use_future(move || async move {
+        let _ = document::eval(&format!(
+            "if (window.__skGridPin) {{\
+               document.removeEventListener('scroll', window.__skGridPin, true);\
+               removeEventListener('resize', window.__skGridPin);\
+             }}\
+             window.__skGridPin = () => {{\
+               const el = document.getElementById('{GRID_ELEMENT_ID}');\
+               if (!el) return;\
+               const s = Math.max(0, -el.getBoundingClientRect().top);\
+               document.documentElement.style.setProperty('--grid-scroll', s + 'px');\
+             }};\
+             document.addEventListener('scroll', window.__skGridPin, {{ capture: true, passive: true }});\
+             addEventListener('resize', window.__skGridPin);\
+             window.__skGridPin();"
+        ));
     });
 
     rsx! {
@@ -785,9 +815,28 @@ fn GridSurface(
     let (x, y, width, height) = (x.round(), y.round(), width.round(), height.round());
     let placing = keyboard_working.is_some();
 
+    // The stat readouts across the top and Info stay on screen while the page scrolls under
+    // them: the totals are what a slotting change is read against, and Info describes whatever
+    // the pointer is on, wherever that is. Sticky in effect: a pinned surface sits at its cell
+    // until the viewport's top edge reaches it, follows that edge down, and stops where its
+    // bottom meets the grid's. Only readouts on the top row, because a stuck readout anywhere
+    // else would ride over the band. Not during a drag, whose geometry is the cells'.
+    let pinned = (item.panel.dashboard().is_some() && rendered.y == 0
+        || item.panel == PanelKind::Info)
+        && !drag.read().as_ref().is_some_and(|d| d.moved);
+    let top = if pinned {
+        let floor = (container_height(&state.read(), &config) - height).max(y);
+        format!("clamp({y}px, var(--grid-scroll, 0px), {floor}px)")
+    } else {
+        format!("{y}px")
+    };
+
     let mut classes = String::from("panel surface");
     if placing {
         classes.push_str(" surface--placing");
+    }
+    if pinned {
+        classes.push_str(" surface--pinned");
     }
     if item.collapsed {
         classes.push_str(" is-collapsed");
@@ -805,7 +854,7 @@ fn GridSurface(
             // retired. A dashboard's slug could not be enumerated at all.
             "data-dragging": dragging,
             "aria-label": "{title}",
-            style: "position: absolute; left: {x}px; top: {y}px; width: {width}px; height: {height}px;",
+            style: "position: absolute; left: {x}px; top: {top}; width: {width}px; height: {height}px;",
 
             header {
                 class: "panel-head",

@@ -270,6 +270,9 @@ pub fn fit_item(items: &mut [GridItem], panel: PanelKind, rows: u32) -> bool {
 /// depth — Power Pools wedged under the one-line Defense panel, Powers held down by Resistance.
 /// Giving the row one height gives it one bottom edge, and the columns one line to start on.
 ///
+/// Only readouts share. The fitted build columns keep their own heights: Available raised to
+/// the height of Powers beside it would push the pools stacked under it down by the difference.
+///
 /// Only visible, unfolded surfaces with a measurement take part. A folded surface is one row
 /// by choice and stays that way; its stale measurement must not hold its neighbours open.
 /// Surfaces with no measurement yet are left out until their first one lands.
@@ -284,10 +287,13 @@ pub fn shared_row_heights(
         .collect();
     fitted
         .iter()
-        .map(|(item, _)| {
+        .map(|(item, own)| {
+            if item.panel.dashboard().is_none() {
+                return (item.panel, *own);
+            }
             let row = fitted
                 .iter()
-                .filter(|(other, _)| other.y == item.y)
+                .filter(|(other, _)| other.panel.dashboard().is_some() && other.y == item.y)
                 .map(|(_, rows)| *rows)
                 .max()
                 .unwrap_or(0);
@@ -615,15 +621,17 @@ mod tests {
 
     /// The shipped bug: each build column rose to the depth of whichever readout sat above it,
     /// so Power Pools started under the one-line Defense panel. Sharing the row's height puts
-    /// all three columns on one line, under the tallest readout.
+    /// both columns on one line, under the tallest readout, with the pools under Available.
     #[test]
     fn the_build_columns_start_on_one_line_under_a_ragged_band() {
         let items = default_with_band([3, 1, 6, 5]);
-        let tops: Vec<u32> = [PanelKind::Available, PanelKind::Pools, PanelKind::Powers]
+        let tops: Vec<u32> = [PanelKind::Available, PanelKind::Powers]
             .iter()
             .map(|panel| item(&items, *panel).y)
             .collect();
-        assert_eq!(tops, vec![6, 6, 6]);
+        assert_eq!(tops, vec![6, 6]);
+        let available = item(&items, PanelKind::Available);
+        assert_eq!(item(&items, PanelKind::Pools).y, available.y + available.h);
         for panel in dashboards(1..=4) {
             assert_eq!(item(&items, panel).h, 6, "{panel:?}");
         }

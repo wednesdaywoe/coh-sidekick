@@ -277,21 +277,21 @@ impl PanelKind {
     /// re-measured whenever that content or the surface's width changes, so `h` for them is
     /// a value the layout carries rather than a size anyone picked.
     ///
-    /// The workspace surfaces are the other kind, and deliberately so. Powers, Available and
-    /// Info grow without bound as a build is made; fitting them would mean a page metres
-    /// tall with the totals scrolled off the end of it. They keep a stored height and own
-    /// their scroll, which is what a document pane is for.
+    /// Powers, Available and Pools fit too. They used to keep a stored height and own their
+    /// scroll, on the argument that a fitted workspace makes the page tall. It does, but one
+    /// page scroll was what the beta had, and a grid of panels each scrolling on its own was
+    /// the complaint (feedback, 2026-10-10: "now I gotta scroll around and reposition things").
     ///
-    /// Set Bonuses is not fitted. It reads like a readout on a fresh build and grows like a
-    /// workspace on a finished one, and it is the second kind that has to be sized for.
+    /// Info is not fitted: it is read beside whatever is under the pointer, and a page-tall
+    /// Info would be blank below its first screen. Set Bonuses is not fitted either. It reads
+    /// like a readout on a fresh build and grows like a workspace on a finished one.
     pub fn fits_content(&self) -> bool {
         match self {
-            PanelKind::Dashboard(_) => true,
-            PanelKind::Powers
+            PanelKind::Dashboard(_)
+            | PanelKind::Powers
             | PanelKind::Available
-            | PanelKind::Pools
-            | PanelKind::SetBonuses
-            | PanelKind::Info => false,
+            | PanelKind::Pools => true,
+            PanelKind::SetBonuses | PanelKind::Info => false,
         }
     }
 
@@ -805,12 +805,21 @@ impl GridItem {
         let full = COLUMN_START_ROW + tall;
         // The row under the columns, where an off-grid surface waits.
         let below = full;
+        // The pools sit under Available, as the beta had them, rather than in a column of
+        // their own (LAY8). Both fit their content now, so the stack costs page height rather
+        // than clipping either list, and the two cells it frees widen Powers to seven: enough
+        // for its four tracks (`.power-tracks`), which gives the slotted pools a column there.
+        let rail = rail_rows(tall);
         let mut items = vec![
-            GridItem::new(PanelKind::Available, 0, COLUMN_START_ROW, 3, tall),
-            // A column of its own rather than the foot of Available's (LAY8), so the pools
-            // take a column's full height and `pools_seat`'s split does not apply at this step.
-            GridItem::new(PanelKind::Pools, 3, COLUMN_START_ROW, 2, tall),
-            GridItem::new(PanelKind::Powers, 5, COLUMN_START_ROW, 5, tall),
+            GridItem::new(PanelKind::Available, 0, COLUMN_START_ROW, 3, rail),
+            GridItem::new(
+                PanelKind::Pools,
+                0,
+                COLUMN_START_ROW + rail,
+                3,
+                (tall - rail).max(POOLS_MIN_ROWS),
+            ),
+            GridItem::new(PanelKind::Powers, 3, COLUMN_START_ROW, 7, tall),
             GridItem::new(PanelKind::Info, 10, 0, 2, full),
             GridItem::new(PanelKind::SetBonuses, 6, below, 2, tall).off_grid(),
         ];
