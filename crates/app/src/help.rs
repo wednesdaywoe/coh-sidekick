@@ -169,6 +169,7 @@ pub enum Surface {
     BuildHandoff,
     PasteBuild,
     ForumExport,
+    PrintSheet,
     ExportImage,
     // Settings
     MainMenu,
@@ -184,7 +185,7 @@ impl Surface {
     /// list cannot silently fall behind the enum — and `help_covers_every_surface` reads this
     /// array, so a surface added here with no topic reds rather than disappearing.
     #[allow(dead_code)] // read by the coverage and symbol tests; that is the whole job.
-    pub const ALL: [Surface; 48] = {
+    pub const ALL: [Surface; 49] = {
         match Surface::Identity {
             Surface::Identity
             | Surface::PowersetSelect
@@ -227,6 +228,7 @@ impl Surface {
             | Surface::BuildHandoff
             | Surface::PasteBuild
             | Surface::ForumExport
+            | Surface::PrintSheet
             | Surface::ExportImage
             | Surface::MainMenu
             | Surface::Theme
@@ -277,6 +279,7 @@ impl Surface {
             Surface::BuildHandoff,
             Surface::PasteBuild,
             Surface::ForumExport,
+            Surface::PrintSheet,
             Surface::ExportImage,
             Surface::MainMenu,
             Surface::Theme,
@@ -337,6 +340,7 @@ impl Surface {
             Surface::BuildHandoff => "build_io::BuildHandoffEntries",
             Surface::PasteBuild => "build_io::PasteBuildHost",
             Surface::ForumExport => "forum_export::ForumExportHost",
+            Surface::PrintSheet => "print_sheet::PrintSheetHost",
             Surface::ExportImage => "export_image::ExportImageHost",
             Surface::MainMenu => "main_menu::FileMenu",
             Surface::Theme => "theme::apply_theme",
@@ -1162,6 +1166,18 @@ pub const TOPICS: &[Topic] = &[
         keywords: &[
             "forum", "post", "bbcode", "markdown", "reddit", "discord", "share", "mids",
         ],
+    },
+    Topic {
+        id: "files-print",
+        title: "Printing the build",
+        category: Category::Files,
+        surface: Surface::PrintSheet,
+        body: "Prints a sheet of the build: the totals the dashboard shows, then every power by \
+               powerset with what is slotted in it and the level each slot was gained at. \
+               Detailed gives each slot its own line, with the set and the piece's level; \
+               Compact puts each power on one line, each slot as what it enhances and its level, \
+               the way Mids prints a build.",
+        keywords: &["print", "paper", "pdf", "sheet", "compact", "slot levels", "mids"],
     },
     Topic {
         id: "files-image",
