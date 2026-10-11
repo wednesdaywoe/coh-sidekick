@@ -249,6 +249,10 @@ pub struct PowerProjection {
     /// unresolved rows for a power that deals none; components present but unresolved rows too
     /// when no target is chosen, because a damage atom's gate names who is being hit.
     pub damage: PowerDamage,
+    /// The distance bands the player can choose between for this power — empty when its reach
+    /// already settles every distance question it asks, or when choosing would settle nothing
+    /// ([`crate::distance::live_bands`]).
+    pub distance_bands: Vec<crate::distance::DistanceBand>,
 }
 
 pub(crate) fn extra_object<'a>(power: &'a Power, key: &str) -> Option<&'a Map<String, Value>> {
@@ -447,6 +451,7 @@ fn project_one(
     internal_name: &str,
     slots: &[Option<coh_data::Enhancement>],
     targets_hit: Option<u32>,
+    target_distance: Option<f64>,
     state: &CharacterState,
     gate: &SourceContext,
     g: &GlobalBonuses,
@@ -464,6 +469,12 @@ fn project_one(
     let global_range = g.range / 100.0;
 
     let power = crate::gather::resolve_power(db, powerset, internal_name)?;
+    // How far this power's target is: the build-wide context answers who, this answers where.
+    let gate = &SourceContext {
+        distance: Some(crate::distance::bounds(power, target_distance)),
+        distance_span: crate::distance::span(power, target_distance),
+        ..gate.clone()
+    };
     let enhancement = power_enhancement(slots, power, alpha, level, &state.combat, db, errors);
 
     // Every value below describes the power the surface is SHOWING, not the one the build holds:
@@ -572,8 +583,19 @@ fn project_one(
     // The bag comes from the shown power; the stacking slider reads the BASE one, because that
     // is the power the slider itself is offered for (the beta's `getStackingInfo(power)` and
     // `withTargetsHit(power, …)` both read the base while the bag comes from the merged one).
+    let settled = crate::distance::with_settled_gates(shown, gate);
+    // Asked of the reach, not of the pick: whether a choice is worth offering cannot depend on
+    // whether one has been made.
+    let distance_bands = crate::distance::live_bands(
+        power,
+        &SourceContext {
+            distance: Some(crate::distance::bounds(power, None)),
+            distance_span: None,
+            ..gate.clone()
+        },
+    );
     let mut granted_magnitudes = resolve_granted_magnitudes(
-        shown,
+        &settled,
         power,
         archetype,
         level,
@@ -617,6 +639,7 @@ fn project_one(
         granted_magnitudes,
         enhancement_bonuses: enhancement.iter().collect(),
         damage,
+        distance_bands,
     })
 }
 
@@ -748,6 +771,7 @@ pub fn project_powers(
                 &selection.internal_name,
                 &selection.slots,
                 selection.targets_hit,
+                selection.target_distance,
                 state,
                 &gate,
                 g,
@@ -772,6 +796,7 @@ pub fn project_powers(
             &request.internal_name,
             &[],
             request.targets_hit,
+            None,
             state,
             &gate,
             g,
@@ -833,6 +858,11 @@ pub fn damage_ceiling(
         .flat_map(|powerset| powerset.powers.iter())
         .filter_map(|power| {
             let enhancement = full_slot_damage_enhancement(power, level, db)?;
+            // At the power's reach, as an unchosen distance reads everywhere else.
+            let gate = SourceContext {
+                distance: Some(crate::distance::bounds(power, None)),
+                ..gate.clone()
+            };
             let damage = resolve_power_damage(
                 power,
                 archetype,

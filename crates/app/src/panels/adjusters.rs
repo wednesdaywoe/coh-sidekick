@@ -20,6 +20,11 @@
 //!   both, as in the engine ([`coh_math::stacking`]), and it is stored on the pick itself
 //!   ([`coh_data::SelectedPower::targets_hit`]) because internal names are not unique.
 //!
+//! * **Distance to target** — how far away the foe is when the power is used, for a power whose
+//!   own gates cut its range into bands (Savage Leap's Blood Frenzy, one to three by the band).
+//!   The bands are the power's ([`coh_math::distance::bands`]), and the choice is stored on the
+//!   pick ([`coh_data::SelectedPower::target_distance`]) for the same reason as targets hit.
+//!
 //! The build-wide half of the same vocabulary (stances, forms, global mechanics) is not here:
 //! it is one decision for the whole character and it lives in the Combat popover
 //! ([`crate::panels::combat`]). Two controls over one value can disagree; one cannot.
@@ -48,12 +53,27 @@ pub struct PowerAdjusters {
     /// build does not hold it — the count is stored on the pick, so a previewed power has
     /// nowhere to keep it.
     pub targets_hit: Option<TargetsHit>,
+    /// The distance choice. `None` when the power's reach already settles every distance gate
+    /// it has, or when the build does not hold it.
+    pub distance: Option<TargetDistance>,
 }
 
 impl PowerAdjusters {
     pub fn is_empty(&self) -> bool {
-        self.conditionals.is_empty() && self.buff_pets.is_empty() && self.targets_hit.is_none()
+        self.conditionals.is_empty()
+            && self.buff_pets.is_empty()
+            && self.targets_hit.is_none()
+            && self.distance.is_none()
     }
+}
+
+/// One held pick's distance choice: which pick it writes, the bands it offers, and its value.
+#[derive(Clone, PartialEq)]
+pub struct TargetDistance {
+    pub powerset: String,
+    pub internal_name: String,
+    pub bands: Vec<coh_math::distance::DistanceBand>,
+    pub value: Option<f64>,
 }
 
 /// One held pick's targets-hit input: which pick it writes, its range, and what it holds now.
@@ -103,6 +123,9 @@ pub fn AdjusterBlock(adjusters: PowerAdjusters) -> Element {
             }
             if let Some(targets_hit) = &adjusters.targets_hit {
                 TargetsHitRow { targets_hit: targets_hit.clone() }
+            }
+            if let Some(distance) = &adjusters.distance {
+                DistanceRow { distance: distance.clone() }
             }
             if let Some((key , active)) = &adjusters.buff_pet_toggle {
                 for pet in adjusters.buff_pets.iter() {
@@ -377,6 +400,64 @@ fn TargetsHitRow(targets_hit: TargetsHit) -> Element {
                                 }
                             });
                     },
+                }
+            }
+        }
+    }
+}
+
+/// A band's label in feet. The furthest band is open-ended: range enhancement reaches past it.
+fn band_label(band: &coh_math::distance::DistanceBand, last: bool) -> String {
+    if last {
+        format!("{}+ ft", band.lo)
+    } else {
+        format!("{}–{} ft", band.lo, band.hi)
+    }
+}
+
+/// The distance choice: "Not set" leaves the power's reach standing in, and the rows that
+/// depend on the band say so until one is picked.
+#[component]
+fn DistanceRow(distance: TargetDistance) -> Element {
+    let session = use_context::<BuildSession>();
+    let write = move |powerset: String, internal_name: String, value: Option<f64>| {
+        session.commit(move |state| {
+            if let Some(pick) = state.selected_power_mut(&powerset, &internal_name) {
+                pick.target_distance = value;
+            }
+        });
+    };
+    let last = distance.bands.len().saturating_sub(1);
+    let chosen = distance
+        .value
+        .and_then(|value| distance.bands.iter().position(|band| band.holds(value)));
+    let unset = (distance.powerset.clone(), distance.internal_name.clone());
+
+    rsx! {
+        div { class: "adjuster-row adjuster-row-stack",
+            span { class: "adjuster-label", "Distance to target" }
+            div { class: "combat-choices", role: "group", "aria-label": "Distance to target",
+                button {
+                    class: "combat-choice",
+                    "aria-pressed": chosen.is_none(),
+                    onclick: move |_| write(unset.0.clone(), unset.1.clone(), None),
+                    "Not set"
+                }
+                for (index , band) in distance.bands.iter().enumerate() {
+                    {
+                        let powerset = distance.powerset.clone();
+                        let internal_name = distance.internal_name.clone();
+                        let midpoint = band.midpoint();
+                        rsx! {
+                            button {
+                                key: "{index}",
+                                class: "combat-choice",
+                                "aria-pressed": chosen == Some(index),
+                                onclick: move |_| write(powerset.clone(), internal_name.clone(), Some(midpoint)),
+                                {band_label(band, index == last)}
+                            }
+                        }
+                    }
                 }
             }
         }

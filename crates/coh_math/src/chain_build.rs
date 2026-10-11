@@ -740,6 +740,10 @@ pub fn schedule_chain(
     let mut walk = WalkState::new(meter);
 
     let defs = candidate_defs(state, db);
+    let chosen_distance: HashMap<String, Option<f64>> = state
+        .all_selected()
+        .map(|selection| (selection.address(), selection.target_distance))
+        .collect();
     let base_owned = crate::gather::owned_powers(state, db);
     let gathered = crate::gather::gather_active_powers(state, db);
     let source_modes = gathered.source_modes;
@@ -838,6 +842,13 @@ pub fn schedule_chain(
                 in_combat: state.combat.in_combat,
                 hidden: walk.hidden_at(end, declared_hidden),
                 target: target.clone(),
+                distance: Some(crate::distance::bounds(
+                    def,
+                    chosen_distance
+                        .get(&base.powers[base_index].id)
+                        .copied()
+                        .flatten(),
+                )),
             };
             let mut applied = Vec::new();
             match walk.apply_cast_edges(def, end, &env, &mut applied) {

@@ -1054,11 +1054,18 @@ impl EvalContext for Magnitude<'_> {
                 .resolve("source>", &[Value::Symbol(CURRENT_TO_HIT.into())])
                 .map_err(|_| EvalError::Indeterminate("@ToHit".into())),
             "rand" | "@ToHitRoll" => Ok(Value::Die(reader.into())),
-            "distance" => Ok(Value::Range {
-                lo: 0.0,
-                hi: f64::INFINITY,
-                over: "distance".into(),
-            }),
+            "distance" => {
+                let (lo, hi) = self.build.distance_span.unwrap_or((0.0, f64::INFINITY));
+                Ok(if lo == hi {
+                    Value::Number(lo)
+                } else {
+                    Value::Range {
+                        lo,
+                        hi,
+                        over: "distance".into(),
+                    }
+                })
+            }
             _ => self.build.resolve(reader, operands),
         }
     }

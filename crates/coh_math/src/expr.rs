@@ -796,9 +796,53 @@ fn comparison(op: Op, a: Value, b: Value) -> Result<Value, EvalError> {
             )),
         },
 
+        // A range against a number is decided when every value in it answers alike — Attune's
+        // `distance 40 <=` over a 20 ft reach — and Indeterminate otherwise, naming the register
+        // so the line says what would settle it. The endpoints are treated as reachable, which
+        // can only leave a half-open range (a die's) Indeterminate where it was decided, never
+        // the reverse.
+        (Value::Range { lo, hi, over }, Value::Number(k)) => range_comparison(op, lo, hi, k)
+            .map(boolean)
+            .ok_or(EvalError::Indeterminate(over)),
+        (Value::Number(k), Value::Range { lo, hi, over }) => {
+            range_comparison(flipped(op), lo, hi, k)
+                .map(boolean)
+                .ok_or(EvalError::Indeterminate(over))
+        }
+
         (a, b) => Err(EvalError::Indeterminate(
             format!("a comparison of {} and {}", describe(&a), describe(&b)).into(),
         )),
+    }
+}
+
+/// `x op k` for every `x` in `[lo, hi]`: `Some` when they all agree.
+fn range_comparison(op: Op, lo: f64, hi: f64, k: f64) -> Option<bool> {
+    let (all, none) = match op {
+        Op::Less => (hi < k, lo >= k),
+        Op::LessEqual => (hi <= k, lo > k),
+        Op::Greater => (lo > k, hi <= k),
+        Op::GreaterEqual => (lo >= k, hi < k),
+        Op::NumberEqual => (false, k < lo || k > hi),
+        _ => return None,
+    };
+    if all {
+        Some(true)
+    } else if none {
+        Some(false)
+    } else {
+        None
+    }
+}
+
+/// The comparison with its operands swapped: `k < x` is `x > k`.
+fn flipped(op: Op) -> Op {
+    match op {
+        Op::Less => Op::Greater,
+        Op::LessEqual => Op::GreaterEqual,
+        Op::Greater => Op::Less,
+        Op::GreaterEqual => Op::LessEqual,
+        other => other,
     }
 }
 
@@ -933,6 +977,16 @@ pub struct SourceContext {
     /// `caster_archetypes` stamp can't carry them; answering it here lets `&&` absorb the other
     /// archetypes' arms instead of reporting them unresolved.
     pub caster_class: Option<String>,
+    /// `distance`: how far the target is, in feet, as the bounds the caller can vouch for — the
+    /// band the player chose for this power, or `0` to the power's reach when they chose none
+    /// ([`crate::distance`]). `None` (the default, and every context that is not about one
+    /// power) leaves the reader Indeterminate.
+    pub distance: Option<(f64, f64)>,
+    /// The span a damage program that SCALES with distance is valued over: the chosen band
+    /// whole, where [`Self::distance`] holds a point inside it. A gate is constant across a band
+    /// (the bands are cut at its thresholds) while Savage Leap's damage climbs through one, so
+    /// the point answers gates and the span answers magnitudes. `None` is any distance at all.
+    pub distance_span: Option<(f64, f64)>,
 }
 
 /// The reader a target-rank gate asks through. It is Indeterminate exactly when no rank is chosen,
@@ -1021,6 +1075,10 @@ impl EvalContext for SourceContext {
             "source.Mode?" | "Source.Mode?" | "source.mode?" => {
                 Ok(boolean(self.source_modes.contains(&name(0)?)))
             }
+            "distance" => match self.distance {
+                Some((lo, hi)) => Ok(range(lo, hi, reader.into())),
+                None => indeterminate(),
+            },
             "target.mode?" | "target.Mode?" => {
                 let mode = name(0)?;
                 match &self.target {
