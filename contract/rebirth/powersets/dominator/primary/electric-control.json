@@ -2067,6 +2067,9 @@
      "label": "Recovery"
     }
    ],
+   "targetModes": [
+    "Chain_Jolt_Mode"
+   ],
    "setsModes": [
     "Chain_Jolt_Mode"
    ]
@@ -3153,6 +3156,9 @@
       }
      }
     }
+   ],
+   "targetModes": [
+    "Chain_Confuse_Mode"
    ],
    "setsModes": [
     "Chain_Confuse_Mode"

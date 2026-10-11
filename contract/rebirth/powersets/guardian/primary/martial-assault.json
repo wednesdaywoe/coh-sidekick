@@ -850,6 +850,9 @@
      "Damage"
     ]
    ],
+   "targetModes": [
+    "Chain_Induction"
+   ],
    "setsModes": [
     "Chain_Induction"
    ]

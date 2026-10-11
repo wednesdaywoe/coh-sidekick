@@ -923,6 +923,7 @@ fn hydrate_power(
         inherent_category: None,
         // A reading condition, not build design (rule 5).
         targets_hit: None,
+        target_distance: None,
     }
 }
 

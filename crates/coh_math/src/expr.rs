@@ -796,9 +796,53 @@ fn comparison(op: Op, a: Value, b: Value) -> Result<Value, EvalError> {
             )),
         },
 
+        // A range against a number is decided when every value in it answers alike — Attune's
+        // `distance 40 <=` over a 20 ft reach — and Indeterminate otherwise, naming the register
+        // so the line says what would settle it. The endpoints are treated as reachable, which
+        // can only leave a half-open range (a die's) Indeterminate where it was decided, never
+        // the reverse.
+        (Value::Range { lo, hi, over }, Value::Number(k)) => range_comparison(op, lo, hi, k)
+            .map(boolean)
+            .ok_or(EvalError::Indeterminate(over)),
+        (Value::Number(k), Value::Range { lo, hi, over }) => {
+            range_comparison(flipped(op), lo, hi, k)
+                .map(boolean)
+                .ok_or(EvalError::Indeterminate(over))
+        }
+
         (a, b) => Err(EvalError::Indeterminate(
             format!("a comparison of {} and {}", describe(&a), describe(&b)).into(),
         )),
+    }
+}
+
+/// `x op k` for every `x` in `[lo, hi]`: `Some` when they all agree.
+fn range_comparison(op: Op, lo: f64, hi: f64, k: f64) -> Option<bool> {
+    let (all, none) = match op {
+        Op::Less => (hi < k, lo >= k),
+        Op::LessEqual => (hi <= k, lo > k),
+        Op::Greater => (lo > k, hi <= k),
+        Op::GreaterEqual => (lo >= k, hi < k),
+        Op::NumberEqual => (false, k < lo || k > hi),
+        _ => return None,
+    };
+    if all {
+        Some(true)
+    } else if none {
+        Some(false)
+    } else {
+        None
+    }
+}
+
+/// The comparison with its operands swapped: `k < x` is `x > k`.
+fn flipped(op: Op) -> Op {
+    match op {
+        Op::Less => Op::Greater,
+        Op::LessEqual => Op::GreaterEqual,
+        Op::Greater => Op::Less,
+        Op::GreaterEqual => Op::LessEqual,
+        other => other,
     }
 }
 
@@ -933,6 +977,21 @@ pub struct SourceContext {
     /// `caster_archetypes` stamp can't carry them; answering it here lets `&&` absorb the other
     /// archetypes' arms instead of reporting them unresolved.
     pub caster_class: Option<String>,
+    /// `distance`: how far the target is, in feet, as the bounds the caller can vouch for — the
+    /// band the player chose for this power, or `0` to the power's reach when they chose none
+    /// ([`crate::distance`]). `None` (the default, and every context that is not about one
+    /// power) leaves the reader Indeterminate.
+    pub distance: Option<(f64, f64)>,
+    /// The span a damage program that SCALES with distance is valued over: the chosen band
+    /// whole, where [`Self::distance`] holds a point inside it. A gate is constant across a band
+    /// (the bands are cut at its thresholds) while Savage Leap's damage climbs through one, so
+    /// the point answers gates and the span answers magnitudes. `None` is any distance at all.
+    pub distance_span: Option<(f64, f64)>,
+    /// The target is one this power is landing on, so it is alive: its hit points are some
+    /// amount above zero. Settles `kHitPoints% target> 0 >` (and fails its defeated twin,
+    /// `… 0 ==`) without claiming a figure, so a threshold such as Scourge's stays open. Only a
+    /// per-power projection sets it; the totals context has no one target to vouch for.
+    pub target_alive: bool,
 }
 
 /// The reader a target-rank gate asks through. It is Indeterminate exactly when no rank is chosen,
@@ -958,6 +1017,12 @@ pub struct TargetIdentity {
     pub archetype_class: Option<String>,
     /// `enttype target>`: `critter` or `player`, the PvE/PvP fork every fork's damage atoms carry.
     pub entity_type: String,
+    /// `<mode> target.mode?`: the modes the build's own running powers set on whoever they are
+    /// aimed at — Attune marks its target `SonicAtuneFoe`, and every Sonic Melee bonus asks for
+    /// it. Both spellings, bare and `k`-prefixed, as [`SourceContext::source_modes`] holds them.
+    /// A mode absent here is Indeterminate rather than false: a teammate, or the target itself,
+    /// can set it too, and the build cannot say whether one has.
+    pub modes: HashSet<String>,
 }
 
 impl EvalContext for SourceContext {
@@ -1015,6 +1080,17 @@ impl EvalContext for SourceContext {
             "source.Mode?" | "Source.Mode?" | "source.mode?" => {
                 Ok(boolean(self.source_modes.contains(&name(0)?)))
             }
+            "distance" => match self.distance {
+                Some((lo, hi)) => Ok(range(lo, hi, reader.into())),
+                None => indeterminate(),
+            },
+            "target.mode?" | "target.Mode?" => {
+                let mode = name(0)?;
+                match &self.target {
+                    Some(target) if target.modes.contains(&mode) => Ok(boolean(true)),
+                    _ => indeterminate(),
+                }
+            }
             "isPVPMap?" => self
                 .is_pvp_map
                 .map(boolean)
@@ -1025,10 +1101,20 @@ impl EvalContext for SourceContext {
             // what it's holding) is live combat state no projection knows, so it stays
             // Indeterminate rather than defaulted into a wrong definite answer.
             "target>" | "Target>" => {
+                let attribute = name(0)?.to_ascii_lowercase();
+                if self.target_alive {
+                    match attribute.as_str() {
+                        "khitpoints%" => return Ok(range(f64::MIN_POSITIVE, 100.0, reader.into())),
+                        "cur.khitpoints" => {
+                            return Ok(range(f64::MIN_POSITIVE, f64::INFINITY, reader.into()));
+                        }
+                        _ => {}
+                    }
+                }
                 let Some(target) = self.target.as_ref() else {
                     return indeterminate();
                 };
-                match name(0)?.to_ascii_lowercase().as_str() {
+                match attribute.as_str() {
                     // A target with no stated rank answers this one UNKNOWN rather than
                     // picking a rank: the gates here fork the number (a crit against a minion
                     // and against a boss are different probabilities), so a guess would be a

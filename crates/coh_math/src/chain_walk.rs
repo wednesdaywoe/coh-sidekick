@@ -298,6 +298,9 @@ pub struct EdgeEnv {
     /// Who the rotation is hitting — Total Focus's bank branches fork on
     /// `enttype target> critter eq`, so the chosen target answers them.
     pub target: Option<crate::expr::TargetIdentity>,
+    /// How far that target is when this power is cast ([`crate::distance::bounds`]) — Savage
+    /// Leap's Blood Frenzy grant counts by the band it was used from.
+    pub distance: Option<(f64, f64)>,
 }
 
 /// The context one edge condition is answered against: the static ownership with the live
@@ -321,6 +324,7 @@ pub fn edge_context(env: &EdgeEnv, overlay: &BTreeMap<String, f64>) -> SourceCon
         source_modes: crate::gather::live_modes(&env.source_modes, env.in_combat),
         source_attributes,
         target: env.target.clone(),
+        distance: env.distance,
         ..Default::default()
     }
 }

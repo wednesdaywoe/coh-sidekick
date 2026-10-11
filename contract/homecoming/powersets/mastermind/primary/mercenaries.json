@@ -214,6 +214,9 @@
      true
     ]
    ],
+   "targetModes": [
+    "FocusFire_Burst"
+   ],
    "setsModes": [
     "FocusFire_Burst",
     "PersonalAttack1"
@@ -789,6 +792,9 @@
      "chance": 0.25,
      "label": "Knockback"
     }
+   ],
+   "targetModes": [
+    "FocusFire_Slug"
    ],
    "setsModes": [
     "FocusFire_Slug",
@@ -1829,6 +1835,9 @@
      "chance": 0.5,
      "label": "Knockback"
     }
+   ],
+   "targetModes": [
+    "FocusFire_M30"
    ],
    "setsModes": [
     "FocusFire_M30",

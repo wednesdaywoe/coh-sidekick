@@ -249,6 +249,10 @@ pub struct PowerProjection {
     /// unresolved rows for a power that deals none; components present but unresolved rows too
     /// when no target is chosen, because a damage atom's gate names who is being hit.
     pub damage: PowerDamage,
+    /// The distance bands the player can choose between for this power — empty when its reach
+    /// already settles every distance question it asks, or when choosing would settle nothing
+    /// ([`crate::distance::live_bands`]).
+    pub distance_bands: Vec<crate::distance::DistanceBand>,
 }
 
 pub(crate) fn extra_object<'a>(power: &'a Power, key: &str) -> Option<&'a Map<String, Value>> {
@@ -342,9 +346,14 @@ fn reachable_global_range(power: &Power, global_range: f64) -> f64 {
 /// ceiling it would.
 ///
 /// With no target chosen the target readers stay Indeterminate, which is the honest answer: the
-/// gates ask who is being hit and nobody has said. `owned_powers` answers the caster-ownership
-/// gates from the build's own picks and from the transient states its conditional toggles declare
-/// ([`crate::gather::owned_powers`]); a path neither producer carries is state this build is not
+/// gates ask who is being hit and nobody has said.
+///
+/// `target_modes` are the modes the build's running powers set on what they hit, so a Sonic
+/// Melee attack against a target Attune is running on reads its bonus (`kSonicAtuneFoe
+/// target.mode?`). Attune holds on one foe, and the planner's target is the foe being hit.
+///
+/// `owned_powers` answers the caster-ownership gates from the build's own picks and from the
+/// transient states its conditional toggles declare ([`crate::gather::owned_powers`]); a path neither producer carries is state this build is not
 /// in, and absent still means not owned. Homecoming's fast snipe reads
 /// `Set_Bonus.Global_Bonus.Experienced_Marksman source.ownPower?`, which stays false because
 /// nothing in any fork's export GRANTS that power — 34 unique-IO boosts grant their
@@ -360,6 +369,7 @@ fn reachable_global_range(power: &Power, global_range: f64) -> f64 {
 fn gate_context(
     state: &CharacterState,
     source_modes: &HashSet<String>,
+    target_modes: &HashSet<String>,
     g: &GlobalBonuses,
     db: &PowerDatabase,
     owned: &HashMap<String, f64>,
@@ -402,6 +412,7 @@ fn gate_context(
         target: Some(TargetIdentity {
             archetype_class: target_class,
             entity_type: target_entity.to_string(),
+            modes: target_modes.clone(),
         }),
         source_modes: crate::gather::live_modes(source_modes, state.combat.in_combat),
         source_attributes,
@@ -440,6 +451,7 @@ fn project_one(
     internal_name: &str,
     slots: &[Option<coh_data::Enhancement>],
     targets_hit: Option<u32>,
+    target_distance: Option<f64>,
     state: &CharacterState,
     gate: &SourceContext,
     g: &GlobalBonuses,
@@ -457,6 +469,13 @@ fn project_one(
     let global_range = g.range / 100.0;
 
     let power = crate::gather::resolve_power(db, powerset, internal_name)?;
+    // How far this power's target is: the build-wide context answers who, this answers where.
+    let gate = &SourceContext {
+        distance: Some(crate::distance::bounds(power, target_distance)),
+        distance_span: crate::distance::span(power, target_distance),
+        target_alive: true,
+        ..gate.clone()
+    };
     let enhancement = power_enhancement(slots, power, alpha, level, &state.combat, db, errors);
 
     // Every value below describes the power the surface is SHOWING, not the one the build holds:
@@ -565,8 +584,20 @@ fn project_one(
     // The bag comes from the shown power; the stacking slider reads the BASE one, because that
     // is the power the slider itself is offered for (the beta's `getStackingInfo(power)` and
     // `withTargetsHit(power, …)` both read the base while the bag comes from the merged one).
+    let settled = crate::distance::with_settled_gates(shown, gate);
+    // Asked of the reach, not of the pick: whether a choice is worth offering cannot depend on
+    // whether one has been made.
+    let distance_bands = crate::distance::live_bands(
+        power,
+        &SourceContext {
+            distance: Some(crate::distance::bounds(power, None)),
+            distance_span: None,
+            ..gate.clone()
+        },
+        state.dataset,
+    );
     let mut granted_magnitudes = resolve_granted_magnitudes(
-        shown,
+        &settled,
         power,
         archetype,
         level,
@@ -610,6 +641,7 @@ fn project_one(
         granted_magnitudes,
         enhancement_bonuses: enhancement.iter().collect(),
         damage,
+        distance_bands,
     })
 }
 
@@ -718,6 +750,7 @@ pub struct ToggleEndurance {
 pub fn project_powers(
     state: &CharacterState,
     source_modes: &HashSet<String>,
+    target_modes: &HashSet<String>,
     g: &GlobalBonuses,
     effective_level_diff: i32,
     alpha: &AlphaEnhancement,
@@ -729,7 +762,7 @@ pub fn project_powers(
     // The reduction clamps and the gate context are properties of the build, not of a power:
     // resolve each once here rather than re-reading the caps for every projection.
     let clamps = ReductionClamps::for_build(state, db);
-    let gate = gate_context(state, source_modes, g, db, owned);
+    let gate = gate_context(state, source_modes, target_modes, g, db, owned);
     let mut projections: Vec<PowerProjection> = state
         .all_selected()
         .filter_map(|selection| {
@@ -740,6 +773,7 @@ pub fn project_powers(
                 &selection.internal_name,
                 &selection.slots,
                 selection.targets_hit,
+                selection.target_distance,
                 state,
                 &gate,
                 g,
@@ -764,6 +798,7 @@ pub fn project_powers(
             &request.internal_name,
             &[],
             request.targets_hit,
+            None,
             state,
             &gate,
             g,
@@ -804,13 +839,14 @@ pub fn project_powers(
 pub fn damage_ceiling(
     state: &CharacterState,
     source_modes: &HashSet<String>,
+    target_modes: &HashSet<String>,
     g: &GlobalBonuses,
     db: &PowerDatabase,
     owned: &HashMap<String, f64>,
 ) -> Option<f64> {
     let archetype = state.archetype.id.as_deref()?;
     let level = state.level as i32;
-    let gate = gate_context(state, source_modes, g, db, owned);
+    let gate = gate_context(state, source_modes, target_modes, g, db, owned);
     let global_damage = g.damage / 100.0;
 
     // A candidate that cannot resolve drops out of the maximum rather than filing a marker: these
@@ -824,6 +860,12 @@ pub fn damage_ceiling(
         .flat_map(|powerset| powerset.powers.iter())
         .filter_map(|power| {
             let enhancement = full_slot_damage_enhancement(power, level, db)?;
+            // At the power's reach, as an unchosen distance reads everywhere else.
+            let gate = SourceContext {
+                distance: Some(crate::distance::bounds(power, None)),
+                target_alive: true,
+                ..gate.clone()
+            };
             let damage = resolve_power_damage(
                 power,
                 archetype,

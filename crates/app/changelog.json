@@ -2,6 +2,10 @@
     {
     "date": "2026-10-11",
     "items": [
+      { "id": "sonic-attune-bonuses", "type": "fix", "message": "Homecoming and Brainstorm: Attune now switches on the extra damage and effects Sonic Melee attacks deal to an Attuned target" },
+      { "id": "distance-to-target", "type": "feat", "message": "Savage Leap and Feral Charge get a Distance to target choice in the Info panel, and their damage and Blood Frenzy follow it, in the Info panel and the attack chain. Attune's damage and debuffs now count, since its target is always within its reach" },
+      { "id": "foe-debuff-res-is-debuff", "type": "fix", "message": "Homecoming and Brainstorm: Attune, Sonic Thrust, Strident Echo, Earsplitter, Sonic Siphon and Acid Arrow list the debuff resistance they take from an enemy under Debuffs instead of Buffs, and no longer add it to your own totals when switched on" },
+      { "id": "target-alive-damage", "type": "fix", "message": "DNA Siphon and Glitz now show the damage they deal, instead of listing it as waiting on a condition" },
       { "id": "floating-tool-panel", "type": "update", "message": "Beginning to implement floating tool panels: The Detailed Totals tool now appears as a floating resizble panel instead of a modal." },
       { "id": "veat-branch-columns", "type": "update", "message": "Arachnos Soldiers and Widows now pick their branch from the primary powerset dropdown. If you switch away from a branch you've already taken powers from, Sidekick asks before removing them" },
       { "id": "one-page-scroll", "type": "update", "message": "Powers, Available and Power Pools now grow to fit everything in them, and the whole page scrolls as one. I'm trying to make it behave a bit more like Sidekick Beta but the modular flex panels make this awkward." },

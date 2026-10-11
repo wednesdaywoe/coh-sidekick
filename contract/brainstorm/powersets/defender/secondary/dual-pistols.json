@@ -15037,6 +15037,9 @@
      "scope": "global",
      "defaultActive": true
     }
+   ],
+   "setsModes": [
+    "Piercing"
    ]
   },
   {

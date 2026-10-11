@@ -78,6 +78,9 @@ pub struct GatheredPowers<'a> {
     /// The build's active source modes/stances, for `<mode> source.Mode?` gates. Feeds
     /// [`active_conditional_powers`], which re-admits the mode-gated atoms this build satisfies.
     pub source_modes: HashSet<String>,
+    /// The modes the running powers set on their target, for `<mode> target.mode?` gates
+    /// ([`crate::expr::TargetIdentity::modes`]).
+    pub target_modes: HashSet<String>,
 }
 
 /// Full Pass 0 gather: resolve the contributing, mode-resolved atom stream of `state`
@@ -144,10 +147,12 @@ pub fn gather_active_powers<'a>(
     // Collect modes BEFORE suppression: a suspended toggle is still running and still sets its
     // modes (mirrors `drop_mode_suppressed`'s pre-suppression `live` set).
     let source_modes = collect_source_modes(&powers);
+    let target_modes = collect_modes(&powers, "targetModes");
     GatheredPowers {
         powers: drop_mode_suppressed(powers),
         unresolved,
         source_modes,
+        target_modes,
     }
 }
 
@@ -158,9 +163,14 @@ pub fn gather_active_powers<'a>(
 /// the legacy `RestedAdaptation`, matching its own `kRestedAdaptation` gate, the name reconciliation
 /// the export already encodes; deriving the mode from the sub-power NAME would misfire there.)
 fn collect_source_modes(powers: &[ActivePower]) -> HashSet<String> {
+    collect_modes(powers, "setsModes")
+}
+
+/// Every mode the running `powers` carry under `key`, in both spellings.
+fn collect_modes(powers: &[ActivePower], key: &str) -> HashSet<String> {
     let mut out = HashSet::new();
     for p in powers {
-        for m in modes(p.def, "setsModes") {
+        for m in modes(p.def, key) {
             out.insert(m.to_string());
             out.insert(format!("k{m}"));
         }
@@ -394,6 +404,7 @@ pub fn active_conditional_powers(
         target: Some(crate::expr::TargetIdentity {
             archetype_class: None,
             entity_type: target_entity.to_string(),
+            modes: HashSet::new(),
         }),
         ..Default::default()
     };

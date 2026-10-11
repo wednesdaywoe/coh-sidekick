@@ -1050,8 +1050,32 @@ pub fn Info(database: Db, selection: Signal<Selection>) -> Element {
                 value: pick.targets_hit,
             })
         });
+        // The same held-pick rule as the count: the choice is stored on the pick. The bands come
+        // off the projection, which offers them only where a pick would settle something.
+        let distance = totals
+            .read()
+            .power_projection
+            .iter()
+            .find(|projection| {
+                projection.power_set == selected.powerset_id
+                    && projection.power_internal_name == internal_name
+            })
+            .map(|projection| projection.distance_bands.clone())
+            .filter(|bands| !bands.is_empty())
+            .and_then(|bands| {
+                let pick = build.all_selected().find(|held| {
+                    held.powerset == selected.powerset_id && held.internal_name == internal_name
+                })?;
+                Some(crate::panels::adjusters::TargetDistance {
+                    powerset: pick.powerset.clone(),
+                    internal_name: pick.internal_name.clone(),
+                    bands,
+                    value: pick.target_distance,
+                })
+            });
         PowerAdjusters {
             targets_hit,
+            distance,
             conditionals: coh_math::adjusters::power_adjusters(
                 power,
                 &build,

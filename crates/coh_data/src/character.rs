@@ -456,6 +456,12 @@ pub struct SelectedPower {
     /// [[skeptical-borrowing]]
     #[serde(default)]
     pub targets_hit: Option<u32>,
+    /// How far away the target is when this power is used, in feet — the `distance` its gates
+    /// read (`coh_math::distance`). Stored as the midpoint of the band the player chose; `None`
+    /// is no choice, and the power's reach stands in. Like [`Self::targets_hit`], a claim about
+    /// the fight rather than the build, so a `.skif` does not carry it.
+    #[serde(default)]
+    pub target_distance: Option<f64>,
 }
 
 impl SelectedPower {
@@ -481,6 +487,7 @@ impl SelectedPower {
             is_locked: false,
             inherent_category: None,
             targets_hit: None,
+            target_distance: None,
         }
     }
 }
