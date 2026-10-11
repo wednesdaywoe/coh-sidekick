@@ -5749,18 +5749,60 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   flex: 1; min-height: 0; overflow-y: auto;
   display: flex; flex-direction: column;
   padding: 10px var(--pad-modal) var(--pad-modal);
-  gap: 14px;
+  gap: 10px;
 }
 .detailed-totals-summary { flex: 0 0 auto; font-size: 12px; color: var(--text-dim); }
 
-.detailed-totals-section { flex: 0 0 auto; }
+/* Sections side by side. A grid rather than CSS columns: opening a stat grows its own row and
+   leaves the neighbours where they were, where columns would reflow and move the section the
+   reader just clicked into the other column. */
+.detailed-totals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr));
+  align-items: start;
+  gap: 12px 18px;
+}
+.detailed-totals-section { min-width: 0; }
 .detailed-totals-section-title {
-  margin: 0 0 4px; padding-bottom: 3px;
+  margin: 0 0 3px; padding-bottom: 3px;
   font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--text-dim);
   border-bottom: 1px solid var(--seam);
 }
 .detailed-totals-rows { display: flex; flex-direction: column; }
+/* Stats at zero with nothing feeding them, named in one line rather than a row each. */
+.detailed-totals-idle {
+  margin-top: 3px; padding: 0 6px 0 26px;
+  font-size: 11px; line-height: 1.5; color: var(--text-faint);
+}
+.detailed-totals-idle-label {
+  margin-right: 6px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+}
+
+/* A bar: a track and a fill, in the row's family hue. Shared by the stat rows and their
+   sources. A negative value is striped as well as signed, so a debuff reads as one without
+   relying on the hue. */
+.detailed-meter {
+  display: block;
+  height: 6px; border-radius: 3px; overflow: hidden;
+  background: color-mix(in srgb, var(--stat-hue, var(--text-dim)) 14%, var(--surface-raised));
+}
+.detailed-meter-fill {
+  display: block; height: 100%;
+  background: var(--stat-hue, var(--text-dim));
+  border-radius: inherit;
+}
+/* Measured against a cap: the track's end IS the cap, so it carries a mark — a full relative
+   bar means "largest here", a full capped one means "at the cap", and they must not look alike. */
+.detailed-meter.is-capped { box-shadow: inset -2px 0 0 var(--text-dim); }
+.detailed-meter.is-negative .detailed-meter-fill {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--stat-hue, var(--text-dim)) 0 3px,
+    color-mix(in srgb, var(--stat-hue, var(--text-dim)) 35%, transparent) 3px 6px
+  );
+}
 
 /* A stat's own line. A button because it toggles the accounting below it — keyboard and
    screen-reader reachable without a role attribute, and `disabled` says "nothing to open"
@@ -5768,65 +5810,92 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .detailed-stat-row {
   width: 100%;
   display: grid;
-  grid-template-columns: 14px 1fr auto;
+  grid-template-columns: 12px minmax(0, 9em) minmax(40px, 1fr) 5.5em;
   align-items: center;
-  gap: 6px;
-  padding: 2px 6px;
+  gap: 8px;
+  padding: 1px 6px;
   background: none; border: 0; border-radius: var(--r);
-  color: inherit; font: inherit; text-align: left;
+  color: inherit; font: inherit; font-size: 13px; text-align: left;
 }
 .detailed-stat-row.is-expandable { cursor: pointer; }
 .detailed-stat-row.is-expandable:hover { background: var(--surface-raised); }
 .detailed-stat-row:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
-.detailed-stat-row:disabled { color: var(--text-faint); }
+.detailed-stat-row:disabled { color: var(--text-dim); }
 .detailed-stat-caret { color: var(--text-faint); font-size: var(--glyph-caret); line-height: 1; }
-/* The family hue, the same code the dashboard rows carry — a left rule rather than coloured
-   text, so the label keeps full contrast and the hue still groups the sheet at a glance. */
-.detailed-stat-label { border-left: 3px solid var(--stat-hue, transparent); padding-left: 6px; }
-.detailed-stat-value { font-family: var(--font-data); }
+.detailed-stat-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.detailed-stat-value { font-family: var(--font-data); font-variant-numeric: tabular-nums; text-align: right; }
 /* At or above the stat's ceiling — the dashboard's own dotted underline, same meaning. */
 .detailed-stat-value.is-at-cap { text-decoration: underline dotted; text-underline-offset: 3px; }
 
 .detailed-stat-body {
-  display: flex; flex-direction: column; gap: var(--gap-section);
-  margin: 2px 0 6px 20px;
-  padding: 6px var(--pad-row-x);
+  display: flex; flex-direction: column; gap: 8px;
+  margin: 2px 0 6px 12px;
+  padding: 6px 8px;
   background: var(--surface-panel);
-  border-left: 2px solid var(--seam-raised);
+  border-left: 2px solid var(--stat-hue, var(--seam-raised));
   border-radius: 0 var(--r) var(--r) 0;
 }
-.detailed-key { display: flex; flex-direction: column; gap: 4px; }
+.detailed-key { display: flex; flex-direction: column; gap: 2px; }
 .detailed-key-heading {
   display: flex; justify-content: space-between;
   font-size: 11px; color: var(--text-dim);
   font-family: var(--font-data);
 }
+
+/* Each source group is one strength of the stat's hue, so the stacked bar and the group titles
+   pair up without bringing in colours that already mean a stat family elsewhere. */
+.detailed-group-setbonus    { --group-tone: var(--stat-hue); }
+.detailed-group-activepower { --group-tone: color-mix(in srgb, var(--stat-hue) 70%, var(--surface-raised)); }
+.detailed-group-inherent    { --group-tone: color-mix(in srgb, var(--stat-hue) 50%, var(--surface-raised)); }
+.detailed-group-accolade    { --group-tone: color-mix(in srgb, var(--stat-hue) 36%, var(--surface-raised)); }
+.detailed-group-proc        { --group-tone: color-mix(in srgb, var(--stat-hue) 26%, var(--surface-raised)); }
+.detailed-group-incarnate   { --group-tone: color-mix(in srgb, var(--stat-hue) 18%, var(--surface-raised)); }
+
+/* Which kinds of source carry the total, as shares of one bar. */
+.detailed-share {
+  display: flex; gap: 2px;
+  height: 8px; margin-bottom: 2px;
+}
+.detailed-share-part { min-width: 3px; background: var(--group-tone); }
+.detailed-share-part:first-child { border-radius: 3px 0 0 3px; }
+.detailed-share-part:last-child { border-radius: 0 3px 3px 0; }
+
 .detailed-group-title {
+  display: flex; align-items: center; gap: 5px;
   font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--text-dim);
   margin-top: 4px;
 }
+.detailed-group-swatch {
+  width: 8px; height: 8px; border-radius: 2px;
+  background: var(--group-tone);
+}
+
+/* One source on one line: name and its qualifier, a bar against the biggest source under the
+   same total, and the value. */
 .detailed-source {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
+  grid-template-columns: minmax(0, 1fr) 64px 4.5em;
+  align-items: center;
   gap: 8px;
   padding: 1px 0;
   font-size: 12px;
 }
-.detailed-source-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.detailed-source-detail {
-  grid-column: 1; grid-row: 2;
-  font-size: 11px; color: var(--text-faint);
-}
-.detailed-source-value { grid-column: 2; grid-row: 1; }
+.detailed-source-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.detailed-source-detail { margin-left: 6px; font-size: 11px; color: var(--text-faint); }
+.detailed-source-value { text-align: right; font-variant-numeric: tabular-nums; }
 
-/* Shown but not applied. Struck through AND dimmed AND carrying a `title` — three cues, none
-   of them colour alone, because "this row is not in your total" is the whole message. */
+/* Shown but not applied. Struck through AND dimmed AND a hollow bar AND a `title` — none of
+   them colour alone, because "this row is not in your total" is the whole message. */
 .detailed-source.is-rejected,
 .detailed-source.is-superseded { color: var(--text-faint); }
 .detailed-source.is-rejected .detailed-source-value,
 .detailed-source.is-superseded .detailed-source-value { text-decoration: line-through; }
+.detailed-source.is-rejected .detailed-meter-fill,
+.detailed-source.is-superseded .detailed-meter-fill {
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--stat-hue, var(--text-dim));
+}
 
 /* The fail-loud line: a contribution reached the total with no source reporting it. Styled as
    the error it is, since on a correct build it never renders at all. */
@@ -5839,7 +5908,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 
 .detailed-total {
   display: flex; justify-content: space-between;
-  margin-top: 4px; padding-top: 4px;
+  margin-top: 3px; padding-top: 3px;
   border-top: 1px solid var(--seam);
   font-size: 12px; font-weight: 600;
 }
