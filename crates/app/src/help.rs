@@ -169,6 +169,7 @@ pub enum Surface {
     BuildHandoff,
     PasteBuild,
     ForumExport,
+    Popmenu,
     PrintSheet,
     ExportImage,
     // Settings
@@ -185,7 +186,7 @@ impl Surface {
     /// list cannot silently fall behind the enum — and `help_covers_every_surface` reads this
     /// array, so a surface added here with no topic reds rather than disappearing.
     #[allow(dead_code)] // read by the coverage and symbol tests; that is the whole job.
-    pub const ALL: [Surface; 49] = {
+    pub const ALL: [Surface; 50] = {
         match Surface::Identity {
             Surface::Identity
             | Surface::PowersetSelect
@@ -228,6 +229,7 @@ impl Surface {
             | Surface::BuildHandoff
             | Surface::PasteBuild
             | Surface::ForumExport
+            | Surface::Popmenu
             | Surface::PrintSheet
             | Surface::ExportImage
             | Surface::MainMenu
@@ -279,6 +281,7 @@ impl Surface {
             Surface::BuildHandoff,
             Surface::PasteBuild,
             Surface::ForumExport,
+            Surface::Popmenu,
             Surface::PrintSheet,
             Surface::ExportImage,
             Surface::MainMenu,
@@ -340,6 +343,7 @@ impl Surface {
             Surface::BuildHandoff => "build_io::BuildHandoffEntries",
             Surface::PasteBuild => "build_io::PasteBuildHost",
             Surface::ForumExport => "forum_export::ForumExportHost",
+            Surface::Popmenu => "popmenu_export::PopmenuExportHost",
             Surface::PrintSheet => "print_sheet::PrintSheetHost",
             Surface::ExportImage => "export_image::ExportImageHost",
             Surface::MainMenu => "main_menu::FileMenu",
@@ -1166,6 +1170,18 @@ pub const TOPICS: &[Topic] = &[
         keywords: &[
             "forum", "post", "bbcode", "markdown", "reddit", "discord", "share", "mids",
         ],
+    },
+    Topic {
+        id: "files-popmenu",
+        title: "Granting the build on the test server",
+        category: Category::Files,
+        surface: Surface::Popmenu,
+        body: "Saves a .mnu popmenu file that grants every enhancement in the build. Put it in \
+               data/texts/English/Menus/ in your game folder and type /popmenu and the menu's \
+               name in game. Boosters cannot be carried, origin enhancements are left out to buy \
+               in game, and anything this server's data has no name for is listed before you \
+               rely on the file.",
+        keywords: &["popmenu", "mnu", "test server", "beta", "boost", "grant", "menu"],
     },
     Topic {
         id: "files-print",

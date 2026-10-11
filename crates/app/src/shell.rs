@@ -353,6 +353,10 @@ pub fn Shell() -> Element {
     // the totals and the visible stats, so the open state is the whole of what it owns.
     let forum_export_open = use_signal(|| false);
     use_context_provider(|| crate::forum_export::ForumExportOpen(forum_export_open));
+    // The popmenu-export modal's open flag. The menu name and the save's outcome live in the
+    // surface and go when it closes.
+    let popmenu_export_open = use_signal(|| false);
+    use_context_provider(|| crate::popmenu_export::PopmenuExportOpen(popmenu_export_open));
     // The image-export modal's open flag, owned here for the same reason and owning as little:
     // the poster is derived from the same three things the post is.
     let export_image_open = use_signal(|| false);
@@ -1360,6 +1364,15 @@ pub fn Shell() -> Element {
         // The forum-export modal, hosted here for the same reason. It takes the database because
         // a build stores ids and the post is made of names.
         crate::forum_export::ForumExportHost {
+            database: match &*db.read() {
+                Some(Ok(database)) => Some(Db(database.clone())),
+                _ => None,
+            },
+        }
+
+        // The popmenu-export modal, hosted here for the same reason. It takes the database
+        // because a build stores ids and the menu is made of the game's record names.
+        crate::popmenu_export::PopmenuExportHost {
             database: match &*db.read() {
                 Some(Ok(database)) => Some(Db(database.clone())),
                 _ => None,

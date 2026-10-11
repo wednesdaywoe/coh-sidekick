@@ -50,6 +50,7 @@ pub mod mxd;
 pub mod mxd_import;
 pub mod pick_rules;
 pub mod pools;
+pub mod popmenu;
 pub mod power;
 pub mod proc_data;
 pub mod purple_patch;

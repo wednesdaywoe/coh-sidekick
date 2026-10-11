@@ -214,6 +214,44 @@ impl BoostIndex {
             .map_or(&[], Vec::as_slice)
     }
 
+    /// The level-scaling template the game names a generic IO of `stat` by — `Crafted_Fly`,
+    /// not one of its nine levelled siblings, because a `boost` command states the level on its
+    /// own axis.
+    ///
+    /// "The common-IO record that pins no level" is not enough to find it: Rebirth files twelve
+    /// set pieces the io-sets section does not carry (Imperial Might, Liberty's Belt) as common
+    /// IOs pinning no level, so by stat alone `Knockback` has seven candidates. What separates
+    /// them is the levelled family — the real template has `<name>_<level>` siblings, an
+    /// orphaned set piece has none. The same rule `scripts/convert-boost-index.cjs` resolves its
+    /// `commonIo` map by. Every candidates ≠ one is `Err` with the candidates, never a pick.
+    pub fn common_io_template(&self, stat: &str) -> Result<&str, Vec<&str>> {
+        let candidates: Vec<&str> = self
+            .entries
+            .iter()
+            .filter(|(_, entry)| {
+                matches!(entry, BoostEntry::CommonIo { level: None, stats } if stats.iter().any(|s| s == stat))
+            })
+            .map(|(name, _)| name.as_str())
+            .collect();
+        let familied: Vec<&str> = candidates
+            .iter()
+            .copied()
+            .filter(|name| {
+                self.entries.iter().any(|(sibling, entry)| {
+                    matches!(entry, BoostEntry::CommonIo { level: Some(_), .. })
+                        && sibling
+                            .strip_prefix(*name)
+                            .and_then(|rest| rest.strip_prefix('_'))
+                            .is_some_and(|n| !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit()))
+                })
+            })
+            .collect();
+        match familied.as_slice() {
+            [only] => Ok(only),
+            _ => Err(candidates),
+        }
+    }
+
     /// The canonical spelling of a printed name — what an export writes back.
     pub fn canonical(&self, printed_name: &str) -> Option<&str> {
         self.by_lower

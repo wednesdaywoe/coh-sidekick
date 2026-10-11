@@ -50,6 +50,7 @@ mod picker_queue;
 mod picker_sets;
 mod picker_store;
 mod pinned_powers;
+mod popmenu_export;
 mod popover;
 mod power_art;
 mod power_tooltip;
