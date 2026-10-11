@@ -987,6 +987,11 @@ pub struct SourceContext {
     /// (the bands are cut at its thresholds) while Savage Leap's damage climbs through one, so
     /// the point answers gates and the span answers magnitudes. `None` is any distance at all.
     pub distance_span: Option<(f64, f64)>,
+    /// The target is one this power is landing on, so it is alive: its hit points are some
+    /// amount above zero. Settles `kHitPoints% target> 0 >` (and fails its defeated twin,
+    /// `… 0 ==`) without claiming a figure, so a threshold such as Scourge's stays open. Only a
+    /// per-power projection sets it; the totals context has no one target to vouch for.
+    pub target_alive: bool,
 }
 
 /// The reader a target-rank gate asks through. It is Indeterminate exactly when no rank is chosen,
@@ -1096,10 +1101,20 @@ impl EvalContext for SourceContext {
             // what it's holding) is live combat state no projection knows, so it stays
             // Indeterminate rather than defaulted into a wrong definite answer.
             "target>" | "Target>" => {
+                let attribute = name(0)?.to_ascii_lowercase();
+                if self.target_alive {
+                    match attribute.as_str() {
+                        "khitpoints%" => return Ok(range(f64::MIN_POSITIVE, 100.0, reader.into())),
+                        "cur.khitpoints" => {
+                            return Ok(range(f64::MIN_POSITIVE, f64::INFINITY, reader.into()));
+                        }
+                        _ => {}
+                    }
+                }
                 let Some(target) = self.target.as_ref() else {
                     return indeterminate();
                 };
-                match name(0)?.to_ascii_lowercase().as_str() {
+                match attribute.as_str() {
                     // A target with no stated rank answers this one UNKNOWN rather than
                     // picking a rank: the gates here fork the number (a crit against a minion
                     // and against a boss are different probabilities), so a guess would be a

@@ -473,6 +473,7 @@ fn project_one(
     let gate = &SourceContext {
         distance: Some(crate::distance::bounds(power, target_distance)),
         distance_span: crate::distance::span(power, target_distance),
+        target_alive: true,
         ..gate.clone()
     };
     let enhancement = power_enhancement(slots, power, alpha, level, &state.combat, db, errors);
@@ -593,6 +594,7 @@ fn project_one(
             distance_span: None,
             ..gate.clone()
         },
+        state.dataset,
     );
     let mut granted_magnitudes = resolve_granted_magnitudes(
         &settled,
@@ -861,6 +863,7 @@ pub fn damage_ceiling(
             // At the power's reach, as an unchosen distance reads everywhere else.
             let gate = SourceContext {
                 distance: Some(crate::distance::bounds(power, None)),
+                target_alive: true,
                 ..gate.clone()
             };
             let damage = resolve_power_damage(

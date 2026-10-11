@@ -88,8 +88,9 @@ fn a_power_offers_the_bands_its_own_gates_cut() {
             band(40.0, 70.0)
         ]
     );
-    // Telekinesis cuts three bands, but every gate it cuts them for also asks whether the target
-    // is alive, which no build answers: a choice would move nothing, so none is offered.
+    // Telekinesis cuts three bands, but every row they settle either waits on the target being
+    // `Immobilized` (its repel) or has no row to show (its Intangible): a choice would move
+    // nothing, so none is offered.
     let telekinesis = db
         .resolve_power("controller/mind-control", "Telekinesis")
         .unwrap();

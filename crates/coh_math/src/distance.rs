@@ -19,8 +19,9 @@
 //! are the ones a pick answers, not the reach.
 
 use crate::expr::{eval_bool, SourceContext};
+use crate::window_slots::window_slots;
 use coh_data::grant_edges::grant_edges;
-use coh_data::{AtomicEffect, Power};
+use coh_data::{AtomicEffect, DatasetId, EffectType, Power};
 use serde_json::Value;
 use std::borrow::Cow;
 
@@ -109,15 +110,14 @@ pub fn bands(power: &Power) -> Vec<DistanceBand> {
 }
 
 /// [`bands`], offered only where picking one would settle something in `context` — the per-power
-/// gate context with the reach standing in. Telekinesis cuts three bands, but every gate it cuts
-/// them for also asks whether the target is still alive, which no build answers; a choice there
-/// would move nothing, and a control that moves nothing reads as a broken one.
+/// gate context with the reach standing in. A choice that would move nothing is not offered: a
+/// control that moves nothing reads as a broken one.
 ///
 /// A band settles something when, with the distance inside it, a gate the reach left
 /// Indeterminate PASSES — a row or a grant appears — or a distance-scaled magnitude sits on a
 /// row whose own gate holds. A gate a band only fails moves nothing: an undecided row is already
 /// out of the totals, and Telekinesis's past-60 band fails its under-40 gate that way.
-pub fn live_bands(power: &Power, context: &SourceContext) -> Vec<DistanceBand> {
+pub fn live_bands(power: &Power, context: &SourceContext, dataset: DatasetId) -> Vec<DistanceBand> {
     let candidates = bands(power);
     if candidates.is_empty() {
         return candidates;
@@ -127,6 +127,7 @@ pub fn live_bands(power: &Power, context: &SourceContext) -> Vec<DistanceBand> {
     let gates: Vec<&[Box<str>]> = power
         .atoms
         .iter()
+        .filter(|atom| moves_a_row(power, atom, dataset))
         .filter_map(|atom| atom.requires_expression.as_deref())
         .chain(edges.iter().filter_map(|edge| edge.condition.as_deref()))
         .filter(|gate| names_distance(gate))
@@ -139,6 +140,7 @@ pub fn live_bands(power: &Power, context: &SourceContext) -> Vec<DistanceBand> {
                 .as_deref()
                 .is_some_and(names_distance)
         })
+        .filter(|atom| moves_a_row(power, atom, dataset))
         .map(|atom| atom.requires_expression.as_deref())
         .collect();
     let at = |distance: f64| SourceContext {
@@ -158,6 +160,26 @@ pub fn live_bands(power: &Power, context: &SourceContext) -> Vec<DistanceBand> {
     } else {
         Vec::new()
     }
+}
+
+/// Would this row, let in, change what the power shows? A damage row is valued on its own gate
+/// ([`crate::damage`]); any other row only through [`with_settled_gates`], and then only if the
+/// display routes it somewhere. Telekinesis's under-40 and past-60 gates hold back its repel,
+/// which also waits on an event, and an Intangible the panel has no row for — so a band there
+/// would move nothing.
+fn moves_a_row(power: &Power, atom: &AtomicEffect, dataset: DatasetId) -> bool {
+    if atom.effect_type == Some(EffectType::Damage) {
+        return true;
+    }
+    if atom.gated == Some(true) && atom.required_events.is_some() {
+        return false;
+    }
+    let mut alone = power.clone();
+    alone.atoms = vec![AtomicEffect {
+        gated: None,
+        ..atom.clone()
+    }];
+    !window_slots(&alone, dataset).keys().is_empty()
 }
 
 /// The span a distance-scaled damage program is valued over: the chosen band whole (the last
@@ -194,10 +216,12 @@ pub fn bounds(power: &Power, chosen: Option<f64>) -> (f64, f64) {
 /// every display row skips a gated one. A gate that names `distance` was undecided only for want
 /// of the answer this module now supplies, so once the whole gate evaluates true the row is the
 /// power's own again. Only those: a row held back by a mode, a meter or a rank is someone else's
-/// question, answered (or not) where it already is.
+/// question, answered (or not) where it already is. So is one waiting on an event: Telekinesis
+/// repels only a target its own hold has `Immobilized`, which no gate here can vouch for.
 pub fn with_settled_gates<'a>(power: &'a Power, context: &SourceContext) -> Cow<'a, Power> {
     let settles = |atom: &AtomicEffect| {
         atom.gated == Some(true)
+            && atom.required_events.is_none()
             && atom.requires_expression.as_deref().is_some_and(|gate| {
                 gate.iter().any(|token| &**token == "distance")
                     && matches!(eval_bool(gate, context), Ok(true))
