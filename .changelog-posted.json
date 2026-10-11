@@ -255,6 +255,46 @@
       "id": "epic-pool-gating",
       "date": "2026-10-10",
       "preview": "Fixed epic pools failing to be gating by your AT selection."
+    },
+    {
+      "id": "veat-branch-columns",
+      "date": "2026-10-11",
+      "preview": "Arachnos Soldiers and Widows now pick their branch from the primary powerset dro"
+    },
+    {
+      "id": "one-page-scroll",
+      "date": "2026-10-11",
+      "preview": "Powers, Available and Power Pools now grow to fit everything in them, and the wh"
+    },
+    {
+      "id": "pinned-totals-info",
+      "date": "2026-10-11",
+      "preview": "Your stat totals and the Info panel now stay at the top of the screen while you "
+    },
+    {
+      "id": "pools-own-column",
+      "date": "2026-10-11",
+      "preview": "On wide screens, the pool powers you've taken get their own column in the Powers"
+    },
+    {
+      "id": "boost-low-level-ios",
+      "date": "2026-10-11",
+      "preview": "Enhancements from sets that top out below level 50 can now be boosted"
+    },
+    {
+      "id": "autohit-no-accuracy",
+      "date": "2026-10-11",
+      "preview": "Powers that never roll to hit, like Tough, Hasten and Aim, will now hide their i"
+    },
+    {
+      "id": "foe-teleport-no-toggle",
+      "date": "2026-10-11",
+      "preview": "Fold Space and Wormhole no longer have an ON/OFF switch. The teleport protection"
+    },
+    {
+      "id": "perma-ring-slot-indent",
+      "date": "2026-10-11",
+      "preview": "Powers with the perma tracker ring around their icon should no longer push slots"
     }
   ]
 }

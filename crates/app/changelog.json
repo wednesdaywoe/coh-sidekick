@@ -1,4 +1,18 @@
 [
+    {
+    "date": "2026-10-11",
+    "items": [
+      { "id": "veat-branch-columns", "type": "update", "message": "Arachnos Soldiers and Widows now pick their branch from the primary powerset dropdown. If you switch away from a branch you've already taken powers from, Sidekick asks before removing them" },
+      { "id": "one-page-scroll", "type": "update", "message": "Powers, Available and Power Pools now grow to fit everything in them, and the whole page scrolls as one. I'm trying to make it behave a bit more like Sidekick Beta but the modular flex panels make this awkward." },
+      { "id": "pinned-totals-info", "type": "feat", "message": "Your stat totals and the Info panel now stay at the top of the screen while you scroll down your build" },
+      { "id": "pools-own-column", "type": "update", "message": "On wide screens, the pool powers you've taken get their own column in the Powers panel, and Power Pools moves under Available to make room. If you've moved panels around, you keep your arrangement; Display ▸ Reset to default switches to the new one, but it also removes any dashboards you made" },
+      { "id": "boost-low-level-ios", "type": "fix", "message": "Enhancements from sets that top out below level 50 can now be boosted" },
+      { "id": "autohit-no-accuracy", "type": "fix", "message": "Powers that never roll to hit, like Tough, Hasten and Aim, will now hide their inherent accuracy/tohit in the Info panel. Summons like Rain of Fire still show theirs, since your accuracy carries over to what you summon" },
+      { "id": "foe-teleport-no-toggle", "type": "fix", "message": "Fold Space and Wormhole no longer have an ON/OFF switch. The teleport protection they apply to enemies was being handled like a buff." },
+      { "id": "perma-ring-slot-indent", "type": "fix", "message": "Powers with the perma tracker ring around their icon should no longer push slots out of line with the other powers" }
+    ]
+  },
+
   {
     "date": "2026-10-10",
     "items": [
