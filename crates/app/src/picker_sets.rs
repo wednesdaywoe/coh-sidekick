@@ -30,7 +30,8 @@ pub struct SetFacets {
     pub rarity: Option<String>,
     /// Piece count.
     pub size: Option<usize>,
-    /// Only sets carrying at least one proc piece.
+    /// Only sets carrying at least one proc piece. The picker also hides those sets' non-proc
+    /// pieces; this list only decides which sets appear.
     pub procs_only: bool,
     pub sort: SetSort,
     /// Level-Up mode's ceiling: withhold sets the character could not craft yet. `None` = no

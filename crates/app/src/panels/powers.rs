@@ -3958,7 +3958,7 @@ fn EnhancementPickerModal(
                                         div { class: "picker-sidebar-heading", "Show" }
                                         button {
                                             class: if procs_only() { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                            title: "Only sets carrying a proc",
+                                            title: "Only proc pieces, from the sets that carry one",
                                             onclick: move |_| {
                                                 let next = !*procs_only.peek();
                                                 procs_only.set(next);
@@ -4045,14 +4045,19 @@ fn EnhancementPickerModal(
                                                     // every tile's, because a range sweeps past
                                                     // pieces it never lands a pointer on.
                                                     {
+                                                        // "Procs only" hides the set's other
+                                                        // pieces too, and a hidden piece counts
+                                                        // as unplaceable so a drag between two
+                                                        // procs can't queue what it skipped.
+                                                        let shown = |piece: &coh_data::IoSetPiece| !facets.procs_only || piece.proc;
                                                         let placeable: Vec<bool> = offer.set.pieces
                                                             .iter()
-                                                            .map(|piece| coh_data::slotting_rules::piece_slottable_now(
+                                                            .map(|piece| shown(piece) && coh_data::slotting_rules::piece_slottable_now(
                                                                 offer.id, piece, &slots, &unique_scope,
                                                             ))
                                                             .collect();
                                                         rsx! {
-                                                    for (piece_index, piece) in offer.set.pieces.iter().enumerate() {
+                                                    for (piece_index, piece) in offer.set.pieces.iter().enumerate().filter(|(_, piece)| shown(piece)) {
                                                         {
                                                             let pick = crate::picker_queue::QueuedPick::SetPiece {
                                                                 set_id: offer.id.to_string(),
