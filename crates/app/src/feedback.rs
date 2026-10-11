@@ -39,8 +39,9 @@
 
 use crate::build_session::BuildSession;
 use crate::modal::{Modal, ModalSize};
+use crate::naming;
 use crate::shell::{Db, UiScale};
-use coh_data::CharacterState;
+use coh_data::{CharacterState, PoolSelection, PowerDatabase, PowersetSelection};
 use dioxus::prelude::*;
 use serde::Serialize;
 
@@ -155,7 +156,11 @@ const UNSET: &str = "None";
 /// Which is why the walk is [`CharacterState::all_selected`] rather than one written here: that
 /// method's own doc names the defect a hand-rolled four-of-five-bucket walk leaves behind, and a
 /// second copy of it is how a bucket the model grows later reaches one of them and not the other.
-pub fn build_context(build: &CharacterState) -> BuildContext {
+///
+/// Names resolve from ids through [`crate::naming`], never from the stored `name` fields, which
+/// are blank for any build opened from a file. Reading them sent "Archetype: None" for a level-50
+/// Tanker (feedback, 2026-10-10). Without a database the stored name is used, then the id.
+pub fn build_context(build: &CharacterState, database: Option<&PowerDatabase>) -> BuildContext {
     let mut power_count = 0;
     let mut slot_count = 0;
     for power in build.all_selected() {
@@ -163,23 +168,33 @@ pub fn build_context(build: &CharacterState) -> BuildContext {
         slot_count += power.slots.iter().filter(|slot| slot.is_some()).count();
     }
 
-    let named = |name: &str| match name.trim().is_empty() {
-        true => UNSET.to_string(),
-        false => name.to_string(),
+    let stored = |name: &str, id: Option<&str>| {
+        Some(name)
+            .filter(|name| !name.trim().is_empty())
+            .or(id)
+            .map(str::to_string)
+    };
+    let set = |selection: &PowersetSelection| {
+        database
+            .and_then(|db| naming::powerset_name(selection, db))
+            .or_else(|| stored(&selection.name, selection.id.as_deref()))
+            .unwrap_or_else(|| UNSET.to_string())
+    };
+    let pool = |pool: &PoolSelection| match database {
+        Some(db) => naming::pool_name(&pool.id, db),
+        None => stored(&pool.name, Some(&pool.id)).unwrap_or_default(),
     };
 
     BuildContext {
-        archetype: named(&build.archetype.name),
+        archetype: database
+            .and_then(|db| naming::archetype_name(build, db))
+            .or_else(|| stored(&build.archetype.name, build.archetype.id.as_deref()))
+            .unwrap_or_else(|| UNSET.to_string()),
         level: build.level,
-        primary: named(&build.primary.name),
-        secondary: named(&build.secondary.name),
-        pools: build
-            .pools
-            .iter()
-            .map(|pool| pool.name.clone())
-            .filter(|name| !name.trim().is_empty())
-            .collect(),
-        epic_pool: build.epic_pool.as_ref().map(|pool| pool.name.clone()),
+        primary: set(&build.primary),
+        secondary: set(&build.secondary),
+        pools: build.pools.iter().map(pool).collect(),
+        epic_pool: build.epic_pool.as_ref().map(pool),
         power_count,
         slot_count,
     }
@@ -362,6 +377,7 @@ pub fn report(
     global_name: &str,
     user: Option<Reporter>,
     build: &CharacterState,
+    database: Option<&PowerDatabase>,
     snapshot: Option<String>,
     diagnostics: Option<Diagnostics>,
     at_ms: i64,
@@ -380,7 +396,7 @@ pub fn report(
         global_name: Some(global_name.trim().to_string()).filter(|name| !name.is_empty()),
         user_id,
         user_name,
-        build_context: build_context(build),
+        build_context: build_context(build, database),
         build_snapshot: snapshot,
         diagnostics,
         user_agent,
@@ -498,7 +514,14 @@ fn FeedbackBody(database: Option<Db>) -> Element {
 
     // A memo rather than a line in the body: the body re-runs on every keystroke in the
     // description, and the summary is derived from the build, which no keystroke touches.
-    let context = use_memo(move || build_context(&session.build.read()));
+    // Reactive on the database too, so names resolve once a still-loading dataset lands.
+    let context = {
+        let database = database.clone();
+        use_memo(use_reactive!(|database| build_context(
+            &session.build.read(),
+            database.as_ref().map(|db| db.0.as_ref()),
+        )))
+    };
     let typed = description.read().chars().count();
     let can_send = (DESCRIPTION_MIN..=DESCRIPTION_MAX).contains(&typed) && !sending();
 
@@ -515,8 +538,10 @@ fn FeedbackBody(database: Option<Db>) -> Element {
 
     let submit = {
         let encode = encode.clone();
+        let database = database.clone();
         move |_| {
             let encode = encode.clone();
+            let database = database.clone();
             async move {
                 if sending() {
                     return;
@@ -561,6 +586,7 @@ fn FeedbackBody(database: Option<Db>) -> Element {
                     &global_name.peek().clone(),
                     who,
                     &session.build.peek().clone(),
+                    database.as_ref().map(|db| db.0.as_ref()),
                     snapshot,
                     diagnostics,
                     crate::cloud::profile::now_unix_ms(),
@@ -742,5 +768,62 @@ fn FeedbackBody(database: Option<Db>) -> Element {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use coh_data::DatasetId;
+    use std::path::PathBuf;
+
+    fn homecoming() -> PowerDatabase {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../contract/homecoming/bundle.json.gz");
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads")
+    }
+
+    /// A build as a file hands it over: ids only, every display name blank.
+    fn from_file() -> CharacterState {
+        let mut build = CharacterState::empty(DatasetId::Homecoming);
+        build.level = 50;
+        build.archetype.id = Some("tanker".into());
+        build.primary.id = Some("tanker/dark-armor".into());
+        build.secondary.id = Some("tanker/radiation-melee".into());
+        let pool = |id: &str| PoolSelection {
+            id: id.into(),
+            name: String::new(),
+            powers: Vec::new(),
+        };
+        build.pools = vec![pool("flight")];
+        build.epic_pool = Some(pool("tank_dark_mastery"));
+        build
+    }
+
+    /// The shipped report: a level-50 Tanker opened from a file reached the inbox as
+    /// "Archetype: None", because the summary read the blank stored names.
+    #[test]
+    fn a_build_opened_from_a_file_is_summarised_by_name() {
+        let context = build_context(&from_file(), Some(&homecoming()));
+        assert_eq!(context.archetype, "Tanker");
+        assert_eq!(context.primary, "Dark Armor");
+        assert_eq!(context.secondary, "Radiation Melee");
+        assert_eq!(context.pools, vec!["Flight".to_string()]);
+        assert_eq!(context.epic_pool.as_deref(), Some("Dark Mastery"));
+    }
+
+    /// Before the dataset loads, the ids stand in: never "None" for something the build has.
+    #[test]
+    fn without_a_database_the_ids_stand_in() {
+        let context = build_context(&from_file(), None);
+        assert_eq!(context.archetype, "tanker");
+        assert_eq!(context.primary, "tanker/dark-armor");
+        assert_eq!(context.pools, vec!["flight".to_string()]);
+        assert_eq!(context.epic_pool.as_deref(), Some("tank_dark_mastery"));
+        assert_eq!(
+            build_context(&CharacterState::empty(DatasetId::Homecoming), None).archetype,
+            UNSET
+        );
     }
 }
