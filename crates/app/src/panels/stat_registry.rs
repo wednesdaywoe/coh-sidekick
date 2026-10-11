@@ -382,7 +382,7 @@ impl StatCap {
     /// The ceiling's value for this build, or `None` when the stat has no cap or the engine
     /// could not supply one (a db with no archetype caps yields `0.0`, which means "unknown"
     /// — never "capped at zero").
-    fn ceiling(self, totals: &CalculatedTotals) -> Option<f64> {
+    pub fn ceiling(self, totals: &CalculatedTotals) -> Option<f64> {
         let value = match self {
             StatCap::None => return None,
             StatCap::DefenseSoftcap => totals.stats.defense_softcap,

@@ -397,7 +397,9 @@ pub fn DetailedTotalsHost(database: Option<Db>) -> Element {
     rsx! {
         Modal {
             title: "Detailed Totals".to_string(),
-            size: ModalSize::Xl,
+            // Full rather than Xl: the sections sit side by side, and two columns of stat rows
+            // with their bars need the width.
+            size: ModalSize::Full,
             on_close: move |_| open.set(false),
             DetailedTotalsBody { database }
         }
@@ -416,18 +418,75 @@ fn DetailedTotalsBody(database: Option<Db>) -> Element {
         div { class: "detailed-totals",
             div { class: "detailed-totals-summary",
                 "Every stat the planner tracks, with the sources behind it. "
+                "Bars fill toward the stat's cap where it has one, and otherwise compare it with "
+                "the largest like-for-like stat in its section. "
                 "Sources that are shown but struck through were not applied."
             }
-            for section in StatSection::ALL {
-                DetailedTotalsSection {
-                    key: "{section:?}",
-                    section,
-                    totals: totals.clone(),
-                    db: database.clone(),
+            div { class: "detailed-totals-grid",
+                for section in StatSection::ALL {
+                    DetailedTotalsSection {
+                        key: "{section:?}",
+                        section,
+                        totals: totals.clone(),
+                        db: database.clone(),
+                    }
                 }
             }
         }
     }
+}
+
+/// How full a stat's bar is drawn, and what it is measured against.
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct StatBar {
+    /// `0.0..=1.0` of the bar's width.
+    pub fill: f64,
+    pub negative: bool,
+    /// Measured against the stat's own ceiling rather than its neighbours. Drawn with an end
+    /// mark, because "full" then means "at the cap" — a claim a relative bar never makes.
+    pub against_cap: bool,
+}
+
+/// The bar for one stat. A capped stat fills toward its ceiling. An uncapped one is drawn
+/// against the largest stat in its section that shares its unit — a bar needs SOMETHING to be
+/// a fraction of, and a +10% beside a +24% is a comparison a reader can use, where a bar
+/// against an invented maximum would be a claim about a number the game never names.
+///
+/// `None` when there is nothing honest to compare against: a stat alone in its unit (Recharge,
+/// the endurance rates) would always draw full, which says nothing.
+pub fn stat_bar(
+    stat: &StatDef,
+    value: f64,
+    ceiling: Option<f64>,
+    peers: &[(&'static StatDef, f64)],
+) -> Option<StatBar> {
+    let negative = value < 0.0;
+    if let Some(ceiling) = ceiling {
+        return Some(StatBar {
+            fill: (value.abs() / ceiling).min(1.0),
+            negative,
+            against_cap: true,
+        });
+    }
+    let same_unit = peers
+        .iter()
+        .filter(|(peer, _)| peer.format == stat.format && peer.cap == stat.cap);
+    if same_unit.clone().count() < 2 {
+        return None;
+    }
+    let peak = same_unit.map(|(_, v)| v.abs()).fold(0.0, f64::max);
+    Some(StatBar {
+        fill: if peak > 0.0 { value.abs() / peak } else { 0.0 },
+        negative,
+        against_cap: false,
+    })
+}
+
+/// A stat that is zero and has no source to show — folded into one line per section so the
+/// sheet spends its rows on the stats this build actually moves. Still listed by name: the
+/// sheet is the full accounting, and "this is zero" is an answer someone came looking for.
+fn is_idle(value: f64, breakdowns: &[KeyBreakdown]) -> bool {
+    value.abs() < 1e-9 && !is_expandable(breakdowns)
 }
 
 /// One dashboard section's stats. The sheet shows EVERY stat in the vocabulary, not only the ones
@@ -439,28 +498,55 @@ fn DetailedTotalsSection(
     totals: CalculatedTotals,
     db: Option<Db>,
 ) -> Element {
-    let stats: Vec<&'static StatDef> = stat_registry::in_section(section).collect();
+    let stats: Vec<(&'static StatDef, f64)> = stat_registry::in_section(section)
+        .map(|stat| (stat, (stat.read)(&totals)))
+        .collect();
+
+    let mut active = Vec::new();
+    let mut idle: Vec<&'static str> = Vec::new();
+    for (stat, value) in &stats {
+        let breakdowns = breakdowns_for_stat(&totals, db.as_ref(), stat);
+        if is_idle(*value, &breakdowns) {
+            idle.push(stat.label);
+        } else {
+            let bar = stat_bar(stat, *value, stat.cap.ceiling(&totals), &stats);
+            active.push((*stat, breakdowns, bar));
+        }
+    }
+
     rsx! {
         section { class: "detailed-totals-section",
             h3 { class: "detailed-totals-section-title", "{section.title()}" }
             div { class: "detailed-totals-rows",
-                for stat in stats {
+                for (stat, breakdowns, bar) in active {
                     DetailedStatRow {
                         key: "{stat.id}",
                         stat_id: stat.id,
                         totals: totals.clone(),
-                        db: db.clone(),
+                        breakdowns,
+                        bar,
                     }
+                }
+            }
+            if !idle.is_empty() {
+                div { class: "detailed-totals-idle",
+                    span { class: "detailed-totals-idle-label", "At zero" }
+                    "{idle.join(\" · \")}"
                 }
             }
         }
     }
 }
 
-/// One stat: its face value, and — when some ledger has something to say — an expandable
-/// accounting of where that value came from.
+/// One stat: its face value and bar, and — when some ledger has something to say — an
+/// expandable accounting of where that value came from.
 #[component]
-fn DetailedStatRow(stat_id: String, totals: CalculatedTotals, db: Option<Db>) -> Element {
+fn DetailedStatRow(
+    stat_id: String,
+    totals: CalculatedTotals,
+    breakdowns: Vec<KeyBreakdown>,
+    bar: Option<StatBar>,
+) -> Element {
     let mut expanded = use_signal(|| false);
 
     let Some(stat) = stat_registry::by_id(&stat_id) else {
@@ -471,12 +557,18 @@ fn DetailedStatRow(stat_id: String, totals: CalculatedTotals, db: Option<Db>) ->
     };
 
     let resolved = stat.resolve(&totals);
-    let breakdowns = breakdowns_for_stat(&totals, db.as_ref(), stat);
     let expandable = is_expandable(&breakdowns);
     let is_open = expanded();
+    let bar_title = bar.map(|bar| {
+        if bar.against_cap {
+            format!("{:.0}% of the cap", bar.fill * 100.0)
+        } else {
+            "Relative to the largest like stat in this section".to_string()
+        }
+    });
 
     rsx! {
-        div { class: "detailed-stat",
+        div { class: "detailed-stat", style: "--stat-hue: {stat.family.token()}",
             button {
                 class: if expandable { "detailed-stat-row is-expandable" } else { "detailed-stat-row" },
                 r#type: "button",
@@ -493,10 +585,16 @@ fn DetailedStatRow(stat_id: String, totals: CalculatedTotals, db: Option<Db>) ->
                     // `disabled`, and a mark that never turns would say otherwise.
                     if expandable { "▼" }
                 }
-                span {
-                    class: "detailed-stat-label",
-                    style: "--stat-hue: {stat.family.token()}",
-                    "{stat.label}"
+                span { class: "detailed-stat-label", title: "{stat.label}", "{stat.label}" }
+                span { class: "detailed-stat-bar", title: bar_title,
+                    if let Some(bar) = bar {
+                        span {
+                            class: "detailed-meter",
+                            class: if bar.against_cap { "is-capped" },
+                            class: if bar.negative { "is-negative" },
+                            span { class: "detailed-meter-fill", style: "width: {bar.fill * 100.0:.1}%" }
+                        }
+                    }
                 }
                 span {
                     class: if resolved.at_cap { "detailed-stat-value is-at-cap" } else { "detailed-stat-value" },
@@ -506,7 +604,7 @@ fn DetailedStatRow(stat_id: String, totals: CalculatedTotals, db: Option<Db>) ->
             }
             if is_open {
                 div { class: "detailed-stat-body",
-                    for breakdown in breakdowns {
+                    for breakdown in breakdowns.clone() {
                         KeyBreakdownBlock {
                             key: "{breakdown.key}",
                             breakdown: breakdown.clone(),
@@ -523,6 +621,41 @@ fn DetailedStatRow(stat_id: String, totals: CalculatedTotals, db: Option<Db>) ->
     }
 }
 
+/// How much each source group contributes, for the stacked bar over a key's sources. `None`
+/// unless every applied row is a gain: a stack of shares only means something when the parts
+/// add up to the whole, and a debuff among them would draw a segment bigger than the total.
+fn group_shares(breakdown: &KeyBreakdown) -> Option<Vec<(SourceGroup, f64)>> {
+    let applied = || {
+        breakdown
+            .groups
+            .iter()
+            .flat_map(|(_, rows)| rows)
+            .filter(|row| row.state == RowState::Applied)
+    };
+    if applied().any(|row| row.value < 0.0) {
+        return None;
+    }
+    let whole: f64 = applied().map(|row| row.value).sum();
+    if whole <= 0.0 {
+        return None;
+    }
+    let shares: Vec<(SourceGroup, f64)> = breakdown
+        .groups
+        .iter()
+        .map(|(group, rows)| {
+            let sum: f64 = rows
+                .iter()
+                .filter(|row| row.state == RowState::Applied)
+                .map(|row| row.value)
+                .sum();
+            (*group, sum / whole)
+        })
+        .filter(|(_, share)| *share > 0.0)
+        .collect();
+    // One group is the whole bar, which tells the reader nothing the group title doesn't.
+    (shares.len() > 1).then_some(shares)
+}
+
 /// One accumulator field's sources, under its own total.
 #[component]
 fn KeyBreakdownBlock(
@@ -530,6 +663,23 @@ fn KeyBreakdownBlock(
     ledger_format: stat_registry::StatFormat,
     show_key_heading: bool,
 ) -> Element {
+    // Every source bar is drawn against the biggest one under this key, so the longest bar is
+    // the source carrying the most of it.
+    let peak = breakdown
+        .groups
+        .iter()
+        .flat_map(|(_, rows)| rows)
+        .map(|row| row.value.abs())
+        .fold(0.0, f64::max);
+    let width = |value: f64| {
+        if peak > 0.0 {
+            value.abs() / peak * 100.0
+        } else {
+            0.0
+        }
+    };
+    let shares = group_shares(&breakdown);
+
     rsx! {
         div { class: "detailed-key",
             if show_key_heading {
@@ -538,17 +688,39 @@ fn KeyBreakdownBlock(
                     span { class: "mono", "{ledger_format.render(breakdown.total)}" }
                 }
             }
+            if let Some(shares) = shares {
+                div { class: "detailed-share", "aria-hidden": "true",
+                    for (group, share) in shares {
+                        span {
+                            key: "{group.slug()}",
+                            class: "detailed-share-part detailed-group-{group.slug()}",
+                            style: "flex-grow: {share}",
+                            title: "{group.label()}: {share * 100.0:.0}%",
+                        }
+                    }
+                }
+            }
             for (group, rows) in breakdown.groups.iter().filter(|(_, rows)| !rows.is_empty()) {
                 div { class: "detailed-group detailed-group-{group.slug()}",
-                    div { class: "detailed-group-title", "{group.label()}" }
+                    div { class: "detailed-group-title",
+                        span { class: "detailed-group-swatch" }
+                        "{group.label()}"
+                    }
                     for (index, row) in rows.iter().enumerate() {
                         div {
                             key: "{index}",
                             class: "detailed-source is-{row.state.slug()}",
                             title: if row.state.note().is_empty() { None } else { Some(row.state.note().to_string()) },
-                            span { class: "detailed-source-label", "{row.label}" }
-                            if !row.detail.is_empty() {
-                                span { class: "detailed-source-detail", "{row.detail}" }
+                            span { class: "detailed-source-name",
+                                span { class: "detailed-source-label", "{row.label}" }
+                                if !row.detail.is_empty() {
+                                    span { class: "detailed-source-detail", "{row.detail}" }
+                                }
+                            }
+                            span {
+                                class: "detailed-meter",
+                                class: if row.value < 0.0 { "is-negative" },
+                                span { class: "detailed-meter-fill", style: "width: {width(row.value):.1}%" }
                             }
                             span { class: "detailed-source-value mono", "{ledger_format.render(row.value)}" }
                         }
@@ -560,10 +732,13 @@ fn KeyBreakdownBlock(
             // renders the build in front of the user, not the corpus (Rule 1).
             if let Some(residual) = breakdown.unexplained() {
                 div { class: "detailed-source is-unexplained",
-                    span { class: "detailed-source-label", "Unaccounted for" }
-                    span { class: "detailed-source-detail",
-                        "reached the total with no source reporting it — please report this build"
+                    span { class: "detailed-source-name",
+                        span { class: "detailed-source-label", "Unaccounted for" }
+                        span { class: "detailed-source-detail",
+                            "reached the total with no source reporting it — please report this build"
+                        }
                     }
+                    span {}
                     span { class: "detailed-source-value mono", "{ledger_format.render(residual)}" }
                 }
             }
