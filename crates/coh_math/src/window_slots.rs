@@ -2147,6 +2147,13 @@ fn route(
     let table_raw = a.modifier_table.as_deref().unwrap_or("");
     let table = table_raw.to_lowercase();
     let is_debuff = scale < 0.0 || table.contains("debuff");
+    // A `Res`-face row on a debuffable stat raises or lowers resistance to that debuff. Lowered,
+    // it is a foe debuff (Attune, Sonic Thrust, Acid Arrow), not the caster's protection.
+    let ddr_key = if is_debuff {
+        "debuffResistanceDebuff"
+    } else {
+        "debuffResistance"
+    };
     let is_self = lands_on_caster(a);
     let dur = a.duration.filter(|d| *d > 0.0);
     let suppressed = a.suppressible == Some(true);
@@ -2292,7 +2299,7 @@ fn route(
                     s.slot_sub("specialBuff", sub, dur, row.effect());
                 }
             } else if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", sub, dur, row.effect());
+                s.slot_sub(ddr_key, sub, dur, row.effect());
             } else {
                 let (key, value) = if is_debuff {
                     ("defenseDebuff", row.self_marked(row.effect()))
@@ -2405,7 +2412,7 @@ fn route(
             };
             let is_slow = is_debuff || scale < 0.0 || table.contains("slow");
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "movement", dur, row.effect());
+                s.slot_sub(ddr_key, "movement", dur, row.effect());
             } else if is_self && asp == Some(Aspect::Str) {
                 s.slot_sub("specialBuff", "movement", dur, row.effect());
             } else if is_self
@@ -2458,7 +2465,7 @@ fn route(
         EffectType::MaxEndurance => s.queue_resource("maxEndBuff", resource(false, false)),
         EffectType::Endurance => {
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "endurance", dur, row.effect());
+                s.slot_sub(ddr_key, "endurance", dur, row.effect());
             } else if asp == Some(Aspect::Str) {
                 s.slot_sub("specialBuff", "endurance", dur, row.effect());
             } else if is_debuff || scale < 0.0 {
@@ -2469,7 +2476,7 @@ fn route(
         }
         EffectType::Recovery => {
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "recovery", dur, row.effect());
+                s.slot_sub(ddr_key, "recovery", dur, row.effect());
             } else if is_debuff || scale < 0.0 {
                 s.queue_resource("recoveryDebuff", resource(false, false));
             } else {
@@ -2484,7 +2491,7 @@ fn route(
         }
         EffectType::Regeneration => {
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "regeneration", dur, row.effect());
+                s.slot_sub(ddr_key, "regeneration", dur, row.effect());
             } else if is_debuff || scale < 0.0 {
                 s.queue_resource("regenDebuff", resource(false, false));
             } else if a.stack_by_attrib_and_key == Some(true)
@@ -2555,7 +2562,7 @@ fn route(
         }
         EffectType::ToHit => {
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "tohit", dur, row.effect());
+                s.slot_sub(ddr_key, "tohit", dur, row.effect());
             } else if asp == Some(Aspect::Str) {
                 s.slot_sub("specialBuff", "tohit", dur, row.effect());
             } else if is_debuff {
@@ -2568,7 +2575,7 @@ fn route(
         }
         EffectType::Accuracy => {
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "accuracy", dur, row.effect());
+                s.slot_sub(ddr_key, "accuracy", dur, row.effect());
             } else if is_debuff || scale < 0.0 {
                 s.penalty_slot(
                     "accuracyDebuff",
@@ -2582,7 +2589,7 @@ fn route(
         }
         EffectType::RechargeTime => {
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "recharge", dur, row.effect());
+                s.slot_sub(ddr_key, "recharge", dur, row.effect());
             } else if is_debuff || scale < 0.0 || table.contains("slow") {
                 s.penalty_slot(
                     "rechargeDebuff",
@@ -2603,7 +2610,7 @@ fn route(
         }
         EffectType::Range => {
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "range", dur, row.effect());
+                s.slot_sub(ddr_key, "range", dur, row.effect());
             } else if is_debuff || scale < 0.0 {
                 if is_self {
                     s.slot("rangeDebuff", dur, row.marked_self(row.effect()));
@@ -2619,7 +2626,7 @@ fn route(
         EffectType::EnduranceDiscount => s.slot("enduranceDiscount", dur, row.effect()),
         EffectType::Perception => {
             if asp == Some(Aspect::Res) {
-                s.slot_sub("debuffResistance", "perception", dur, row.effect());
+                s.slot_sub(ddr_key, "perception", dur, row.effect());
             } else if is_debuff || scale < 0.0 {
                 s.slot("perceptionDebuff", dur, row.effect());
             } else {

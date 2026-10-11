@@ -25,7 +25,7 @@
 //!   converter's `debuffResistance.defense`.
 
 use super::*;
-use coh_data::{Aspect, EffectType, Power};
+use coh_data::{Aspect, EffectType, Power, ToWho};
 
 /// bag debuffResistance key → the EffectType whose `aspect=Res` atom encodes it, in the ten
 /// `add_debuff_resistance` routes. Every atom shares `aspect=Res`; the resisted attribute's own
@@ -68,8 +68,12 @@ pub fn debuff_resistance_value(power: &Power) -> Option<Vec<(String, TypedValue)
     for (key, effect_type) in ROUTED {
         // OVERWRITE fold (converter `effects.debuffResistance.<type> = makeEffect()`): the LAST
         // non-gated atom of this EffectType with the resistance face.
+        // A foe-facing negative row lowers the TARGET's resistance (Sonic Thrust, Acid Arrow);
+        // read through `abs` it became the caster's own. Positive Target rows stay: they are
+        // the team half of an ally buff (Tactical Training: Leadership).
         let Some(atom) = base_atoms_of_type(power, effect_type)
             .into_iter()
+            .filter(|a| !(a.to_who == Some(ToWho::Target) && a.scale.is_some_and(|s| s < 0.0)))
             .rfind(|a| a.aspect == Some(Aspect::Res))
         else {
             continue;

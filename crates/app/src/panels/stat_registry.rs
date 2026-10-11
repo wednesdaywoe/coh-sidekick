@@ -105,7 +105,7 @@ impl StatFamily {
                 StatFamily::Endurance
             }
             "speedBuff" | "slow" => StatFamily::Movement,
-            "elusivity" | "debuffResistance" => StatFamily::DebuffResist,
+            "elusivity" | "debuffResistance" | "debuffResistanceDebuff" => StatFamily::DebuffResist,
             "protection" | "mezResistance" => StatFamily::Mez,
             "specialBuff" | "specialDebuff" | "summon" => StatFamily::Special,
             _ => match category {
