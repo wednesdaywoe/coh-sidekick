@@ -567,8 +567,7 @@ pub fn render_to_png(
             SLATE_500,
             FOOTER_SIZE * options.scale as usize,
         );
-        let now = chrono::Local::now();
-        date_drawer.write(&mut img, &now.format("%Y-%m-%d").to_string());
+        date_drawer.write(&mut img, &today_utc());
     }
 
     // Crop to what was actually drawn, with the footer's own band kept below it.
@@ -1526,4 +1525,16 @@ pub fn ExportImageEntry(database: Option<Db>) -> Element {
             span { class: "main-menu__hint", "PNG of the build, to post or save" }
         }
     }
+}
+
+/// Today's date for the footer, in UTC. Read through `web_time` because `chrono::Local::now()`
+/// panics on `wasm32-unknown-unknown`, which has no clock of its own — opening this modal on the
+/// web crashed the app, since the preview draws the footer as soon as it mounts.
+fn today_utc() -> String {
+    let at_ms = web_time::SystemTime::now()
+        .duration_since(web_time::UNIX_EPOCH)
+        .map_or(0, |since| since.as_millis() as i64);
+    chrono::DateTime::from_timestamp_millis(at_ms)
+        .map(|at| at.format("%Y-%m-%d").to_string())
+        .unwrap_or_default()
 }
