@@ -300,6 +300,16 @@
       "id": "perma-ring-slot-indent",
       "date": "2026-10-11",
       "preview": "Powers with the perma tracker ring around their icon should no longer push slots"
+    },
+    {
+      "id": "floating-tool-panel",
+      "date": "2026-10-11",
+      "preview": "Beginning to implement floating tool panels: The Detailed Totals tool now appear"
+    },
+    {
+      "id": "fix-vengeance-buff",
+      "date": "2026-10-09",
+      "preview": "Fix for Vengeance not affecting totals"
     }
   ]
 }

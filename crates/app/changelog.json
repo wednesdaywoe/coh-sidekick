@@ -2,6 +2,7 @@
     {
     "date": "2026-10-11",
     "items": [
+      { "id": "floating-tool-panel", "type": "update", "message": "Beginning to implement floating tool panels: The Detailed Totals tool now appears as a floating resizble panel instead of a modal." },
       { "id": "veat-branch-columns", "type": "update", "message": "Arachnos Soldiers and Widows now pick their branch from the primary powerset dropdown. If you switch away from a branch you've already taken powers from, Sidekick asks before removing them" },
       { "id": "one-page-scroll", "type": "update", "message": "Powers, Available and Power Pools now grow to fit everything in them, and the whole page scrolls as one. I'm trying to make it behave a bit more like Sidekick Beta but the modular flex panels make this awkward." },
       { "id": "pinned-totals-info", "type": "feat", "message": "Your stat totals and the Info panel now stay at the top of the screen while you scroll down your build" },
