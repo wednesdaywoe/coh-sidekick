@@ -1917,6 +1917,7 @@
      "label": "Hunter Mode",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "HunterMode",
      "effects": {
       "buffDuration": 10.25,
       "damageBuff": {
@@ -1934,6 +1935,7 @@
      "label": "Prowler Mode",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ProwlerMode",
      "effects": {
       "buffDuration": 10.25,
       "durations": {
@@ -2683,6 +2685,7 @@
      "label": "Prowler Mode",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ProwlerMode",
      "damage": {
       "type": "Heal",
       "scale": 2.5,
@@ -5987,6 +5990,7 @@
      "label": "Prowler Mode",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ProwlerMode",
      "effects": {
       "buffDuration": 1.25,
       "durations": {
@@ -6717,6 +6721,7 @@
      "label": "Prowler Mode",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ProwlerMode",
      "effects": {
       "buffDuration": 30,
       "defenseDebuff": {
@@ -6739,6 +6744,7 @@
      "label": "Hunter Mode",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "HunterMode",
      "effects": {
       "buffDuration": 30,
       "defenseDebuff": {
@@ -8264,6 +8270,7 @@
      "label": "Hunter Mode",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "HunterMode",
      "effects": {
       "buffDuration": 120,
       "damageBuff": {

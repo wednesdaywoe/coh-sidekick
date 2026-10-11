@@ -87,7 +87,7 @@ pub fn effective_power<'a>(
             effective = Cow::Owned(swapped);
         }
     }
-    let active = active_conditionals(&effective, state, caster_class, db);
+    let active = active_conditionals(&effective, state, gate, caster_class, db);
     if !active.is_empty() {
         effective = Cow::Owned(with_active_conditionals(&effective, state.dataset, &active));
     }
@@ -345,6 +345,7 @@ fn with_mid_combat_cast(power: &Power) -> Option<Power> {
 fn active_conditionals<'a>(
     power: &'a Power,
     state: &CharacterState,
+    gate: &SourceContext,
     caster_class: Option<&str>,
     db: &PowerDatabase,
 ) -> Vec<&'a Value> {
@@ -365,6 +366,15 @@ fn active_conditionals<'a>(
             // A claim on a power the player picks follows the picks, not a toggle.
             if let Some(owned) = coh_data::picks_answer(conditional, state, db) {
                 return owned;
+            }
+            // A caster mode the build is in is on, whatever the toggle says: with Radiance
+            // running, every Light Affinity power applies its Radiance bonus.
+            if let Some(mode) = conditional.get("sourceMode").and_then(Value::as_str) {
+                if gate.source_modes.contains(mode)
+                    || gate.source_modes.contains(&format!("k{mode}"))
+                {
+                    return true;
+                }
             }
             let default = conditional
                 .get("defaultActive")
@@ -395,6 +405,42 @@ fn active_conditionals<'a>(
 /// by construction.
 pub const CONDITIONAL_DELTA_KEY: &str = "activeConditionalEffects";
 
+/// What the live conditionals add ON TOP of a base row of the same kind, for effects that stack
+/// ([`crate::effect_registry::stacks_additively`]). Kept apart from the delta, which overwrites:
+/// Blinding Beam's Radiance -ToHit is a second -ToHit beside the base one, and the display sums
+/// the two ([`sum_stacked`]) rather than replacing either.
+pub const CONDITIONAL_STACK_KEY: &str = "activeConditionalStacks";
+
+/// `base` and `extra` as one value when both resolve through the same table: scales add. `None`
+/// when they don't (two tables, or shapes that don't line up), and the caller keeps the base.
+pub fn sum_stacked(base: &Value, extra: &Value) -> Option<Value> {
+    match (base, extra) {
+        (Value::Number(a), Value::Number(b)) => Some(Value::from(a.as_f64()? + b.as_f64()?)),
+        (Value::Object(a), Value::Object(b)) if a.contains_key("scale") => {
+            if a.get("table") != b.get("table") {
+                return None;
+            }
+            let scale = a.get("scale")?.as_f64()? + b.get("scale")?.as_f64()?;
+            let mut out = a.clone();
+            out.insert("scale".into(), Value::from(scale));
+            Some(Value::Object(out))
+        }
+        // A by-type map (`resistance: { fire: {...} }`): type by type.
+        (Value::Object(a), Value::Object(b)) if !b.contains_key("scale") => {
+            let mut out = a.clone();
+            for (key, value) in b {
+                let merged = match a.get(key) {
+                    Some(existing) => sum_stacked(existing, value)?,
+                    None => value.clone(),
+                };
+                out.insert(key.clone(), merged);
+            }
+            Some(Value::Object(out))
+        }
+        _ => None,
+    }
+}
+
 /// Layer the active conditionals onto the power, the beta `applyActiveConditionals`.
 ///
 /// `effects` is the beta's own merged object and stays that, so the parity oracle keeps
@@ -404,7 +450,14 @@ pub const CONDITIONAL_DELTA_KEY: &str = "activeConditionalEffects";
 fn with_active_conditionals(power: &Power, dataset: DatasetId, active: &[&Value]) -> Power {
     let mut merged = power.clone();
     set(&mut merged, "damage", merged_damage(power, active));
-    let delta = conditional_delta(power, dataset, active);
+    let (delta, stacks) = conditional_delta(power, dataset, active);
+    if !stacks.is_empty() {
+        set(
+            &mut merged,
+            CONDITIONAL_STACK_KEY,
+            Some(Value::Object(stacks)),
+        );
+    }
     if let Some(effects) = merged_effects(&delta) {
         set(&mut merged, "effects", Some(Value::Object(effects)));
     }
@@ -555,8 +608,13 @@ fn merged_effects(delta: &Map<String, Value>) -> Option<Map<String, Value>> {
 /// instances, and overwriting the base with one of them would display a single misleadingly
 /// stronger effect. The beta records those collisions as `extraInstances` for a separate row;
 /// nothing in the projection carries them.
-fn conditional_delta(power: &Power, dataset: DatasetId, active: &[&Value]) -> Map<String, Value> {
+fn conditional_delta(
+    power: &Power,
+    dataset: DatasetId,
+    active: &[&Value],
+) -> (Map<String, Value>, Map<String, Value>) {
     let mut delta = Map::new();
+    let mut stacks = Map::new();
     // STRIP-1: the collision check reads the ATOM-PROJECTED base surface, not the literal base
     // bag, which the strip emptied for ordinary powerset powers. Key PRESENCE under the
     // pre-strip bag is that surface — the same `window_slots` [`crate::adjusters`] keys its
@@ -576,15 +634,24 @@ fn conditional_delta(power: &Power, dataset: DatasetId, active: &[&Value]) -> Ma
             // value the additive merge must not overwrite.
             let base_collides = base_slots.keys().contains(key.as_str())
                 || (key == "durations" && !base_slots.durations.is_empty());
-            if replace || !delta.contains_key(&key) {
-                if !replace && base_collides {
-                    continue;
+            if !replace && base_collides {
+                if crate::effect_registry::stacks_additively(&key) {
+                    let summed = match stacks.get(&key) {
+                        Some(existing) => sum_stacked(existing, &value),
+                        None => Some(value),
+                    };
+                    if let Some(summed) = summed {
+                        stacks.insert(key, summed);
+                    }
                 }
+                continue;
+            }
+            if replace || !delta.contains_key(&key) {
                 delta.insert(key, value);
             }
         }
     }
-    delta
+    (delta, stacks)
 }
 
 /// One active conditional's contribution, projected from the ATOMS it claims.

@@ -154,8 +154,12 @@ pub fn power_adjusters(
             for effect_key in entry_keys(power, state.dataset, id) {
                 // The additive merge fills only keys the base LACKS, so a colliding one changes
                 // nothing at all — which is a different answer from "it changes something the
-                // panel can't name", and the two must not be conflated.
-                let collides = !replaces && base.contains(effect_key);
+                // panel can't name", and the two must not be conflated. A stacking effect is the
+                // exception: it sums onto the base row (`effective::CONDITIONAL_STACK_KEY`), so it
+                // adds rather than collides.
+                let collides = !replaces
+                    && base.contains(effect_key)
+                    && !effect_registry::stacks_additively(effect_key);
                 match (collides, effect_registry::lookup(effect_key)) {
                     (true, Some(config)) => extra_instances.push(config.label.clone()),
                     (true, None) => {}

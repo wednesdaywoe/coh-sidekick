@@ -799,6 +799,19 @@ pub fn display_effects(
             bag.insert(key.clone(), value.clone());
         }
     }
+    // A second instance of a stacking effect sums onto the base row it sits beside. Where the two
+    // don't line up (different tables) the base row stands, as before.
+    if let Some(stacks) = extra_object(power, crate::effective::CONDITIONAL_STACK_KEY) {
+        for (key, extra) in stacks {
+            let summed = match bag.get(key) {
+                Some(base) => crate::effective::sum_stacked(base, extra),
+                None => Some(extra.clone()),
+            };
+            if let Some(summed) = summed {
+                bag.insert(key.clone(), summed);
+            }
+        }
+    }
 
     // Execution stats live on `stats` for primary/secondary powers and in the bag itself for
     // pool/epic ones. These are the same stats-first reads the projection's own fields use, so

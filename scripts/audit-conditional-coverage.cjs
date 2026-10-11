@@ -316,7 +316,14 @@ const EXPECTED = {
   // bonus rows ship at `chance: 0` and were never promoted, so none surfaced. The 21 are the
   // Sonic Melee attacks that carry one — six each for Brute, Scrapper and Tanker, three for
   // Stalker — each a single `sonicatuneself` entry.
-  homecoming: { pool: 10, epic: 7, powerset: 556 },
+  //
+  // 556 -> 605 on both Homecoming forks when the conditional walk followed `Execute_Power` into
+  // the powers a power fires. Light Affinity's Radiance bonuses on Protective, Blinding,
+  // Clarifying and Searing Beam (16), Radiation Melee's Contaminated hits (12), Power Surge and
+  // EMP Arrow vs robots (9), Hibernate's end-early Icy Bastion (5), Geode (3), the Stalker's
+  // Sonic Thrust and Strident Echo Attune bonus (2) and four singles, each a gated group inside a
+  // fired power that had no toggle.
+  homecoming: { pool: 10, epic: 7, powerset: 605 },
   rebirth: { pool: 16, epic: 2, powerset: 473 },
   thunderspy: { pool: 10, epic: 3, powerset: 618 },
   // Brainstorm, measured 2026-08-21 off the i28p4 open beta. Its pool and epic
@@ -342,7 +349,8 @@ const EXPECTED = {
   //
   // 11/539 -> 10/535 with Homecoming, above: the literal-`0` gate is no toggle.
   // 535 -> 556 with Homecoming, above: Attune's bonus rows.
-  brainstorm: { pool: 10, epic: 7, powerset: 556 },
+  // 556 -> 605 with Homecoming, above: the fired powers' gated groups.
+  brainstorm: { pool: 10, epic: 7, powerset: 605 },
 };
 
 /**

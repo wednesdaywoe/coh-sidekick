@@ -936,6 +936,7 @@
      "label": "Shapeshift Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ShapeshiftActive",
      "effects": {
       "buffDuration": 2,
       "durations": {
@@ -2435,6 +2436,7 @@
      "label": "Shapeshift Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ShapeshiftActive",
      "effects": {
       "buffDuration": 2,
       "durations": {
@@ -3177,6 +3179,7 @@
      "label": "Shapeshift Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ShapeshiftActive",
      "effects": {
       "buffDuration": 2,
       "durations": {
@@ -3456,6 +3459,7 @@
      "label": "Shapeshift Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ShapeshiftActive",
      "effects": {
       "buffDuration": 2,
       "durations": {
@@ -11299,6 +11303,7 @@
      "label": "Warshade Blaster Mode",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "Warshade_Blaster_Mode",
      "effects": {
       "buffDuration": 2,
       "durations": {

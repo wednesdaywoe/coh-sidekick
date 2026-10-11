@@ -746,6 +746,7 @@
      "label": "Group Flying",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "GroupFlying",
      "effects": {
       "buffDuration": 0.75,
       "durations": {
@@ -1042,6 +1043,7 @@
      "label": "Shapeshift Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ShapeshiftActive",
      "effects": {
       "buffDuration": 2,
       "durations": {
@@ -1404,9 +1406,10 @@
    "conditionalEffects": [
     {
      "id": "peacebringer_tanker_mode",
-     "label": "Peacebringer Tanker Mode",
+     "label": "White Dwarf",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "Peacebringer_Tanker_Mode",
      "damage": {
       "type": "Heal",
       "scale": 4,
@@ -2436,6 +2439,7 @@
      "label": "Shapeshift Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ShapeshiftActive",
      "effects": {
       "buffDuration": 2,
       "durations": {
@@ -2756,6 +2760,7 @@
      "label": "Shapeshift Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ShapeshiftActive",
      "effects": {
       "buffDuration": 2,
       "durations": {
@@ -4946,6 +4951,7 @@
      "label": "Shapeshift Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ShapeshiftActive",
      "effects": {
       "buffDuration": 2,
       "durations": {
@@ -4963,6 +4969,7 @@
      "label": "Flight Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FlightActive",
      "effects": {
       "buffDuration": 0.75,
       "debuffResistance": {
@@ -4999,6 +5006,7 @@
      "label": "Group Flying",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "GroupFlying",
      "effects": {
       "buffDuration": 0.75,
       "durations": {
@@ -10191,9 +10199,10 @@
    "conditionalEffects": [
     {
      "id": "peacebringer_tanker_mode",
-     "label": "Peacebringer Tanker Mode",
+     "label": "White Dwarf",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "Peacebringer_Tanker_Mode",
      "damage": {
       "type": "Heal",
       "scale": 2.5,
@@ -10771,6 +10780,7 @@
      "label": "Flight Active",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FlightActive",
      "effects": {
       "buffDuration": 0.75,
       "durations": {
@@ -10794,6 +10804,7 @@
      "label": "Group Flying",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "GroupFlying",
      "effects": {
       "buffDuration": 0.75,
       "durations": {

@@ -4475,7 +4475,81 @@
      null,
      null,
      "RepositionGeode"
+    ],
+    [
+     "Mez",
+     "Repel",
+     1,
+     1,
+     0.1,
+     "Melee_Ones",
+     "Cur",
+     "Expression",
+     "Target",
+     "Any",
+     false,
+     "Replace",
+     2,
+     null,
+     null,
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "distance",
+      "0.5",
+      ">"
+     ],
+     true,
+     null,
+     null,
+     null,
+     null,
+     [
+      "distance",
+      ".1",
+      "*"
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     [
+      "MyPet"
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "conditional"
     ]
+   ],
+   "conditionalEffects": [
+    {
+     "id": "conditional",
+     "label": "Conditional",
+     "scope": "per-power",
+     "defaultActive": false,
+     "effects": {
+      "buffDuration": 0.1,
+      "durations": {
+       "repel": 0.1
+      },
+      "repel": {
+       "scale": 1,
+       "table": "Melee_Ones"
+      }
+     }
+    }
    ],
    "grantEdges": [
     {

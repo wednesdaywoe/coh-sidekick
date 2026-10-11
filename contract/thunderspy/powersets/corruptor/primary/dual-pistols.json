@@ -1469,6 +1469,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": [
       {
        "type": "Fire",
@@ -1491,6 +1492,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.5,
@@ -1539,6 +1541,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.5,
@@ -3058,6 +3061,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 0.82,
@@ -3069,6 +3073,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.82,
@@ -3117,6 +3122,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.82,
@@ -4662,6 +4668,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "effects": {
       "buffDuration": 10,
       "durations": {
@@ -4705,6 +4712,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "effects": {
       "buffDuration": 10,
       "damageDebuff": {
@@ -6202,6 +6210,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "effects": {
       "buffDuration": 10,
       "durations": {
@@ -6245,6 +6254,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "effects": {
       "buffDuration": 10,
       "damageDebuff": {
@@ -7808,6 +7818,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 1.06,
@@ -7819,6 +7830,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 1.06,
@@ -7867,6 +7879,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 1.06,
@@ -10171,6 +10184,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 0.05,
@@ -10190,6 +10204,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 0.05,
@@ -10209,6 +10224,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 0.05,
@@ -11981,6 +11997,7 @@
      "label": "Fire Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "FireDamage",
      "damage": {
       "type": "Fire",
       "scale": 1.055,
@@ -11992,6 +12009,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "damage": {
       "type": "Cold",
       "scale": 1.055,
@@ -12040,6 +12058,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "damage": {
       "type": "Toxic",
       "scale": 1.055,
@@ -13734,6 +13753,7 @@
      "label": "Cold Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ColdDamage",
      "effects": {
       "buffDuration": 10,
       "durations": {
@@ -13777,6 +13797,7 @@
      "label": "Toxic Damage",
      "scope": "global",
      "defaultActive": false,
+     "sourceMode": "ToxicDamage",
      "effects": {
       "buffDuration": 10,
       "damageDebuff": {
