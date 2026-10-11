@@ -3273,7 +3273,39 @@
          "Foe"
         ],
         "radius": 40,
-        "maxTargets": 5
+        "maxTargets": 5,
+        "redirectAtoms": [
+         [
+          "Mez",
+          "Taunt",
+          7,
+          4,
+          0,
+          "Melee_Ones",
+          "Abs",
+          "Duration",
+          "Target",
+          "Any",
+          true,
+          "Ignore",
+          2,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          [
+           "enttype",
+           "target>",
+           "critter",
+           "eq"
+          ]
+         ]
+        ]
        },
        {
         "name": "GlitteringColumn_ToHitAura",
@@ -3295,7 +3327,27 @@
          "Foe"
         ],
         "radius": 15,
-        "maxTargets": 16
+        "maxTargets": 16,
+        "redirectAtoms": [
+         [
+          "ToHit",
+          null,
+          3,
+          1,
+          10,
+          "Ranged_Debuff_ToHit",
+          "Cur",
+          "Magnitude",
+          "Target",
+          "Any",
+          true,
+          "Replace",
+          2,
+          null,
+          null,
+          1
+         ]
+        ]
        }
       ]
      }

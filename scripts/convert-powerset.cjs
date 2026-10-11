@@ -2884,6 +2884,19 @@ function resolveSummonRedirects(redirectNames) {
       ...(json.max_targets_hit > 0 ? { maxTargets: json.max_targets_hit } : {}),
       ...(json.area_factor_override ? { areaFactorOverride: json.area_factor_override } : {}),
       ...(json.ppm_mod ? { ppmMod: json.ppm_mod } : {}),
+      // The redirect's atoms, minted the way convert-pet-entities mints an entity ability's,
+      // so the engine reads both pseudo-pet routes through one atom path. `damage` above is a
+      // lossy view (PvP dropped, gates and chances flattened into flags); the summoned-damage
+      // resolver reads these instead.
+      //
+      // Not `atoms`: a named node carrying `atoms` IS a power to every bundle walker (the Rust
+      // loader's `collect_into`, the emitter, audit-form-coverage), so that key would turn each
+      // redirect into a phantom power nested inside its summoner.
+      ...(() => {
+        const templates = collectAtomTemplates(json.effects);
+        const atoms = encodeAtomsForEmit(templates, templates, json.name);
+        return atoms ? { redirectAtoms: atoms } : {};
+      })(),
     });
   }
 

@@ -36,12 +36,16 @@
 //! silently showing its ungated components only would read as a complete answer (Rule 1).
 
 use crate::expr::{eval, eval_bool, EvalContext, EvalError, SourceContext, Value, CURRENT_TO_HIT};
+use crate::granted::{entity_abilities, summon_entity_names, summoned_entity_chain};
 use crate::projection::ThreeTier;
-use crate::scaled::resolve_scaled_effect;
+use crate::scaled::resolve_scaled_effect_for;
 use crate::totals::CalcError;
+use coh_data::atom_wire::decode_atom;
 use coh_data::{
     expression_text, lands_on_caster, AtomicEffect, EffectType, Power, PowerDatabase, PvMode,
+    TableScope,
 };
+use serde_json::Value as Json;
 
 /// How a resolved component applies — the three things the export's chance fields say, kept apart
 /// because summing across them would be summing different kinds of claim.
@@ -140,6 +144,38 @@ pub struct DamageComponent {
     /// exact — each is the program's image of the register's own domain endpoint. `None` is a
     /// component whose value is one point, which every other component is.
     pub spread: Option<DamageSpread>,
+    /// Set when the power deals this through a pseudo-pet it summons rather than on its own
+    /// rows. [`Self::total`] then covers every hit the pet lands in one summon, which is
+    /// [`Self::base`] × [`SummonedHit::fires`] × [`SummonedHit::count`].
+    pub summoned: Option<SummonedHit>,
+}
+
+/// How a summoned component repeats: which pet lands it, how many times one copy of the pet
+/// fires before it expires, and how many copies the power summons.
+#[derive(Debug, Clone, PartialEq, serde::Serialize)]
+pub struct SummonedHit {
+    /// The pet as the summon names it (`Sonic Boom`, `Rain of Fire`).
+    pub entity: String,
+    /// Activations one copy lands in its lifespan, the one at spawn included.
+    pub fires: f64,
+    /// Copies of the pet one cast summons.
+    pub count: f64,
+    /// The pet's lifespan in seconds, as the summon states it.
+    pub lifespan: f64,
+    /// The lifespan is the game's "permanent" sentinel, so [`Self::fires`] is one activation
+    /// rather than a lifetime: a permanent pet's lifetime total has no bound to state.
+    pub per_activation: bool,
+    /// The summon's own label for the condition this pet waits on (`Oil Slick Ignited`), when
+    /// it is one of the summon's `conditionalEntities`. Its components are then
+    /// [`DamageApplication::Dormant`]: the patch exists only once something outside the power
+    /// sets it off, and no build state here says whether it has.
+    pub condition: Option<String>,
+}
+
+impl SummonedHit {
+    fn repeat(&self) -> f64 {
+        self.fires * self.count
+    }
 }
 
 /// The high end of a range-valued [`DamageComponent`], shaped like the low end it pairs with.
@@ -294,13 +330,438 @@ pub fn resolve_power_damage(
     // per power — not the global damage-buff total (beta `damage.ts:648`). An absent cap does not
     // clamp: a dataset that ships none has not said the damage is unlimited, but inventing a
     // ceiling would be worse.
-    let enhanced_multiplier = 1.0 + enhancement;
-    let strength = 1.0 + enhancement + global_damage;
-    let cap = damage_cap(archetype, database).filter(|cap| strength > *cap);
-    damage.capped = cap.is_some();
-    let final_multiplier = cap.unwrap_or(strength);
+    let strength = Strength::of(enhancement, global_damage, damage_cap(archetype, database));
+    damage.capped = strength.capped;
+    resolve_atoms(
+        &power.atoms,
+        TableScope::Archetype(archetype),
+        level,
+        strength,
+        None,
+        target_context,
+        database,
+        errors,
+        &mut damage,
+    );
 
-    for atom in &power.atoms {
+    // A power with no damage of its own may still deal it through a pseudo-pet it summons —
+    // Sonic Boom, Lightning Rod and the rains carry nothing on the parent, so without this they
+    // read as non-attacks. Only then, as the beta's `pseudoPetDamage` did: a power that hits AND
+    // summons states its hit itself, and folding a patch's lifetime into it would change what
+    // the number means.
+    if damage.is_empty() {
+        resolve_summoned(
+            power,
+            archetype,
+            level,
+            enhancement,
+            global_damage,
+            target_context,
+            database,
+            errors,
+            &mut damage,
+        );
+    }
+
+    // Summed per component rather than as `base × multiplier`, because a strength-inert
+    // component's tiers do not move with the rest of the hit.
+    let certain = || damage.components.iter().filter(|c| c.is_certain());
+    damage.base = certain().map(|c| c.total.base).sum();
+    damage.enhanced = certain().map(|c| c.total.enhanced).sum();
+    damage.r#final = certain().map(|c| c.total.r#final).sum();
+    damage.high = certain().any(|c| c.spread.is_some()).then(|| {
+        let high = |c: &DamageComponent| c.spread.as_ref().map_or(c.total, |spread| spread.total);
+        ThreeTier {
+            base: certain().map(|c| high(c).base).sum(),
+            enhanced: certain().map(|c| high(c).enhanced).sum(),
+            r#final: certain().map(|c| high(c).r#final).sum(),
+        }
+    });
+
+    damage
+}
+
+/// Lifespans at or past this are the export's "permanent" sentinel rather than a real window
+/// (the beta's `PERMANENT_PSEUDOPET_DURATION`); a lifetime count over one would be astronomical.
+const PERMANENT_LIFESPAN: f64 = 1000.0;
+
+/// The shortest an activation takes: three 0.132s server ticks (the beta's `ARCANA_TIME`), which
+/// is what spaces a pet's zero-cast, zero-recharge Click attacks.
+const MIN_ACTIVATION: f64 = 0.132 * 3.0;
+
+/// Fold the damage a power's pseudo-pets deal into `damage`, one component per pet damage atom.
+///
+/// The pets are the ones [`crate::granted::pseudo_pet_effects`] folds, by the same precedence:
+/// the entity table's chain first, and the inline `resolvedEntities` block only when the table
+/// resolved nothing, because the one power carrying both for one pet carries it twice (ENT-8).
+/// Kept pets are excluded twice over — commandable ones by the chain walk, the rest by
+/// [`follows_owner`] — since a pet fighting beside the player is not this power's hit.
+///
+/// Each source resolves under its own class: an entity's rows under its `characterClass`, an
+/// inline shell's under the summoner's archetype, since those shells have no class row at all
+/// (ENT-10). The same goes for the cap: the summoner's binds an inline shell, and a pet class's
+/// is not in the bundle, so an entity's Final tier is left unclamped rather than given one.
+#[allow(clippy::too_many_arguments)]
+fn resolve_summoned(
+    power: &Power,
+    archetype: &str,
+    level: i32,
+    enhancement: f64,
+    global_damage: f64,
+    target_context: &SourceContext,
+    database: &PowerDatabase,
+    errors: &mut Vec<CalcError>,
+    damage: &mut PowerDamage,
+) {
+    let Some(summon) = power.summon() else {
+        return;
+    };
+    // Soul Extraction's tier ghosts: exactly one materializes, so their hits are alternatives and
+    // no sum of them is a number any cast produces.
+    if summon.get("mutuallyExclusive").and_then(Json::as_bool) == Some(true) {
+        return;
+    }
+    // The parent's own strength stated the cap mark; with no rows of its own, whether a cap
+    // bound is the pets' to say.
+    damage.capped = false;
+    let copy_boosts = summon.get("copyBoosts").and_then(Json::as_bool) == Some(true);
+    let summon_lifespan = summon.get("duration").and_then(Json::as_f64);
+
+    // The pets that exist only once something sets them off, by the label the summon gives the
+    // condition. A pet one of them creates waits on the same thing, so the walk below extends
+    // this as it goes (the chain is breadth-first, so a parent precedes its children).
+    let mut conditional: Vec<(String, String)> = summon
+        .get("conditionalEntities")
+        .and_then(Json::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|entry| {
+            let entity = entry.get("entity").and_then(Json::as_str)?;
+            let label = entry.get("label").and_then(Json::as_str).unwrap_or(entity);
+            Some((entity.to_string(), label.to_string()))
+        })
+        .collect();
+
+    let mut from_entity_table = false;
+    for (root, count) in summoned_counts(summon) {
+        for entity in summoned_entity_chain(database, &root) {
+            from_entity_table = true;
+            // A pet that follows its owner between zones fights beside the player: its damage
+            // is the pet's, over a lifetime of its own choosing, and not this power's hit.
+            // Summon Widow's 240 seconds read as 18,605 damage before this. What it creates
+            // in place is part of its kit, so the chain under a kept root goes with it.
+            if follows_owner(entity) {
+                if entity.get("name").and_then(Json::as_str) == Some(root.as_str()) {
+                    break;
+                }
+                continue;
+            }
+            let Some(class) = entity.get("characterClass").and_then(Json::as_str) else {
+                errors.push(CalcError::new(
+                    "summoned-damage",
+                    format!("pet entity {root:?} states no characterClass to resolve under"),
+                ));
+                continue;
+            };
+            let copies =
+                copy_boosts || entity.get("copyCreatorMods").and_then(Json::as_bool) == Some(true);
+            let strength =
+                Strength::of(if copies { enhancement } else { 0.0 }, global_damage, None);
+            // The summon's window is the root's; a pet the root creates in place lives its own.
+            let own_lifespan = entity.get("lifespan").and_then(Json::as_f64);
+            let is_root = entity.get("name").and_then(Json::as_str) == Some(root.as_str());
+            let lifespan = match is_root {
+                true => summon_lifespan.or(own_lifespan),
+                false => own_lifespan.or(summon_lifespan),
+            };
+            let name = entity
+                .get("name")
+                .and_then(Json::as_str)
+                .unwrap_or_default();
+            let condition = conditional
+                .iter()
+                .find(|(entity, _)| entity == name)
+                .map(|(_, label)| label.clone());
+            if let Some(label) = &condition {
+                for child in entity
+                    .get("createsEntities")
+                    .and_then(Json::as_array)
+                    .into_iter()
+                    .flatten()
+                    .filter_map(Json::as_str)
+                {
+                    conditional.push((child.to_string(), label.clone()));
+                }
+            }
+            let pet = Pet {
+                name: entity
+                    .get("displayName")
+                    .and_then(Json::as_str)
+                    .unwrap_or(&root),
+                condition,
+                count,
+                lifespan,
+                one_shot: entity.get("oneShot").and_then(Json::as_bool) == Some(true),
+                scope: TableScope::Pet(class),
+                strength,
+            };
+            for ability in entity_abilities(entity) {
+                resolve_pet_ability(
+                    ability,
+                    "atoms",
+                    &pet,
+                    level,
+                    target_context,
+                    database,
+                    errors,
+                    damage,
+                );
+            }
+        }
+    }
+    if from_entity_table {
+        return;
+    }
+
+    let cap = damage_cap(archetype, database);
+    for resolved in summon
+        .get("resolvedEntities")
+        .and_then(Json::as_array)
+        .into_iter()
+        .flatten()
+    {
+        let copies = resolved.get("copyCreatorMods").and_then(Json::as_bool) == Some(true);
+        let strength = Strength::of(if copies { enhancement } else { 0.0 }, global_damage, cap);
+        let pet = Pet {
+            name: resolved
+                .get("displayName")
+                .and_then(Json::as_str)
+                .unwrap_or_default(),
+            count: resolved.get("count").and_then(Json::as_f64).unwrap_or(1.0),
+            lifespan: resolved
+                .get("duration")
+                .and_then(Json::as_f64)
+                .or(summon_lifespan),
+            one_shot: resolved.get("oneShot").and_then(Json::as_bool) == Some(true),
+            condition: None,
+            scope: TableScope::Archetype(archetype),
+            strength,
+        };
+        for ability in resolved
+            .get("abilities")
+            .and_then(Json::as_array)
+            .into_iter()
+            .flatten()
+        {
+            resolve_pet_ability(
+                ability,
+                "redirectAtoms",
+                &pet,
+                level,
+                target_context,
+                database,
+                errors,
+                damage,
+            );
+        }
+    }
+}
+
+/// The entity's `canZone`: a kept pet, as against a placed effect. Absent reads as placed — the
+/// converter writes the field wherever the villain def states it, which is every player pet.
+fn follows_owner(entity: &Json) -> bool {
+    entity.get("canZone").and_then(Json::as_bool) == Some(true)
+}
+
+/// One summoned pet as its damage reads it.
+struct Pet<'a> {
+    name: &'a str,
+    count: f64,
+    /// `None` when neither the summon nor the entity states one.
+    lifespan: Option<f64>,
+    /// Detonates once and is gone (`convert-pet-entities`' `detectOneShot`): its attack's
+    /// recharge is not a cadence, because the pet does not survive to use it again.
+    one_shot: bool,
+    /// See [`SummonedHit::condition`].
+    condition: Option<String>,
+    scope: TableScope<'a>,
+    strength: Strength,
+}
+
+/// The root entities a summon names, each with the copies it summons. An absent count is one
+/// copy: the converter writes `entityCount` and `entities[].count` only past one.
+fn summoned_counts(summon: &Json) -> Vec<(String, f64)> {
+    if let Some(entities) = summon.get("entities").and_then(Json::as_array) {
+        if !entities.is_empty() {
+            return entities
+                .iter()
+                .filter_map(|entry| {
+                    let name = entry.get("entity").and_then(Json::as_str)?;
+                    let count = entry.get("count").and_then(Json::as_f64).unwrap_or(1.0);
+                    Some((name.to_string(), count))
+                })
+                .collect();
+        }
+    }
+    let count = summon
+        .get("entityCount")
+        .and_then(Json::as_f64)
+        .unwrap_or(1.0);
+    summon_entity_names(summon)
+        .into_iter()
+        .map(|name| (name, count))
+        .collect()
+}
+
+/// Resolve one pet ability's damage atoms (wire tuples under `atoms_key`) as summoned hits.
+#[allow(clippy::too_many_arguments)]
+fn resolve_pet_ability(
+    ability: &Json,
+    atoms_key: &str,
+    pet: &Pet<'_>,
+    level: i32,
+    target_context: &SourceContext,
+    database: &PowerDatabase,
+    errors: &mut Vec<CalcError>,
+    damage: &mut PowerDamage,
+) {
+    let Some(wire) = ability.get(atoms_key).and_then(Json::as_array) else {
+        return;
+    };
+    let mut atoms = Vec::with_capacity(wire.len());
+    for tuple in wire {
+        let decoded = tuple
+            .as_array()
+            .ok_or_else(|| "not a tuple".to_string())
+            .and_then(|tuple| decode_atom(tuple).map_err(|e| e.to_string()));
+        match decoded {
+            Ok(atom) => atoms.push(atom),
+            Err(problem) => {
+                errors.push(CalcError::new(
+                    "summoned-damage",
+                    format!("{}: a pet atom does not decode: {problem}", pet.name),
+                ));
+                return;
+            }
+        }
+    }
+    if !atoms
+        .iter()
+        .any(|atom| atom.effect_type == Some(EffectType::Damage))
+    {
+        return;
+    }
+
+    // No lifespan is no count of hits. Reported, not guessed: a summon whose window the export
+    // does not state has damage the planner cannot total (Rule 1).
+    let Some(lifespan) = pet.lifespan.filter(|lifespan| *lifespan > 0.0) else {
+        for atom in atoms
+            .iter()
+            .filter(|atom| atom.effect_type == Some(EffectType::Damage))
+        {
+            damage.unresolved.push(UnresolvedDamage {
+                damage_type: sub_type_name(atom),
+                gate: expression_text(atom.requires_expression.as_deref()),
+                reason: format!(
+                    "{} states no lifespan, so its hits cannot be counted",
+                    pet.name
+                ),
+                tags: tags_of(atom),
+                waits_on_rank: false,
+                if_it_lands: None,
+            });
+        }
+        return;
+    };
+
+    let per_activation = lifespan >= PERMANENT_LIFESPAN;
+    let number = |key: &str| ability.get(key).and_then(Json::as_f64).unwrap_or(0.0);
+    let period = number("activatePeriod");
+    let is_auto = ability
+        .get("type")
+        .and_then(Json::as_str)
+        .is_some_and(|kind| kind.eq_ignore_ascii_case("auto"));
+    // An Auto ability fires at spawn and then every period — Sonic Boom's pet authors a 75s
+    // period against a 4s life, which is one hit. Anything else repeats on its own cycle.
+    let fires = if per_activation || pet.one_shot {
+        1.0
+    } else if is_auto && period > 0.0 {
+        nominal_ticks(lifespan, period)
+    } else {
+        let cycle = number("castTime").max(MIN_ACTIVATION) + number("recharge");
+        nominal_ticks(lifespan, cycle)
+    };
+
+    let hit = SummonedHit {
+        entity: pet.name.to_string(),
+        fires,
+        count: pet.count,
+        lifespan,
+        per_activation,
+        condition: pet.condition.clone(),
+    };
+    let before = damage.components.len();
+    resolve_atoms(
+        &atoms,
+        pet.scope,
+        level,
+        pet.strength,
+        Some(&hit),
+        target_context,
+        database,
+        errors,
+        damage,
+    );
+    if damage.components.len() > before {
+        damage.capped |= pet.strength.capped;
+    }
+}
+
+/// The damage multipliers one atom stream's tiers read: ONE strength (`1 + enh + buffs`), with
+/// the damage-strength cap binding the multiplier rather than the buff total (beta
+/// `damage.ts:648`). The Enhanced tier stays uncapped: it is the "slotting alone" reading, and ED
+/// already bounds it well under any cap.
+#[derive(Debug, Clone, Copy)]
+struct Strength {
+    enhanced: f64,
+    r#final: f64,
+    capped: bool,
+}
+
+impl Strength {
+    /// An absent cap does not clamp: a dataset that ships none has not said the damage is
+    /// unlimited, but inventing a ceiling would be worse.
+    fn of(enhancement: f64, global_damage: f64, cap: Option<f64>) -> Self {
+        let strength = 1.0 + enhancement + global_damage;
+        let cap = cap.filter(|cap| strength > *cap);
+        Strength {
+            enhanced: 1.0 + enhancement,
+            r#final: cap.unwrap_or(strength),
+            capped: cap.is_some(),
+        }
+    }
+}
+
+/// Resolve one stream of atoms into `damage` — a power's own, or one summoned ability's.
+///
+/// `scope` is the class every table resolves under, which is the caster's archetype for a
+/// power's own rows and the pet's class for an entity's (ENT-10). `summoned` is set for a
+/// pseudo-pet's ability, and every total it produces is multiplied by its fires × count.
+#[allow(clippy::too_many_arguments)]
+fn resolve_atoms(
+    atoms: &[AtomicEffect],
+    scope: TableScope<'_>,
+    level: i32,
+    strength: Strength,
+    summoned: Option<&SummonedHit>,
+    target_context: &SourceContext,
+    database: &PowerDatabase,
+    errors: &mut Vec<CalcError>,
+    damage: &mut PowerDamage,
+) {
+    let repeat = summoned.map_or(1.0, SummonedHit::repeat);
+    let waits = summoned.is_some_and(|hit| hit.condition.is_some());
+    for atom in atoms {
         if atom.effect_type != Some(EffectType::Damage) {
             continue;
         }
@@ -382,16 +843,16 @@ pub fn resolve_power_damage(
         // operand a magnitude program modifies, so it is computed before [`magnitude`] rather
         // than folded into it. The bare table value beside it is the program's `@Value`, needed
         // only when there is a program to read it.
-        let std_result = resolve_scaled_effect(
+        let std_result = resolve_scaled_effect_for(
             atom.scale.unwrap_or(0.0),
             table,
-            archetype,
+            scope,
             level,
             database,
             errors,
         );
         let table_value = if atom.magnitude_expression.is_some() {
-            resolve_scaled_effect(1.0, table, archetype, level, database, errors)
+            resolve_scaled_effect_for(1.0, table, scope, level, database, errors)
         } else {
             0.0
         };
@@ -418,7 +879,7 @@ pub fn resolve_power_damage(
         };
 
         let over_time = over_time_of(atom);
-        let ticks = over_time.map_or(1.0, |over_time| over_time.expected_ticks);
+        let ticks = over_time.map_or(1.0, |over_time| over_time.expected_ticks) * repeat;
         // A strength-inert value reads the same at every tier — scaling it would fabricate an
         // enhancement response the game does not have (see [`Valuation::strength_scales`]).
         let tiers = |per_tick: f64| {
@@ -426,8 +887,8 @@ pub fn resolve_power_damage(
             if strength_scales {
                 ThreeTier {
                     base: total,
-                    enhanced: total * enhanced_multiplier,
-                    r#final: total * final_multiplier,
+                    enhanced: total * strength.enhanced,
+                    r#final: total * strength.r#final,
                 }
             } else {
                 ThreeTier {
@@ -476,6 +937,11 @@ pub fn resolve_power_damage(
             }
         };
 
+        let application = if waits {
+            DamageApplication::Dormant
+        } else {
+            application
+        };
         let component = DamageComponent {
             damage_type: sub_type_name(atom),
             table: table.unwrap_or_default().to_string(),
@@ -489,6 +955,7 @@ pub fn resolve_power_damage(
                 .map(|tokens| expression_text(Some(tokens))),
             tags: tags_of(atom),
             spread,
+            summoned: summoned.cloned(),
         };
         match pending {
             Some(mut line) => {
@@ -498,23 +965,6 @@ pub fn resolve_power_damage(
             None => damage.components.push(component),
         }
     }
-
-    // Summed per component rather than as `base × multiplier`, because a strength-inert
-    // component's tiers do not move with the rest of the hit.
-    let certain = || damage.components.iter().filter(|c| c.is_certain());
-    damage.base = certain().map(|c| c.total.base).sum();
-    damage.enhanced = certain().map(|c| c.total.enhanced).sum();
-    damage.r#final = certain().map(|c| c.total.r#final).sum();
-    damage.high = certain().any(|c| c.spread.is_some()).then(|| {
-        let high = |c: &DamageComponent| c.spread.as_ref().map_or(c.total, |spread| spread.total);
-        ThreeTier {
-            base: certain().map(|c| high(c).base).sum(),
-            enhanced: certain().map(|c| high(c).enhanced).sum(),
-            r#final: certain().map(|c| high(c).r#final).sum(),
-        }
-    });
-
-    damage
 }
 
 /// The application after the magnitude program's own roll joins the atom's: independent rolls,

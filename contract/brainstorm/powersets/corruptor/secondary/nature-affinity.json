@@ -1716,7 +1716,45 @@
          "Friend"
         ],
         "radius": 15,
-        "maxTargets": 255
+        "maxTargets": 255,
+        "redirectAtoms": [
+         [
+          "Heal",
+          null,
+          0.25,
+          1,
+          0,
+          "Ranged_Heal",
+          "Abs",
+          "Magnitude",
+          "Target",
+          "Any",
+          true,
+          "Stack",
+          2,
+          null,
+          null,
+          1
+         ],
+         [
+          "Endurance",
+          null,
+          0.01,
+          1,
+          0,
+          "Ranged_Ones",
+          "Cur",
+          "Magnitude",
+          "Target",
+          "Any",
+          false,
+          "Stack",
+          2,
+          null,
+          null,
+          1
+         ]
+        ]
        }
       ]
      }

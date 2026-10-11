@@ -2586,7 +2586,27 @@
          "Foe"
         ],
         "radius": 15,
-        "maxTargets": 10
+        "maxTargets": 10,
+        "redirectAtoms": [
+         [
+          "Damage",
+          "Fire",
+          0.14,
+          1,
+          0,
+          "Melee_Damage",
+          "Abs",
+          "Magnitude",
+          "Target",
+          "Any",
+          true,
+          "Stack",
+          2,
+          null,
+          null,
+          1
+         ]
+        ]
        },
        {
         "name": "Burn_FrontDamage",
@@ -2612,7 +2632,45 @@
          "Foe"
         ],
         "radius": 15,
-        "maxTargets": 10
+        "maxTargets": 10,
+        "redirectAtoms": [
+         [
+          "Damage",
+          "Fire",
+          1,
+          1,
+          0,
+          "Melee_Damage",
+          "Abs",
+          "Magnitude",
+          "Target",
+          "Any",
+          true,
+          "Stack",
+          2,
+          null,
+          null,
+          1
+         ],
+         [
+          "Damage",
+          "Fire",
+          0.44,
+          1,
+          0,
+          "Melee_Damage",
+          "Abs",
+          "Magnitude",
+          "Target",
+          "Any",
+          true,
+          "Stack",
+          2,
+          null,
+          null,
+          1
+         ]
+        ]
        }
       ]
      }

@@ -2634,7 +2634,27 @@
         ],
         "radius": 8,
         "maxTargets": 10,
-        "ppmMod": 2
+        "ppmMod": 2,
+        "redirectAtoms": [
+         [
+          "Damage",
+          "Energy",
+          0.933,
+          1,
+          0,
+          "Melee_Damage",
+          "Abs",
+          "Magnitude",
+          "Target",
+          "Any",
+          true,
+          "Stack",
+          2,
+          null,
+          null,
+          1
+         ]
+        ]
        }
       ]
      }

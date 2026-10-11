@@ -903,6 +903,30 @@ fn damage_row(index: usize, component: &DamageComponent, note: &str) -> EffectRo
     if let Some(spread) = &component.spread {
         annotations.push(format!("varies with {}", spread.over));
     }
+    // Dealt by a summoned pseudo-pet: the total is its per-hit damage over every hit it lands,
+    // and a number that large with no word on where it comes from reads as one strike.
+    if let Some(summoned) = &component.summoned {
+        let hits = if summoned.per_activation {
+            "per activation".to_string()
+        } else {
+            let fires = format_precision(summoned.fires, 0);
+            let noun = if summoned.fires == 1.0 { "hit" } else { "hits" };
+            format!(
+                "{} × {fires} {noun} over {}s",
+                format_precision(component.base, 2),
+                format_precision(summoned.lifespan, 2),
+            )
+        };
+        let copies = if summoned.count == 1.0 {
+            String::new()
+        } else {
+            format!(" × {} summoned", format_precision(summoned.count, 2))
+        };
+        annotations.push(format!("{}: {hits}{copies}", summoned.entity));
+        if let Some(condition) = &summoned.condition {
+            annotations.push(format!("only once {condition}"));
+        }
+    }
     if let Some(over_time) = component.over_time {
         annotations.push(format!(
             "{} × {} over {}s",

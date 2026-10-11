@@ -1847,6 +1847,10 @@ function processEntity(entityFilePath, upgradeMap) {
     characterClass: defaults.character_class_name,
     commandable: entityData.commandable_pet === 1,
     copyCreatorMods: entityData.copy_creator_mods === true,
+    // Verbatim when stated, absent when not: the field separates a pet that follows its owner
+    // between zones (a henchman, a patron pet, Phantom Army) from a placed effect (a rain, a
+    // patch, a trap), which the summoning power's damage reads (see `PetEntity.canZone`).
+    canZone: typeof entityData.can_zone === 'boolean' ? entityData.can_zone : undefined,
     abilities,
     lifespan: lifespan ?? undefined,
     oneShot: detectOneShot(abilities, selfDestructDelay) || undefined,
@@ -2135,6 +2139,12 @@ function abilityRecord(ability) {
 //   characterClass: string;
 //   commandable: boolean;
 //   copyCreatorMods: boolean;
+//   /** The villain def's `CanZone`: the pet follows its owner between zones. True for every
+//    *  kept combat pet (henchmen, patron pets, Phantom Army, Dark Servant) and false for a
+//    *  placed effect (rains, patches, traps, Lightning Storm), which is the line between a pet
+//    *  that fights beside the player and one whose damage is the summoning power's own hit.
+//    *  `commandable` cannot draw it: only the Controller pets set that. */
+//   canZone?: boolean;
 //   abilities: PetAbility[];
 //   /** Pet lifespan in seconds (from bundled Self_Destruct power's Silent_Kill delay).
 //    *  Omitted for permanent pets (mastermind primaries, etc.) that despawn only
@@ -2174,6 +2184,7 @@ function buildPetEntities(entities) {
       commandable: entity.commandable,
       copyCreatorMods: entity.copyCreatorMods,
     };
+    if (typeof entity.canZone === 'boolean') record.canZone = entity.canZone;
     if (typeof entity.lifespan === 'number' && entity.lifespan > 0) record.lifespan = entity.lifespan;
     if (entity.oneShot) record.oneShot = true;
     if (entity.createsEntities) record.createsEntities = entity.createsEntities;

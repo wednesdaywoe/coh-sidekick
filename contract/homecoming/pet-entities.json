@@ -6,6 +6,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Barrier_Rez_Double",
@@ -133,6 +134,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Barrier_Rez_Double_Wide",
@@ -260,6 +262,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Barrier_Rez_Single",
@@ -387,6 +390,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Venom_Burst",
@@ -1305,6 +1309,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mind_Link",
@@ -1895,6 +1900,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Push_Back",
@@ -2700,6 +2706,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Slash",
@@ -3395,6 +3402,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Particle_Blast",
@@ -4101,6 +4109,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Nano_Repair",
@@ -4881,6 +4890,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Cannon_Blast",
@@ -5530,6 +5540,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Punch",
@@ -6373,6 +6384,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -7411,6 +7423,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Northern_Lights_Bolt",
@@ -7987,6 +8000,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Glowing_Touch",
@@ -8700,6 +8714,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Grenade",
@@ -9593,6 +9608,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Burst",
@@ -10346,6 +10362,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Rikti_Sword",
@@ -11165,6 +11182,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Bayonet",
@@ -11920,6 +11938,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Assault",
@@ -12843,6 +12862,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Incandescence",
@@ -13005,6 +13025,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Incandescence_Wide",
@@ -13167,6 +13188,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Core_Final_Judgement_Jump1",
@@ -13386,6 +13408,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Core_Final_Judgement_Jump2",
@@ -13605,6 +13628,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Core_Final_Judgement_Jump3",
@@ -13824,6 +13848,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Core_Final_Judgement_Jump4",
@@ -14023,6 +14048,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Core_Judgement_Jump1",
@@ -14282,6 +14308,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Core_Judgement_Jump2",
@@ -14541,6 +14568,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Core_Judgement_Jump3",
@@ -14780,6 +14808,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Judgement_Jump1",
@@ -14950,6 +14979,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Judgement_Jump2",
@@ -15120,6 +15150,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Judgement_Jump3",
@@ -15270,6 +15301,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Core_Judgement_Jump1",
@@ -15638,6 +15670,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Core_Judgement_Jump2",
@@ -16006,6 +16039,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Core_Judgement_Jump3",
@@ -16354,6 +16388,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Core_Judgement_Jump1",
@@ -16722,6 +16757,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Core_Judgement_Jump2",
@@ -17090,6 +17126,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Core_Judgement_Jump3",
@@ -17438,6 +17475,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Radial_Judgement_Jump1",
@@ -17717,6 +17755,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Radial_Judgement_Jump2",
@@ -17996,6 +18035,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Radial_Judgement_Jump3",
@@ -18275,6 +18315,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Partial_Radial_Judgement_Jump4",
@@ -18534,6 +18575,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Radial_Final_Judgement_Jump1",
@@ -18889,6 +18931,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Radial_Final_Judgement_Jump2",
@@ -19244,6 +19287,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Radial_Final_Judgement_Jump3",
@@ -19599,6 +19643,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Radial_Final_Judgement_Jump4",
@@ -19934,6 +19979,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Radial_Judgement_Jump1",
@@ -20213,6 +20259,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Radial_Judgement_Jump2",
@@ -20492,6 +20539,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Radial_Judgement_Jump3",
@@ -20751,6 +20799,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Core_Judgement_Jump1",
@@ -20970,6 +21019,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Core_Judgement_Jump2",
@@ -21189,6 +21239,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Core_Judgement_Jump3",
@@ -21388,6 +21439,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Core_Judgement_Jump1",
@@ -21607,6 +21659,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Core_Judgement_Jump2",
@@ -21826,6 +21879,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Core_Judgement_Jump3",
@@ -22025,6 +22079,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Radial_Judgement_Jump1",
@@ -22380,6 +22435,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Radial_Judgement_Jump2",
@@ -22735,6 +22791,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Ion_Total_Radial_Judgement_Jump3",
@@ -23070,6 +23127,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Venom_Burst",
@@ -23988,6 +24046,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Venom_Burst",
@@ -24906,6 +24965,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Bash",
@@ -25725,6 +25785,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Bash",
@@ -26544,6 +26605,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mind_Link",
@@ -27134,6 +27196,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mind_Link",
@@ -27791,6 +27854,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mind_Link",
@@ -28381,6 +28445,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Frigid_Smash",
@@ -29680,6 +29745,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Frigid_Smash",
@@ -30979,6 +31045,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Frigid_Slash",
@@ -31888,6 +31955,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Frigid_Slash",
@@ -32797,6 +32865,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Frigid_Burst",
@@ -33373,6 +33442,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Frigid_Burst",
@@ -34078,6 +34148,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Frigid_Burst",
@@ -34654,6 +34725,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Telekinetic_Blast",
@@ -35636,6 +35708,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Telekinetic_Blast",
@@ -36618,6 +36691,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Hurl",
@@ -37409,6 +37483,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Hurl",
@@ -38200,6 +38275,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Cauterize",
@@ -38892,6 +38968,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Cauterize",
@@ -39641,6 +39718,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Cauterize",
@@ -40333,6 +40411,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Push_Back",
@@ -41138,6 +41217,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Push_Back",
@@ -41943,6 +42023,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Slash",
@@ -42638,6 +42719,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Slash",
@@ -43333,6 +43415,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Healing_Aura",
@@ -43861,6 +43944,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Healing_Aura",
@@ -44428,6 +44512,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Healing_Aura",
@@ -44956,6 +45041,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Anti-Matter_Particles",
@@ -45031,6 +45117,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Particle_Blast",
@@ -45673,6 +45760,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Particle_Blast",
@@ -46315,6 +46403,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Particle_Blast",
@@ -47021,6 +47110,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Particle_Blast",
@@ -47727,6 +47817,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Nano_Repair",
@@ -48445,6 +48536,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Nano_Repair",
@@ -49225,6 +49317,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Nano_Repair",
@@ -49943,6 +50036,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Come_Hither",
@@ -50723,6 +50817,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Come_Hither",
@@ -51503,6 +51598,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Fire_Smash",
@@ -52291,6 +52387,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Fire_Smash",
@@ -53079,6 +53176,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Chill_of_the_Night",
@@ -53817,6 +53915,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Chill_of_the_Night",
@@ -54619,6 +54718,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Chill_of_the_Night",
@@ -55357,6 +55457,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Cannon_Blast",
@@ -56006,6 +56107,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Cannon_Blast",
@@ -56655,6 +56757,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Cannon_Blast",
@@ -57237,6 +57340,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Cannon_Blast",
@@ -57819,6 +57923,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -58857,6 +58962,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -59962,6 +60068,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -61000,6 +61107,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Lightning_Bolt",
@@ -61892,6 +62000,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Lightning_Bolt",
@@ -62784,6 +62893,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Lightning_Bolt",
@@ -63555,6 +63665,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Lightning_Bolt",
@@ -64326,6 +64437,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "O2_Boost",
@@ -65211,6 +65323,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "O2_Boost",
@@ -66202,6 +66315,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "O2_Boost",
@@ -67087,6 +67201,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Punch",
@@ -67930,6 +68045,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Punch",
@@ -68773,6 +68889,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Blast",
@@ -69460,6 +69577,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Blast",
@@ -70147,6 +70265,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -71185,6 +71304,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -72355,6 +72475,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -73393,6 +73514,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Focused_Shot",
@@ -75386,6 +75508,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Focused_Shot",
@@ -77379,6 +77502,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shockwave_Slice",
@@ -78521,6 +78645,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shockwave_Slice",
@@ -79663,6 +79788,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Adrenalin_Boost",
@@ -81192,6 +81318,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Adrenalin_Boost",
@@ -83416,6 +83543,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Adrenalin_Boost",
@@ -84945,6 +85073,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Northern_Lights_Bolt",
@@ -85810,6 +85939,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Northern_Lights_Bolt",
@@ -86675,6 +86805,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Northern_Lights_Bolt",
@@ -87251,6 +87382,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Northern_Lights_Bolt",
@@ -87827,6 +87959,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Glowing_Touch",
@@ -88540,6 +88673,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Glowing_Touch",
@@ -89317,6 +89451,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Glowing_Touch",
@@ -90030,6 +90165,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Grenade",
@@ -90923,6 +91059,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Grenade",
@@ -91816,6 +91953,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Burst",
@@ -92569,6 +92707,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Burst",
@@ -93322,6 +93461,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Heal_Other",
@@ -93850,6 +93990,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Heal_Other",
@@ -94442,6 +94583,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Heal_Other",
@@ -94970,6 +95112,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Pummel",
@@ -95903,6 +96046,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Pummel",
@@ -96836,6 +96980,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Lance_Rifle",
@@ -97550,6 +97695,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Lance_Rifle",
@@ -98264,6 +98410,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Triage",
@@ -99050,6 +99197,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Triage",
@@ -99875,6 +100023,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Triage",
@@ -100661,6 +100810,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Greater_Ice_Sword",
@@ -101486,6 +101636,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Greater_Ice_Sword",
@@ -102311,6 +102462,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Fire_Blast",
@@ -102946,6 +103098,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Fire_Blast",
@@ -103581,6 +103734,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Heal_Other",
@@ -104256,6 +104410,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Heal_Other",
@@ -105014,6 +105169,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Heal_Other",
@@ -105689,6 +105845,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Greater_Rikti_Sword",
@@ -106579,6 +106736,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Greater_Rikti_Sword",
@@ -107469,6 +107627,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Rikti_Sword",
@@ -108288,6 +108447,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Rikti_Sword",
@@ -109107,6 +109267,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Radiation_Emission",
@@ -109951,6 +110112,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Radiation_Emission",
@@ -110904,6 +111066,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Radiation_Emission",
@@ -111748,6 +111911,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Quill_Blast",
@@ -112617,6 +112781,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Quill_Blast",
@@ -113486,6 +113651,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Pummel",
@@ -114094,6 +114260,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Pummel",
@@ -114702,6 +114869,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Crystal_of_Vigor",
@@ -115372,6 +115540,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Crystal_of_Vigor",
@@ -116151,6 +116320,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Crystal_of_Vigor",
@@ -116821,6 +116991,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Levitate",
@@ -117633,6 +117804,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Levitate",
@@ -118445,6 +118617,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mental_Blast",
@@ -119090,6 +119263,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mental_Blast",
@@ -119735,6 +119909,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Soothe_Mind",
@@ -120643,6 +120818,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Soothe_Mind",
@@ -121641,6 +121817,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Soothe_Mind",
@@ -122549,6 +122726,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Seasons_End",
@@ -124046,6 +124224,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Seasons_End",
@@ -125543,6 +125722,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Snap_Shot",
@@ -126811,6 +126991,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Snap_Shot",
@@ -128079,6 +128260,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Seductive_Song",
@@ -128894,6 +129076,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Seductive_Song",
@@ -129823,6 +130006,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Seductive_Song",
@@ -130638,6 +130822,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mercurial_Blow",
@@ -131784,6 +131969,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mercurial_Blow",
@@ -132930,6 +133116,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Hand_Clap",
@@ -133714,6 +133901,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Hand_Clap",
@@ -134498,6 +134686,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "O2_Boost",
@@ -135229,6 +135418,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "O2_Boost",
@@ -136091,6 +136281,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "O2_Boost",
@@ -136822,6 +137013,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Life_Drain",
@@ -137909,6 +138101,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Life_Drain",
@@ -138996,6 +139189,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Bayonet",
@@ -139751,6 +139945,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Bayonet",
@@ -140506,6 +140701,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Assault",
@@ -141429,6 +141625,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Assault",
@@ -142478,6 +142675,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Assault",
@@ -143401,6 +143599,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Swipe",
@@ -144196,6 +144395,7 @@
    "characterClass": "boss_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Swipe",
@@ -144991,6 +145191,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Full_Auto",
@@ -145573,6 +145774,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Full_Auto",
@@ -146155,6 +146357,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -147193,6 +147396,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -148363,6 +148567,7 @@
    "characterClass": "lt_praetoriangrunt_pet",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Shield_Generator",
@@ -149401,6 +149606,7 @@
    "characterClass": "henchman_boss",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Plasma_Blast",
@@ -150469,6 +150675,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -151544,6 +151751,7 @@
    "characterClass": "henchman_boss",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -154587,6 +154795,7 @@
    "characterClass": "henchman_boss",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -156839,6 +157048,7 @@
    "characterClass": "henchman_boss",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -159177,6 +159387,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Laser_Burst",
@@ -159817,6 +160028,7 @@
    "characterClass": "henchman_lt",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -161579,6 +161791,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -162382,6 +162595,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Thunder_Kick",
@@ -163310,6 +163524,7 @@
    "characterClass": "henchman_boss",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 300,
    "abilities": [
     {
@@ -164144,6 +164359,7 @@
    "characterClass": "henchman_lt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 300,
    "abilities": [
     {
@@ -164978,6 +165194,7 @@
    "characterClass": "henchman_minion",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 300,
    "abilities": [
     {
@@ -166643,6 +166860,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -167949,6 +168167,7 @@
    "characterClass": "henchman_lt",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -169619,6 +169838,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -171545,6 +171765,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -173479,6 +173700,7 @@
    "characterClass": "henchman_lt",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Hack",
@@ -174922,6 +175144,7 @@
    "characterClass": "henchman_boss",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Dark_Blast",
@@ -176031,6 +176254,7 @@
    "characterClass": "henchman_lt",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -178080,6 +178304,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 90,
    "abilities": [
     {
@@ -178153,6 +178378,7 @@
    "characterClass": "henchman_boss",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -178659,6 +178885,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -180206,6 +180433,7 @@
    "characterClass": "henchman_boss",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Fire_Sword_Slash",
@@ -181436,6 +181664,7 @@
    "characterClass": "henchman_lt",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Laser_Burst",
@@ -182432,6 +182661,7 @@
    "characterClass": "henchman_lt",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Hack",
@@ -184121,6 +184351,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -186020,6 +186251,7 @@
    "characterClass": "henchman_lt",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -188392,6 +188624,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -189027,6 +189260,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -189625,6 +189859,7 @@
    "characterClass": "henchman_boss",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -191112,6 +191347,7 @@
    "characterClass": "henchman_lt",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -191995,6 +192231,7 @@
    "characterClass": "henchman_minion",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Zombie_Brawl",
@@ -192741,6 +192978,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Air_Bomb",
@@ -192906,6 +193144,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Anniversary_Freakshow_Tank": {
@@ -192914,6 +193153,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Anniversary_Hellions_Thug": {
@@ -192922,6 +193162,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Anniversary_Rikti_Boss": {
@@ -192930,6 +193171,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Anniversary_Rikti_Minion": {
@@ -192938,6 +193180,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Anniversary_Skulls_Thug": {
@@ -192946,6 +193189,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Anniversary_Thorn_Wielder": {
@@ -192954,6 +193198,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Anniversary_Trolls_Thug": {
@@ -192962,6 +193207,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Anniversary_Vahzilok_Cadavar": {
@@ -192970,6 +193216,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Arachnos_BackUp_Pet": {
@@ -192978,6 +193225,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -193492,6 +193740,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Corrosive_Vial_Splat",
@@ -193764,6 +194013,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Arachnos_Heavy_Pet": {
@@ -193772,6 +194022,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Venom_Burst",
@@ -194968,6 +195219,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Twilight",
@@ -195019,6 +195271,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -195350,6 +195603,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Bash",
@@ -197488,6 +197742,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 120,
    "abilities": [
     {
@@ -198102,6 +198357,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Beth_Jonsson_Astral": {
@@ -198110,6 +198366,7 @@
    "characterClass": "boss_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -199282,6 +199539,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Blackwing_Drone_Pet": {
@@ -199290,6 +199548,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_BlackWolf_Pet": {
@@ -199298,6 +199557,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Blast_Radius": {
@@ -199306,6 +199566,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 1,
    "abilities": [
     {
@@ -199360,6 +199621,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Blind",
@@ -199488,6 +199750,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Blizzard",
@@ -199889,6 +200152,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Blizzard",
@@ -200290,6 +200554,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Blizzard",
@@ -200732,6 +200997,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -201340,6 +201606,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -202647,6 +202914,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -203609,6 +203877,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -204572,6 +204841,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -205535,6 +205805,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -206706,6 +206977,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -207837,6 +208109,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Bonfire",
@@ -208069,6 +208342,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Bumper": {
@@ -208077,6 +208351,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Burn": {
@@ -208085,6 +208360,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Burn",
@@ -208135,6 +208411,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Burst_of_Speed",
@@ -208185,6 +208462,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Caltrops",
@@ -208325,6 +208603,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Caltrops_Blue",
@@ -208530,6 +208809,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Caltrops_Red",
@@ -208735,6 +209015,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_CatherineWheel": {
@@ -208743,6 +209024,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "CatherineWheel_Skin",
@@ -210047,6 +210329,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "CatherineWheel_Skin",
@@ -211351,6 +211634,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -211646,6 +211930,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -211941,6 +212226,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -212158,6 +212444,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -212405,6 +212692,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -212652,6 +212940,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -212821,6 +213110,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -212984,6 +213274,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -213147,6 +213438,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -213310,6 +213602,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -213473,6 +213766,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -213636,6 +213930,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -213799,6 +214094,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -213886,6 +214182,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -213973,6 +214270,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -214359,6 +214657,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -214748,6 +215047,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -215059,6 +215359,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -215330,6 +215631,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -215601,6 +215903,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -215794,6 +216097,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -216023,6 +216327,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -216252,6 +216557,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -216403,6 +216709,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -216665,6 +216972,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Charge",
@@ -216853,6 +217161,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shield_Charge",
@@ -216976,6 +217285,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shield_Charge",
@@ -217096,6 +217406,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Clockwork_Pet": {
@@ -217104,6 +217415,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Corruptor_Blizzard": {
@@ -217112,6 +217424,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Blizzard",
@@ -217542,6 +217855,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Flame_Thrower",
@@ -217750,6 +218064,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "IceStorm",
@@ -218065,6 +218380,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofFire",
@@ -218360,6 +218676,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Creeper_Entangle": {
@@ -218368,6 +218685,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 2,
    "abilities": [
     {
@@ -218826,6 +219144,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Creeper_Patch": {
@@ -218834,6 +219153,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "createsEntities": [
     "Pets_Creeper_FX"
    ],
@@ -218972,6 +219292,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 14,
    "abilities": [
     {
@@ -219894,6 +220215,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 3,
    "abilities": []
   },
@@ -219903,6 +220225,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_DarkFairy_Pet": {
@@ -219911,6 +220234,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -220796,6 +221120,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Chill_of_the_Night",
@@ -221991,6 +222316,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Decoy",
@@ -223228,6 +223554,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Decoy",
@@ -225516,6 +225843,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Power_Bolt",
@@ -225915,6 +226243,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Power_Bolt",
@@ -226375,6 +226704,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofFire",
@@ -226611,6 +226941,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Defenders_Bastion",
@@ -226662,6 +226993,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Dimension_Shift": {
@@ -226670,6 +227002,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Dimension_Shift",
@@ -227005,6 +227338,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Dimension_Shift",
@@ -227340,6 +227674,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_DisintegrateSpread": {
@@ -227348,6 +227683,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Disintegrate_Spread",
@@ -227457,6 +227793,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Distortion_Field",
@@ -227890,6 +228227,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Distortion_Field",
@@ -228323,6 +228661,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Distortion_Field",
@@ -228756,6 +229095,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Distortion_Field",
@@ -229189,6 +229529,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 20,
    "abilities": [
     {
@@ -229280,6 +229621,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 18,
    "abilities": [
     {
@@ -229492,6 +229834,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Earthquake",
@@ -229735,6 +230078,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "IceStorm",
@@ -229785,6 +230129,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Rod",
@@ -229835,6 +230180,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Rod",
@@ -229885,6 +230231,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Rod",
@@ -229935,6 +230282,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Quicksand",
@@ -229985,6 +230333,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 5,
    "abilities": [
     {
@@ -230393,6 +230742,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -231265,6 +231615,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -232137,6 +232488,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -233009,6 +233361,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "FreezingRain",
@@ -234095,6 +234448,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "IceStorm",
@@ -234424,6 +234778,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Quicksand",
@@ -234618,6 +234973,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Corrosive_Vial_Splat",
@@ -234939,6 +235295,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Corrosive_Blood",
@@ -235014,6 +235371,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Explode",
@@ -235087,6 +235445,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -235695,6 +236054,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Fallout",
@@ -237749,6 +238109,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Fallout",
@@ -238173,6 +238534,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -238504,6 +238866,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Brawl",
@@ -238980,6 +239343,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Brawl",
@@ -239456,6 +239820,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Brawl",
@@ -239932,6 +240297,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Brawl",
@@ -240408,6 +240774,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Fly_Trap": {
@@ -240416,6 +240783,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Entangle",
@@ -241611,6 +241979,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Entangle",
@@ -242806,6 +243175,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Freaklok_Explosion",
@@ -243039,6 +243409,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Freaklok_Fire",
@@ -243156,6 +243527,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Freaklok_Gas",
@@ -243268,6 +243640,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Freaklok_Glue",
@@ -243457,6 +243830,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "FreezingRain",
@@ -244543,6 +244917,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "FreezingRain",
@@ -245309,6 +245684,7 @@
    "characterClass": "boss_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Electrolytic_Bolt",
@@ -245357,6 +245733,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Galvanic_Sentinel_Discharge",
@@ -245759,6 +246136,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Gremlin": {
@@ -245767,6 +246145,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Electric_Brawl",
@@ -247160,6 +247539,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Electric_Brawl",
@@ -248553,6 +248933,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": true,
    "abilities": [
     {
      "name": "Gattling_Gun",
@@ -250016,6 +250397,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": true,
+   "canZone": true,
    "abilities": [
     {
      "name": "Gattling_Gun",
@@ -251479,6 +251861,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_HeatLossBuff": {
@@ -251487,6 +251870,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Heat_Loss",
@@ -251561,6 +251945,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Heat_Loss",
@@ -251635,6 +252020,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Heat_Loss",
@@ -252070,6 +252456,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Heat_Loss",
@@ -252495,6 +252882,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Energy_Punch",
@@ -253623,6 +254011,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Glacier",
@@ -253915,6 +254304,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "oneShot": true,
    "abilities": [
     {
@@ -254838,6 +255228,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "oneShot": true,
    "abilities": [
     {
@@ -255851,6 +256242,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Howling": {
@@ -255859,6 +256251,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Howling",
@@ -255986,6 +256379,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Howling",
@@ -256141,6 +256535,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "createsEntities": [
     "GenericVillains_FireImp"
    ],
@@ -257009,6 +257404,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Single_Shot",
@@ -258345,6 +258741,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Hack",
@@ -259327,6 +259724,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Ice_Swing",
@@ -260295,6 +260693,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "IcePatch",
@@ -260517,6 +260916,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "IceSlick",
@@ -260832,6 +261232,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "IceStorm",
@@ -261118,6 +261519,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "IceStorm",
@@ -261404,6 +261806,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "IceStorm",
@@ -261724,6 +262127,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Infected_Explosion",
@@ -261882,6 +262286,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Jacks_Ice_Sword",
@@ -263478,6 +263883,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Jacks_Ice_Sword",
@@ -265074,6 +265480,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Kheldian_Mini_Bright_Nova": {
@@ -265082,6 +265489,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Kheldian_Mini_Dark_Nova": {
@@ -265090,6 +265498,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Kheldian_Mini_White_Dwarf": {
@@ -265098,6 +265507,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_KineticTransferBuff": {
@@ -265106,6 +265516,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "KineticTransfer",
@@ -265626,6 +266037,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "KineticTransfer",
@@ -265820,6 +266232,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "KineticTransfer",
@@ -266340,6 +266753,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "KineticTransfer",
@@ -266534,6 +266948,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "KineticTransfer",
@@ -267074,6 +267489,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "KineticTransfer",
@@ -267288,6 +267704,7 @@
    "characterClass": "boss_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -269335,6 +269752,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Lifegiving_Spores_Controller": {
@@ -269343,6 +269761,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lifegiving_Spores",
@@ -269412,6 +269831,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lifegiving_Spores",
@@ -269481,6 +269901,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lifegiving_Spores",
@@ -269550,6 +269971,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lifegiving_Spores",
@@ -269619,6 +270041,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Liger_Pet": {
@@ -269627,6 +270050,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_LightDrone1": {
@@ -269635,6 +270059,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "oneShot": true,
    "abilities": [
     {
@@ -269755,6 +270180,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "oneShot": true,
    "abilities": [
     {
@@ -269875,6 +270301,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "oneShot": true,
    "abilities": [
     {
@@ -269995,6 +270422,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Rod",
@@ -270096,6 +270524,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Rod",
@@ -270239,6 +270668,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Rod",
@@ -270382,6 +270812,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Rod",
@@ -270525,6 +270956,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Rod",
@@ -270708,6 +271140,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning",
@@ -270903,6 +271336,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning",
@@ -271098,6 +271532,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning",
@@ -271293,6 +271728,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Lioness_Pet": {
@@ -271301,6 +271737,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Liquefy": {
@@ -271309,6 +271746,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Liquefy",
@@ -271787,6 +272225,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Liquefy",
@@ -271997,6 +272436,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Liquefy",
@@ -272249,6 +272689,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Liquid_Nitrogen",
@@ -273102,6 +273543,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 90,
    "abilities": [
     {
@@ -273175,6 +273617,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "createsEntities": [
     "Pets_Protector_Traps_Seeker1"
    ],
@@ -273798,6 +274241,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -274292,6 +274736,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shriek",
@@ -274562,6 +275007,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -274893,6 +275339,7 @@
    "characterClass": "lt_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 60,
    "abilities": [
     {
@@ -276103,6 +276550,7 @@
    "characterClass": "lt_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 60,
    "abilities": [
     {
@@ -277089,6 +277537,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Mine": {
@@ -277097,6 +277546,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "oneShot": true,
    "abilities": [
     {
@@ -278022,6 +278472,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Trip_Mine",
@@ -279103,6 +279554,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Trip_Mine",
@@ -280184,6 +280636,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Minion_Target": {
@@ -280192,6 +280645,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -280469,6 +280923,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": []
   },
   "Pets_MiniSignature_AchlysGeneral_Hammer": {
@@ -280477,6 +280932,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignature_AchlysGeneral_Hunter": {
@@ -280485,6 +280941,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignature_AchlysGeneral_Watcher": {
@@ -280493,6 +280950,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignature_DealerOfDeath": {
@@ -280501,6 +280959,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignature_MrRay": {
@@ -280509,6 +280968,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignature_Nemesis": {
@@ -280517,6 +280977,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Adamastor": {
@@ -280525,6 +280986,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_ArachnosFlyer": {
@@ -280533,6 +280995,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_AvatarAchyls": {
@@ -280541,6 +281004,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Babbage": {
@@ -280549,6 +281013,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Bronze_Recluse": {
@@ -280557,6 +281022,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Bronze_Statesman": {
@@ -280565,6 +281031,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Bronze_Tyrant": {
@@ -280573,6 +281040,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Caleb": {
@@ -280581,6 +281049,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_ClockworkPaladin": {
@@ -280589,6 +281058,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_CouncilWarWalker": {
@@ -280597,6 +281067,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Deathsurge": {
@@ -280605,6 +281076,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Eochai": {
@@ -280613,6 +281085,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_FogBenefactor": {
@@ -280621,6 +281094,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_FogMinotaur": {
@@ -280629,6 +281103,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Gold_Recluse": {
@@ -280637,6 +281112,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Gold_Statesman": {
@@ -280645,6 +281121,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Gold_Tyrant": {
@@ -280653,6 +281130,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_HamidonSeedling": {
@@ -280661,6 +281139,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Hero1": {
@@ -280669,6 +281148,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_JackInIrons": {
@@ -280677,6 +281157,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Jurassik": {
@@ -280685,6 +281166,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Kraken": {
@@ -280693,6 +281175,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_KronosTitan": {
@@ -280701,6 +281184,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Lusca": {
@@ -280709,6 +281193,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_PEACEKeeper": {
@@ -280717,6 +281202,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Recluse": {
@@ -280725,6 +281211,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Sally": {
@@ -280733,6 +281220,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Scrapyard": {
@@ -280741,6 +281229,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Silver_Recluse": {
@@ -280749,6 +281238,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Silver_Statesman": {
@@ -280757,6 +281247,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Silver_Tyrant": {
@@ -280765,6 +281256,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Statesman": {
@@ -280773,6 +281265,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_Tyrant": {
@@ -280781,6 +281274,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MiniSignatures_UkonGrai": {
@@ -280789,6 +281283,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_MM_Thug_Arsonist_Burn": {
@@ -280797,6 +281292,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Fire",
@@ -280904,6 +281400,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Twilight",
@@ -280955,6 +281452,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Monkey_Gas",
@@ -281101,6 +281599,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Mystic_Lantern_Pet": {
@@ -281109,6 +281608,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Nemefish_Wellspring": {
@@ -281117,6 +281617,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Wellspring_Skin",
@@ -281697,6 +282198,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_NemesisBang": {
@@ -281705,6 +282207,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Explode",
@@ -281755,6 +282258,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Burn",
@@ -281805,6 +282309,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Nightstalker_Jackal_Pet": {
@@ -281813,6 +282318,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Nightstalker_Panther_Pet": {
@@ -281821,6 +282327,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Nightstalker_Wodan_Pet": {
@@ -281829,6 +282336,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_OilSlickBurn": {
@@ -281837,6 +282345,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 15,
    "abilities": [
     {
@@ -281888,6 +282397,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 15,
    "abilities": [
     {
@@ -281939,6 +282449,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 15,
    "abilities": [
     {
@@ -282091,6 +282602,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "createsEntities": [
     "Pets_OilSlickTarget",
     "Pets_OilSlickBurn"
@@ -282383,6 +282895,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "createsEntities": [
     "Pets_OilSlickTarget_Blaster",
     "Pets_OilSlickBurn_Blaster"
@@ -282641,6 +283154,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Oil_Slick",
@@ -282920,6 +283434,7 @@
    "characterClass": "minion_oilslicktarget",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -284738,6 +285253,7 @@
    "characterClass": "minion_oilslicktarget",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -286556,6 +287072,7 @@
    "characterClass": "minion_oilslicktarget",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -288374,6 +288891,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Explosion",
@@ -288559,6 +289077,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Explosion",
@@ -288706,6 +289225,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 120,
    "abilities": [
     {
@@ -289320,6 +289840,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -289933,6 +290454,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 20,
    "abilities": [
     {
@@ -290024,6 +290546,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Energy_Pulse",
@@ -290836,6 +291359,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Disruptor_Bolt",
@@ -291894,6 +292418,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Chain_Gun",
@@ -292220,6 +292745,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Combat_Training",
@@ -294479,6 +295005,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -295011,6 +295538,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -295760,6 +296288,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -296537,6 +297066,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Combat_Training",
@@ -298027,6 +298557,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Combat_Training",
@@ -299492,6 +300023,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -300435,6 +300967,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "createsEntities": [
     "Pets_VoltaicSentinel_Critter"
    ],
@@ -301088,6 +301621,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -301984,6 +302518,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Mask_Presence",
@@ -304106,6 +304641,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -304689,6 +305225,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Venom_Bolt",
@@ -305709,6 +306246,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Water_Spout",
@@ -306024,6 +306562,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Water_Spout",
@@ -306339,6 +306878,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Power_Bolt",
@@ -306876,6 +307416,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Power_Bolt",
@@ -307413,6 +307954,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Phoenix",
@@ -307599,6 +308141,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Pummel",
@@ -308023,6 +308566,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 30,
    "abilities": [
     {
@@ -308475,6 +309019,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "createsEntities": [
     "Pets_Poison_Poison_Gas"
    ],
@@ -309242,6 +309787,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "PoisonGasArrow",
@@ -310193,6 +310739,7 @@
    "characterClass": "boss_guard",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "TransLocation_Beam",
@@ -310568,6 +311115,7 @@
    "characterClass": "boss_guard",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "TransLocation_Beam",
@@ -310943,6 +311491,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Power_Drone_Pet": {
@@ -310951,6 +311500,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -311836,6 +312386,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -312721,6 +313272,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "EM_Pulse",
@@ -313039,6 +313591,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Laser_Burst",
@@ -313484,6 +314037,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Force_Maul",
@@ -314115,6 +314669,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "oneShot": true,
    "abilities": [
     {
@@ -314484,6 +315039,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Psionic_Link_Self",
@@ -315259,6 +315815,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -316238,6 +316795,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -317217,6 +317775,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Quicksand": {
@@ -317225,6 +317784,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Quicksand",
@@ -317456,6 +318016,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 10,
    "abilities": [
     {
@@ -317683,6 +318244,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Radiation_Cloud",
@@ -317778,6 +318340,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofArrows",
@@ -317900,6 +318463,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofArrows",
@@ -318093,6 +318657,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofArrows",
@@ -318143,6 +318708,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofArrows",
@@ -318223,6 +318789,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofArrows",
@@ -318371,6 +318938,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": []
   },
   "Pets_RainofFire": {
@@ -318379,6 +318947,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofFire",
@@ -318645,6 +319214,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "RainofFire",
@@ -318945,6 +319515,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Red_Wisp_Pet": {
@@ -318953,6 +319524,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -319838,6 +320410,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Resistance_BackUp_Pet": {
@@ -319846,6 +320419,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Power_Punch",
@@ -320352,6 +320926,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -320889,6 +321464,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Resistance",
@@ -321426,6 +322002,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Drone_Blast",
@@ -322053,6 +322630,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Rikti_Pet": {
@@ -322061,6 +322639,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Rikti_Vulture_Pet": {
@@ -322069,6 +322648,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Sap": {
@@ -322077,6 +322657,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Caltrops",
@@ -322217,6 +322798,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Savage_Leap",
@@ -322733,6 +323315,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Scourging_Blast",
@@ -322807,6 +323390,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 60,
    "abilities": [
     {
@@ -323487,6 +324071,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shadow_Field",
@@ -323768,6 +324353,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shadow_Field",
@@ -324001,6 +324587,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shadow_Field",
@@ -324271,6 +324858,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shield_Charge_AoE_Brute",
@@ -324489,6 +325077,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shield_Charge_AoE_Council",
@@ -324632,6 +325221,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shield_Charge_AoE_Scrapper",
@@ -324775,6 +325365,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shield_Charge_AoE_Scrapper",
@@ -324918,6 +325509,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Shield_Charge_AoE_Tanker",
@@ -325136,6 +325728,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -325744,6 +326337,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -326352,6 +326946,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Liquefy",
@@ -326514,6 +327109,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Liquefy",
@@ -326676,6 +327272,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Liquefy",
@@ -326838,6 +327435,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Back_Alley_Power_Punch",
@@ -328683,6 +329281,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Punch",
@@ -330690,6 +331289,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Life_Drain",
@@ -332976,6 +333576,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "createsEntities": [
     "Pets_SignatureSummon_Recluse_Pet"
    ],
@@ -334893,6 +335494,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Fistful_of_Arrows",
@@ -337366,6 +337968,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Neutrino_Bolt",
@@ -339425,6 +340028,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Body_Armor",
@@ -340977,6 +341581,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "createsEntities": [
     "Arachnos_Dust_Devil1",
     "Arachnos_Dust_Devil2"
@@ -343018,6 +343623,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Jab",
@@ -344913,6 +345519,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Repel",
@@ -346599,6 +347206,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Repel",
@@ -348285,6 +348893,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "SiphonPower",
@@ -348805,6 +349414,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "SiphonPower",
@@ -348999,6 +349609,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Sleet",
@@ -349728,6 +350339,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Sleet",
@@ -351317,6 +351929,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_SnowAngel": {
@@ -351325,6 +351938,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Snowangel",
@@ -351670,6 +352284,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": []
   },
   "Pets_SonicDebuffArrow_Controller": {
@@ -351678,6 +352293,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": []
   },
   "Pets_SoulAbsorptionBuff": {
@@ -351686,6 +352302,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Soul_Absorption",
@@ -351806,6 +352423,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Smite",
@@ -352669,6 +353287,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Spirit_Tree": {
@@ -352677,6 +353296,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Spirit_Tree_Taunt",
@@ -353687,6 +354307,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Spring_Attack",
@@ -354820,6 +355441,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Static_Field",
@@ -355310,6 +355932,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Static_Field",
@@ -355668,6 +356291,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Endurance_Recovered",
@@ -355720,6 +356344,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Endurance_Recovered",
@@ -355771,6 +356396,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 30,
    "abilities": [
     {
@@ -355971,6 +356597,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "lifespan": 30,
    "abilities": [
     {
@@ -356215,6 +356842,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Stone_Fist",
@@ -357297,6 +357925,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Stone_Fist",
@@ -358379,6 +359008,7 @@
    "characterClass": "minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -358976,6 +359606,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Superior_Defenders_Bastion",
@@ -359027,6 +359658,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Superior_Scourging_Blast",
@@ -359101,6 +359733,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Superior_Vigilant_Assault",
@@ -359172,6 +359805,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Target": {
@@ -359180,6 +359814,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -359457,6 +360092,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Tar",
@@ -359825,6 +360461,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 120,
    "abilities": [
     {
@@ -360439,6 +361076,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 120,
    "abilities": [
     {
@@ -361053,6 +361691,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 120,
    "abilities": [
     {
@@ -361667,6 +362306,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -362263,6 +362903,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -362999,6 +363640,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -363592,6 +364234,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -364185,6 +364828,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -364938,6 +365582,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -365534,6 +366179,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -366270,6 +366916,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -366863,6 +367510,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -367456,6 +368104,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -368008,6 +368657,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -368703,6 +369353,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Translucency",
@@ -369111,6 +369762,7 @@
    "characterClass": "boss_archvillain",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Scorch",
@@ -369845,6 +370497,7 @@
    "characterClass": "boss_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Scorch",
@@ -370579,6 +371232,7 @@
    "characterClass": "lt_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Scorch",
@@ -371313,6 +371967,7 @@
    "characterClass": "minion_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Scorch",
@@ -372047,6 +372702,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Thorntrops",
@@ -372224,6 +372880,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -372317,6 +372974,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -372410,6 +373068,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -372503,6 +373162,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -372664,6 +373324,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -372739,6 +373400,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -372832,6 +373494,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -372925,6 +373588,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -373018,6 +373682,7 @@
    "characterClass": "henchman_minion_small",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "lifespan": 120,
    "abilities": [
     {
@@ -373111,6 +373776,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Thunder_Strike",
@@ -373189,6 +373855,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Tornado",
@@ -373551,6 +374218,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "TPFoeTaunt",
@@ -373660,6 +374328,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Transference",
@@ -373758,6 +374427,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Transference",
@@ -373809,6 +374479,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Transfusion",
@@ -373907,6 +374578,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Transfusion",
@@ -373958,6 +374630,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Acid_Mortar",
@@ -375117,6 +375790,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Acid_Mortar",
@@ -376276,6 +376950,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Dispersion_Bubble",
@@ -377143,6 +377818,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Dispersion_Bubble",
@@ -377909,6 +378585,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 0.25,
    "abilities": [
     {
@@ -378981,6 +379658,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "lifespan": 30,
    "abilities": [
     {
@@ -379375,6 +380053,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "createsEntities": [
     "Pets_Traps_Poison_Gas"
    ],
@@ -380142,6 +380821,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "oneShot": true,
    "abilities": [
     {
@@ -380511,6 +381191,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "oneShot": true,
    "abilities": [
     {
@@ -380880,6 +381561,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "oneShot": true,
    "abilities": [
     {
@@ -381822,6 +382504,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Triage_Beacon",
@@ -382814,6 +383497,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Bounce",
@@ -382956,6 +383640,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Bounce",
@@ -383098,6 +383783,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Bounce",
@@ -383240,6 +383926,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Bounce",
@@ -383327,6 +384014,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Gattling_Gun",
@@ -384892,6 +385580,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Twilight",
@@ -384943,6 +385632,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Claw_Rake",
@@ -386554,6 +387244,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Claw_Rake",
@@ -388165,6 +388856,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Chill_of_the_Night",
@@ -389360,6 +390052,7 @@
    "characterClass": "boss_elite",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "createsEntities": [
     "Vanguard_Shield_SeekerDrone"
    ],
@@ -390147,6 +390840,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_VictoryRush_AV": {
@@ -390155,6 +390849,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "VictoryRush_AV",
@@ -390250,6 +390945,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "VictoryRush_Base",
@@ -390345,6 +391041,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "VictoryRush_BS",
@@ -390440,6 +391137,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "VictoryRush_EB",
@@ -390535,6 +391233,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "VictoryRush_LT",
@@ -390630,6 +391329,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "VictoryRush_MN",
@@ -390725,6 +391425,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Vigilant_Assault",
@@ -390796,6 +391497,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Volcanic_Ground",
@@ -390982,6 +391684,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Thermal_Vents",
@@ -391078,6 +391781,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Electrical_Bolt",
@@ -391458,6 +392162,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Electrical_Bolt",
@@ -391939,6 +392644,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Electrical_Bolt",
@@ -392141,6 +392847,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Electrical_Bolt",
@@ -392425,6 +393132,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Electrical_Bolt",
@@ -392627,6 +393335,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Electrical_Bolt",
@@ -393007,6 +393716,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Aftereffects",
@@ -393057,6 +393767,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Warburg_Biological",
@@ -393448,6 +394159,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Warburg_Chemical",
@@ -393899,6 +394611,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Warburg_Nuclear",
@@ -394120,6 +394833,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": true,
    "lifespan": 200,
    "abilities": [
     {
@@ -394698,6 +395412,7 @@
    "characterClass": "boss_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Claw_Swipe",
@@ -395773,6 +396488,7 @@
    "characterClass": "boss_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Claw_Swipe",
@@ -396848,6 +397564,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Wellspring": {
@@ -396856,6 +397573,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Wellspring_Skin",
@@ -397514,6 +398232,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Wellspring_Skin",
@@ -398172,6 +398891,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Whirlpool",
@@ -398462,6 +399182,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Whirlpool",
@@ -398853,6 +399574,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Whirlpool",
@@ -399143,6 +399865,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Whirlpool",
@@ -399467,6 +400190,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Hail_of_Debris",
@@ -399902,6 +400626,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Vacuum_Over_Time",
@@ -400414,6 +401139,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Vacuum_Over_Time",
@@ -400857,6 +401583,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Blast_of_Debris",
@@ -402168,6 +402895,7 @@
    "characterClass": "minion_controllerpets",
    "commandable": true,
    "copyCreatorMods": false,
+   "canZone": true,
    "abilities": [
     {
      "name": "Blast_of_Debris",
@@ -403479,6 +404207,7 @@
    "characterClass": "boss_grunt",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Lightning_Bolt",
@@ -403662,6 +404391,7 @@
    "characterClass": "minion_unkillablenpc",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Zapper": {
@@ -403670,6 +404400,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": []
   },
   "Pets_Zombie": {
@@ -403678,6 +404409,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": false,
+   "canZone": false,
    "abilities": [
     {
      "name": "Resistance",
@@ -404999,6 +405731,7 @@
    "characterClass": "minion_pets",
    "commandable": false,
    "copyCreatorMods": true,
+   "canZone": false,
    "abilities": [
     {
      "name": "Explode",
