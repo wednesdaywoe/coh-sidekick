@@ -2682,6 +2682,8 @@ button.power-pick--empty {
 /* A capped `(stat, value)` is over the Rule-of-5 limit — extra copies are wasted — so it
    draws attention in the danger token (the beta's warning color). */
 .slot-bonus-effect.capped { color: var(--action-danger); font-weight: 600; }
+/* A line that boosts a tracked stat. Weight and underline rather than a hue alone. */
+.slot-bonus-effect.is-tracked { font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
 .slot-bonus-count { color: var(--text-faint); font-size: 10px; }
 .slot-bonus-count.capped { color: var(--action-danger); }
 /* Fail-loud (Rule 1): an unrecognized stat surfaces here instead of vanishing. */
@@ -3912,6 +3914,26 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 }
 
 .picker-set-group { display: flex; flex-direction: column; gap: 1px; margin-bottom: 6px; }
+/* A set with a bonus for a tracked stat: a tint and an edge, plus chips naming the bonuses. */
+.picker-set-group.has-tracked-bonus {
+  background: color-mix(in srgb, var(--selected) 10%, transparent);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--selected) 70%, transparent);
+  border-radius: 3px;
+}
+.picker-tracked-chips { display: flex; flex-wrap: wrap; gap: 3px; padding: 0 4px 2px; }
+.picker-tracked-chip, .picker-tracked-more {
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 10.5px; line-height: 1.6;
+  color: var(--text-dim);
+}
+.picker-tracked-chip { border: 1px solid color-mix(in srgb, var(--selected) 55%, transparent); }
+.picker-tracked-chip.is-capped {
+  border-color: color-mix(in srgb, var(--action-danger) 70%, transparent);
+  color: var(--action-danger);
+  text-decoration: line-through;
+}
+
 .picker-set-name {
   padding: 4px 4px 2px;
   font-size: 10.5px;
@@ -4309,6 +4331,13 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 }
 /* At or above its ceiling. Underlined rather than recoloured, so the value keeps its family
    hue — recolouring would make a capped defense stop looking like a defense number. */
+/* Tracked: the user is chasing this stat with set bonuses (click to toggle). A ring around the
+   whole row in the selection token, apart from the Rule-of-5 ring, which sits on the value. */
+.stat-row { cursor: pointer; border-radius: 3px; }
+.stat-row:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.stat-row.is-tracked {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--selected) 70%, transparent);
+}
 .stat-value.is-at-cap {
   text-decoration: underline dotted currentColor;
   text-underline-offset: 3px;

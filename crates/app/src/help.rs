@@ -877,6 +877,21 @@ pub const TOPICS: &[Topic] = &[
         ],
     },
     Topic {
+        id: "stats-tracking",
+        title: "Tracking a stat you are chasing",
+        category: Category::Stats,
+        surface: Surface::Dashboards,
+        body: "Click or tap a stat in a dashboard panel to track it, and it gets a ring. While you \
+               slot, the enhancement picker highlights every set with a bonus that boosts a \
+               tracked stat and names those bonuses under the set, and set bonus lists mark the \
+               matching lines. Click the stat again to untrack it. A stat starts being tracked by \
+               itself when the Rule of 5 starts cutting one of its bonuses. Tracked stats are kept \
+               between sessions and cleared by New build.",
+        keywords: &[
+            "track", "tracked", "chase", "highlight", "ring", "click stat", "set bonus", "picker",
+        ],
+    },
+    Topic {
         id: "stats-build-a-panel",
         title: "Building and filling a panel",
         category: Category::Stats,

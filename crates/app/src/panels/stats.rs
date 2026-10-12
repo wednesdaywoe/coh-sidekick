@@ -32,6 +32,7 @@ use crate::grid::model::DashboardId;
 use crate::panels::dashboards::DashboardConfig;
 use crate::panels::stat_registry;
 use crate::panels::stats_config::StatsConfigOpen;
+use crate::tracked_stats::TrackedStats;
 use coh_math::CalculatedTotals;
 use dioxus::prelude::*;
 
@@ -56,6 +57,7 @@ pub fn StatGroup(panel: DashboardId) -> Element {
     let totals = use_context::<BuildTotals>().0;
     let dashboards = use_context::<DashboardConfig>().0;
     let mut config_open = use_context::<StatsConfigOpen>().0;
+    let tracked = use_context::<TrackedStats>();
 
     // Both reads resolve to owned values before `rsx!`, so no borrow of the shared totals memo
     // or the config is held across the render (keep logic above `rsx!`).
@@ -66,7 +68,7 @@ pub fn StatGroup(panel: DashboardId) -> Element {
             .stats_in(panel)
             .iter()
             .filter_map(|id| stat_registry::by_id(id))
-            .map(|stat| (stat, stat.resolve(&totals)))
+            .map(|stat| (stat, stat.resolve(&totals), tracked.contains(stat.id)))
             .collect()
     };
 
@@ -88,12 +90,30 @@ pub fn StatGroup(panel: DashboardId) -> Element {
                     "Empty — add stats"
                 }
             }
-            for (stat, resolved) in rows {
-                div { class: "stat-row",
+            for (stat, resolved, is_tracked) in rows {
+                // The whole row is the switch, as in the beta: a stat is tracked to chase it with
+                // set bonuses, and the picker marks the sets that would move it.
+                div {
+                    class: "stat-row",
+                    class: if is_tracked { "is-tracked" },
+                    role: "button",
+                    tabindex: "0",
+                    aria_pressed: "{is_tracked}",
+                    onclick: move |_| tracked.toggle(stat.id),
+                    onkeydown: move |evt: KeyboardEvent| {
+                        if matches!(evt.key(), Key::Enter) || evt.key() == Key::Character(" ".into()) {
+                            evt.prevent_default();
+                            tracked.toggle(stat.id);
+                        }
+                    },
                     // The label is the half a narrow surface truncates (see `.stat-label`), and
                     // CSS cannot tell us whether it did — so the full name is carried here
                     // unconditionally rather than only when it is clipped.
-                    span { class: "stat-label", title: "{stat.label}", "{stat.label}" }
+                    span {
+                        class: "stat-label",
+                        title: if is_tracked { "{stat.label} — tracked: the picker marks sets that boost it. Click to untrack." } else { "{stat.label} — click to track: the picker marks sets that boost it." },
+                        "{stat.label}"
+                    }
                     // The hairline between the name and the number. A real element rather than a
                     // pseudo on the label, because `.stat-label` earns its ellipsis from being a
                     // plain text box — making it a flex container to hang a leader off would

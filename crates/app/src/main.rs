@@ -64,6 +64,7 @@ mod slot_level_store;
 mod stats_store;
 mod storage;
 mod theme;
+mod tracked_stats;
 mod ui_scale;
 mod update_banner;
 mod view;

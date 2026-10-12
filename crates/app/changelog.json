@@ -1,5 +1,12 @@
 [
-    {
+  {
+    "date": "2026-10-12",
+    "items": [
+      { "id": "tracked-stats", "type": "feat", "message": "Stat tracking is back from Sidekick Beta. Click or tap a stat in a dashboard panel to track it. The enhancement picker then highlights sets with a bonus for that stat and names those bonuses under the set, and set bonus lists mark them. Stats whose bonuses hit the Rule of 5 are tracked for you" }
+    ]
+  },
+
+  {
     "date": "2026-10-11",
     "items": [
       { "id": "popmenu-export", "type": "feat", "message": "File > Test server popmenu saves a .mnu file that gives your character every enhancement in the build on the Brainstorm test server. It shows the folder the file goes in and the command to open it in game, each with a Copy button, and the save window opens in the folder you used last time, in the desktop app and in Chrome and Edge" },

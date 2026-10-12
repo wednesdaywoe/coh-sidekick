@@ -485,6 +485,9 @@ pub(crate) struct BonusEffectRow {
     /// answer, since it is describing the bonus; a list of what a build GETS wants this one.
     pub(crate) refused: bool,
     unknown: bool,
+    /// The dashboard rows this bonus would move ([`crate::tracked_stats::rows_for_effect`]), so
+    /// the ladder can mark the lines that feed a tracked stat.
+    rows: Vec<&'static str>,
 }
 
 /// One set-bonus tier row (the beta's per-`bonus` line): its piece threshold, whether it is
@@ -589,6 +592,7 @@ fn bonus_effect_row(
     pieces: u8,
 ) -> BonusEffectRow {
     let description = format_bonus_desc(&effect.desc, &effect.stat, effect.value);
+    let rows = crate::tracked_stats::rows_for_effect(effect);
     if !active {
         return BonusEffectRow {
             description,
@@ -596,6 +600,7 @@ fn bonus_effect_row(
             capped: false,
             refused: false,
             unknown: false,
+            rows: rows.clone(),
         };
     }
     match coh_math::set_bonuses::effect_stat_key(&effect.stat) {
@@ -616,6 +621,7 @@ fn bonus_effect_row(
                     pieces,
                 ),
                 unknown: false,
+                rows: rows.clone(),
             }
         }
         coh_math::set_bonuses::EffectStatKey::KnownUntracked => BonusEffectRow {
@@ -624,6 +630,7 @@ fn bonus_effect_row(
             capped: false,
             refused: false,
             unknown: false,
+            rows: rows.clone(),
         },
         coh_math::set_bonuses::EffectStatKey::Unknown => BonusEffectRow {
             description,
@@ -631,6 +638,7 @@ fn bonus_effect_row(
             capped: false,
             refused: false,
             unknown: true,
+            rows: rows.clone(),
         },
     }
 }
@@ -870,6 +878,11 @@ pub fn SlotTooltipHost(database: Db) -> Element {
 /// names the set).
 #[component]
 pub(crate) fn SetBonusTierList(tiers: Vec<BonusTierRow>) -> Element {
+    // Absent outside the main window's tree (an export renders without it); nothing is marked.
+    let tracked = try_use_context::<crate::tracked_stats::TrackedStats>();
+    let is_tracked = |effect: &BonusEffectRow| {
+        tracked.is_some_and(|tracked| effect.rows.iter().any(|id| tracked.contains(id)))
+    };
     rsx! {
         for (tier_index , tier) in tiers.iter().enumerate() {
             div {
@@ -880,6 +893,7 @@ pub(crate) fn SetBonusTierList(tiers: Vec<BonusTierRow>) -> Element {
                 for (i , effect) in tier.effects.iter().enumerate() {
                     span {
                         class: if effect.capped { "slot-bonus-effect capped" } else { "slot-bonus-effect" },
+                        class: if is_tracked(effect) { "is-tracked" },
                         if i > 0 { ", " }
                         "{effect.description}"
                         if effect.unknown {
@@ -893,6 +907,64 @@ pub(crate) fn SetBonusTierList(tiers: Vec<BonusTierRow>) -> Element {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+/// How many tracked-stat chips a picker set row shows before folding the rest into "+N more"
+/// (the beta's `MAX_TRACKED_CHIPS`).
+const MAX_TRACKED_CHIPS: usize = 5;
+
+/// The picker's per-set note of which bonuses feed a tracked stat (the beta's
+/// `TrackedBonusChips`): the tier and the dashboard row, with the bonus itself in the title.
+/// A bonus the build already holds five of is struck through, since another copy grants nothing.
+#[component]
+fn TrackedBonusChips(
+    bonuses: Vec<crate::tracked_stats::TrackedBonus>,
+    tracking: Vec<coh_math::set_bonuses::SetBonusStatTracking>,
+) -> Element {
+    let more = bonuses.len().saturating_sub(MAX_TRACKED_CHIPS);
+    let chips: Vec<(String, String, bool)> = bonuses
+        .iter()
+        .take(MAX_TRACKED_CHIPS)
+        .map(|bonus| {
+            let effect = &bonus.effect;
+            let (count, capped) = match coh_math::set_bonuses::effect_stat_key(&effect.stat) {
+                coh_math::set_bonuses::EffectStatKey::Tracked(key) => {
+                    coh_math::set_bonuses::bonus_tracking_lookup(&tracking, key, effect.value)
+                }
+                _ => (0, false),
+            };
+            let counter = if count > 0 {
+                format!(" ({count}/5)")
+            } else {
+                String::new()
+            };
+            let mut title = format_bonus_desc(&effect.desc, &effect.stat, effect.value);
+            if capped {
+                title.push_str(" — already at the Rule of 5 cap; another copy grants nothing");
+            }
+            (
+                format!("{}pc {}{counter}", bonus.pieces, bonus.stat.label),
+                title,
+                capped,
+            )
+        })
+        .collect();
+    rsx! {
+        div { class: "picker-tracked-chips",
+            for (i , (text , title , capped)) in chips.into_iter().enumerate() {
+                span {
+                    key: "{i}",
+                    class: "picker-tracked-chip",
+                    class: if capped { "is-capped" },
+                    title: "{title}",
+                    "{text}"
+                }
+            }
+            if more > 0 {
+                span { class: "picker-tracked-more", "+{more} more" }
             }
         }
     }
@@ -3689,6 +3761,7 @@ fn EnhancementPickerModal(
     // the pieces' own press is already the slot-or-drag gesture.
     let mut bonus_set = use_signal(|| None::<String>);
     let totals = use_context::<crate::panels::stats::BuildTotals>().0;
+    let tracked_stats = use_context::<crate::tracked_stats::TrackedStats>();
     // A piece's rich tooltip is the slot tooltip, raised from here. Placing a piece closes the
     // picker under the pointer, so no mouse-leave ever arrives to take it down.
     let mut tip = use_context::<SlotTooltip>().0;
@@ -4184,10 +4257,16 @@ fn EnhancementPickerModal(
                                                 }
                                             }
                                         }
-                                        for offer in visible {
+                                        for (offer, tracked_bonuses) in visible.into_iter().map(|offer| {
+                                            let bonuses = crate::tracked_stats::set_tracked_bonuses(
+                                                offer.set, &tracked_stats.0.read(),
+                                            );
+                                            (offer, bonuses)
+                                        }) {
                                             div {
                                                 key: "{offer.id}",
                                                 class: "picker-set-group",
+                                                class: if !tracked_bonuses.is_empty() { "has-tracked-bonus" },
                                                 "data-set-id": "{offer.id}",
                                                 // The set the picker opened onto scrolls itself
                                                 // into view. Only the set being CHANGED carries
@@ -4230,6 +4309,12 @@ fn EnhancementPickerModal(
                                                     }
                                                     "{offer.set.name}"
                                                     span { class: "picker-set-meta", "lv {offer.set.min_level}–{offer.set.max_level}" }
+                                                }
+                                                if !tracked_bonuses.is_empty() {
+                                                    TrackedBonusChips {
+                                                        bonuses: tracked_bonuses.clone(),
+                                                        tracking: totals.read().set_bonus_tracking.clone(),
+                                                    }
                                                 }
                                                 div { class: "picker-icon-row",
                                                     // Legality per piece, computed once for the

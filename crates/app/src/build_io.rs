@@ -400,6 +400,7 @@ pub fn BuildHandoffEntries(database: Option<Db>) -> Element {
 fn NewBuildEntry(dataset: Signal<DatasetId>) -> Element {
     let session = use_context::<BuildSession>();
     let mut menu = use_context::<crate::popover::PopoverOpen>().0;
+    let tracked = use_context::<crate::tracked_stats::TrackedStats>();
     let mut confirming = use_signal(|| false);
 
     if confirming() {
@@ -419,6 +420,7 @@ fn NewBuildEntry(dataset: Signal<DatasetId>) -> Element {
                         onclick: move |_| {
                             let empty = CharacterState::empty(dataset());
                             session.commit(move |working| *working = empty);
+                            tracked.clear();
                             confirming.set(false);
                             menu.set(false);
                         },

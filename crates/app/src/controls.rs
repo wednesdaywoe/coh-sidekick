@@ -221,6 +221,10 @@ const EVERYWHERE: [Section; 2] = [
                 description: "Pins that power in the Info panel, so hovering elsewhere leaves it there; click it again to unpin. Right-click on the card or the L key does the same.",
             },
             Row {
+                action: "A stat in a dashboard panel",
+                description: "Tracks it: the enhancement picker marks the sets with a bonus that boosts it, and set bonus lists mark those bonuses. Tap or click it again to untrack.",
+            },
+            Row {
                 action: "The ⋮ on a power",
                 description: "Opens that power's menu: empty every slot, or remove every slot you added.",
             },

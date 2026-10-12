@@ -236,6 +236,7 @@ pub fn PopOutControl(
         // hooks run in the component body, and these are what cross to the second window.
         let totals = use_context::<crate::panels::stats::BuildTotals>();
         let dashboards = use_context::<crate::panels::dashboards::DashboardConfig>();
+        let tracked = use_context::<crate::tracked_stats::TrackedStats>();
         let ui_scale = use_context::<crate::shell::UiScale>();
         let popped = use_context::<PoppedOut>();
         let geometry = use_context::<PoppedGeometry>();
@@ -264,6 +265,7 @@ pub fn PopOutControl(
                                 grid_panel: panel,
                                 totals,
                                 dashboards,
+                                tracked,
                                 ui_scale,
                                 popped,
                                 geometry,
@@ -347,6 +349,7 @@ mod desktop {
         pub grid_panel: PanelKind,
         pub totals: BuildTotals,
         pub dashboards: DashboardConfig,
+        pub tracked: crate::tracked_stats::TrackedStats,
         pub ui_scale: UiScale,
         pub popped: PoppedOut,
         /// Written by the popped window and read only by [`PoppedWindows`]'s persist. Not part
@@ -588,6 +591,7 @@ mod desktop {
         let geometry = use_context::<PoppedGeometry>();
         let totals = use_context::<BuildTotals>();
         let dashboards = use_context::<DashboardConfig>();
+        let tracked = use_context::<crate::tracked_stats::TrackedStats>();
         let ui_scale = use_context::<UiScale>();
 
         // Two gates, not one, and the gap between them is the whole reason. `started` stops the
@@ -605,7 +609,7 @@ mod desktop {
             started.set(true);
             spawn(async move {
                 restore(
-                    popped, geometry, layout, columns, totals, dashboards, ui_scale,
+                    popped, geometry, layout, columns, totals, dashboards, tracked, ui_scale,
                 )
                 .await;
                 loaded.set(true);
@@ -678,6 +682,7 @@ mod desktop {
         columns: Signal<u32>,
         totals: BuildTotals,
         dashboards: DashboardConfig,
+        tracked: crate::tracked_stats::TrackedStats,
         ui_scale: UiScale,
     ) {
         let Some(records) = crate::layout_store::load_popped().await else {
@@ -721,6 +726,7 @@ mod desktop {
                     grid_panel: record.panel,
                     totals,
                     dashboards,
+                    tracked,
                     ui_scale,
                     popped,
                     geometry,
@@ -836,6 +842,7 @@ mod desktop {
             grid_panel,
             totals,
             dashboards,
+            tracked,
             ui_scale,
             popped,
             geometry,
@@ -848,6 +855,7 @@ mod desktop {
         // `use_context` it already calls. Nothing is copied: these are the main window's signals.
         use_context_provider(|| totals);
         use_context_provider(|| dashboards);
+        use_context_provider(|| tracked);
         use_context_provider(|| ui_scale);
 
         // The one context that is this window's OWN rather than the main window's — see the
