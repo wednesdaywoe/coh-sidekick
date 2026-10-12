@@ -167,8 +167,10 @@ pub struct HitChanceAlert(pub Signal<bool>);
 pub enum SlotLevelBadge {
     /// Granted at this character level.
     At(u8),
-    /// The schedule has no grant left this slot could take — the build wants more slots at
-    /// this power's level or later than the game issues.
+    /// Granted at this level, before the power was picked — only a respec places it there.
+    Respec(u8),
+    /// The schedule has no grant left at all — the build places more slots than the game has
+    /// issued by its level.
     Unplaced,
 }
 
@@ -3096,7 +3098,11 @@ pub fn PickedPowerCard(
                             // shows what release costs before release commits it.
                             doomed: doomed.contains(&i),
                             slot_level: power_slot_levels.as_ref().and_then(|levels| levels.get(i)).map(|level| {
-                                level.map_or(SlotLevelBadge::Unplaced, SlotLevelBadge::At)
+                                match *level {
+                                    None => SlotLevelBadge::Unplaced,
+                                    Some(level) if i > 0 && level < power.level => SlotLevelBadge::Respec(level),
+                                    Some(level) => SlotLevelBadge::At(level),
+                                }
                             }),
                             power_internal_name: power_id.clone(),
                             powerset_id: powerset_id.clone(),
@@ -3540,10 +3546,13 @@ fn EnhancementSlot(
                 Some(SlotLevelBadge::At(level)) => rsx! {
                     span { class: "slot-level", title: "Slot granted at level {level}", "{level}" }
                 },
+                Some(SlotLevelBadge::Respec(level)) => rsx! {
+                    span { class: "slot-level", title: "Slot granted at level {level}, before this power was picked — a respec can place it here", "{level}" }
+                },
                 Some(SlotLevelBadge::Unplaced) => rsx! {
                     span {
                         class: "slot-level slot-level--unplaced",
-                        title: "This slot has no level the game could grant it — the build wants more slots at this power's level or later than the schedule issues. Free one from a later power.",
+                        title: "This slot has no level the game could grant it — the build places more slots than the schedule issues by its level. Free one from another power.",
                         "!"
                     }
                 },
@@ -5791,13 +5800,13 @@ fn add_slot_to_power(
     };
     // The slot takes the earliest grant the build can spare. Freezing first pins every other
     // slot where it sits, so the new one cannot quietly re-house them. When no grant is left
-    // the slot is still placed and wears the unplaced mark — except in level-up mode, which
-    // refuses it the way the budget above refuses (the beta `addSlot`).
+    // the slot is still placed and wears the unplaced mark. Level-up mode refuses that, and a
+    // respec placement below the pick too, since levelling up has no respec (the beta `addSlot`).
     let level = match leveling {
         Some(schedule) => {
             slot_levels::freeze(schedule, state);
             let level = slot_levels::next_grant_level(schedule, state, pick);
-            if level.is_none() && refuse_unplaced {
+            if refuse_unplaced && level.is_none_or(|level| level < pick.max(1)) {
                 return;
             }
             level

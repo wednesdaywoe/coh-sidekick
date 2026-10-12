@@ -17,9 +17,15 @@
 //! schedule still can, so removing one slot leaves its peers where they were, as in Mids. It
 //! gives one up only where keeping it would leave another slot with no grant at all.
 //!
-//! **A slot the schedule cannot serve has no level** (`None`), never a plausible stand-in. The
-//! pick level in particular is not a safe fallback: on a power taken at 38 it names a level
-//! that grants no slots.
+//! **Levelling order first, respec second.** A slot takes a grant at or above its pick wherever
+//! the matching can. Where it can't, it takes any grant left over, because a respec (Homecoming)
+//! places every slot after every pick, so a 49 pick can still be six-slotted. Such a slot's level
+//! sits below its pick.
+//!
+//! **A slot the schedule cannot serve has no level** (`None`), never a plausible stand-in: that
+//! is a build placing more slots than the schedule has issued by its level. The pick level in
+//! particular is not a safe fallback: on a power taken at 38 it names a level that grants no
+//! slots.
 //!
 //! Slot indices here follow this model's layout — base slot, the user's slots, then the
 //! trailing inherent auto-slots ([`crate::SelectedPower::inherent_slot_count`]) — so an entry
@@ -277,7 +283,7 @@ fn assign_grants(demands: &[Demand], pool: &[u8]) -> Vec<Option<usize>> {
         .filter(|&d| demand_grant[d].is_none())
         .collect();
     unseeded.sort_by_key(|&d| demands[d].pick);
-    for d in unseeded {
+    for &d in &unseeded {
         let mut seen = vec![false; pool.len()];
         augment(
             d,
@@ -287,6 +293,20 @@ fn assign_grants(demands: &[Demand], pool: &[u8]) -> Vec<Option<usize>> {
             &mut demand_grant,
             &mut grant_owner,
         );
+    }
+
+    // The respec pass. A respec places every slot after every pick, so a slot the levelling
+    // order cannot serve may still take any grant left over, even one below its pick. Latest
+    // first, and later picks first, so each lands as near its power as the schedule allows.
+    unseeded.sort_by_key(|&d| std::cmp::Reverse(demands[d].pick));
+    for d in unseeded {
+        if demand_grant[d].is_some() {
+            continue;
+        }
+        if let Some(g) = (0..pool.len()).rev().find(|&g| grant_owner[g].is_none()) {
+            demand_grant[d] = Some(g);
+            grant_owner[g] = Some(d);
+        }
     }
     demand_grant
 }
@@ -396,8 +416,9 @@ pub fn slot_levels(schedule: &LevelingSchedule, state: &CharacterState) -> SlotL
 }
 
 /// The level a new slot on a power picked at `pick` would be placed at, or `None` when every
-/// grant it could legally take is already spoken for. `None` is a real answer: the caller
-/// refuses the placement rather than inventing a level.
+/// grant is already spoken for. A level below `pick` is a respec placement, which level-up mode
+/// refuses. `None` is a real answer: the caller refuses the placement rather than inventing a
+/// level.
 pub fn next_grant_level(
     schedule: &LevelingSchedule,
     state: &CharacterState,
@@ -679,12 +700,24 @@ mod tests {
     #[test]
     fn a_slot_no_grant_can_serve_has_no_level() {
         let schedule = schedule(&[(3, 1)]);
-        let state = build(50, vec![power("Late", 38, 2)]);
+        let state = build(50, vec![power("Late", 38, 3)]);
         assert_eq!(
             levels_of(&slot_levels(&schedule, &state), "Late"),
-            vec![Some(38), None]
+            vec![Some(38), Some(3), None]
         );
         assert_eq!(next_grant_level(&schedule, &state, 38), None);
+    }
+
+    #[test]
+    fn a_respec_six_slots_the_last_pick_from_earlier_grants() {
+        // Homecoming's respec places slots after every pick, so a 49 pick can take grants the
+        // levelling order would have spent earlier. The levelling order still wins where it can.
+        let schedule = schedule(&[(3, 2), (50, 1)]);
+        let state = build(50, vec![power("Early", 1, 1), power("Last", 49, 4)]);
+        assert_eq!(
+            levels_of(&slot_levels(&schedule, &state), "Last"),
+            vec![Some(49), Some(50), Some(3), Some(3)]
+        );
     }
 
     #[test]
