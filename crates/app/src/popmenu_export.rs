@@ -6,7 +6,7 @@
 //! does not know with a console line and grants nothing, so a piece left out has to be named
 //! here or it arrives as an empty slot nobody can explain (POPMENU-1).
 
-use crate::build_file::{self, TextFileKind};
+use crate::build_file::{self, SaveOutcome, TextFileKind};
 use crate::build_session::BuildSession;
 use crate::modal::{Modal, ModalSize};
 use crate::shell::Db;
@@ -40,11 +40,31 @@ pub fn PopmenuExportHost(database: Option<Db>) -> Element {
     }
 }
 
+/// Where the game reads popmenus from, inside the game folder.
+const MENUS_FOLDER: &str = "data/texts/English/Menus";
+
+/// Both the save window and the browser remember the folder under this name, so after the first
+/// save into `Menus` the next one opens there.
+const REMEMBER_AS: &str = "popmenu";
+
 /// What the last save attempt has to say.
 #[derive(Clone, PartialEq)]
 enum Saved {
-    Done(String),
+    Done(SaveOutcome, String),
     Failed(String),
+}
+
+/// Whether a saved file sits in a `texts/English/Menus` folder — the only place `/popmenu`
+/// looks. Matched on the path's last three folders, ignoring case, so it holds for any install
+/// location and either kind of slash.
+fn in_menus_folder(path: &str) -> bool {
+    let folders: Vec<String> = std::path::Path::new(path)
+        .parent()
+        .into_iter()
+        .flat_map(|folder| folder.components().rev().take(3))
+        .map(|part| part.as_os_str().to_string_lossy().to_lowercase())
+        .collect();
+    folders == ["menus", "english", "texts"]
 }
 
 #[component]
@@ -53,6 +73,8 @@ fn PopmenuExportBody(database: Option<Db>) -> Element {
     let mut name = use_signal(String::new);
     let mut saved = use_signal(|| Option::<Saved>::None);
     let mut warnings = use_signal(Vec::<PopmenuWarning>::new);
+    // Which of the two copy buttons last copied, so it can say so.
+    let mut copied = use_signal(|| Option::<&'static str>::None);
 
     let Some(database) = database else {
         return rsx! {
@@ -65,6 +87,7 @@ fn PopmenuExportBody(database: Option<Db>) -> Element {
     } else {
         name()
     };
+    let command = format!("/popmenu {shown_name}");
 
     let save = {
         let shown_name = shown_name.clone();
@@ -87,10 +110,16 @@ fn PopmenuExportBody(database: Option<Db>) -> Element {
                 warnings.set(menu.warnings);
                 let file_name = format!("{menu_name}.mnu");
                 saved.set(
-                    match build_file::write_text_file(&file_name, &menu.content, &POPMENU_FILE)
-                        .await
+                    match build_file::save_text_file_remembering(
+                        &file_name,
+                        &menu.content,
+                        &POPMENU_FILE,
+                        REMEMBER_AS,
+                    )
+                    .await
                     {
-                        Ok(_) => Some(Saved::Done(format!("Saved {file_name}"))),
+                        Ok(SaveOutcome::Cancelled) => None,
+                        Ok(outcome) => Some(Saved::Done(outcome, file_name)),
                         Err(reason) => Some(Saved::Failed(format!("Could not save: {reason}"))),
                     },
                 );
@@ -98,22 +127,51 @@ fn PopmenuExportBody(database: Option<Db>) -> Element {
         }
     };
 
+    let copy = move |which: &'static str, text: String| async move {
+        if crate::clipboard::copy(&text).await.is_ok() {
+            copied.set(Some(which));
+        }
+    };
+
     let left_out = warnings.read().len();
     rsx! {
         div { class: "build-report",
             p { class: "build-report__note",
-                "A .mnu file that grants every enhancement in this build on the test server. Put it in "
-                span { class: "mono", "data/texts/English/Menus/" }
-                " in your game folder, then type "
-                span { class: "mono", "/popmenu {shown_name}" }
-                " in game."
+                "A .mnu file that grants every enhancement in this build on the test server."
             }
-            // The game's `boost` command takes no combine count, so no popmenu can carry
-            // boosters. Said here because the alternative is a bug report.
+            ol { class: "popmenu-export__steps",
+                li {
+                    "Save it into this folder, inside your game folder:"
+                    div { class: "popmenu-export__copyrow",
+                        span { class: "popmenu-export__path mono", "{MENUS_FOLDER}" }
+                        button {
+                            class: "seg",
+                            r#type: "button",
+                            onclick: move |_| copy("path", MENUS_FOLDER.to_string()),
+                            if copied() == Some("path") { "Copied" } else { "Copy" }
+                        }
+                    }
+                }
+                li {
+                    "In game, type:"
+                    div { class: "popmenu-export__copyrow",
+                        span { class: "popmenu-export__path mono", "{command}" }
+                        button {
+                            class: "seg",
+                            r#type: "button",
+                            onclick: {
+                                let command = command.clone();
+                                move |_| copy("command", command.clone())
+                            },
+                            if copied() == Some("command") { "Copied" } else { "Copy" }
+                        }
+                    }
+                }
+            }
             p { class: "build-report__note",
-                "Enhancement boosters are not carried: the game's grant command cannot state them, \
-                 so boosted enhancements arrive at their base level. Origin enhancements (TO/DO/SO) \
-                 are left out too — buy those in game."
+                "Enhancement boosters do not carry over, so boosted enhancements arrive at their \
+                 base level. You can get free boosters from the Merit Vendor. Origin enhancements \
+                 don't carry over either, but you can obtain them through the popmenu interface."
             }
             label { class: "field-label", "Menu name" }
             input {
@@ -130,14 +188,36 @@ fn PopmenuExportBody(database: Option<Db>) -> Element {
                             .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
                             .collect(),
                     );
+                    copied.set(None);
                 },
             }
             div { class: "build-report__actions",
                 button { class: "seg active", r#type: "button", onclick: save, "Save .mnu" }
             }
             match saved() {
-                Some(Saved::Done(line)) => rsx! {
-                    div { class: "build-report__line", "{line}" }
+                Some(Saved::Done(SaveOutcome::SavedTo(path), _)) if in_menus_folder(&path) => rsx! {
+                    div { class: "build-report__line", "Saved to {path}" }
+                },
+                // The desktop knows where the file went, so it can catch the commonest mistake:
+                // a menu saved anywhere but `Menus` is one the game never finds.
+                Some(Saved::Done(SaveOutcome::SavedTo(path), _)) => rsx! {
+                    div { class: "build-report__line", "Saved to {path}" }
+                    div { class: "load-state error",
+                        "That isn't a Menus folder, so the game won't find it. Save it again into "
+                        span { class: "mono", "{MENUS_FOLDER}" }
+                        " inside your game folder."
+                    }
+                },
+                Some(Saved::Done(SaveOutcome::Picked, file_name)) => rsx! {
+                    div { class: "build-report__line",
+                        "Saved {file_name}. Next time, the save window opens in the same folder."
+                    }
+                },
+                Some(Saved::Done(_, file_name)) => rsx! {
+                    div { class: "build-report__line",
+                        "Downloaded {file_name}. Move it from your downloads into the folder above. \
+                         In Chrome or Edge it saves straight into the folder instead."
+                    }
                 },
                 Some(Saved::Failed(reason)) => rsx! {
                     div { class: "load-state error", "{reason}" }
@@ -177,4 +257,24 @@ fn stamp_now() -> String {
     chrono::DateTime::from_timestamp_millis(at_ms)
         .map(|at| at.format("%m/%d/%Y %H:%M:%S UTC").to_string())
         .unwrap_or_default()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::in_menus_folder;
+
+    #[test]
+    fn knows_a_menus_folder_wherever_the_game_is() {
+        assert!(in_menus_folder(
+            "/home/me/Homecoming/data/texts/English/Menus/Charnel.mnu"
+        ));
+        assert!(in_menus_folder(
+            "/games/coh/DATA/TEXTS/english/menus/Charnel.mnu"
+        ));
+        assert!(!in_menus_folder("/home/me/Downloads/Charnel.mnu"));
+        assert!(!in_menus_folder(
+            "/home/me/Homecoming/data/texts/English/Charnel.mnu"
+        ));
+        assert!(!in_menus_folder("Charnel.mnu"));
+    }
 }

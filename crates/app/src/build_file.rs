@@ -548,12 +548,10 @@ pub async fn write_file(suggested_name: &str, text: &str) -> Result<WrittenTo, S
 
 /// What a text file is, for the save dialog's filter and the download's MIME type.
 pub struct TextFileKind {
-    /// The desktop save dialog's filter. The browser download has no use for either.
-    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
+    /// The save dialog's filter, on the desktop and in a browser that offers a save picker.
     pub label: &'static str,
-    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
     pub extension: &'static str,
-    /// The browser download's type. The desktop's save dialog has no use for one.
+    /// The browser's type for the file. The desktop's save dialog has no use for one.
     #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
     pub mime: &'static str,
 }
@@ -620,6 +618,130 @@ pub async fn write_text_file(
     let path = handle.path().to_path_buf();
     std::fs::write(&path, text).map_err(|e| format!("{}: {e}", path.display()))?;
     Ok(Some(path.display().to_string()))
+}
+
+/// How a [`save_text_file_remembering`] ended.
+#[derive(Clone, PartialEq)]
+pub enum SaveOutcome {
+    /// Written to this path (desktop).
+    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
+    SavedTo(String),
+    /// Written where the user chose in the browser's save window, which does not say where.
+    #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
+    Picked,
+    /// The browser downloaded it, to wherever its downloads go.
+    #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
+    Downloaded,
+    /// The user closed the save window.
+    Cancelled,
+}
+
+/// [`write_text_file`] for a file that belongs in one particular folder the user has to find
+/// (a popmenu goes in the game's `Menus` folder): the save window opens in the folder used last
+/// time, so finding it is a one-off.
+///
+/// `remember_as` names the folder, so two kinds of file remember two folders. It is also the
+/// browser's id for the picker, which allows letters, digits, `-` and `_`, 32 at most.
+#[cfg(target_arch = "wasm32")]
+pub async fn save_text_file_remembering(
+    suggested_name: &str,
+    text: &str,
+    kind: &TextFileKind,
+    remember_as: &str,
+) -> Result<SaveOutcome, String> {
+    use dioxus::prelude::*;
+
+    let name = serde_json::to_string(suggested_name).map_err(|e| e.to_string())?;
+    let payload = serde_json::to_string(text).map_err(|e| e.to_string())?;
+    let mime = serde_json::to_string(kind.mime).map_err(|e| e.to_string())?;
+    let label = serde_json::to_string(kind.label).map_err(|e| e.to_string())?;
+    let extension =
+        serde_json::to_string(&format!(".{}", kind.extension)).map_err(|e| e.to_string())?;
+    let id = serde_json::to_string(remember_as).map_err(|e| e.to_string())?;
+    // Chrome and Edge have a real save window (`showSaveFilePicker`), and remember the folder
+    // last picked under each `id` themselves. Firefox and Safari have none, and download. So
+    // does a picker that refuses to open, which it does once the click is too long ago.
+    let js = format!(
+        "let handle = null;\
+         if (window.showSaveFilePicker) {{\
+           try {{\
+             handle = await window.showSaveFilePicker({{\
+               id: {id}, suggestedName: {name},\
+               types: [{{ description: {label}, accept: {{ [{mime}]: [{extension}] }} }}],\
+             }});\
+           }} catch (e) {{\
+             if (e && e.name === 'AbortError') return 'cancelled';\
+           }}\
+         }}\
+         if (handle) {{\
+           try {{\
+             const out = await handle.createWritable();\
+             await out.write({payload});\
+             await out.close();\
+             return 'picked';\
+           }} catch (e) {{ return 'error:' + String(e); }}\
+         }}\
+         try {{\
+           const blob = new Blob([{payload}], {{ type: {mime} }});\
+           const url = URL.createObjectURL(blob);\
+           const link = document.createElement('a');\
+           link.href = url;\
+           link.download = {name};\
+           document.body.appendChild(link);\
+           link.click();\
+           document.body.removeChild(link);\
+           URL.revokeObjectURL(url);\
+           return 'downloaded';\
+         }} catch (e) {{ return 'error:' + String(e); }}"
+    );
+    let value = document::eval(&js).await.map_err(|e| format!("{e:?}"))?;
+    match value.as_str().unwrap_or_default() {
+        "picked" => Ok(SaveOutcome::Picked),
+        "downloaded" => Ok(SaveOutcome::Downloaded),
+        "cancelled" => Ok(SaveOutcome::Cancelled),
+        other => Err(other.strip_prefix("error:").unwrap_or(other).to_string()),
+    }
+}
+
+/// The desktop half: the folder last saved into is kept in storage and handed to the dialog.
+#[cfg(not(target_arch = "wasm32"))]
+pub async fn save_text_file_remembering(
+    suggested_name: &str,
+    text: &str,
+    kind: &TextFileKind,
+    remember_as: &str,
+) -> Result<SaveOutcome, String> {
+    use dioxus::prelude::*;
+
+    let key =
+        serde_json::to_string(&format!("sk-folder-{remember_as}")).map_err(|e| e.to_string())?;
+    let last = document::eval(&format!(
+        "try {{ return localStorage.getItem({key}); }} catch (_) {{ return null; }}"
+    ))
+    .await
+    .ok()
+    .and_then(|value| value.as_str().map(std::path::PathBuf::from))
+    // A folder since deleted or renamed opens the dialog wherever it would have anyway.
+    .filter(|folder| folder.is_dir());
+
+    let mut dialog = rfd::AsyncFileDialog::new()
+        .set_file_name(suggested_name)
+        .add_filter(kind.label, &[kind.extension]);
+    if let Some(folder) = last {
+        dialog = dialog.set_directory(folder);
+    }
+    let Some(handle) = dialog.save_file().await else {
+        return Ok(SaveOutcome::Cancelled);
+    };
+    let path = handle.path().to_path_buf();
+    std::fs::write(&path, text).map_err(|e| format!("{}: {e}", path.display()))?;
+    if let Some(folder) = path.parent().and_then(|folder| folder.to_str()) {
+        let folder = serde_json::to_string(folder).map_err(|e| e.to_string())?;
+        crate::storage::commit(format!(
+            "try {{ localStorage.setItem({key}, {folder}); }} catch (_) {{}}"
+        ));
+    }
+    Ok(SaveOutcome::SavedTo(path.display().to_string()))
 }
 
 /// Write `bytes` out as a PNG the user keeps, offering `suggested_name`.

@@ -2,6 +2,8 @@
     {
     "date": "2026-10-11",
     "items": [
+      { "id": "popmenu-export", "type": "feat", "message": "File > Test server popmenu saves a .mnu file that gives your character every enhancement in the build on the Brainstorm test server. It shows the folder the file goes in and the command to open it in game, each with a Copy button, and the save window opens in the folder you used last time, in the desktop app and in Chrome and Edge" },
+      { "id": "image-export-poster", "type": "update", "message": "Export as image should now format correctly and not crash the app." },
       { "id": "radiance-bonuses", "type": "fix", "message": "Homecoming and Brainstorm: Radiance now switches on the Radiance bonuses of the other Light Affinity powers. Blinding Beam adds its extra -ToHit and -Damage, Spotlight its +Damage, Searing Beam its extra damage over time, Protective Beam its extra absorb and Clarifying Beam its bigger heal" },
       { "id": "mode-bonuses-follow-power", "type": "update", "message": "A bonus that depends on another of your powers running now turns on by itself when that power is on, such as Attune's Sonic Melee bonuses, Bio Armor's adaptations, Rage on Super Strength and the Dual Pistols ammo types. These switches are now named after that power instead of the game's internal name" },
       { "id": "stacking-bonuses-add", "type": "fix", "message": "When a bonus adds a second copy of an effect the power already has, such as a second -ToHit, absorb or resistance, the Info panel now adds the two together instead of showing only the first" },

@@ -330,6 +330,36 @@
       "id": "target-alive-damage",
       "date": "2026-10-11",
       "preview": "DNA Siphon and Glitz now show the damage they deal, instead of listing it as wai"
+    },
+    {
+      "id": "popmenu-export",
+      "date": "2026-10-11",
+      "preview": "File > Test server popmenu saves a .mnu file that gives your character every enh"
+    },
+    {
+      "id": "image-export-poster",
+      "date": "2026-10-11",
+      "preview": "Export as image should now format correctly and not crash the app."
+    },
+    {
+      "id": "radiance-bonuses",
+      "date": "2026-10-11",
+      "preview": "Homecoming and Brainstorm: Radiance now switches on the Radiance bonuses of the "
+    },
+    {
+      "id": "mode-bonuses-follow-power",
+      "date": "2026-10-11",
+      "preview": "A bonus that depends on another of your powers running now turns on by itself wh"
+    },
+    {
+      "id": "stacking-bonuses-add",
+      "date": "2026-10-11",
+      "preview": "When a bonus adds a second copy of an effect the power already has, such as a se"
+    },
+    {
+      "id": "fired-power-bonuses",
+      "date": "2026-10-11",
+      "preview": "Homecoming and Brainstorm: Sonic Clap and Deafening Wave now include Attune's da"
     }
   ]
 }
