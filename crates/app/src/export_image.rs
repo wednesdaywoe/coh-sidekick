@@ -10,6 +10,7 @@
 use crate::modal::{Modal, ModalSize};
 use crate::naming;
 use crate::panels::dashboards::Dashboards;
+use crate::panels::powers::build_set_bonus_block;
 use crate::panels::stat_registry::{self, StatSection};
 use crate::power_art::PowerArt;
 use crate::shell::Db;
@@ -85,8 +86,10 @@ pub struct ExportImageOptions {
 }
 
 impl Default for ExportImageOptions {
+    /// What the Standard preset sets, since Standard is the one shown selected. The two used to
+    /// disagree, so the poster first drawn was not the one the highlighted preset draws.
     fn default() -> Self {
-        Self {
+        let mut options = Self {
             preset: ExportPreset::Standard,
             author_name: String::new(),
             show_level: true,
@@ -95,11 +98,13 @@ impl Default for ExportImageOptions {
             show_inherents: true,
             show_incarnates: true,
             only_slotted: false,
-            stat_sections: Vec::from(StatSectionId::all()),
+            stat_sections: Vec::new(),
             show_set_bonuses: false,
             transparent: false,
             scale: 2,
-        }
+        };
+        options.apply_preset(ExportPreset::Standard);
+        options
     }
 }
 
@@ -132,7 +137,7 @@ impl ExportImageOptions {
 // ============================================================
 
 /// Fixed render width in CSS px. Output resolution = this × the scale option.
-pub const CARD_WIDTH: usize = 960;
+pub const CARD_WIDTH: usize = 1200;
 /// Minimum height for a roughly 16:9 landscape.
 pub const CARD_MIN_HEIGHT: usize = (CARD_WIDTH * 9) / 16;
 
@@ -148,9 +153,18 @@ pub const PREVIEW_CARD_HEIGHT: usize = 880;
 const CANVAS_MAX_HEIGHT: usize = 6000;
 /// Card padding.
 const PAD: usize = 24;
-/// Power tile dimensions.
-const TILE_H: usize = 52;
+/// Power tile dimensions: the tile, the power's art in it, and the marks under its name.
+const TILE_H: usize = 48;
 const TILE_GAP: usize = 6;
+const TILE_ICON: usize = 36;
+const SLOT_ICON: usize = 20;
+const SLOT_DOT: usize = 9;
+/// Columns of power tiles, stat cards and set-bonus cards on the poster.
+const POWER_COLS: usize = 4;
+const STAT_COLS: usize = 4;
+const BONUS_COLS: usize = 3;
+/// Space left under each band of the poster.
+const ZONE_GAP: usize = 14;
 /// Stat section card dimensions.
 const STAT_CARD_W: usize = 360;
 /// Title band above a stat card's first row, and the pitch of the rows under it.
@@ -166,12 +180,14 @@ const ZONE_LABEL_SIZE: usize = 14;
 /// Font sizes.
 const TITLE_SIZE: usize = 36;
 const SUBTITLE_SIZE: usize = 22;
-const TILE_NAME_SIZE: usize = 12;
-const TILE_LEVEL_SIZE: usize = 8;
 const STAT_LABEL_SIZE: usize = 12;
 const STAT_VALUE_SIZE: usize = 12;
 const SMALL_TEXT_SIZE: usize = 10;
-const FOOTER_SIZE: usize = 16;
+/// The poster's text sizes at 1x. Whole multiples of the 8px font, so each draws at the same
+/// proportion at every scale (see [`render_to_png`]).
+const POSTER_TITLE: usize = 24;
+const POSTER_SUBTITLE: usize = 16;
+const POSTER_TEXT: usize = 8;
 
 // ============================================================
 // Colors.
@@ -191,22 +207,19 @@ const ZONE_LABEL_COLOR: Rgba<u8> = Rgba([160, 170, 190, 255]);
 const TILE_BG: Rgba<u8> = Rgba([40, 40, 55, 200]);
 const TILE_BORDER: Rgba<u8> = Rgba([70, 70, 90, 180]);
 const STAT_CARD_BG: Rgba<u8> = Rgba([35, 35, 50, 220]);
-#[allow(dead_code)]
 const EMERALD: Rgba<u8> = Rgba([52, 211, 153, 255]);
 const CYAN: Rgba<u8> = Rgba([103, 232, 249, 255]);
 const AMBER: Rgba<u8> = Rgba([251, 191, 36, 255]);
-#[allow(dead_code)]
 const PURPLE: Rgba<u8> = Rgba([192, 132, 252, 255]);
 #[allow(dead_code)]
 const RED: Rgba<u8> = Rgba([239, 68, 68, 255]);
 const SLATE_500: Rgba<u8> = Rgba([100, 116, 139, 255]);
 const SLATE_400: Rgba<u8> = Rgba([148, 163, 184, 255]);
-#[allow(dead_code)]
 const SLATE_600: Rgba<u8> = Rgba([71, 85, 105, 255]);
-#[allow(dead_code)]
 const SLATE_700: Rgba<u8> = Rgba([51, 65, 85, 255]);
-#[allow(dead_code)]
 const SLATE_800: Rgba<u8> = Rgba([30, 41, 59, 255]);
+/// A tile's level badge, dark enough to read over any power's art.
+const BADGE_BG: Rgba<u8> = Rgba([15, 23, 42, 230]);
 
 // ============================================================
 // Simple text renderer.
@@ -232,18 +245,23 @@ impl TextDrawer {
     fn write(&mut self, img: &mut RgbaImage, text: &str) {
         let scale = (self.size / GLYPH_H).max(1);
         let advance = glyph_advance(self.size);
-        for ch in text.chars() {
+        for ch in text.chars().map(basic_latin) {
             draw_char(img, self.x, self.y, ch, self.color, scale);
             self.x += advance;
         }
     }
+}
 
-    fn advance_y(&mut self, dy: usize) {
-        self.y += dy;
-    }
-
-    fn cursor(&self) -> (usize, usize) {
-        (self.x, self.y)
+/// The Basic Latin stand-in for the punctuation the data and the names use, so a dash or a
+/// curly quote draws as one rather than as a gap. One character for one, so [`text_width`]
+/// stays exact.
+fn basic_latin(ch: char) -> char {
+    match ch {
+        '\u{2010}'..='\u{2015}' | '\u{2212}' => '-',
+        '\u{2018}' | '\u{2019}' => '\'',
+        '\u{201C}' | '\u{201D}' => '"',
+        '\u{00D7}' => 'x',
+        _ => ch,
     }
 }
 
@@ -283,6 +301,11 @@ fn draw_char(img: &mut RgbaImage, x: usize, y: usize, ch: char, color: Rgba<u8>,
 ///
 /// Takes the build, the database (for power names), the totals (for stats),
 /// and the user's options. Returns the PNG bytes or an error string.
+///
+/// Everything is laid out in 1x units and multiplied by the scale, text included. The bitmap
+/// font only scales in whole steps, so a text size that is not a multiple of 8 drew at a
+/// different proportion at each resolution: at 2x the tile names drew three glyphs tall in tiles
+/// laid out for two, and were cut to six letters.
 pub fn render_to_png(
     build: &CharacterState,
     database: &Db,
@@ -295,288 +318,240 @@ pub fn render_to_png(
     // both export buttons share one render.
     art: &PowerArt,
 ) -> Result<Vec<u8>, String> {
-    let width = CARD_WIDTH * options.scale as usize;
+    let s = options.scale.max(1) as usize;
+    let width = CARD_WIDTH * s;
     // Generous working height; the image is cropped to the drawn extent before encoding, so
     // over-allocating here costs a moment of memory and nothing in the output.
-    let height = CANVAS_MAX_HEIGHT * options.scale as usize;
+    let height = CANVAS_MAX_HEIGHT * s;
     let mut img = RgbaImage::new(width as u32, height as u32);
-
-    // Fill background.
-    if options.transparent {
-        for pixel in img.pixels_mut() {
-            *pixel = Rgba([0, 0, 0, 0]);
-        }
-    } else {
+    // A fresh buffer is fully transparent, which is the transparent background already.
+    if !options.transparent {
         fill_rect(&mut img, 0, 0, width, height, BG_COLOR);
     }
 
-    let mut drawer = TextDrawer::new(PAD, PAD, TEXT_COLOR, TITLE_SIZE * options.scale as usize);
+    let pad = PAD * s;
+    let inner_w = width - pad * 2;
+    let body = POSTER_TEXT * s;
+    let gap = TILE_GAP * s;
+    let mut y = pad;
 
-    // Header: build name.
-    let name = &build.name;
+    // Header: name, archetype and sets, author — and the level hard right.
+    let level_text = options.show_level.then(|| format!("Level {}", build.level));
+    let level_w = level_text
+        .as_ref()
+        .map_or(0, |text| text_width(text, POSTER_SUBTITLE * s) + pad);
+    if let Some(text) = &level_text {
+        let x = width - pad - text_width(text, POSTER_SUBTITLE * s);
+        draw_text(&mut img, x, y, SLATE_400, POSTER_SUBTITLE * s, text);
+    }
+    let name = build.name.trim();
     if !name.is_empty() {
-        drawer.write(&mut img, name);
-        drawer.advance_y(TITLE_SIZE * options.scale as usize + 12);
+        let shown = truncate_to(name, POSTER_TITLE * s, inner_w.saturating_sub(level_w));
+        draw_text(&mut img, pad, y, TEXT_COLOR, POSTER_TITLE * s, &shown);
+        y += text_height(POSTER_TITLE * s) + 8 * s;
     }
+    let archetype = naming::archetype_name(build, database);
+    let sets: Vec<String> = [&build.primary, &build.secondary]
+        .into_iter()
+        .filter_map(|selection| naming::powerset_name(selection, database))
+        .collect();
+    let mut x = pad;
+    if let Some(archetype) = &archetype {
+        let shown = truncate_to(archetype, POSTER_SUBTITLE * s, inner_w);
+        draw_text(&mut img, x, y, CYAN, POSTER_SUBTITLE * s, &shown);
+        x += text_width(&shown, POSTER_SUBTITLE * s);
+    }
+    if !sets.is_empty() {
+        let lead = if archetype.is_some() { " - " } else { "" };
+        let text = format!("{lead}{}", sets.join(" / "));
+        let room = (pad + inner_w).saturating_sub(x);
+        let shown = truncate_to(&text, POSTER_SUBTITLE * s, room);
+        draw_text(&mut img, x, y, SLATE_400, POSTER_SUBTITLE * s, &shown);
+    }
+    y += text_height(POSTER_SUBTITLE * s) + 6 * s;
+    let author = options.author_name.trim();
+    if !author.is_empty() {
+        let text = truncate_to(&format!("by {author}"), body, inner_w);
+        draw_text(&mut img, pad, y, SLATE_400, body, &text);
+        y += text_height(body) + 6 * s;
+    }
+    y += 4 * s;
+    fill_rect(&mut img, pad, y, inner_w, s, BORDER_COLOR);
+    y += 12 * s;
 
-    // Archetype line.
-    let arch = naming::archetype_name(build, database);
-    let arch_text = match arch {
-        Some(a) => format!("Level {} {}", build.level, a),
-        None => format!("Level {}", build.level),
+    // The power grid, shared by the three tile bands.
+    let tile_w = (inner_w - (POWER_COLS - 1) * gap) / POWER_COLS;
+    let tile_h = TILE_H * s;
+    let grid_cell = |top: usize, i: usize| {
+        (
+            pad + (i % POWER_COLS) * (tile_w + gap),
+            top + (i / POWER_COLS) * (tile_h + gap),
+        )
     };
-    let mut sub_drawer = TextDrawer::new(
-        PAD,
-        drawer.cursor().1,
-        CYAN,
-        SUBTITLE_SIZE * options.scale as usize,
-    );
-    sub_drawer.write(&mut img, &arch_text);
-    drawer.advance_y(SUBTITLE_SIZE * options.scale as usize + 8);
-
-    // Author credit.
-    if !options.author_name.is_empty() {
-        let mut author_drawer = TextDrawer::new(
-            PAD,
-            drawer.cursor().1,
-            SLATE_400,
-            SMALL_TEXT_SIZE * options.scale as usize,
-        );
-        author_drawer.write(&mut img, &format!("by {}", options.author_name));
-        drawer.advance_y(SMALL_TEXT_SIZE * options.scale as usize + 16);
-    }
-
-    // Level + origin.
-    if options.show_level {
-        let level_text = format!("Lvl {}", build.level);
-        let level_size = SMALL_TEXT_SIZE * options.scale as usize;
-        let mut level_drawer = TextDrawer::new(
-            width - PAD - text_width(&level_text, level_size),
-            drawer.cursor().1,
-            SLATE_400,
-            level_size,
-        );
-        level_drawer.write(&mut img, &level_text);
-    }
-
-    drawer.advance_y(24 * options.scale as usize);
-
-    // Powers section.
-    let powers: Vec<&SelectedPower> = if options.only_slotted {
-        build
-            .all_selected()
-            .filter(|p| p.slots.iter().any(Option::is_some))
-            .collect()
-    } else {
-        build.all_selected().collect()
+    let grid_bottom = |top: usize, count: usize| {
+        top + count.div_ceil(POWER_COLS) * (tile_h + gap) - gap + ZONE_GAP * s
     };
 
-    // Zone label.
-    let mut zone_drawer = TextDrawer::new(
-        PAD,
-        drawer.cursor().1,
-        ZONE_LABEL_COLOR,
-        ZONE_LABEL_SIZE * options.scale as usize,
-    );
-    zone_drawer.write(&mut img, "Powers by Level");
-    drawer.advance_y(ZONE_LABEL_SIZE * options.scale as usize + 12);
-
-    // Draw power tiles in a grid.
-    let cols = if powers.len() > 24 { 5 } else { 4 };
-    let tile_area_w = width - 2 * PAD;
-    let tile_w = (tile_area_w / cols) - TILE_GAP;
-    let tile_h = TILE_H * options.scale as usize;
-
-    for (i, power) in powers.iter().enumerate() {
-        let col = i % cols;
-        let row = i / cols;
-        let tx = PAD + col * (tile_w + TILE_GAP);
-        let ty = drawer.cursor().1 + row * (tile_h + TILE_GAP);
-
-        draw_power_tile(
-            &mut img,
-            tx,
-            ty,
-            tile_w,
-            tile_h,
-            power,
-            options.scale as usize,
-            database,
-            art,
-        );
-    }
-
-    // Advance past power tiles.
+    // Powers, in the order the character took them. Inherents are their own band below, so a
+    // power is drawn once — the poster used to draw every inherent in both.
+    let kept = |power: &&SelectedPower| !options.only_slotted || is_slotted(power);
+    let mut powers: Vec<&SelectedPower> = build
+        .all_selected()
+        .filter(|power| power.inherent_category.is_none())
+        .filter(kept)
+        .collect();
+    // Stable, so powers sharing a level keep the build's own order (primary, secondary, pools).
+    powers.sort_by_key(|power| power.level);
+    let tiles = TileStyle {
+        scale: s,
+        show_enhancements: options.show_enhancements,
+        origin: build.origin.as_deref(),
+    };
     if !powers.is_empty() {
-        let rows = powers.len().div_ceil(cols);
-        drawer.advance_y(rows * (tile_h + TILE_GAP) + 24 * options.scale as usize);
+        y = zone_label(&mut img, y, "Powers by level", s);
+        for (i, power) in powers.iter().enumerate() {
+            let (tx, ty) = grid_cell(y, i);
+            draw_power_tile(&mut img, tx, ty, tile_w, power, &tiles, database, art);
+        }
+        y = grid_bottom(y, powers.len());
     }
 
-    // Inherent powers.
     if options.show_inherents {
         let inherents: Vec<&SelectedPower> = build
             .all_selected()
-            .filter(|p| p.inherent_category.is_some())
+            .filter(|power| power.inherent_category.is_some())
+            .filter(kept)
             .collect();
         if !inherents.is_empty() {
-            let mut inh_drawer = TextDrawer::new(
-                PAD,
-                drawer.cursor().1,
-                ZONE_LABEL_COLOR,
-                ZONE_LABEL_SIZE * options.scale as usize,
-            );
-            inh_drawer.write(&mut img, "Inherent Powers");
-            drawer.advance_y(ZONE_LABEL_SIZE * options.scale as usize + 12);
-
+            y = zone_label(&mut img, y, "Inherent powers", s);
             for (i, power) in inherents.iter().enumerate() {
-                let col = i % cols;
-                let row = i / cols;
-                let tx = PAD + col * (tile_w + TILE_GAP);
-                let ty = drawer.cursor().1 + row * (tile_h + TILE_GAP);
-                draw_power_tile(
-                    &mut img,
-                    tx,
-                    ty,
-                    tile_w,
-                    tile_h,
-                    power,
-                    options.scale as usize,
-                    database,
-                    art,
-                );
+                let (tx, ty) = grid_cell(y, i);
+                draw_power_tile(&mut img, tx, ty, tile_w, power, &tiles, database, art);
             }
-            if !inherents.is_empty() {
-                let rows = inherents.len().div_ceil(cols);
-                drawer.advance_y(rows * (tile_h + TILE_GAP) + 24 * options.scale as usize);
-            }
+            y = grid_bottom(y, inherents.len());
         }
     }
 
-    // Stats section.
-    // Incarnates.
     if options.show_incarnates {
         let picks: Vec<_> = build.incarnates.occupied().collect();
         if !picks.is_empty() {
-            let mut inc_drawer = TextDrawer::new(
-                PAD,
-                drawer.cursor().1,
-                ZONE_LABEL_COLOR,
-                ZONE_LABEL_SIZE * options.scale as usize,
-            );
-            inc_drawer.write(&mut img, "Incarnates");
-            drawer.advance_y(ZONE_LABEL_SIZE * options.scale as usize + 12);
-
-            for (i, (_slot_id, pick)) in picks.iter().enumerate() {
-                let col = i % cols;
-                let row = i / cols;
-                let tx = PAD + col * (tile_w + TILE_GAP);
-                let ty = drawer.cursor().1 + row * (tile_h + TILE_GAP);
-                draw_incarnate_tile(
-                    &mut img,
-                    tx,
-                    ty,
-                    tile_w,
-                    tile_h,
-                    pick,
-                    options.scale as usize,
-                );
+            y = zone_label(&mut img, y, "Incarnates", s);
+            for (i, (slot_id, pick)) in picks.iter().enumerate() {
+                let (tx, ty) = grid_cell(y, i);
+                draw_incarnate_tile(&mut img, tx, ty, tile_w, slot_id, pick, database, s);
             }
-            let rows = picks.len().div_ceil(cols);
-            drawer.advance_y(rows * (tile_h + TILE_GAP) + 24 * options.scale as usize);
+            y = grid_bottom(y, picks.len());
         }
     }
 
-    if !options.stat_sections.is_empty() {
-        let mut stats_drawer = TextDrawer::new(
-            PAD,
-            drawer.cursor().1,
-            ZONE_LABEL_COLOR,
-            ZONE_LABEL_SIZE * options.scale as usize,
-        );
-        stats_drawer.write(&mut img, "Character Totals");
-        drawer.advance_y(ZONE_LABEL_SIZE * options.scale as usize + 12);
-
-        // Draw stat sections in columns.
-        let visible_sections: Vec<StatSection> = options
-            .stat_sections
-            .iter()
-            .filter_map(|s| stat_section_to_stat_section(*s))
-            .collect();
-
-        let card_w = STAT_CARD_W * options.scale as usize;
-        let stat_cols = ((width - PAD * 2 + STAT_CARD_GAP) / (card_w + STAT_CARD_GAP)).max(1);
-        let mut col = 0usize;
-        let mut row_top = drawer.cursor().1;
-        let mut row_tallest = 0usize;
-        for section in visible_sections {
+    // Totals, in up to four columns, each card placed under the shortest column so far. A
+    // section whose every row the dashboard hides is left off: on a poster an empty "No stats
+    // shown" card says nothing about the build.
+    let sections: Vec<(StatSection, usize)> = options
+        .stat_sections
+        .iter()
+        .filter_map(|id| stat_section_to_stat_section(*id))
+        .map(|section| {
             let rows = stat_registry::in_section(section)
                 .filter(|stat| visibility.shows(stat.id))
                 .count();
-            let card_h = stat_card_height(rows, options.scale as usize);
+            (section, rows)
+        })
+        .filter(|(_, rows)| *rows > 0)
+        .collect();
+    if !sections.is_empty() {
+        y = zone_label(&mut img, y, "Character totals", s);
+        let cols = sections.len().min(STAT_COLS);
+        let card_gap = STAT_CARD_GAP * s;
+        let card_w = (inner_w - (cols - 1) * card_gap) / cols;
+        let mut tops = vec![y; cols];
+        for (section, rows) in sections {
+            let col = shortest(&tops);
+            let x = pad + col * (card_w + card_gap);
             draw_stat_section(
-                &mut img,
-                PAD + col * (card_w + STAT_CARD_GAP),
-                row_top,
-                card_w,
-                &section,
-                totals,
-                visibility,
-                options.scale as usize,
+                &mut img, x, tops[col], card_w, &section, totals, visibility, s,
             );
-            row_tallest = row_tallest.max(card_h);
-            col += 1;
-            // A full row of cards moves the cursor down by the tallest one in it, so a short
-            // card next to a tall one does not leave the next row overlapping.
-            if col == stat_cols {
-                col = 0;
-                row_top += row_tallest + STAT_CARD_GAP;
-                row_tallest = 0;
-            }
+            tops[col] += stat_card_height(rows, s) + card_gap;
         }
-        if col > 0 {
-            row_top += row_tallest + STAT_CARD_GAP;
-        }
-        drawer.advance_y(row_top.saturating_sub(drawer.cursor().1));
+        y = tops.into_iter().max().unwrap_or(y) - card_gap + ZONE_GAP * s;
     }
 
-    // Set bonuses.
     if options.show_set_bonuses {
-        // Simplified: just note that set bonuses would be rendered here.
-        let mut sb_drawer = TextDrawer::new(
-            PAD,
-            drawer.cursor().1,
-            ZONE_LABEL_COLOR,
-            ZONE_LABEL_SIZE * options.scale as usize,
-        );
-        sb_drawer.write(&mut img, "Set Bonuses");
-        drawer.advance_y(ZONE_LABEL_SIZE * options.scale as usize + 12);
+        let cards = set_bonus_cards(build, database, totals);
+        if !cards.is_empty() {
+            y = zone_label(&mut img, y, "Active set bonuses", s);
+            let cols = cards.len().min(BONUS_COLS);
+            let card_gap = STAT_CARD_GAP * s;
+            let card_w = (inner_w - (cols - 1) * card_gap) / cols;
+            let mut tops = vec![y; cols];
+            for card in &cards {
+                let col = shortest(&tops);
+                let x = pad + col * (card_w + card_gap);
+                let drawn = draw_set_bonus_card(&mut img, x, tops[col], card_w, card, s);
+                tops[col] += drawn + card_gap;
+            }
+            y = tops.into_iter().max().unwrap_or(y) - card_gap + ZONE_GAP * s;
+        }
     }
 
-    // Footer.
-    if options.show_credit {
-        let mut footer_drawer = TextDrawer::new(
-            PAD,
-            height - PAD - FOOTER_SIZE * options.scale as usize,
+    // The footer sits under the content, or at the foot of the minimum card when the content is
+    // short. It used to be drawn at the bottom of the working canvas and then cropped away.
+    let min_height = CARD_MIN_HEIGHT * s;
+    let bottom = if options.show_credit {
+        let line = text_height(body);
+        let footer_y = (y + 4 * s).max(min_height.saturating_sub(pad + line));
+        fill_rect(&mut img, pad, footer_y - 8 * s, inner_w, s, BORDER_COLOR);
+        draw_text(
+            &mut img,
+            pad,
+            footer_y,
             SLATE_500,
-            FOOTER_SIZE * options.scale as usize,
+            body,
+            "Made with coh-sidekick.com",
         );
-        footer_drawer.write(&mut img, "Made with coh-sidekick.com");
-        let mut date_drawer = TextDrawer::new(
-            width - PAD - 120,
-            height - PAD - FOOTER_SIZE * options.scale as usize,
-            SLATE_500,
-            FOOTER_SIZE * options.scale as usize,
-        );
-        date_drawer.write(&mut img, &today_utc());
-    }
+        let date = today_utc();
+        let date_x = width - pad - text_width(&date, body);
+        draw_text(&mut img, date_x, footer_y, SLATE_500, body, &date);
+        footer_y + line + pad
+    } else {
+        (y.saturating_sub(ZONE_GAP * s) + pad).max(min_height)
+    };
 
-    // Crop to what was actually drawn, with the footer's own band kept below it.
-    let used = (drawer.cursor().1 + PAD * options.scale as usize)
-        .max(CARD_MIN_HEIGHT * options.scale as usize)
-        .min(height);
+    let used = bottom.min(height);
     let img = image::imageops::crop_imm(&img, 0, 0, width as u32, used as u32).to_image();
-
     encode_plain_png(&img)
+}
+
+/// Whether anything is slotted in the power — what "only slotted powers" keeps.
+fn is_slotted(power: &SelectedPower) -> bool {
+    power.slots.iter().any(Option::is_some)
+}
+
+/// The index of the shortest column, for placing the next card under it.
+fn shortest(tops: &[usize]) -> usize {
+    tops.iter()
+        .enumerate()
+        .min_by_key(|(_, top)| **top)
+        .map_or(0, |(col, _)| col)
+}
+
+/// A band's small uppercase label. Returns where the band's content starts.
+fn zone_label(img: &mut RgbaImage, y: usize, label: &str, s: usize) -> usize {
+    let size = POSTER_TEXT * s;
+    draw_text(
+        img,
+        PAD * s,
+        y,
+        ZONE_LABEL_COLOR,
+        size,
+        &label.to_uppercase(),
+    );
+    y + text_height(size) + 6 * s
+}
+
+/// One line of text at `(x, y)`.
+fn draw_text(img: &mut RgbaImage, x: usize, y: usize, color: Rgba<u8>, size: usize, text: &str) {
+    TextDrawer::new(x, y, color, size).write(img, text);
 }
 
 // THE EXPORTED IMAGE NO LONGER CARRIES THE BUILD INSIDE IT, by decision on 2026-09-26. An
@@ -832,76 +807,145 @@ fn stat_section_to_stat_section(id: StatSectionId) -> Option<StatSection> {
     }
 }
 
-/// Draw a power tile.
+/// What every power tile on one poster shares.
+struct TileStyle<'a> {
+    scale: usize,
+    show_enhancements: bool,
+    /// The character's origin, which an origin enhancement's frame carries.
+    origin: Option<&'a str>,
+}
+
+/// Draw a power tile: the power's art with its level on it, the name beside it, and under the
+/// name one mark per slot — the slotted enhancement's own icon, or a dot when the options ask
+/// for the compact form.
+#[allow(clippy::too_many_arguments)]
 fn draw_power_tile(
     img: &mut RgbaImage,
     x: usize,
     y: usize,
     w: usize,
-    h: usize,
     power: &SelectedPower,
-    scale: usize,
+    style: &TileStyle,
     database: &Db,
     art: &PowerArt,
 ) {
-    // Draw tile background.
+    let s = style.scale;
+    let h = TILE_H * s;
     fill_rect(img, x, y, w, h, TILE_BG);
-    // Draw tile border.
     stroke_rect(img, x, y, w, h, TILE_BORDER);
 
-    let pad = CARD_PAD * scale;
+    let pad = CARD_PAD * s;
+    let icon_size = TILE_ICON * s;
 
     // One lookup answers both halves of the tile: which picture it wears and what it is called.
     let def =
         crate::view::power_view::resolve_power_def(database, &power.powerset, &power.internal_name);
 
     // The power's art leads the tile, when we have it. An icon that did not load costs the tile
-    // its picture and nothing else — the name and level draw where they always did, against the
-    // gutter the icon would have occupied only if there is one to occupy it (see `power_art`).
+    // its picture and nothing else (see `power_art`); the gutter stays, so the names in a column
+    // of tiles line up either way.
     let icon = def
         .and_then(|def| def.extra.get("icon"))
         .and_then(|value| value.as_str())
         .and_then(|name| art.get(Some(name)));
+    match icon {
+        Some(source) => draw_image_scaled(img, source, x + pad, y + pad, icon_size, icon_size),
+        None => stroke_rect(img, x + pad, y + pad, icon_size, icon_size, TILE_BORDER),
+    }
 
-    let icon_gutter = match icon {
-        Some(source) => {
-            // Square, and as tall as the tile's inner box allows — the vendored art is 32x32,
-            // so at scale 1 this draws it very near its native size and the nearest-neighbour
-            // sampling in `draw_image_scaled` costs nothing visible.
-            let size = h.saturating_sub(pad * 2);
-            draw_image_scaled(img, source, x + pad, y + pad, size, size);
-            size + pad
-        }
-        None => 0,
-    };
-
-    // The level sits hard right; the name gets whatever is left and is cut to it.
-    let level = format!("L{}", power.level);
-    let level_w = text_width(&level, TILE_LEVEL_SIZE * scale);
-    let name_space = w.saturating_sub(pad * 3 + level_w + icon_gutter);
-    let mut drawer = TextDrawer::new(
-        x + pad + icon_gutter,
-        y + pad,
-        TEXT_COLOR,
-        TILE_NAME_SIZE * scale,
-    );
-    drawer.write(
-        img,
-        &truncate_to(
-            tile_label(power, database),
-            TILE_NAME_SIZE * scale,
-            name_space,
-        ),
-    );
-
+    // The level, as a badge on the art's corner.
     if power.level > 0 {
-        let mut level_drawer = TextDrawer::new(
-            x + w - pad - level_w,
-            y + pad,
+        let size = POSTER_TEXT * s;
+        let text = power.level.to_string();
+        let badge_w = text_width(&text, size) + 2 * s;
+        let badge_h = text_height(size) + 2 * s;
+        fill_rect(img, x + pad / 2, y + pad / 2, badge_w, badge_h, BADGE_BG);
+        stroke_rect(img, x + pad / 2, y + pad / 2, badge_w, badge_h, SLATE_600);
+        draw_text(
+            img,
+            x + pad / 2 + 2 * s,
+            y + pad / 2 + 2 * s,
             SLATE_400,
-            TILE_LEVEL_SIZE * scale,
+            size,
+            &text,
         );
-        level_drawer.write(img, &level);
+    }
+
+    // The name gets everything right of the art, and is cut to it.
+    let text_x = x + pad + icon_size + pad;
+    let room = (x + w).saturating_sub(text_x + pad);
+    let size = POSTER_TEXT * s;
+    let name = truncate_to(tile_label(power, database), size, room);
+    draw_text(img, text_x, y + pad, TEXT_COLOR, size, &name);
+
+    let slots_y = y + pad + text_height(size) + 6 * s;
+    if style.show_enhancements {
+        let cell = SLOT_ICON * s;
+        for (i, slot) in power.slots.iter().enumerate() {
+            let cx = text_x + i * (cell + 3 * s);
+            if cx + cell > x + w {
+                break;
+            }
+            draw_slot_icon(img, cx, slots_y, cell, slot.as_ref(), style, database, art);
+        }
+    } else {
+        let dot = SLOT_DOT * s;
+        for (i, slot) in power.slots.iter().enumerate() {
+            let cx = text_x + i * (dot + 3 * s);
+            let colour = if slot.is_some() { EMERALD } else { SLATE_700 };
+            fill_circle(img, cx, slots_y + 4 * s, dot, colour);
+        }
+    }
+}
+
+/// One slot under a power's name: the enhancement's icon under its rarity frame, as the power
+/// card draws it, or an empty outline. A piece whose art did not load is a plain filled square,
+/// so the slot still reads as filled.
+#[allow(clippy::too_many_arguments)]
+fn draw_slot_icon(
+    img: &mut RgbaImage,
+    x: usize,
+    y: usize,
+    size: usize,
+    slot: Option<&coh_data::Enhancement>,
+    style: &TileStyle,
+    database: &Db,
+    art: &PowerArt,
+) {
+    let Some(enhancement) = slot else {
+        fill_rect(img, x, y, size, size, SLATE_800);
+        stroke_rect(img, x, y, size, size, SLATE_600);
+        return;
+    };
+    let base = crate::panels::powers::slot_icon_url(enhancement, database)
+        .and_then(|url| art.enhancement(&url));
+    match base {
+        Some(base) => {
+            draw_image_scaled(img, base, x, y, size, size);
+            let frame =
+                crate::panels::powers::slot_overlay_url(enhancement, database, style.origin);
+            if let Some(frame) = art.enhancement(&frame) {
+                draw_image_scaled(img, frame, x, y, size, size);
+            }
+        }
+        None => {
+            fill_rect(img, x, y, size, size, SLATE_700);
+            stroke_rect(img, x, y, size, size, EMERALD);
+        }
+    }
+}
+
+/// A filled circle `d` across, its bounding box's top-left at `(x, y)`.
+fn fill_circle(img: &mut RgbaImage, x: usize, y: usize, d: usize, color: Rgba<u8>) {
+    let r2 = (d * d) as f32 / 4.0;
+    let centre = d as f32 / 2.0;
+    for dy in 0..d {
+        for dx in 0..d {
+            let (fx, fy) = (dx as f32 + 0.5 - centre, dy as f32 + 0.5 - centre);
+            if fx * fx + fy * fy <= r2 {
+                fill_rect(img, x + dx, y + dy, 1, 1, color);
+            }
+        }
     }
 }
 
@@ -985,24 +1029,206 @@ fn draw_image_scaled(
     }
 }
 
-/// Draw an incarnate tile (simplified).
+/// Draw an incarnate tile: the power's name, and the slot it fills under it. Named the way the
+/// incarnate panel names it, from the catalog, with the stored internal name as the fallback.
+#[allow(clippy::too_many_arguments)]
 fn draw_incarnate_tile(
     img: &mut RgbaImage,
     x: usize,
     y: usize,
     w: usize,
-    h: usize,
+    slot_id: &str,
     pick: &coh_data::IncarnateSlot,
-    scale: usize,
+    database: &Db,
+    s: usize,
 ) {
-    // Draw tile background.
+    let h = TILE_H * s;
     fill_rect(img, x, y, w, h, TILE_BG);
-    // Draw tile border.
     stroke_rect(img, x, y, w, h, TILE_BORDER);
 
-    // Draw incarnate name.
-    let mut drawer = TextDrawer::new(x + 8, y + 8, TEXT_COLOR, TILE_NAME_SIZE * scale);
-    drawer.write(img, &pick.power_name);
+    let catalog = database.incarnate_catalog.slot(slot_id);
+    let name = catalog
+        .and_then(|slot| slot.find_power(&pick.power_name))
+        .map_or(pick.power_name.as_str(), |power| {
+            power.display_name.as_str()
+        });
+    let slot_label = catalog.map_or(slot_id, |slot| slot.display_name.as_str());
+
+    let pad = CARD_PAD * s;
+    let size = POSTER_TEXT * s;
+    let room = w.saturating_sub(pad * 2);
+    draw_text(
+        img,
+        x + pad,
+        y + pad,
+        PURPLE,
+        size,
+        &truncate_to(name, size, room),
+    );
+    let label_y = y + pad + text_height(size) + 6 * s;
+    draw_text(
+        img,
+        x + pad,
+        label_y,
+        SLATE_400,
+        size,
+        &truncate_to(slot_label, size, room),
+    );
+}
+
+/// One set's bonuses in one power, as the poster lists them.
+struct SetBonusCard {
+    title: String,
+    power: String,
+    /// Each active bonus's description, and whether the Rule of 5 refuses it.
+    effects: Vec<(String, bool)>,
+}
+
+/// Every set in the build that has reached a bonus, per power — the forum export's set-bonus
+/// section, drawn. The tiers and their Rule-of-5 verdicts come from the same
+/// [`build_set_bonus_block`] the slot tooltip uses, so the poster cannot advertise a bonus the
+/// game refuses: a refused one is drawn struck through.
+fn set_bonus_cards(
+    build: &CharacterState,
+    database: &Db,
+    totals: &CalculatedTotals,
+) -> Vec<SetBonusCard> {
+    let Some(catalog) = database.io_sets.as_ref() else {
+        return Vec::new();
+    };
+    let mut cards = Vec::new();
+    for power in build.all_selected() {
+        let mut set_ids: Vec<&str> = Vec::new();
+        for slot in power.slots.iter().flatten() {
+            if let coh_data::EnhancementKind::IoSet { set_id, .. } = &slot.kind {
+                if !set_ids.contains(&set_id.as_str()) {
+                    set_ids.push(set_id);
+                }
+            }
+        }
+        for set_id in set_ids {
+            let Some(set) = catalog.get(set_id) else {
+                continue;
+            };
+            let block = build_set_bonus_block(set, power, set_id, &totals.set_bonus_tracking);
+            let effects: Vec<(String, bool)> = block
+                .tiers
+                .iter()
+                .filter(|tier| tier.active)
+                .flat_map(|tier| tier.effects.iter())
+                .map(|effect| (effect.description.clone(), effect.refused))
+                .collect();
+            if effects.is_empty() {
+                continue;
+            }
+            let set_name = if set.name.is_empty() {
+                set_id
+            } else {
+                set.name.as_str()
+            };
+            cards.push(SetBonusCard {
+                title: format!("{set_name} x{}", block.slotted),
+                power: naming::power_label(Some(database), &power.powerset, &power.internal_name),
+                effects,
+            });
+        }
+    }
+    cards
+}
+
+/// Draw one set-bonus card; returns its height. Descriptions wrap to the card rather than
+/// being cut, since the end of one is the number.
+fn draw_set_bonus_card(
+    img: &mut RgbaImage,
+    x: usize,
+    y: usize,
+    w: usize,
+    card: &SetBonusCard,
+    s: usize,
+) -> usize {
+    let pad = CARD_PAD * s;
+    let size = POSTER_TEXT * s;
+    let line = text_height(size) + 3 * s;
+    let room = w.saturating_sub(pad * 2);
+    let lines: Vec<(String, bool)> = card
+        .effects
+        .iter()
+        .flat_map(|(text, refused)| {
+            wrap(text, size, room)
+                .into_iter()
+                .map(move |part| (part, *refused))
+        })
+        .collect();
+    let h = pad * 2 + line * 2 + 3 * s + lines.len() * line;
+    fill_rect(img, x, y, w, h, STAT_CARD_BG);
+    stroke_rect(img, x, y, w, h, BORDER_COLOR);
+
+    let mut ty = y + pad;
+    draw_text(
+        img,
+        x + pad,
+        ty,
+        EMERALD,
+        size,
+        &truncate_to(&card.title, size, room),
+    );
+    ty += line;
+    draw_text(
+        img,
+        x + pad,
+        ty,
+        SLATE_500,
+        size,
+        &truncate_to(&card.power, size, room),
+    );
+    ty += line + 3 * s;
+    for (text, refused) in lines {
+        if refused {
+            draw_text(img, x + pad, ty, SLATE_500, size, &text);
+            let strike_y = ty + text_height(size) / 2;
+            fill_rect(
+                img,
+                x + pad,
+                strike_y,
+                text_width(&text, size),
+                s,
+                SLATE_500,
+            );
+        } else {
+            draw_text(img, x + pad, ty, SLATE_400, size, &text);
+        }
+        ty += line;
+    }
+    h
+}
+
+/// `text` broken into lines of at most `max_width`, at word boundaries. A single word longer
+/// than a line is cut with [`truncate_to`].
+fn wrap(text: &str, size: usize, max_width: usize) -> Vec<String> {
+    let per_line = (max_width / glyph_advance(size)).max(1);
+    let mut lines = Vec::new();
+    let mut line = String::new();
+    for word in text.split_whitespace() {
+        let needed = if line.is_empty() {
+            word.chars().count()
+        } else {
+            line.chars().count() + 1 + word.chars().count()
+        };
+        if needed > per_line && !line.is_empty() {
+            lines.push(std::mem::take(&mut line));
+        }
+        if !line.is_empty() {
+            line.push(' ');
+        }
+        line.push_str(word);
+    }
+    if !line.is_empty() {
+        lines.push(line);
+    }
+    lines
+        .into_iter()
+        .map(|line| truncate_to(&line, size, max_width))
+        .collect()
 }
 
 /// Draw a stat section card.
@@ -1029,26 +1255,21 @@ fn draw_stat_section(
         x + 8 * scale,
         y + 8 * scale,
         TEXT_COLOR,
-        STAT_LABEL_SIZE * scale,
+        text_height(STAT_LABEL_SIZE) * scale,
     );
     title.write(img, section.title());
 
-    let row_h = text_height(STAT_VALUE_SIZE * scale) + CARD_PAD * scale;
+    // Sizes are rounded to the font's step BEFORE scaling, so a card draws at the same
+    // proportion at 1x and 2x.
+    let label_size = text_height(SMALL_TEXT_SIZE) * scale;
+    let value_size = text_height(STAT_VALUE_SIZE) * scale;
+    let row_h = text_height(value_size) + CARD_PAD * scale;
     for (i, (label, resolved)) in rows.iter().enumerate() {
         let row_y = y + stat_card_header(scale) + i * row_h;
-        let value_w_hint =
-            text_width(&resolved.text, STAT_VALUE_SIZE * scale) + CARD_PAD * 4 * scale;
+        let value_w_hint = text_width(&resolved.text, value_size) + CARD_PAD * 4 * scale;
         let label_space = w.saturating_sub(value_w_hint);
-        let mut name = TextDrawer::new(
-            x + CARD_PAD * scale,
-            row_y,
-            SLATE_400,
-            SMALL_TEXT_SIZE * scale,
-        );
-        name.write(
-            img,
-            &truncate_to(label, SMALL_TEXT_SIZE * scale, label_space),
-        );
+        let mut name = TextDrawer::new(x + CARD_PAD * scale, row_y, SLATE_400, label_size);
+        name.write(img, &truncate_to(label, label_size, label_space));
 
         // The value is right-aligned, so its start depends on how wide it draws.
         let text = if resolved.simulated {
@@ -1059,14 +1280,14 @@ fn draw_stat_section(
         } else {
             resolved.text.clone()
         };
-        let value_w = text_width(&text, STAT_VALUE_SIZE * scale);
+        let value_w = text_width(&text, value_size);
         let value_x = (x + w).saturating_sub(CARD_PAD * scale + value_w);
         let colour = if resolved.at_cap {
             AMBER
         } else {
             SUBTITLE_COLOR
         };
-        let mut value = TextDrawer::new(value_x, row_y, colour, STAT_VALUE_SIZE * scale);
+        let mut value = TextDrawer::new(value_x, row_y, colour, value_size);
         value.write(img, &text);
     }
 
@@ -1075,7 +1296,7 @@ fn draw_stat_section(
             x + CARD_PAD * scale,
             y + stat_card_header(scale),
             SLATE_500,
-            SMALL_TEXT_SIZE * scale,
+            label_size,
         );
         empty.write(img, "No stats shown");
     }
@@ -1083,12 +1304,12 @@ fn draw_stat_section(
 
 /// The title band above a card's first row: the title itself plus padding either side.
 fn stat_card_header(scale: usize) -> usize {
-    CARD_PAD * scale + text_height(STAT_LABEL_SIZE * scale) + CARD_PAD * scale
+    CARD_PAD * scale + text_height(STAT_LABEL_SIZE) * scale + CARD_PAD * scale
 }
 
 /// How tall a card with `rows` rows draws, so the layout can reserve it before drawing.
 fn stat_card_height(rows: usize, scale: usize) -> usize {
-    let row_h = text_height(STAT_VALUE_SIZE * scale) + CARD_PAD * scale;
+    let row_h = text_height(STAT_VALUE_SIZE) * scale + CARD_PAD * scale;
     stat_card_header(scale) + rows.max(1) * row_h + CARD_PAD * scale
 }
 
@@ -1110,17 +1331,18 @@ fn glyph_advance(size: usize) -> usize {
     (size / GLYPH_H).max(1) * (GLYPH_W + 1)
 }
 
-/// `text` cut to whatever fits in `max_width`, with an ellipsis when it had to cut. A name that
-/// silently ran past its tile collided with the level label beside it.
+/// `text` cut to whatever fits in `max_width`, with `...` when it had to cut. A name that
+/// silently ran past its tile collided with the level label beside it. Three dots rather than
+/// `…`: the font is Basic Latin only, and the ellipsis drew as nothing.
 fn truncate_to(text: &str, size: usize, max_width: usize) -> String {
     if text_width(text, size) <= max_width {
         return text.to_string();
     }
     let fits = max_width / glyph_advance(size);
-    if fits <= 1 {
-        return String::new();
+    if fits <= 3 {
+        return text.chars().take(fits).collect();
     }
-    text.chars().take(fits - 1).chain(['…']).collect()
+    text.chars().take(fits - 3).chain("...".chars()).collect()
 }
 
 /// Fill a rectangle with a solid color.
@@ -1199,32 +1421,12 @@ fn ExportImageBody(database: Option<Db>) -> Element {
     let mut copied = use_signal(|| Option::<Result<(), String>>::None);
 
     let mut options = use_signal(ExportImageOptions::default);
-    // Read once here rather than inside the markup: an rsx! element body holds
-    // attributes and children, not statements.
-    // rsx! interpolation takes an identifier or expression, not an if-block, so the
-    // selected/unselected classes are picked here.
-    const PRESET_ON: &str = "bg-primary border-primary-hover text-on-primary";
-    const PRESET_OFF: &str = "bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700";
-    let preset = options.read().preset;
-    let compact_class = if preset == ExportPreset::Compact {
-        PRESET_ON
-    } else {
-        PRESET_OFF
-    };
-    let standard_class = if preset == ExportPreset::Standard {
-        PRESET_ON
-    } else {
-        PRESET_OFF
-    };
-    let full_class = if preset == ExportPreset::Full {
-        PRESET_ON
-    } else {
-        PRESET_OFF
-    };
-    let scale = options.read().scale;
-    let scale_1_class = if scale == 1 { PRESET_ON } else { PRESET_OFF };
-    let scale_2_class = if scale == 2 { PRESET_ON } else { PRESET_OFF };
-
+    // A changed option is a different poster, so the last save or copy no longer describes it.
+    use_effect(move || {
+        let _ = options.read();
+        saved.set(None);
+        copied.set(None);
+    });
     let Some(database) = database else {
         return rsx! {
             div { class: "load-state", "Loading the dataset…" }
@@ -1271,237 +1473,206 @@ fn ExportImageBody(database: Option<Db>) -> Element {
     );
 
     rsx! {
-        div { class: "flex flex-col lg:flex-row gap-5 p-5",
-                // Controls.
-                div { class: "lg:w-[300px] shrink-0 space-y-4",
-                    // Preset.
-                    div {
-                        div { class: "text-xs font-semibold text-gray-300 uppercase mb-1.5", "Detail preset" }
-                        div { class: "flex gap-2",
+        div { class: "image-export",
+            div { class: "image-export__controls",
+                fieldset { class: "image-export__group",
+                    legend { class: "image-export__legend", "Detail" }
+                    div { class: "image-export__row",
+                        for (preset , label) in [
+                            (ExportPreset::Compact, "Compact"),
+                            (ExportPreset::Standard, "Standard"),
+                            (ExportPreset::Full, "Full"),
+                        ]
+                        {
                             button {
+                                key: "{label}",
                                 r#type: "button",
-                                class: "flex-1 px-2 py-1.5 rounded text-sm border transition-colors {compact_class}",
-                                onclick: move |_| options.write().apply_preset(ExportPreset::Compact),
-                                "Compact"
-                            }
-                        }
-                        div { class: "flex gap-2 mt-1",
-                            button {
-                                r#type: "button",
-                                class: "flex-1 px-2 py-1.5 rounded text-sm border transition-colors {standard_class}",
-                                onclick: move |_| options.write().apply_preset(ExportPreset::Standard),
-                                "Standard"
-                            }
-                        }
-                        div { class: "flex gap-2 mt-1",
-                            button {
-                                r#type: "button",
-                                class: "flex-1 px-2 py-1.5 rounded text-sm border transition-colors {full_class}",
-                                onclick: move |_| options.write().apply_preset(ExportPreset::Full),
-                                "Full"
-                            }
-                        }
-                    }
-
-                    // Author.
-                    div {
-                        label { class: "text-xs font-semibold text-gray-300 uppercase mb-1.5 block", "Author / character" }
-                        input {
-                            r#type: "text",
-                            value: options.read().author_name.clone(),
-                            oninput: move |evt| options.write().author_name = evt.value().to_string(),
-                            placeholder: "Optional credit",
-                            class: "w-full bg-gray-900 border border-gray-700 rounded px-2 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-1 focus:ring-[var(--color-ring)]/50"
-                        }
-                    }
-
-                    // Toggles.
-                    div { class: "space-y-2",
-                        label { class: "flex items-center gap-2 text-sm text-gray-200 cursor-pointer",
-                            input {
-                                r#type: "checkbox",
-                                checked: options.read().show_level,
-                                onchange: move |evt| options.write().show_level = evt.checked(),
-                            }
-                            "Show level"
-                        }
-                        label { class: "flex items-center gap-2 text-sm text-gray-200 cursor-pointer",
-                            input {
-                                r#type: "checkbox",
-                                checked: options.read().show_credit,
-                                onchange: move |evt| options.write().show_credit = evt.checked(),
-                            }
-                            "Show credit footer"
-                        }
-                        label { class: "flex items-center gap-2 text-sm text-gray-200 cursor-pointer",
-                            input {
-                                r#type: "checkbox",
-                                checked: options.read().show_enhancements,
-                                onchange: move |evt| options.write().show_enhancements = evt.checked(),
-                            }
-                            "Show enhancements"
-                        }
-                        label { class: "flex items-center gap-2 text-sm text-gray-200 cursor-pointer",
-                            input {
-                                r#type: "checkbox",
-                                checked: options.read().show_inherents,
-                                onchange: move |evt| options.write().show_inherents = evt.checked(),
-                            }
-                            "Show inherent powers"
-                        }
-                        label { class: "flex items-center gap-2 text-sm text-gray-200 cursor-pointer",
-                            input {
-                                r#type: "checkbox",
-                                checked: options.read().show_incarnates,
-                                onchange: move |evt| options.write().show_incarnates = evt.checked(),
-                            }
-                            "Show incarnates"
-                        }
-                        label { class: "flex items-center gap-2 text-sm text-gray-200 cursor-pointer",
-                            input {
-                                r#type: "checkbox",
-                                checked: options.read().only_slotted,
-                                onchange: move |evt| options.write().only_slotted = evt.checked(),
-                            }
-                            "Only slotted powers"
-                        }
-                        label { class: "flex items-center gap-2 text-sm text-gray-200 cursor-pointer",
-                            input {
-                                r#type: "checkbox",
-                                checked: options.read().show_set_bonuses,
-                                onchange: move |evt| options.write().show_set_bonuses = evt.checked(),
-                            }
-                            "Show set bonuses"
-                        }
-                        label { class: "flex items-center gap-2 text-sm text-gray-200 cursor-pointer",
-                            input {
-                                r#type: "checkbox",
-                                checked: options.read().transparent,
-                                onchange: move |evt| options.write().transparent = evt.checked(),
-                            }
-                            "Transparent background"
-                        }
-                    }
-
-                    // Scale.
-                    div {
-                        label { class: "text-xs font-semibold text-gray-300 uppercase mb-1.5 block", "Resolution" }
-                        div { class: "flex gap-2",
-                            button {
-                                r#type: "button",
-                                class: "px-2 py-0.5 rounded text-xs border {scale_1_class}",
-                                onclick: move |_| options.write().scale = 1,
-                                "1x"
-                            }
-                            button {
-                                r#type: "button",
-                                class: "px-2 py-0.5 rounded text-xs border {scale_2_class}",
-                                onclick: move |_| options.write().scale = 2,
-                                "2x"
+                                class: if options.read().preset == preset { "seg active" } else { "seg" },
+                                "aria-pressed": options.read().preset == preset,
+                                onclick: move |_| options.write().apply_preset(preset),
+                                "{label}"
                             }
                         }
                     }
                 }
 
-                // Preview.
-                div { class: "flex-1",
-                    div { class: "bg-gray-900 rounded border border-gray-700 p-4",
-                        match (&*png.read(), &preview_src) {
-                            (Some(Ok(bytes)), Some(src)) => rsx! {
-                                div { class: "text-xs text-gray-400 mb-2",
-                                    "Preview — {bytes.len() / 1024} KB"
-                                }
-                                img {
-                                    class: "max-w-full rounded",
-                                    src: "{src}",
-                                    alt: "The build as a poster",
-                                }
+                div { class: "image-export__group",
+                    label { class: "image-export__legend", r#for: "image-export-author",
+                        "Author or character"
+                    }
+                    input {
+                        id: "image-export-author",
+                        class: "sb-save__input",
+                        r#type: "text",
+                        value: options.read().author_name.clone(),
+                        oninput: move |evt| options.write().author_name = evt.value().to_string(),
+                        placeholder: "Optional credit",
+                    }
+                }
+
+                fieldset { class: "image-export__group",
+                    legend { class: "image-export__legend", "Include" }
+                    ImageToggle {
+                        label: "Level",
+                        checked: options.read().show_level,
+                        on_toggle: move |on| options.write().show_level = on,
+                    }
+                    ImageToggle {
+                        label: "Enhancement icons",
+                        checked: options.read().show_enhancements,
+                        on_toggle: move |on| options.write().show_enhancements = on,
+                    }
+                    ImageToggle {
+                        label: "Inherent powers",
+                        checked: options.read().show_inherents,
+                        on_toggle: move |on| options.write().show_inherents = on,
+                    }
+                    ImageToggle {
+                        label: "Incarnates",
+                        checked: options.read().show_incarnates,
+                        on_toggle: move |on| options.write().show_incarnates = on,
+                    }
+                    ImageToggle {
+                        label: "Only slotted powers",
+                        checked: options.read().only_slotted,
+                        on_toggle: move |on| options.write().only_slotted = on,
+                    }
+                    ImageToggle {
+                        label: "Set bonuses",
+                        checked: options.read().show_set_bonuses,
+                        on_toggle: move |on| options.write().show_set_bonuses = on,
+                    }
+                    ImageToggle {
+                        label: "Credit footer",
+                        checked: options.read().show_credit,
+                        on_toggle: move |on| options.write().show_credit = on,
+                    }
+                    ImageToggle {
+                        label: "Transparent background",
+                        checked: options.read().transparent,
+                        on_toggle: move |on| options.write().transparent = on,
+                    }
+                }
+
+                fieldset { class: "image-export__group",
+                    legend { class: "image-export__legend", "Resolution" }
+                    div { class: "image-export__row",
+                        for scale in [1u32, 2] {
+                            button {
+                                key: "{scale}",
+                                r#type: "button",
+                                class: if options.read().scale == scale { "seg active" } else { "seg" },
+                                "aria-pressed": options.read().scale == scale,
+                                onclick: move |_| options.write().scale = scale,
+                                "{scale}x"
+                            }
+                        }
+                    }
+                }
+            }
+
+            div { class: "image-export__main",
+                div { class: "image-export__frame",
+                    match (&*png.read(), &preview_src) {
+                        (Some(Ok(_)), Some(src)) => rsx! {
+                            img { src: "{src}", alt: "The build as a poster" }
+                        },
+                        (Some(Err(why)), _) => rsx! {
+                            div { class: "load-state error", "Could not render: {why}" }
+                        },
+                        // Pending. Its own state, and not the error state: on the web the
+                        // first poster of a session waits on a few dozen icon fetches, and
+                        // a red "could not render" is a lie about a render still going.
+                        (None, _) => rsx! {
+                            div { class: "load-state", "Drawing the poster…" }
+                        },
+                        _ => rsx! {},
+                    }
+                }
+
+                div { class: "image-export__actions",
+                    // Both outcomes are reported. A copy button that claims success while the
+                    // clipboard still holds what it held before is the soft-wrong outcome the
+                    // clipboard module exists to prevent, and the user finds out by pasting.
+                    span { class: "image-export__status",
+                        match (&*saved.read(), &*copied.read(), &*png.read()) {
+                            (Some(Err(why)), _, _) => rsx! {
+                                span { class: "is-error", "Could not save: {why}" }
                             },
-                            (Some(Err(why)), _) => rsx! {
-                                div { class: "text-sm text-red-300", "Could not render: {why}" }
+                            (_, Some(Err(why)), _) => rsx! {
+                                span { class: "is-error", "Could not copy: {why}" }
                             },
-                            // Pending. Its own state, and not the error state: on the web the
-                            // first poster of a session waits on a few dozen icon fetches, and
-                            // a red "could not render" is a lie about a render still going.
-                            (None, _) => rsx! {
-                                div { class: "text-sm text-gray-400", "Drawing the poster…" }
+                            (Some(Ok(Some(path))), _, _) => rsx! { "Saved to {path}" },
+                            (Some(Ok(None)), _, _) => rsx! { "Saved." },
+                            (_, Some(Ok(())), _) => rsx! { "Copied to the clipboard." },
+                            (_, _, Some(Ok(bytes))) => rsx! {
+                                span { class: "is-quiet", "{bytes.len() / 1024} KB" }
                             },
                             _ => rsx! {},
                         }
                     }
-
-                    // Actions.
-                    div { class: "flex gap-2 mt-4",
-                        button {
-                            r#type: "button",
-                            class: "flex-1 px-4 py-2 bg-primary border border-primary-hover text-on-primary rounded text-sm font-medium transition-colors hover:bg-primary-hover",
-                            disabled: !ready,
-                            onclick: {
-                                let file_name = file_name.clone();
-                                move |_| {
-                                    let file_name = file_name.clone();
-                                    let bytes = png.read().clone();
-                                    async move {
-                                        match bytes {
-                                            Some(Ok(bytes)) => saved.set(Some(
-                                                crate::build_file::write_png_file(&file_name, &bytes).await,
-                                            )),
-                                            Some(Err(why)) => saved.set(Some(Err(why))),
-                                            // Unreachable while the button is gated on `ready`.
-                                            None => {}
-                                        }
-                                    }
+                    button {
+                        r#type: "button",
+                        class: "seg",
+                        disabled: !ready,
+                        // The copy runs in this handler's own task: both clipboard
+                        // mechanisms are gated on a live user gesture, and the gesture is
+                        // over by the time a later task would run.
+                        onclick: move |_| {
+                            let bytes = png.read().clone();
+                            async move {
+                                saved.set(None);
+                                match bytes {
+                                    Some(Ok(bytes)) => copied.set(Some(crate::clipboard::copy_png(&bytes).await)),
+                                    Some(Err(why)) => copied.set(Some(Err(why))),
+                                    // Unreachable while the button is gated on `ready`.
+                                    None => {}
                                 }
-                            },
-                            "Download PNG"
-                        }
-                        button {
-                            r#type: "button",
-                            class: "flex-1 px-4 py-2 bg-gray-700 border border-gray-600 text-gray-200 rounded text-sm font-medium transition-colors hover:bg-gray-600",
-                            disabled: !ready,
-                            // The copy runs in this handler's own task: both clipboard
-                            // mechanisms are gated on a live user gesture, and the gesture is
-                            // over by the time a later task would run.
-                            onclick: move |_| {
+                            }
+                        },
+                        "Copy to clipboard"
+                    }
+                    button {
+                        r#type: "button",
+                        class: "seg is-primary",
+                        disabled: !ready,
+                        onclick: {
+                            let file_name = file_name.clone();
+                            move |_| {
+                                let file_name = file_name.clone();
                                 let bytes = png.read().clone();
                                 async move {
+                                    copied.set(None);
                                     match bytes {
-                                        Some(Ok(bytes)) => copied.set(Some(crate::clipboard::copy_png(&bytes).await)),
-                                        Some(Err(why)) => copied.set(Some(Err(why))),
+                                        Some(Ok(bytes)) => saved.set(Some(
+                                            crate::build_file::write_png_file(&file_name, &bytes).await,
+                                        )),
+                                        Some(Err(why)) => saved.set(Some(Err(why))),
                                         // Unreachable while the button is gated on `ready`.
                                         None => {}
                                     }
                                 }
-                            },
-                            "Copy to Clipboard"
-                        }
-                    }
-
-                    // Both outcomes are reported. A copy button that claims success while the
-                    // clipboard still holds what it held before is the soft-wrong outcome the
-                    // clipboard module exists to prevent, and the user finds out by pasting.
-                    match &*saved.read() {
-                        Some(Ok(Some(path))) => rsx! {
-                            p { class: "text-xs text-emerald-300 mt-2", "Saved to {path}" }
+                            }
                         },
-                        Some(Ok(None)) => rsx! {
-                            p { class: "text-xs text-emerald-300 mt-2", "Saved." }
-                        },
-                        Some(Err(why)) => rsx! {
-                            p { class: "text-xs text-red-300 mt-2", "Could not save: {why}" }
-                        },
-                        None => rsx! {},
-                    }
-                    match &*copied.read() {
-                        Some(Ok(())) => rsx! {
-                            p { class: "text-xs text-emerald-300 mt-2", "Copied to the clipboard." }
-                        },
-                        Some(Err(why)) => rsx! {
-                            p { class: "text-xs text-red-300 mt-2", "Could not copy: {why}" }
-                        },
-                        None => rsx! {},
+                        "Download PNG"
                     }
                 }
+            }
+        }
+    }
+}
+
+/// One include/exclude switch.
+#[component]
+fn ImageToggle(label: String, checked: bool, on_toggle: EventHandler<bool>) -> Element {
+    rsx! {
+        label { class: "image-export__toggle",
+            input {
+                r#type: "checkbox",
+                checked,
+                onchange: move |evt| on_toggle.call(evt.checked()),
+            }
+            span { "{label}" }
         }
     }
 }
