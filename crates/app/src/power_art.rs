@@ -1,4 +1,4 @@
-//! The power icons the PNG poster draws, as decoded pixels.
+//! The power and enhancement icons the PNG poster draws, as decoded pixels.
 //!
 //! The rest of the app shows a power's art by handing the browser a URL
 //! ([`crate::view::icons::power_icon_url`]) and letting it fetch and decode. The poster cannot:
@@ -34,6 +34,9 @@ use std::collections::HashMap;
 #[derive(Clone, Default, PartialEq)]
 pub struct PowerArt {
     icons: HashMap<String, RgbaImage>,
+    /// Slotted enhancements' base icons and rarity frames, keyed by their path under
+    /// `Enhancements/` (see [`enhancement_key`]).
+    enhancements: HashMap<String, RgbaImage>,
 }
 
 impl PowerArt {
@@ -43,6 +46,41 @@ impl PowerArt {
         let name = icon.map(str::trim).filter(|name| !name.is_empty())?;
         self.icons.get(&name.to_lowercase())
     }
+
+    /// The decoded art behind an enhancement icon or frame URL — the URL
+    /// [`crate::panels::powers::slot_icon_url`] or `slot_overlay_url` gave the DOM, so the poster
+    /// draws the same picture the power card does. `None` when it was not gathered.
+    pub fn enhancement(&self, url: &str) -> Option<&RgbaImage> {
+        self.enhancements.get(enhancement_key(url)?)
+    }
+}
+
+/// The part of an enhancement art URL below `Enhancements/` — `IO Sets/Bonesnap.png`. The same
+/// on both targets, where the URL's own prefix is not: it is the bundled folder asset's address.
+fn enhancement_key(url: &str) -> Option<&str> {
+    url.rsplit_once("/Enhancements/").map(|(_, key)| key)
+}
+
+/// Every enhancement art URL the poster could draw for this build: each slotted piece's base
+/// icon and the frame over it, deduplicated. A piece whose icon does not resolve contributes
+/// nothing, as on the power card, which shows its text chip instead.
+pub fn enhancement_urls(build: &CharacterState, database: &crate::shell::Db) -> Vec<String> {
+    let origin = build.origin.as_deref();
+    let mut urls: Vec<String> = build
+        .all_selected()
+        .flat_map(|power| power.slots.iter().flatten())
+        .filter_map(|enh| {
+            let icon = crate::panels::powers::slot_icon_url(enh, database)?;
+            Some([
+                icon,
+                crate::panels::powers::slot_overlay_url(enh, database, origin),
+            ])
+        })
+        .flatten()
+        .collect();
+    urls.sort();
+    urls.dedup();
+    urls
 }
 
 /// Every icon filename the poster could draw for this build — its picked powers and its
@@ -81,7 +119,40 @@ pub async fn load_for(build: &CharacterState, database: &crate::shell::Db) -> Po
             }
         }
     }
-    PowerArt { icons }
+    let mut enhancements = HashMap::new();
+    for url in enhancement_urls(build, database) {
+        let Some(key) = enhancement_key(&url) else {
+            continue;
+        };
+        if let Some(bytes) = enhancement_bytes(&url, key).await {
+            if let Ok(decoded) = image::load_from_memory(&bytes) {
+                enhancements.insert(key.to_string(), decoded.to_rgba8());
+            }
+        }
+    }
+    PowerArt {
+        icons,
+        enhancements,
+    }
+}
+
+/// Desktop: the vendored `Enhancements/` tree, embedded like the power art (2.2 MB, against the
+/// power tree's 12).
+#[cfg(not(target_arch = "wasm32"))]
+async fn enhancement_bytes(_url: &str, key: &str) -> Option<Vec<u8>> {
+    static ART: include_dir::Dir<'_> =
+        include_dir::include_dir!("$CARGO_MANIFEST_DIR/assets/img/Enhancements");
+    ART.get_file(key).map(|file| file.contents().to_vec())
+}
+
+/// Web: the URL the power card's `<img>` already loaded, so it is usually in the cache.
+#[cfg(target_arch = "wasm32")]
+async fn enhancement_bytes(url: &str, _key: &str) -> Option<Vec<u8>> {
+    let resp = gloo_net::http::Request::get(url).send().await.ok()?;
+    if !resp.ok() {
+        return None;
+    }
+    resp.binary().await.ok()
 }
 
 /// Desktop: the vendored `powers/` tree, embedded. The same files the webview is served, so a

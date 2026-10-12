@@ -542,8 +542,36 @@ pub type WrittenTo = Option<String>;
 /// download, wherever it is configured to land), `Ok(Some(path))` when it can, and `Err` with
 /// what went wrong. A cancelled save dialog is `Ok(None)` too: the user declining is not a
 /// failure, and nothing about it needs reporting.
-#[cfg(target_arch = "wasm32")]
 pub async fn write_file(suggested_name: &str, text: &str) -> Result<WrittenTo, String> {
+    write_text_file(suggested_name, text, &BUILD_FILE).await
+}
+
+/// What a text file is, for the save dialog's filter and the download's MIME type.
+pub struct TextFileKind {
+    /// The desktop save dialog's filter. The browser download has no use for either.
+    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
+    pub label: &'static str,
+    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
+    pub extension: &'static str,
+    /// The browser download's type. The desktop's save dialog has no use for one.
+    #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
+    pub mime: &'static str,
+}
+
+const BUILD_FILE: TextFileKind = TextFileKind {
+    label: "CoH Sidekick build",
+    extension: EXTENSION,
+    mime: "application/json",
+};
+
+/// [`write_file`] for any text file: same three outcomes, with the dialog filter and MIME type
+/// the caller's.
+#[cfg(target_arch = "wasm32")]
+pub async fn write_text_file(
+    suggested_name: &str,
+    text: &str,
+    kind: &TextFileKind,
+) -> Result<WrittenTo, String> {
     use dioxus::prelude::*;
 
     // Both values reach JS as JSON string literals rather than through `{:?}`: Rust's debug
@@ -551,9 +579,10 @@ pub async fn write_file(suggested_name: &str, text: &str) -> Result<WrittenTo, S
     // payload is an arbitrary build name plus a whole file.
     let name = serde_json::to_string(suggested_name).map_err(|e| e.to_string())?;
     let payload = serde_json::to_string(text).map_err(|e| e.to_string())?;
+    let mime = serde_json::to_string(kind.mime).map_err(|e| e.to_string())?;
     let js = format!(
         "try {{\
-           const blob = new Blob([{payload}], {{ type: 'application/json' }});\
+           const blob = new Blob([{payload}], {{ type: {mime} }});\
            const url = URL.createObjectURL(blob);\
            const link = document.createElement('a');\
            link.href = url;\
@@ -575,10 +604,14 @@ pub async fn write_file(suggested_name: &str, text: &str) -> Result<WrittenTo, S
 /// The native half: a real save dialog, through the same XDG portal `dioxus-desktop` opens the
 /// file input with, so both halves of build I/O ask the desktop the same way.
 #[cfg(not(target_arch = "wasm32"))]
-pub async fn write_file(suggested_name: &str, text: &str) -> Result<WrittenTo, String> {
+pub async fn write_text_file(
+    suggested_name: &str,
+    text: &str,
+    kind: &TextFileKind,
+) -> Result<WrittenTo, String> {
     let Some(handle) = rfd::AsyncFileDialog::new()
         .set_file_name(suggested_name)
-        .add_filter("CoH Sidekick build", &[EXTENSION])
+        .add_filter(kind.label, &[kind.extension])
         .save_file()
         .await
     else {

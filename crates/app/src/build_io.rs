@@ -384,7 +384,8 @@ pub fn BuildHandoffEntries(database: Option<Db>) -> Element {
         CopyShortLinkEntry { database: database.clone() }
         ShareToForumEntry { database: database.clone() }
         PrintEntry { database: database.clone() }
-        ExportImageEntry { database }
+        ExportImageEntry { database: database.clone() }
+        PopmenuEntry { database }
         UnbuiltEntries {}
     }
 }
@@ -732,6 +733,29 @@ fn PrintEntry(database: Option<Db>) -> Element {
             },
             span { class: "main-menu__label", "Print…" }
             span { class: "main-menu__hint", "A sheet of the powers, slots and totals" }
+        }
+    }
+}
+
+/// Grant the build's enhancements on the test server. Opens a surface, as the forum export
+/// does: the menu needs a name, and what it could not grant has to be shown before the file is
+/// trusted. See [`crate::popmenu_export`].
+#[component]
+fn PopmenuEntry(database: Option<Db>) -> Element {
+    let mut popmenu = use_context::<crate::popmenu_export::PopmenuExportOpen>().0;
+    let mut menu = use_context::<crate::popover::PopoverOpen>().0;
+
+    rsx! {
+        button {
+            class: "main-menu__item",
+            r#type: "button",
+            disabled: database.is_none(),
+            onclick: move |_| {
+                popmenu.set(true);
+                menu.set(false);
+            },
+            span { class: "main-menu__label", "Test server popmenu…" }
+            span { class: "main-menu__hint", "A .mnu that grants every enhancement in game" }
         }
     }
 }
