@@ -2788,12 +2788,13 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 }
 
 /* ---- floating panel (floating.rs): the modal card with no backdrop ----
-   z 800: over every grid surface, under the header popovers (900) and the modals (1000), so a
-   menu or a picker opened while a panel floats still lands on top of it. Position and size are
-   inline styles the component owns. */
+   z 800 and up: over every grid surface, under the header popovers (900) and the modals (1000),
+   so a menu or a picker opened while a panel floats still lands on top of it. `--float-layer` is
+   the panel's place among the open ones (FloatingStack), so the last one touched is on top.
+   Position and size are inline styles the component owns. */
 .floating-panel {
   position: fixed;
-  z-index: 800;
+  z-index: calc(800 + var(--float-layer, 0));
   display: flex;
   flex-direction: column;
   background: var(--surface-panel);
@@ -2834,17 +2835,18 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
       var(--text-faint) 75% 82%, transparent 82%);
 }
 /* Over the panel while a gesture runs, so the pointer never lands on the body mid-drag. */
-.floating-drag-layer { position: fixed; inset: 0; z-index: 801; cursor: move; }
+.floating-drag-layer { position: fixed; inset: 0; z-index: 850; cursor: move; }
 .floating-drag-layer--resize { cursor: nwse-resize; }
 
 /* No room to float on a phone: pinned to the screen above the bottom bar, with the gestures
-   (switched off in floating.rs too) hidden. Under the bar's z so its tabs stay reachable. */
+   (switched off in floating.rs too) hidden. Under the bar's z (100) so its tabs stay reachable;
+   80 leaves room for one layer per tool below it. */
 @media (max-width: 899.98px) {
   .floating-panel {
     left: 8px !important; top: 8px !important; right: 8px;
     bottom: calc(60px + env(safe-area-inset-bottom));
     width: auto !important; height: auto !important;
-    z-index: 99;
+    z-index: calc(80 + var(--float-layer, 0));
   }
   .floating-header { cursor: default; }
   .floating-resize { display: none; }
@@ -3629,8 +3631,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    A flat toggle list: check indicator, name + faction chip, short-help line.
    Its Available-panel trigger reuses the picker-strip classes above. */
 .accolade-picker {
-  display: flex; flex-direction: column; min-height: 0;
-  max-height: 70vh;
+  /* Fills the floating panel, so the list scrolls and the footer stays on the panel's floor. */
+  display: flex; flex-direction: column; min-height: 0; flex: 1;
 }
 .accolade-picker__lede {
   margin: 0; padding: 6px var(--pad-modal);
@@ -3641,7 +3643,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .accolade-picker__list {
   display: flex; flex-direction: column; gap: var(--gap-stack);
   padding: 8px var(--pad-modal);
-  overflow-y: auto; min-height: 0;
+  overflow-y: auto; min-height: 0; flex: 1;
 }
 .accolade-row {
   display: flex; align-items: flex-start; gap: 10px;
@@ -6012,7 +6014,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    styles a SHAPE — a titled group of label/number/readout rows — and never a
    particular stat.
    ============================================================================ */
-.whatif { display: flex; flex-direction: column; gap: 16px; }
+.whatif { display: flex; flex-direction: column; gap: 16px; padding: 4px var(--pad-modal) 12px; }
 .whatif__intro {
   display: flex; align-items: flex-start; gap: 12px;
   padding: 9px 11px;
@@ -6759,7 +6761,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    Nothing here is colour-coded. The stat hues mean "this is a stat of this kind", and a count
    of catalysts is not a stat; the words `catalyst` and `boosters` are already in the row, so
    spending a hue on them would be a second channel saying what the first one said. */
-.enh-list { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.enh-list { display: flex; flex-direction: column; gap: 10px; min-height: 0; padding: 4px var(--pad-modal) 12px; }
 
 /* The three running totals and the two acts, on one line: what is left, and what you can do
    about it. Wraps rather than compressing — on a narrow card the acts drop under the tallies. */
@@ -6841,7 +6843,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 
    A switched-off row dims rather than disappearing: what the tool CAN do is half of what the
    surface is for, and a row you cannot see is a capability you do not know you have. */
-.enh-tools { display: flex; flex-direction: column; gap: 8px; }
+.enh-tools { display: flex; flex-direction: column; gap: 8px; padding: 4px var(--pad-modal) 12px; }
 .enh-tools__lede { margin: 0 0 2px; font-size: 12px; color: var(--text-dim); }
 
 .enh-tools__row {
@@ -6903,13 +6905,10 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    not a kind of number. */
 .ps-compare {
   display: flex; flex-direction: column; gap: 12px; min-height: 0;
+  padding: 4px var(--pad-modal) 12px;
   --side-a: var(--action-active);
   --side-b: var(--stat-special);
 }
-/* Wider than the Xl tier gives, because the comparison IS the bar lengths: at 780px the tracks
-   are ~450px minus a 150px name gutter, and two similar powers become two similar stubs. The
-   card is still capped to the viewport by the modal shell. */
-.modal-card:has(.ps-compare) { max-width: min(1180px, 94vw); }
 
 .ps-compare__pickers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 720px) {
@@ -6999,10 +6998,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 
 /* ---- Compare Slotting (the beta CompareSlottingModal) ---- */
 
-.cmp-slotting { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
-/* Wider than the Xl tier gives, for the same reason as .ps-compare: the payload is a row of
-   slot circles beside a stats column, and both need their width at once. */
-.modal-card:has(.cmp-slotting) { max-width: min(1180px, 94vw); }
+.cmp-slotting { display: flex; flex-direction: column; gap: 12px; min-height: 0; padding: 4px var(--pad-modal) 12px; }
 .cmp-slotting--empty { gap: 16px; padding-top: 8px; }
 
 .cmp-picker { display: flex; align-items: center; gap: 8px; }

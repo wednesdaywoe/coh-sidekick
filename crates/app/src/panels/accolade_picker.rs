@@ -14,7 +14,7 @@
 //! is the only thing distinguishing a buff you always have from one you have in one zone.
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::shell::Db;
 use coh_data::AccoladeFaction;
 use dioxus::prelude::*;
@@ -33,19 +33,19 @@ pub fn AccoladePickerHost(database: Db) -> Element {
         return rsx! {};
     }
     rsx! {
-        AccoladePickerModal { database, on_close: move |_| open.set(false) }
+        AccoladePickerPanel { database, on_close: move |_| open.set(false) }
     }
 }
 
 #[component]
-fn AccoladePickerModal(database: Db, on_close: EventHandler<()>) -> Element {
+fn AccoladePickerPanel(database: Db, on_close: EventHandler<()>) -> Element {
     let session = use_context::<BuildSession>();
     let build = session.build;
 
     let toggles = database.accolade_toggles();
     if toggles.is_empty() {
         return rsx! {
-            Modal { title: "Accolades".to_string(), size: ModalSize::Sm, on_close,
+            FloatingPanel { id: "accolades", title: "Accolades".to_string(), default_size: (380.0, 600.0), on_close,
                 p { class: "hint", "This dataset carries no accolade data." }
             }
         };
@@ -59,7 +59,7 @@ fn AccoladePickerModal(database: Db, on_close: EventHandler<()>) -> Element {
         .count();
 
     rsx! {
-        Modal { title: "Accolades".to_string(), size: ModalSize::Sm, on_close,
+        FloatingPanel { id: "accolades", title: "Accolades".to_string(), default_size: (380.0, 600.0), on_close,
             div { class: "accolade-picker",
                 p { class: "accolade-picker__lede",
                     "Accolades are permanent passive powers that grant stat bonuses. "

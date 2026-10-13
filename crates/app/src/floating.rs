@@ -2,8 +2,13 @@
 //! grid while the build behind it stays live and clickable, moves by its header, resizes from
 //! its corner, and comes back where it was left.
 //!
-//! For a tool worth keeping open while editing: Detailed Totals is the first, because it is the
-//! Mids "View Totals" window and players arriving from Mids expect it to sit beside the build.
+//! Every quickbar tool opens in one, so a tool can stay open beside the build while it is
+//! edited. Detailed Totals was the first, because it is the Mids "View Totals" window and
+//! players arriving from Mids expect it to sit beside the build.
+//!
+//! Several can be open at once. [`FloatingStack`] keeps their order: the one opened or touched
+//! last is drawn on top, and one opened with no saved position steps down and right from the
+//! centre by one header for each panel already open, so it never lands exactly on another.
 //!
 //! Mounted at the shell root like every modal host, for the reason [`crate::modal`] gives: each
 //! grid surface is its own stacking context, so a panel inside one could not rise above the rest.
@@ -28,6 +33,24 @@ const KEEP_VISIBLE: f64 = 120.0;
 const FLOAT_MIN_VIEWPORT: f64 = 900.0;
 /// Used until the viewport has been measured; only ever seen if that read fails.
 const FALLBACK_VIEWPORT: (f64, f64) = (1280.0, 800.0);
+/// How far each newly opened panel steps from the last, about one header's height.
+const CASCADE_STEP: f64 = 32.0;
+
+/// The open panels' ids, bottom to top. Provided at the shell root; each panel adds itself on
+/// open, removes itself on close, and moves itself to the end when pressed.
+#[derive(Clone, Copy)]
+pub struct FloatingStack(pub Signal<Vec<&'static str>>);
+
+fn raise(mut stack: Signal<Vec<&'static str>>, id: &'static str) {
+    // A press on the panel already on top is the common case, and writing would re-render
+    // every open panel for nothing.
+    if stack.peek().last() == Some(&id) {
+        return;
+    }
+    let mut held = stack.write();
+    held.retain(|open| *open != id);
+    held.push(id);
+}
 
 /// Where a panel sits and how big it is, in client pixels.
 #[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
@@ -158,22 +181,45 @@ pub fn FloatingPanel(
     let mut viewport = use_signal(|| FALLBACK_VIEWPORT);
     let drag = use_signal(|| Option::<Drag>::None);
     let mut card = use_signal(|| Option::<std::rc::Rc<MountedData>>::None);
+    let stack = use_context::<FloatingStack>().0;
 
     // Nothing renders until the saved position is read, so the panel never opens centred and
     // then jumps to where it was left.
     use_future(move || async move {
+        let already_open = stack.peek().iter().filter(|open| **open != id).count();
+        raise(stack, id);
         let measured = measure_viewport().await.unwrap_or(FALLBACK_VIEWPORT);
         viewport.set(measured);
         let placed = match load(id).await {
             Some(saved) => saved.fit(measured),
-            None => PanelRect::centered(default_size, measured),
+            None => {
+                let centred = PanelRect::centered(default_size, measured);
+                let step = CASCADE_STEP * already_open as f64;
+                PanelRect {
+                    x: centred.x + step,
+                    y: centred.y + step,
+                    ..centred
+                }
+                .fit(measured)
+            }
         };
         rect.set(Some(placed));
+    });
+    use_drop(move || {
+        let mut stack = stack;
+        stack.write().retain(|open| *open != id);
     });
 
     let Some(current) = rect() else {
         return rsx! {};
     };
+    // Its place in the stack, read by app.css as an offset on the panel layer's z-index — a
+    // variable rather than an inline z-index, so the phone rule can move the whole layer.
+    let layer = stack
+        .read()
+        .iter()
+        .position(|open| *open == id)
+        .unwrap_or(0);
 
     // Starts a gesture. The viewport is re-read on every grab rather than watched, because a
     // window resized since the panel opened is the only time it changes, and the grab is the
@@ -229,7 +275,10 @@ pub fn FloatingPanel(
             role: "dialog",
             "aria-label": "{title}",
             tabindex: "-1",
-            style: "left: {current.x}px; top: {current.y}px; width: {current.w}px; height: {current.h}px;",
+            style: "left: {current.x}px; top: {current.y}px; width: {current.w}px; height: {current.h}px; --float-layer: {layer};",
+            // Any press inside brings it to the front: the panel being worked in is the one the
+            // user expects to see whole.
+            onpointerdown: move |_| raise(stack, id),
             onmounted: move |evt| async move {
                 let mounted = evt.data();
                 card.set(Some(mounted.clone()));

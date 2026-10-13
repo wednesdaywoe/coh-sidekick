@@ -12,7 +12,7 @@
 //! never becomes a control that appears to do something.
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::panels::stat_registry::{self, StatFormat, StatSection};
 use dioxus::prelude::*;
 use std::collections::BTreeSet;
@@ -224,8 +224,10 @@ pub fn WhatIfButton() -> Element {
             class: if active { "is-simulated" },
             r#type: "button",
             title: "What-if team buffs, simulates buffs provided by teammates",
+            // Pressed means a simulation is running, not that the panel is open: that is the
+            // state worth seeing from the row, since it changes every number on screen.
             "aria-pressed": active,
-            onclick: move |_| open.set(true),
+            onclick: move |_| open.toggle(),
             {crate::view::marks::what_if()}
             span { "{crate::quickbar::model::ToolId::WhatIf.title()}" }
             if active {
@@ -242,9 +244,10 @@ pub fn WhatIfHost() -> Element {
         return rsx! {};
     }
     rsx! {
-        Modal {
+        FloatingPanel {
+            id: "what-if",
             title: "What-if team buffs".to_string(),
-            size: ModalSize::Lg,
+            default_size: (620.0, 600.0),
             on_close: move |_| open.set(false),
             WhatIfBody {}
         }

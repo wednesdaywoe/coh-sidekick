@@ -1,4 +1,4 @@
-//! The proc-settings modal (the beta `ProcSettingsModal`): which proc effect categories
+//! The proc-settings modal (the beta `ProcSettingsPanel`): which proc effect categories
 //! contribute to the build's totals.
 //!
 //! **The categories are derived, per dataset (Rule 0).** The beta wrote a nine-bucket table by
@@ -17,7 +17,7 @@
 //! step and persists it with everything else.
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::panels::stat_registry::{self, StatSection};
 use crate::shell::Db;
 use coh_math::procs::ProcCategory;
@@ -36,18 +36,18 @@ pub fn ProcSettingsHost(database: Db) -> Element {
         return rsx! {};
     }
     rsx! {
-        ProcSettingsModal { database, on_close: move |_| open.set(false) }
+        ProcSettingsPanel { database, on_close: move |_| open.set(false) }
     }
 }
 
 #[component]
-fn ProcSettingsModal(database: Db, on_close: EventHandler<()>) -> Element {
+fn ProcSettingsPanel(database: Db, on_close: EventHandler<()>) -> Element {
     let session = use_context::<BuildSession>();
     let categories = coh_math::procs::proc_categories(&session.build.read(), &database.0);
 
     if categories.is_empty() {
         return rsx! {
-            Modal { title: "Proc Settings".to_string(), size: ModalSize::Md, on_close,
+            FloatingPanel { id: "proc-sources", title: "Proc Settings".to_string(), default_size: (460.0, 640.0), on_close,
                 p { class: "hint", "This dataset carries no proc data." }
             }
         };
@@ -97,7 +97,7 @@ fn ProcSettingsModal(database: Db, on_close: EventHandler<()>) -> Element {
         .collect();
 
     rsx! {
-        Modal { title: "Proc Settings".to_string(), size: ModalSize::Md, on_close,
+        FloatingPanel { id: "proc-sources", title: "Proc Settings".to_string(), default_size: (460.0, 640.0), on_close,
             div { class: "proc-settings",
                 p { class: "proc-settings__lede",
                     "Procs and global IOs contribute to your totals by effect category. "

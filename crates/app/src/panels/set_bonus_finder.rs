@@ -32,7 +32,7 @@
 //! for the lost discoverability is indexing the proc database's globals beside these tiers.
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::panels::powers::format_bonus_desc;
 use crate::panels::stat_registry::{self, StatDef, StatSection};
 use crate::shell::Db;
@@ -295,11 +295,12 @@ pub fn SetBonusFinderHost(database: Option<Db>) -> Element {
         return rsx! {};
     }
     rsx! {
-        Modal {
+        FloatingPanel {
+            id: "set-bonus-finder",
             title: "Set Bonus Finder".to_string(),
-            // The widest tier: six columns, two of which carry game names long enough to be
-            // unrecognisable truncated ("Ascendancy of the Dominator", "Dominator Archetype Set").
-            size: ModalSize::Full,
+            // Wide: six columns, two of which carry game names long enough to be unrecognisable
+            // truncated ("Ascendancy of the Dominator", "Dominator Archetype Set").
+            default_size: (960.0, 720.0),
             on_close: move |_| open.set(false),
             SetBonusFinderBody { database }
         }

@@ -42,7 +42,7 @@
 //! exactly the kind this codebase keeps paying for.
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::naming;
 use crate::shell::Db;
 use coh_data::{CharacterState, Enhancement, EnhancementKind, PowerDatabase};
@@ -367,9 +367,10 @@ pub fn EnhancementListHost(database: Option<Db>) -> Element {
         return rsx! {};
     }
     rsx! {
-        Modal {
+        FloatingPanel {
+            id: "enhancement-list",
             title: "Enhancement list".to_string(),
-            size: ModalSize::Lg,
+            default_size: (620.0, 680.0),
             on_close: move |_| open.set(false),
             EnhancementListBody { database }
         }

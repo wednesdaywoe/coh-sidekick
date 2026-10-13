@@ -57,7 +57,7 @@
 //! build is already what the plan asks for, instead of the beta's silent no-op.
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::picker_defaults::{CraftBand, RelativeLevelBand, BOOST_MAX};
 use crate::shell::Db;
 use coh_data::io_sets::IoSetCatalog;
@@ -353,9 +353,10 @@ pub fn EnhancementToolsHost(database: Option<Db>) -> Element {
         return rsx! {};
     }
     rsx! {
-        Modal {
+        FloatingPanel {
+            id: "enhancement-tools",
             title: "Enhancement tools".to_string(),
-            size: ModalSize::Md,
+            default_size: (460.0, 600.0),
             on_close: move |_| open.set(false),
             EnhancementToolsBody { database }
         }

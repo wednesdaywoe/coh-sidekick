@@ -22,7 +22,7 @@ use coh_data::{power_address, CharacterState, Enhancement, EnhancementKind};
 use dioxus::prelude::*;
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::panels::adjusters::PowerAdjusters;
 use crate::panels::dashboards::DashboardConfig;
 use crate::panels::info::PowerViewCard;
@@ -317,7 +317,8 @@ pub fn CompareSlottingHost(database: Db) -> Element {
         None => "Compare Slotting".to_string(),
     };
     rsx! {
-        Modal { title, size: ModalSize::Xl, on_close: move |_| store.write().close(),
+        FloatingPanel { id: "compare-slotting", title, default_size: (1180.0, 760.0),
+            on_close: move |_| store.write().close(),
             CompareSlottingBody { database }
         }
     }

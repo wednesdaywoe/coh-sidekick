@@ -334,6 +334,9 @@ pub fn Shell() -> Element {
     // the build's `CombatContext`, not here — only the open state is UI.
     let what_if_open = use_signal(|| false);
     use_context_provider(|| panels::what_if::WhatIfOpen(what_if_open));
+    // Which tool panels are open, bottom to top, so the last one touched draws over the rest.
+    let floating_stack = use_signal(Vec::new);
+    use_context_provider(|| crate::floating::FloatingStack(floating_stack));
     // Build I/O: a file read but not yet decodable (its fork is still loading), and the receipt
     // for whatever the last open or save did. Both live at the root because the file outlives
     // the menu that read it — the menu closes, the dataset switches, and the text has to still

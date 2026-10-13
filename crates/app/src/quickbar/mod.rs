@@ -612,7 +612,8 @@ fn AccoladesAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Permanent Accolades bonuses",
-            onclick: move |_| open.set(true),
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {ToolId::Accolades.mark()}
             span { "{ToolId::Accolades.title()}" }
         }
@@ -630,7 +631,8 @@ fn SetBonusFinderAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Look up which IO sets grant a particular stat",
-            onclick: move |_| open.set(true),
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {ToolId::SetBonusFinder.mark()}
             span { "{ToolId::SetBonusFinder.title()}" }
         }
@@ -648,8 +650,9 @@ fn DetailedTotalsAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Every stat with the sources behind it",
-            // A toggle: the sheet floats rather than covering the row, so this button is still
-            // reachable while it is open, and a second press is the natural way to put it away.
+            // A toggle, as every tool button is: the tool floats rather than covering the row,
+            // so this button is still reachable while it is open, and a second press is the
+            // natural way to put it away.
             "aria-pressed": open(),
             onclick: move |_| open.toggle(),
             {ToolId::DetailedTotals.mark()}
@@ -676,7 +679,8 @@ fn ProcSourcesAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Which proc categories contribute to totals",
-            onclick: move |_| open.set(true),
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {ToolId::ProcSources.mark()}
             if disabled == 0 {
                 span { "{ToolId::ProcSources.title()}" }
@@ -698,7 +702,8 @@ fn EnhancementListAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Every enhancement in this build, with catalysts and boosters",
-            onclick: move |_| open.set(true),
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {ToolId::EnhancementList.mark()}
             span { "{ToolId::EnhancementList.title()}" }
         }
@@ -729,7 +734,8 @@ fn EnhancementToolsAction(database: Option<crate::shell::Db>) -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Set craft level, attunement and boosters across the whole build",
-            onclick: move |_| open.set(true),
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {ToolId::EnhancementTools.mark()}
             match under {
                 Some(n) if n > 0 => rsx! { span { "{ToolId::EnhancementTools.title()} · {n} low" } },
@@ -750,7 +756,8 @@ fn PowersetCompareAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Compare two sets' powers side by side, paired by what they do",
-            onclick: move |_| open.set(true),
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {ToolId::PowersetCompare.mark()}
             span { "{ToolId::PowersetCompare.title()}" }
         }
@@ -769,7 +776,15 @@ fn CompareSlottingAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Compare alternative enhancement configurations for one power, side by side",
-            onclick: move |_| store.write().open(),
+            "aria-pressed": store.read().open,
+            onclick: move |_| {
+                let showing = store.peek().open;
+                if showing {
+                    store.write().close();
+                } else {
+                    store.write().open();
+                }
+            },
             {ToolId::CompareSlotting.mark()}
             span { "{ToolId::CompareSlotting.title()}" }
         }
@@ -787,7 +802,8 @@ fn ControlsAction() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Keyboard, mouse and touch control reference",
-            onclick: move |_| open.set(true),
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {ToolId::Controls.mark()}
             span { "{ToolId::Controls.title()}" }
         }

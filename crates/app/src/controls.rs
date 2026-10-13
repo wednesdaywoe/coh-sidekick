@@ -13,7 +13,7 @@
 //! persisted, so a device that changes between opens is re-detected on the next
 //! one.
 
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use dioxus::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -323,9 +323,10 @@ fn ControlsBody(on_close: EventHandler<()>) -> Element {
     };
 
     rsx! {
-        Modal {
+        FloatingPanel {
+            id: "controls",
             title: "Controls".to_string(),
-            size: ModalSize::Lg,
+            default_size: (620.0, 680.0),
             on_close,
             div { class: "controls",
                 div { class: "controls__toggle", role: "group", "aria-label": "Device view",

@@ -51,7 +51,7 @@
 //! one-value-per-slot shape this codebase has spent the year migrating off.
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::shell::Db;
 use coh_data::{CharacterState, EffectType, Power, PowerDatabase, Powerset, ToWho};
 use coh_math::projection::{PowerProjection, PowerRef};
@@ -567,11 +567,12 @@ pub fn PowersetCompareHost(database: Option<Db>) -> Element {
         return rsx! {};
     }
     rsx! {
-        Modal {
+        FloatingPanel {
+            id: "powerset-compare",
             title: "Compare powersets".to_string(),
             // Wide: the chart is two label columns and two bar tracks abreast, and a narrow
             // card turns the bars into stubs that cannot be compared by eye.
-            size: ModalSize::Xl,
+            default_size: (1180.0, 760.0),
             on_close: move |_| open.set(false),
             PowersetCompareBody { database }
         }

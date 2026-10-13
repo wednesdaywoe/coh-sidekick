@@ -20,7 +20,7 @@
 //! re-add covers the edit today), timeline panning, and clipboard copy.
 
 use crate::build_session::BuildSession;
-use crate::modal::{Modal, ModalSize};
+use crate::floating::FloatingPanel;
 use crate::shell::Db;
 use coh_data::AttackChain;
 use coh_math::chain::{
@@ -34,7 +34,7 @@ use coh_math::chain_build::{
 use coh_math::projection::StrengthBounds;
 use dioxus::prelude::*;
 
-/// Modal open flag, provided at the shell root beside the other overlay hosts.
+/// The panel's open flag, provided at the shell root beside the other overlay hosts.
 #[derive(Clone, Copy)]
 pub struct AttackChainOpen(pub Signal<bool>);
 
@@ -47,7 +47,8 @@ pub fn AttackChainButton() -> Element {
             class: "quickbar-action",
             r#type: "button",
             title: "Attack Chain Builder; pack a rotation and read its DPS and endurance",
-            onclick: move |_| open.set(true),
+            "aria-pressed": open(),
+            onclick: move |_| open.toggle(),
             {crate::view::marks::chains()}
             span { "{crate::quickbar::model::ToolId::AttackChain.title()}" }
         }
@@ -61,9 +62,10 @@ pub fn AttackChainHost(database: Db) -> Element {
         return rsx! {};
     }
     rsx! {
-        Modal {
+        FloatingPanel {
+            id: "attack-chain",
             title: "Attack Chain Builder".to_string(),
-            size: ModalSize::Full,
+            default_size: (960.0, 720.0),
             on_close: move |_| open.set(false),
             AttackChainBody { database }
         }
