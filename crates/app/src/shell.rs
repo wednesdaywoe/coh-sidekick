@@ -874,26 +874,28 @@ pub fn Shell() -> Element {
     use_future(move || async move {
         let mut defaults = picker_defaults;
         let mut memory = picker_memory;
-        if let Some((io_level, attuned, boost, places)) = picker_store::load().await {
+        if let Some((io_level, attuned, boost, places, select_mode)) = picker_store::load().await {
             defaults.io_level.set(io_level);
             defaults.attuned.set(attuned);
             defaults.boost.set(boost);
             memory.set(places);
+            defaults.select_mode.set(select_mode);
         }
         picker_restored.set(true);
     });
 
-    // Persist the picker defaults whenever they change, once restore has run. Reading all
-    // three signals subscribes the effect so any edit (Lv/Attuned/Boost) re-fires it.
+    // Persist the picker defaults whenever they change, once restore has run. Reading every
+    // signal subscribes the effect so any edit (Lv/Attuned/Boost/Select) re-fires it.
     use_effect(move || {
         let io_level = *picker_defaults.io_level.read();
         let attuned = *picker_defaults.attuned.read();
         let boost = *picker_defaults.boost.read();
         let memory = picker_memory.read().clone();
+        let select_mode = *picker_defaults.select_mode.read();
         if !*picker_restored.read() {
             return;
         }
-        picker_store::persist(io_level, attuned, boost, memory);
+        picker_store::persist(io_level, attuned, boost, memory, select_mode);
     });
 
     // Boot pre-peek (beta `bootServerId`): read the persisted envelope, then aim the

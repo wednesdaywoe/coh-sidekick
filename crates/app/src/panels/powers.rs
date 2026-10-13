@@ -3749,10 +3749,14 @@ fn EnhancementPickerModal(
     // the slot, where the thing being changed is the best guess at what the user is looking for.
     let jump_to_set = use_signal(|| opening.jump_to_set.clone());
 
-    // Multi-select. `select_mode` is the one gesture that works the same on a mouse and a finger,
-    // so it is the mode the other gestures fall back to rather than an accelerator beside them.
-    let mut select_mode = use_signal(|| false);
+    // Multi-select. `sticky` is the "Select" toggle, kept with the other picker defaults so it
+    // survives closing the picker and reloading. `marking` is whether a click marks right now:
+    // the toggle, or anything already marked — a shift-click or a drag marks without the toggle,
+    // and the NEXT plain click would otherwise place and close, throwing the marks away with no
+    // sign they had been there. Derived rather than stored, so no handler can forget to update it.
+    let mut sticky = defaults.select_mode;
     let mut queue = use_signal(Vec::<crate::picker_queue::QueuedPick>::new);
+    let marking = move || *sticky.peek() || !queue.peek().is_empty();
     // The in-flight drag: the set it started in, the piece it started on, and how far it has
     // reached. Held per set because a range across two sets is not a range.
     let mut drag = use_signal(|| None::<(String, usize, usize)>);
@@ -3996,23 +4000,25 @@ fn EnhancementPickerModal(
                     // Multi-select. Marking is its own mode rather than only a modifier
                     // because a finger has no shift key, and the mode is what gives touch the
                     // same reach the keyboard gives a mouse. Shift+click and a drag across a
-                    // strip both work without it; both turn it on, so the bar that spends the
-                    // marks is on screen either way.
+                    // strip both work without it, and show as ticked while their marks are
+                    // held, so the box always says what the next click will do.
                     label {
-                        class: if select_mode() { "picker-toggle picker-toggle-on" } else { "picker-toggle" },
-                        title: "Mark several enhancements, then slot them all at once. Clicking an IO, \
-                                special or origin enhancement again marks another copy; right-click \
-                                takes one off. Shift-click, or a drag across a set, marks without this toggle.",
+                        class: if sticky() || !queue.read().is_empty() { "picker-toggle picker-toggle-on" } else { "picker-toggle" },
+                        title: "Mark several enhancements, then slot them all at once. Stays on for \
+                                every power until you untick it. Clicking an IO, special or origin \
+                                enhancement again marks another copy; right-click takes one off. A drag \
+                                across a set marks the range; shift-click marks without this toggle.",
                         input {
                             r#type: "checkbox",
-                            checked: select_mode(),
+                            checked: sticky() || !queue.read().is_empty(),
                             onchange: move |_| {
-                                let next = !*select_mode.peek();
-                                select_mode.set(next);
-                                // Leaving the mode drops the marks rather than hiding them —
-                                // a queue with no bar is a pending act with no way to see it.
-                                if !next {
+                                if marking() {
+                                    // Leaving the mode drops the marks rather than hiding them —
+                                    // a queue with no bar is a pending act with no way to see it.
+                                    sticky.set(false);
                                     queue.write().clear();
+                                } else {
+                                    sticky.set(true);
                                 }
                             },
                         }
@@ -4056,7 +4062,7 @@ fn EnhancementPickerModal(
                                                         class: if queued_at.is_some() { "is-queued" } else { "" },
                                                         oncontextmenu: {
                                                             let pick = pick.clone();
-                                                            move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &mut select_mode, &pick)
+                                                            move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &pick)
                                                         },
                                                         onclick: {
                                                             let stat = stat.clone();
@@ -4069,10 +4075,8 @@ fn EnhancementPickerModal(
                                                                 // In select mode a click MARKS rather than spends, so a
                                                                 // power can be filled with several commons in one visit.
                                                                 // A second click marks a second copy.
-                                                                if evt.modifiers().shift() || *select_mode.peek() {
+                                                                if evt.modifiers().shift() || marking() {
                                                                     crate::picker_queue::press(&mut queue.write(), pick.clone());
-                                                                    let marked = !queue.read().is_empty();
-                                                                    select_mode.set(marked);
                                                                     return;
                                                                 }
                                                                 // Generic IOs always take the picker's craft level and booster
@@ -4386,7 +4390,11 @@ fn EnhancementPickerModal(
                                                                                 anchor_x: point.x,
                                                                                 anchor_y: point.y,
                                                                                 slots: Some(slots.clone()),
-                                                                                hint: "Click to slot · drag to mark several",
+                                                                                hint: if marking() {
+                                                                                    "Click to mark · drag to mark several"
+                                                                                } else {
+                                                                                    "Click to slot · drag to mark several"
+                                                                                },
                                                                             }));
                                                                         }
                                                                     },
@@ -4394,9 +4402,11 @@ fn EnhancementPickerModal(
                                                                     onpointerdown: {
                                                                         let set_id = offer.id.to_string();
                                                                         move |evt: Event<PointerData>| {
-                                                                            // Shift and select mode both mean
-                                                                            // "mark", so neither arms a drag.
-                                                                            if evt.modifiers().shift() || *select_mode.peek() {
+                                                                            // Shift is a per-piece mark, so it arms no
+                                                                            // drag. Select mode does: a drag marks a
+                                                                            // range in either mode, and only what the
+                                                                            // single click does differs.
+                                                                            if evt.modifiers().shift() {
                                                                                 return;
                                                                             }
                                                                             drag.set(Some((set_id.clone(), piece_index, piece_index)));
@@ -4430,19 +4440,6 @@ fn EnhancementPickerModal(
                                                                         move |evt: Event<PointerData>| {
                                                                             let span = drag.peek().clone();
                                                                             drag.set(None);
-                                                                            if evt.modifiers().shift() || *select_mode.peek() {
-                                                                                crate::picker_queue::toggle(&mut queue.write(), pick.clone());
-                                                                                // The toggle tracks the queue rather than
-                                                                                // the gesture that filled it: a shift-click
-                                                                                // marks without touching the mode, and the
-                                                                                // NEXT plain click would then place and
-                                                                                // close, throwing the marks away with no
-                                                                                // sign they had been there. Unmarking the
-                                                                                // last one leaves the mode the same way.
-                                                                                let marked = !queue.read().is_empty();
-                                                                                select_mode.set(marked);
-                                                                                return;
-                                                                            }
                                                                             match span {
                                                                                 // A drag that covered more than
                                                                                 // its origin MARKS the range and
@@ -4456,7 +4453,6 @@ fn EnhancementPickerModal(
                                                                                 Some((from_set, from, to))
                                                                                     if from_set == set_id && from != to =>
                                                                                 {
-                                                                                    select_mode.set(true);
                                                                                     let mut queue = queue.write();
                                                                                     for index in crate::picker_queue::drag_span(from, to) {
                                                                                         // The range sweeps pieces the
@@ -4476,6 +4472,11 @@ fn EnhancementPickerModal(
                                                                                             },
                                                                                         );
                                                                                     }
+                                                                                }
+                                                                                // A single click while marking
+                                                                                // toggles this piece's mark.
+                                                                                _ if evt.modifiers().shift() || marking() => {
+                                                                                    crate::picker_queue::toggle(&mut queue.write(), pick.clone());
                                                                                 }
                                                                                 // A plain click still slots one
                                                                                 // piece and closes — the single
@@ -4624,7 +4625,7 @@ fn EnhancementPickerModal(
                                                                 title: "{item_title}",
                                                                 oncontextmenu: {
                                                                     let pick = pick.clone();
-                                                                    move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &mut select_mode, &pick)
+                                                                    move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &pick)
                                                                 },
                                                                 onclick: {
                                                                     let id = id.clone();
@@ -4634,10 +4635,8 @@ fn EnhancementPickerModal(
                                                                     let powerset_id = powerset_id.clone();
                                                                     let slot_idx = slot_index as usize;
                                                                     move |evt: Event<MouseData>| {
-                                                                        if evt.modifiers().shift() || *select_mode.peek() {
+                                                                        if evt.modifiers().shift() || marking() {
                                                                             crate::picker_queue::press(&mut queue.write(), pick.clone());
-                                                                            let marked = !queue.read().is_empty();
-                                                                            select_mode.set(marked);
                                                                             return;
                                                                         }
                                                                         // Specials are never attuned and carry no craft level;
@@ -4726,7 +4725,7 @@ fn EnhancementPickerModal(
                                                                 title: "{stat} {tier}",
                                                                 oncontextmenu: {
                                                                     let pick = pick.clone();
-                                                                    move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &mut select_mode, &pick)
+                                                                    move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &pick)
                                                                 },
                                                                 onclick: {
                                                                     let stat = stat.clone();
@@ -4736,10 +4735,8 @@ fn EnhancementPickerModal(
                                                                     let slot_idx = slot_index as usize;
                                                                     let character_origin = character_origin.clone();
                                                                     move |evt: Event<MouseData>| {
-                                                                        if evt.modifiers().shift() || *select_mode.peek() {
+                                                                        if evt.modifiers().shift() || marking() {
                                                                             crate::picker_queue::press(&mut queue.write(), pick.clone());
-                                                                            let marked = !queue.read().is_empty();
-                                                                            select_mode.set(marked);
                                                                             return;
                                                                         }
                                                                         // The calc's value stays origin-independent — origin only
@@ -4807,8 +4804,6 @@ fn EnhancementPickerModal(
                             r#type: "button",
                             onclick: move |_| {
                                 queue.write().pop();
-                                let marked = !queue.peek().is_empty();
-                                select_mode.set(marked);
                             },
                             "Undo last"
                         }
@@ -4817,7 +4812,6 @@ fn EnhancementPickerModal(
                             r#type: "button",
                             onclick: move |_| {
                                 queue.write().clear();
-                                select_mode.set(false);
                             },
                             "Clear marks"
                         }
@@ -5599,7 +5593,6 @@ fn build_queued_pick(
 fn unmark_one(
     evt: Event<MouseData>,
     queue: &mut Signal<Vec<crate::picker_queue::QueuedPick>>,
-    select_mode: &mut Signal<bool>,
     pick: &crate::picker_queue::QueuedPick,
 ) {
     if !queue.peek().contains(pick) {
@@ -5607,8 +5600,6 @@ fn unmark_one(
     }
     evt.prevent_default();
     crate::picker_queue::unmark_last(&mut queue.write(), pick);
-    let marked = !queue.peek().is_empty();
-    select_mode.set(marked);
 }
 
 fn placeable_picks(

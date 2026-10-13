@@ -132,6 +132,10 @@ pub struct PickerDefaults {
     /// (`coh_math::enhancement::EnhancementLevelAxis`), read from different curves, so it
     /// gets its own stored value: switching picker tabs must not rewrite the other axis.
     pub relative_level: Signal<i8>,
+    /// The picker's "Select" toggle. A preference like the levels above rather than state of
+    /// one visit: someone filling a build marks across power after power, and a toggle that
+    /// reset on every open had to be ticked again each time.
+    pub select_mode: Signal<bool>,
 }
 
 impl PickerDefaults {
@@ -143,6 +147,7 @@ impl PickerDefaults {
             attuned: Signal::new(false),
             boost: Signal::new(0),
             relative_level: Signal::new(0),
+            select_mode: Signal::new(false),
         }
     }
 

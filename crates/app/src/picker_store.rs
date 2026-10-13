@@ -24,15 +24,19 @@ struct StoredDefaults {
     /// memory is an empty one, which is the same thing a new install has.
     #[serde(default)]
     memory: PickerMemory,
+    /// The picker's "Select" toggle. Defaulted for the same reason as `memory`.
+    #[serde(default)]
+    select_mode: bool,
 }
 
 /// Persist the current picker defaults (fire-and-forget, like [`crate::build_store::persist`]).
-pub fn persist(io_level: u8, attuned: bool, boost: u8, memory: PickerMemory) {
+pub fn persist(io_level: u8, attuned: bool, boost: u8, memory: PickerMemory, select_mode: bool) {
     let stored = StoredDefaults {
         io_level,
         attuned,
         boost,
         memory,
+        select_mode,
     };
     let Ok(json) = serde_json::to_string(&stored) else {
         return;
@@ -41,7 +45,7 @@ pub fn persist(io_level: u8, attuned: bool, boost: u8, memory: PickerMemory) {
     crate::storage::commit(js);
 }
 
-/// The persisted `(io_level, attuned, boost)` if present and in range; `None`
+/// The persisted `(io_level, attuned, boost, memory, select_mode)` if present and in range; `None`
 /// (→ keep the fresh defaults) for missing or corrupt state. An out-of-band level
 /// or booster is treated as corrupt rather than silently clamped — a stored value
 /// outside the valid band is not a value we wrote (Rule 1: reject, don't recover).
@@ -50,7 +54,7 @@ pub fn persist(io_level: u8, attuned: bool, boost: u8, memory: PickerMemory) {
 /// own boost roster, which this restore runs before the database is loaded. The caller clamps
 /// it against [`crate::picker_defaults::CraftBand`] once there is one — which is also what
 /// folds in a level persisted from before that band was read off the export (BOOST-6).
-pub async fn load() -> Option<(u8, bool, u8, PickerMemory)> {
+pub async fn load() -> Option<(u8, bool, u8, PickerMemory, bool)> {
     let js = format!(
         "try {{ return localStorage.getItem({KEY_PICKER:?}); }} catch (_) {{ return null; }}"
     );
@@ -60,5 +64,11 @@ pub async fn load() -> Option<(u8, bool, u8, PickerMemory)> {
     if stored.boost > BOOST_MAX {
         return None;
     }
-    Some((stored.io_level, stored.attuned, stored.boost, stored.memory))
+    Some((
+        stored.io_level,
+        stored.attuned,
+        stored.boost,
+        stored.memory,
+        stored.select_mode,
+    ))
 }
