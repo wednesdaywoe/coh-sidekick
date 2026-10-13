@@ -28,8 +28,8 @@ use crate::panels::dashboards::DashboardConfig;
 use crate::panels::info::PowerViewCard;
 use crate::panels::powers::{
     build_set_bonus_block, enhancement_type_class, slot_chip_label, slot_icon_url,
-    slot_indicator_style, slot_overlay_url, PickerDestination, PickerOpen, PickerTarget,
-    SetBonusBlock, SetBonusTierList,
+    slot_indicator_style, slot_overlay_url, switches_on_when_slotted, PickerDestination,
+    PickerOpen, PickerTarget, SetBonusBlock, SetBonusTierList,
 };
 use crate::panels::stat_registry;
 use crate::panels::stats::BuildTotals;
@@ -114,14 +114,25 @@ pub fn hypothetical_build(
 /// Land a row on the real power. The row is reconciled to the power's own slot count, so an
 /// out-of-date row can never grow or shrink the power it lands on. Called inside one
 /// [`BuildSession::commit`], so applying is one undo step.
+///
+/// `switch_on` is the picker's slotting rule (`switches_on_when_slotted`): the power turns on
+/// when the row puts a piece into a slot that did not already hold it.
 pub fn apply_copy(
     state: &mut CharacterState,
     target: &CompareTarget,
     slots: &[Option<Enhancement>],
+    switch_on: bool,
 ) {
     if let Some(power) = state.selected_power_mut(&target.powerset_id, &target.internal_name) {
-        let count = power.slots.len();
-        power.slots = reconcile_length(slots, count);
+        let next = reconcile_length(slots, power.slots.len());
+        let placed = next
+            .iter()
+            .zip(&power.slots)
+            .any(|(new, old)| new.is_some() && new != old);
+        if switch_on && placed {
+            power.is_active = true;
+        }
+        power.slots = next;
     }
 }
 
@@ -681,12 +692,19 @@ fn CompareCopyRow(
         }
     };
     let apply = {
+        let database = database.clone();
         let target = target.clone();
         let slots = copy.slots.clone();
         move |_| {
             let target = target.clone();
             let slots = slots.clone();
-            session.commit(move |state| apply_copy(state, &target, &slots));
+            let switch_on = switches_on_when_slotted(
+                &database,
+                &target.powerset_id,
+                &target.internal_name,
+                &session.build.peek(),
+            );
+            session.commit(move |state| apply_copy(state, &target, &slots, switch_on));
             let mut state = store.write();
             state.applied = Some(copy_id);
             state.scratch = None;

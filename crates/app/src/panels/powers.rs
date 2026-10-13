@@ -2792,42 +2792,9 @@ pub fn PickedPowerCard(
     // the per-pet opt-in instead, so the pill writes THAT key — the same one the Info panel's
     // adjuster row writes, so the two surfaces cannot disagree. Both sides are read off the
     // export (Rule 0).
-    let pill = if power_def.is_some_and(|def| {
-        // The toggle gate reads the atom router's slot projection (the authored `effects` bag is
-        // leaving the contract), so the roster of class tokens the unanimous-fork pass needs is
-        // derived from the dataset here and threaded in.
-        // Hold the catalog alive for the lifetime of the `&str` tokens below.
-        //
-        // A dataset that will not parse shows NO PILL rather than taking the process with it -
-        // The `expect` here was the odd one out: every other caller of
-        // `archetypes()` in this crate already handles the error (`powers.rs:773` with this same
-        // `let Ok(..) else`, `inherents.rs:80` with `.ok()?`, `powerset_compare.rs:584`). And the
-        // fallback is not invented for the occasion - it is what this block's own comment above
-        // already prescribes for the neighbouring undecidable case: "a power whose def can't be
-        // resolved shows no pill - the gate is undecidable without its `effects` bag."
-        let Ok(catalog) = database.archetypes() else {
-            return false;
-        };
-        let classes: Vec<&str> = catalog
-            .all()
-            .iter()
-            .filter_map(|at| database.class_name_of(&at.id))
-            .collect();
-        let build = session.build.read();
-        // The caster state the build has declared counts too. A finisher's self-buff is a
-        // conditional row (Sky Splitter's resistance under a finished Perfection of Body), gated
-        // out of the base projection, so without this a build in that form could see the
-        // finisher's damage move and never switch its buff into the totals.
-        let declared = coh_math::window_slots::slots_over(def, build.dataset, |atom| {
-            atom.conditional_id
-                .as_deref()
-                .is_some_and(|id| build.combat.global_conditionals.get(id) == Some(&true))
-        });
-        should_show_toggle(
-            def,
-            &coh_math::window_slots::bag_slots(def, build.dataset, &classes),
-        ) || should_show_toggle(def, &declared)
-    }) {
+    let pill = if power_def
+        .is_some_and(|def| self_pill_slots(def, &database, &session.build.read()).is_some())
+    {
         Some(PowerPill::Active)
     } else if power_def
         .is_some_and(|def| !coh_math::buff_pets::buff_pet_sources(def, &database.0).is_empty())
@@ -4071,6 +4038,7 @@ fn EnhancementPickerModal(
                                                             let powerset_id = powerset_id.clone();
                                                             let slot_idx = slot_index as usize;
                                                             let crafted_level = shown_level;
+                                                            let database = database.clone();
                                                             move |evt: Event<MouseData>| {
                                                                 // In select mode a click MARKS rather than spends, so a
                                                                 // power can be filled with several commons in one visit.
@@ -4088,7 +4056,7 @@ fn EnhancementPickerModal(
                                                                     Level::new(crafted_level),
                                                                     *boost.peek(),
                                                                 );
-                                                                place_pick(session, compare, destination, &powerset_id, &power_id, slot_idx, enhancement);
+                                                                place_pick(session, compare, &database, destination, &powerset_id, &power_id, slot_idx, enhancement);
                                                                 on_close.call(());
                                                             }
                                                         },
@@ -4486,7 +4454,7 @@ fn EnhancementPickerModal(
                                                                                         &database, &pick, defaults, &session,
                                                                                     ) {
                                                                                         place_pick(
-                                                                                            session, compare, destination,
+                                                                                            session, compare, &database, destination,
                                                                                             &powerset_id, &power_id,
                                                                                             slot_index as usize, enhancement,
                                                                                         );
@@ -4634,6 +4602,7 @@ fn EnhancementPickerModal(
                                                                     let power_id = power_id.clone();
                                                                     let powerset_id = powerset_id.clone();
                                                                     let slot_idx = slot_index as usize;
+                                                                    let database = database.clone();
                                                                     move |evt: Event<MouseData>| {
                                                                         if evt.modifiers().shift() || marking() {
                                                                             crate::picker_queue::press(&mut queue.write(), pick.clone());
@@ -4644,7 +4613,7 @@ fn EnhancementPickerModal(
                                                                         let enhancement = coh_data::Enhancement::special(
                                                                             &id, &def, category, defaults.relative_level(),
                                                                         );
-                                                                        place_pick(session, compare, destination, &powerset_id, &power_id, slot_idx, enhancement);
+                                                                        place_pick(session, compare, &database, destination, &powerset_id, &power_id, slot_idx, enhancement);
                                                                         on_close.call(());
                                                                     }
                                                                 },
@@ -4734,6 +4703,7 @@ fn EnhancementPickerModal(
                                                                     let powerset_id = powerset_id.clone();
                                                                     let slot_idx = slot_index as usize;
                                                                     let character_origin = character_origin.clone();
+                                                                    let database = database.clone();
                                                                     move |evt: Event<MouseData>| {
                                                                         if evt.modifiers().shift() || marking() {
                                                                             crate::picker_queue::press(&mut queue.write(), pick.clone());
@@ -4744,7 +4714,7 @@ fn EnhancementPickerModal(
                                                                         let enhancement = coh_data::Enhancement::origin(
                                                                             stat.clone(), tier, character_origin.clone(), defaults.relative_level(),
                                                                         );
-                                                                        place_pick(session, compare, destination, &powerset_id, &power_id, slot_idx, enhancement);
+                                                                        place_pick(session, compare, &database, destination, &powerset_id, &power_id, slot_idx, enhancement);
                                                                         on_close.call(());
                                                                     }
                                                                 },
@@ -4840,6 +4810,7 @@ fn EnhancementPickerModal(
                                     place_picks(
                                         session,
                                         compare,
+                                        &database,
                                         destination,
                                         &powerset_id,
                                         &power_id,
@@ -5150,6 +5121,73 @@ impl PowerPill {
         }
     }
 }
+
+/// The slot projection behind a power's own ON/OFF pill, or `None` when the power shows no such
+/// pill. The pill test is [`should_show_toggle`]; this is the part that feeds it.
+fn self_pill_slots(
+    def: &coh_data::Power,
+    database: &Db,
+    build: &coh_data::CharacterState,
+) -> Option<coh_math::window_slots::WindowSlots> {
+    // The toggle gate reads the atom router's slot projection (the authored `effects` bag is
+    // leaving the contract), so the roster of class tokens the unanimous-fork pass needs is
+    // derived from the dataset here and threaded in.
+    //
+    // A dataset that will not parse shows NO PILL rather than taking the process with it, the
+    // same fallback as a power whose def can't be resolved: the gate is undecidable.
+    let catalog = database.archetypes().ok()?;
+    let classes: Vec<&str> = catalog
+        .all()
+        .iter()
+        .filter_map(|at| database.class_name_of(&at.id))
+        .collect();
+    // The caster state the build has declared counts too. A finisher's self-buff is a
+    // conditional row (Sky Splitter's resistance under a finished Perfection of Body), gated
+    // out of the base projection, so without this a build in that form could see the
+    // finisher's damage move and never switch its buff into the totals.
+    let declared = coh_math::window_slots::slots_over(def, build.dataset, |atom| {
+        atom.conditional_id
+            .as_deref()
+            .is_some_and(|id| build.combat.global_conditionals.get(id) == Some(&true))
+    });
+    let base = coh_math::window_slots::bag_slots(def, build.dataset, &classes);
+    (should_show_toggle(def, &base) || should_show_toggle(def, &declared)).then_some(base)
+}
+
+/// Whether slotting an enhancement into this power switches it on. Mids' rule — a power you
+/// slot counts toward the totals — held to effects that last: any toggle with a pill, and a
+/// click whose buff runs at least [`SLOTTED_CLICK_MIN_SECONDS`]. Hasten switches on; Build Up's
+/// ten seconds stays off until the player turns it on.
+pub(crate) fn switches_on_when_slotted(
+    database: &Db,
+    powerset_id: &str,
+    power_internal_name: &str,
+    build: &coh_data::CharacterState,
+) -> bool {
+    let Some(def) = resolve_power_def(database, powerset_id, power_internal_name) else {
+        return false;
+    };
+    let Some(slots) = self_pill_slots(def, database, build) else {
+        return false;
+    };
+    match def
+        .extra
+        .get("powerType")
+        .and_then(Value::as_str)
+        .map(str::to_ascii_lowercase)
+        .as_deref()
+    {
+        Some("toggle") => true,
+        Some("click") => slots
+            .buff_duration
+            .is_some_and(|seconds| seconds >= SLOTTED_CLICK_MIN_SECONDS),
+        _ => false,
+    }
+}
+
+/// The shortest click buff that slotting switches on. Sidekick's choice, not the game's or
+/// Mids': Mids switches on every slotted click buff, Build Up included.
+const SLOTTED_CLICK_MIN_SECONDS: f64 = 60.0;
 
 /// Whether a picked power should show the ON/OFF toggle pill — the beta `shouldShowToggle`
 /// ([power-row-utils.ts](../../CoH-Sidekick/src/components/powers/power-row-utils.ts)), ported as
@@ -5661,6 +5699,7 @@ fn placeable_picks(
 fn place_picks(
     session: BuildSession,
     mut compare: crate::compare_slotting::CompareSlottingStore,
+    database: &Db,
     destination: PickerDestination,
     powerset_id: &str,
     power_internal_name: &str,
@@ -5668,6 +5707,12 @@ fn place_picks(
 ) {
     match destination {
         PickerDestination::Build => {
+            let switch_on = switches_on_when_slotted(
+                database,
+                powerset_id,
+                power_internal_name,
+                &session.build.peek(),
+            );
             let powerset_id = powerset_id.to_string();
             let power_internal_name = power_internal_name.to_string();
             session.commit(move |state| {
@@ -5678,6 +5723,7 @@ fn place_picks(
                         &power_internal_name,
                         slot_index,
                         enhancement,
+                        switch_on,
                     );
                 }
             });
@@ -5713,6 +5759,7 @@ fn place_picks(
 fn place_pick(
     session: BuildSession,
     mut compare: crate::compare_slotting::CompareSlottingStore,
+    database: &Db,
     destination: PickerDestination,
     powerset_id: &str,
     power_internal_name: &str,
@@ -5721,6 +5768,12 @@ fn place_pick(
 ) {
     match destination {
         PickerDestination::Build => {
+            let switch_on = switches_on_when_slotted(
+                database,
+                powerset_id,
+                power_internal_name,
+                &session.build.peek(),
+            );
             let powerset_id = powerset_id.to_string();
             let power_internal_name = power_internal_name.to_string();
             session.commit(move |state| {
@@ -5730,6 +5783,7 @@ fn place_pick(
                     &power_internal_name,
                     slot_index,
                     enhancement,
+                    switch_on,
                 );
             });
         }
@@ -5793,15 +5847,23 @@ fn clear_pick(
 /// held. The caller builds the [`coh_data::Enhancement`] from export data (e.g.
 /// [`coh_data::Enhancement::generic_io`]); this only positions it. Out-of-range
 /// indices are ignored — a slot can only be edited once it exists.
+///
+/// `switch_on` is [`switches_on_when_slotted`], read by the caller where the database is in
+/// reach. It turns the power on only when the slot's contents actually change, as in Mids:
+/// re-placing the piece already there leaves a power the player switched off alone.
 fn set_slot_enhancement(
     state: &mut coh_data::CharacterState,
     powerset_id: &str,
     power_internal_name: &str,
     slot_index: usize,
     enhancement: coh_data::Enhancement,
+    switch_on: bool,
 ) {
     if let Some(power) = state.selected_power_mut(powerset_id, power_internal_name) {
         if let Some(slot) = power.slots.get_mut(slot_index) {
+            if switch_on && slot.as_ref() != Some(&enhancement) {
+                power.is_active = true;
+            }
             *slot = Some(enhancement);
         }
     }
@@ -6052,5 +6114,78 @@ mod tests {
             phrase(&["$archtype", "@Class_Peacebringer", "==", "!"]),
             "its prerequisite"
         );
+    }
+
+    fn homecoming() -> Db {
+        let path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../contract/homecoming/bundle.json.gz");
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        Db(std::sync::Arc::new(
+            coh_data::PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads"),
+        ))
+    }
+
+    #[test]
+    fn slotting_switches_on_toggles_and_long_clicks_only() {
+        let database = homecoming();
+        let build = coh_data::CharacterState::empty(coh_data::DatasetId::Homecoming);
+        let on = |set: &str, power: &str| switches_on_when_slotted(&database, set, power, &build);
+        assert!(on("tanker/dark-armor", "Dark_Embrace"), "a toggle");
+        assert!(on("leaping", "Combat_Jumping"), "a pool toggle");
+        assert!(on("speed", "Hasten"), "a two-minute click buff");
+        assert!(
+            !on("tanker/broad-sword", "Build_Up"),
+            "a ten-second click buff"
+        );
+    }
+
+    fn one_power(is_active: bool) -> coh_data::CharacterState {
+        let mut state = coh_data::CharacterState::empty(coh_data::DatasetId::Homecoming);
+        let mut power = coh_data::SelectedPower::picked("Dark_Embrace", "tanker/dark-armor", 1);
+        power.is_active = is_active;
+        state.primary.powers.push(power);
+        state
+    }
+
+    fn piece(stat: &str) -> coh_data::Enhancement {
+        coh_data::Enhancement::generic_io(stat, Level::new(50), 0)
+    }
+
+    fn placed_on(state: &mut coh_data::CharacterState, enhancement: coh_data::Enhancement) -> bool {
+        set_slot_enhancement(
+            state,
+            "tanker/dark-armor",
+            "Dark_Embrace",
+            0,
+            enhancement,
+            true,
+        );
+        state.primary.powers[0].is_active
+    }
+
+    #[test]
+    fn placing_a_piece_switches_the_power_on() {
+        assert!(placed_on(&mut one_power(false), piece("Resistance")));
+    }
+
+    #[test]
+    fn re_placing_the_same_piece_leaves_the_switch_alone() {
+        let mut state = one_power(false);
+        state.primary.powers[0].slots[0] = Some(piece("Resistance"));
+        assert!(!placed_on(&mut state, piece("Resistance")));
+    }
+
+    #[test]
+    fn a_power_the_rule_excludes_stays_off() {
+        let mut state = one_power(false);
+        set_slot_enhancement(
+            &mut state,
+            "tanker/dark-armor",
+            "Dark_Embrace",
+            0,
+            piece("Resistance"),
+            false,
+        );
+        assert!(!state.primary.powers[0].is_active);
     }
 }
