@@ -30,8 +30,10 @@
 
 use crate::grid::model::DashboardId;
 use crate::panels::dashboards::DashboardConfig;
+use crate::panels::detailed_totals::{breakdowns_for_stat, is_expandable, KeyBreakdownBlock};
 use crate::panels::stat_registry;
 use crate::panels::stats_config::StatsConfigOpen;
+use crate::shell::Db;
 use crate::tracked_stats::TrackedStats;
 use coh_math::CalculatedTotals;
 use dioxus::prelude::*;
@@ -58,6 +60,9 @@ pub fn StatGroup(panel: DashboardId) -> Element {
     let dashboards = use_context::<DashboardConfig>().0;
     let mut config_open = use_context::<StatsConfigOpen>().0;
     let tracked = use_context::<TrackedStats>();
+    // Absent in a popped-out window, which has no host to draw the card; its rows keep the
+    // native `title` text instead.
+    let hover = try_use_context::<StatHover>();
 
     // Both reads resolve to owned values before `rsx!`, so no borrow of the shared totals memo
     // or the config is held across the render (keep logic above `rsx!`).
@@ -100,6 +105,18 @@ pub fn StatGroup(panel: DashboardId) -> Element {
                     tabindex: "0",
                     aria_pressed: "{is_tracked}",
                     onclick: move |_| tracked.toggle(stat.id),
+                    // A mouse only: a tap fires no leave until the next tap elsewhere, which would
+                    // leave the card standing over the phone's dashboard.
+                    onpointerenter: move |evt: PointerEvent| {
+                        if let Some(hover) = hover.filter(|_| evt.pointer_type() == "mouse") {
+                            hover.enter(stat.id, &evt);
+                        }
+                    },
+                    onpointerleave: move |_| {
+                        if let Some(hover) = hover {
+                            hover.leave();
+                        }
+                    },
                     onkeydown: move |evt: KeyboardEvent| {
                         if matches!(evt.key(), Key::Enter) || evt.key() == Key::Character(" ".into()) {
                             evt.prevent_default();
@@ -107,11 +124,11 @@ pub fn StatGroup(panel: DashboardId) -> Element {
                         }
                     },
                     // The label is the half a narrow surface truncates (see `.stat-label`), and
-                    // CSS cannot tell us whether it did — so the full name is carried here
-                    // unconditionally rather than only when it is clipped.
+                    // CSS cannot tell us whether it did — so the full name is carried
+                    // unconditionally: in the hover card, or here where there is none.
                     span {
                         class: "stat-label",
-                        title: if is_tracked { "{stat.label} — tracked: the picker marks sets that boost it. Click to untrack." } else { "{stat.label} — click to track: the picker marks sets that boost it." },
+                        title: if hover.is_none() { Some(track_hint(stat.label, is_tracked)) } else { None },
                         "{stat.label}"
                     }
                     // The hairline between the name and the number. A real element rather than a
@@ -125,20 +142,33 @@ pub fn StatGroup(panel: DashboardId) -> Element {
                         class: if resolved.rule_of_five_capped { "is-rule-of-five-capped" },
                         class: if resolved.simulated { "is-simulated" },
                         style: "--stat-hue: {stat.family.token()};",
-                        // Both cues are decoration; the title is what carries them to a screen
-                        // reader and to anyone who does not read a hue as meaning anything.
-                        title: cue_description(&resolved),
+                        // Both cues are decoration; the title (or the hover card) is what
+                        // carries them to anyone who does not read a hue as meaning anything.
+                        title: if hover.is_none() { Some(cue_description(&resolved)) } else { None },
                         "{resolved.text}"
                         // A text mark, not only a hue: the whole point is that a SCREENSHOT of
                         // this dashboard cannot pass as the build's own numbers, and a screenshot
                         // carries no tooltip and no colour vocabulary.
                         if resolved.simulated {
-                            span { class: "stat-simulated", title: "Includes a simulated team buff", "sim" }
+                            span {
+                                class: "stat-simulated",
+                                title: if hover.is_none() { Some("Includes a simulated team buff") } else { None },
+                                "sim"
+                            }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+/// What clicking a row does, named with the stat so a truncated label still reads in full.
+fn track_hint(label: &str, is_tracked: bool) -> String {
+    if is_tracked {
+        format!("{label} — tracked: the picker marks sets that boost it. Click to untrack.")
+    } else {
+        format!("{label} — click to track: the picker marks sets that boost it.")
     }
 }
 
@@ -160,4 +190,127 @@ fn cue_description(resolved: &stat_registry::ResolvedStat) -> String {
         notes.push("SIMULATED — includes a what-if team buff, not the build's own number.");
     }
     notes.join(" ")
+}
+
+// ============================================================
+// The hover card.
+// ============================================================
+
+/// The dashboard row under the pointer, and the viewport point (the cursor at mouse-enter) the
+/// card hangs from.
+#[derive(Clone, PartialEq)]
+pub struct StatHoverTarget {
+    pub stat_id: &'static str,
+    pub anchor_x: f64,
+    pub anchor_y: f64,
+}
+
+/// Context handle for the hovered dashboard row, provided at the shell root. `None` = the
+/// pointer is on no row. A newtype so it never collides with another `Signal<Option<_>>`.
+#[derive(Clone, Copy)]
+pub struct StatHover(pub Signal<Option<StatHoverTarget>>);
+
+impl StatHover {
+    pub fn enter(self, stat_id: &'static str, evt: &Event<PointerData>) {
+        let mut hover = self.0;
+        let point = evt.client_coordinates();
+        hover.set(Some(StatHoverTarget {
+            stat_id,
+            anchor_x: point.x,
+            anchor_y: point.y,
+        }));
+    }
+
+    pub fn leave(self) {
+        let mut hover = self.0;
+        hover.set(None);
+    }
+}
+
+/// Keep the card inside the window, as the power card does
+/// ([`crate::power_tooltip`]'s `KEEP_POWER_TOOLTIP_ON_SCREEN`).
+const KEEP_STAT_TOOLTIP_ON_SCREEN: &str = "\
+document.querySelectorAll('.stat-tooltip').forEach(function (tip) {\
+  var z = parseFloat(getComputedStyle(document.documentElement).zoom) || 1;\
+  var rect = tip.getBoundingClientRect();\
+  var ax = parseFloat(tip.style.left), ay = parseFloat(tip.style.top);\
+  var offset = 14, margin = 8;\
+  var x = ax + offset, y = ay + offset;\
+  if (x + rect.width > window.innerWidth - margin) { x = ax - offset - rect.width; }\
+  if (x < margin) { x = Math.max(margin, window.innerWidth - margin - rect.width); }\
+  if (y + rect.height > window.innerHeight - margin) { y = ay - offset - rect.height; }\
+  if (y < margin) { y = Math.max(margin, window.innerHeight - margin - rect.height); }\
+  tip.style.transform = 'translate(' + (x / z - ax) + 'px, ' + (y / z - ay) + 'px)';\
+});";
+
+/// The hovered row's sources, hosted at the shell root so a grid surface's `transform` cannot
+/// clip it. The beta's dashboard tooltip, drawn with the Detailed Totals sheet's own per-key
+/// block so the two surfaces cannot disagree about a row.
+///
+/// The card mounts at once and stays transparent for a beat (`.stat-tooltip` in app.css), so a
+/// pointer crossing the dashboard does not flash a card over every row it passes.
+#[component]
+pub fn StatTooltipHost(database: Option<Db>) -> Element {
+    let hover = use_context::<StatHover>().0;
+    let totals = use_context::<BuildTotals>().0;
+    let tracked = use_context::<TrackedStats>();
+
+    use_effect(move || {
+        if hover.read().is_some() {
+            document::eval(KEEP_STAT_TOOLTIP_ON_SCREEN);
+        }
+    });
+
+    let Some(target) = hover() else {
+        return rsx! {};
+    };
+    let Some(stat) = stat_registry::by_id(target.stat_id) else {
+        return rsx! {};
+    };
+    let (resolved, breakdowns) = {
+        let totals = totals.read();
+        (
+            stat.resolve(&totals),
+            breakdowns_for_stat(&totals, database.as_ref(), stat),
+        )
+    };
+    let cues = cue_description(&resolved);
+    let expandable = is_expandable(&breakdowns);
+    let hint = if tracked.contains(stat.id) {
+        "Tracked: the picker marks sets that boost it. Click to untrack."
+    } else {
+        "Click to track: the picker marks sets that boost it."
+    };
+
+    rsx! {
+        div {
+            // Keyed by stat so moving to the next row remounts the card and restarts its delay.
+            key: "{stat.id}",
+            class: "stat-tooltip",
+            role: "tooltip",
+            style: "left: {target.anchor_x}px; top: {target.anchor_y}px; --stat-hue: {stat.family.token()};",
+            div { class: "stat-tooltip-head",
+                span { "{stat.label}" }
+                span { class: "mono", "{resolved.text}" }
+            }
+            if !cues.is_empty() {
+                div { class: "stat-tooltip-note", "{cues}" }
+            }
+            if expandable {
+                for breakdown in breakdowns {
+                    KeyBreakdownBlock {
+                        key: "{breakdown.key}",
+                        breakdown: breakdown.clone(),
+                        ledger_format: stat.ledger_format,
+                        show_key_heading: stat.ledger_keys.len() > 1,
+                    }
+                }
+            } else if stat.ledger_keys.is_empty() {
+                div { class: "stat-tooltip-note", "Worked out from other stats rather than added up from sources." }
+            } else {
+                div { class: "stat-tooltip-note", "Nothing in this build adds to it." }
+            }
+            div { class: "stat-tooltip-hint", "{hint}" }
+        }
+    }
 }

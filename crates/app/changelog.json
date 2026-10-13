@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-10-13",
+    "items": [
+      { "id": "stat-hover-sources", "type": "feat", "message": "Stat hover cards have made it over from Sidekick Beta. Hovering a stat in a dashboard panel will show a breakdown of every contributor: set bonuses, powers, procs, accolades and incarnates, each with its share, and the total" },
+      { "id": "procs-in-damage-number", "type": "feat", "message": "The Info panel's damage number now includes the average damage of your slotted damage procs while Procs is on. The line under it shows how much of that comes from procs. To keep proc damage on its own line instead, turn off the new In total button beside Procs" }
+    ]
+  },
+
+  {
     "date": "2026-10-12",
     "items": [
       { "id": "picker-select-sticks", "type": "update", "message": "The enhancement picker's Select box now stays active from power to power, and after a reload, until you untick it. Dragging across a set's pieces now marks them while Select is on, too" },

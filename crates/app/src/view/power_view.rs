@@ -329,13 +329,21 @@ impl DamageView {
     /// The hero line read as `metric`, or why it cannot be (a toggle has no cast to divide by,
     /// an inherent costs no endurance). Each tier divides by its OWN tier of the cost: the base
     /// hit by the base cycle, the final hit by the cycle this build's recharge leaves.
-    pub fn hero(&self, metric: DamageMetric) -> Result<DamageHero, &'static str> {
+    ///
+    /// `procs` is average proc damage per cast to add to the headline, `0.0` for none. It lands
+    /// on the headline only: the delta stays the hit's own damage-strength gain, because procs
+    /// are flat and folding them in would credit the build with strength it does not have.
+    pub fn hero(&self, metric: DamageMetric, procs: f64) -> Result<DamageHero, &'static str> {
         let base_div = self.divisor(metric, |tier| tier.base)?;
         let final_div = self.divisor(metric, |tier| tier.r#final)?;
         let base = self.tiers.base / base_div;
         let r#final = self.tiers.r#final / final_div;
+        let added = procs / final_div;
         Ok(DamageHero {
-            headline: span_text(r#final, self.high.map(|high| high.r#final / final_div)),
+            headline: span_text(
+                r#final + added,
+                self.high.map(|high| high.r#final / final_div + added),
+            ),
             base_text: span_text(base, self.high.map(|high| high.base / base_div)),
             delta: damage_delta(base, r#final),
         })
@@ -1563,5 +1571,39 @@ mod tests {
         }
         assert!(graded > 0, "no +Max End row reached the assertion");
         eprintln!("graded {graded} +Max End rows");
+    }
+
+    /// Folded proc damage lands on the headline and nowhere else: the base and the % gain stay
+    /// the hit's own, because procs are flat and the gain is a damage-strength figure.
+    #[test]
+    fn folded_procs_move_the_headline_only() {
+        let db = database(DatasetId::Homecoming);
+        let view = db
+            .powersets
+            .iter()
+            .filter_map(|set| Some((set, whole_set(DatasetId::Homecoming, set)?)))
+            .find_map(|(set, state)| {
+                let totals = coh_math::recalculate(&state, &db);
+                set.powers.iter().find_map(|power| {
+                    let projection = totals
+                        .power_projection
+                        .iter()
+                        .find(|row| row.power_internal_name == power.ident())?;
+                    let damage = PowerView::build(power, Some(projection), None).damage?;
+                    (damage.high.is_none() && damage.tiers.r#final > 0.0).then_some(damage)
+                })
+            })
+            .expect("some power deals a fixed hit");
+        let plain = view
+            .hero(DamageMetric::Damage, 0.0)
+            .expect("damage reading");
+        let folded = view
+            .hero(DamageMetric::Damage, 10.0)
+            .expect("damage reading");
+        let expected = format_precision(view.tiers.r#final + 10.0, 2);
+        assert_eq!(folded.headline, expected);
+        assert_ne!(folded.headline, plain.headline);
+        assert_eq!(folded.base_text, plain.base_text);
+        assert_eq!(folded.delta, plain.delta);
     }
 }

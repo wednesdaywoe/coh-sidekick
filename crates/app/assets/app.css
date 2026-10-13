@@ -2548,6 +2548,50 @@ button.power-pick--empty {
 }
 .slot-tooltip-name { font-weight: 600; color: var(--text); }
 
+/* The dashboard row's sources card (`StatTooltipHost` in panels/stats.rs). Mounted at once and
+   held transparent for a beat, so a pointer crossing the dashboard does not flash a card over
+   every row it passes; the body is the Detailed Totals sheet's own `.detailed-key` block. */
+.stat-tooltip {
+  position: fixed;
+  z-index: 1100;
+  transform: translate(14px, 14px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 400px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  overflow: hidden;
+  padding: 8px 10px;
+  border: 1px solid var(--seam-raised);
+  border-radius: 8px;
+  background: var(--surface-panel);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .4);
+  pointer-events: none;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0;
+  animation: stat-tooltip-in 120ms ease-out 600ms forwards;
+}
+@keyframes stat-tooltip-in { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .stat-tooltip { animation-duration: 1ms; }
+}
+.stat-tooltip-head {
+  display: flex; justify-content: space-between; gap: 12px;
+  font-weight: 600; color: var(--text);
+  border-bottom: 2px solid var(--stat-hue, var(--seam-raised));
+  padding-bottom: 3px;
+}
+.stat-tooltip-note { color: var(--text-dim); }
+/* Names over bars: a card has no room to spare, and the name is what the reader came for. */
+.stat-tooltip .detailed-source { grid-template-columns: minmax(0, 1fr) 36px 4.5em; }
+.stat-tooltip-hint {
+  color: var(--text-faint);
+  font-family: var(--font-chrome);
+  font-size: 11px;
+}
+
 /* The floating power card (`power_tooltip.rs`): the hovered power, and a Shift-pinned one beside
    it. One fixed box holding both cards, so the on-screen script places them as one. Ignores the
    pointer like the slot tooltip, so it never steals the hover it is describing. */
@@ -5168,6 +5212,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 }
 /* With the chip present it takes the push to the right edge; the strip then sits beside it. */
 .damage-procs + .damage-metric { margin-left: 0; }
+/* The "In total" chip follows Procs, so only the first of the pair pushes right. */
+.damage-procs + .damage-procs { margin-left: 4px; }
 
 /* The cap tick sits ON the final edge, so it reads as a wall the fill stopped at rather than
    as a separate segment past it. */

@@ -311,6 +311,8 @@ pub fn Shell() -> Element {
     // Whether damage procs count toward a power's damage, restored below beside the reading.
     let proc_damage = use_signal(|| true);
     use_context_provider(|| crate::damage_metric_store::ProcDamagePref(proc_damage));
+    let proc_fold = use_signal(|| true);
+    use_context_provider(|| crate::damage_metric_store::ProcFoldPref(proc_fold));
     // Which surfaces are on the grid at all. The flag itself rides in `desktop_layout` (see
     // `GridItem::hidden`); only the modal's open state lives here, provided as context so the
     // Options entry and the all-hidden prompt in either layout root can both raise it.
@@ -558,6 +560,9 @@ pub fn Shell() -> Element {
     use_context_provider(|| crate::power_tooltip::PowerTooltipEnabled(power_tooltip_enabled));
     let power_hover = use_signal(|| Option::<crate::power_tooltip::PowerHoverTarget>::None);
     use_context_provider(|| crate::power_tooltip::PowerHover(power_hover));
+    // The dashboard row under the pointer, for its sources card.
+    let stat_hover = use_signal(|| Option::<panels::stats::StatHoverTarget>::None);
+    use_context_provider(|| panels::stats::StatHover(stat_hover));
     let mut power_tooltip_restored = use_signal(|| false);
     use_future(move || async move {
         let mut enabled = power_tooltip_enabled;
@@ -871,6 +876,21 @@ pub fn Shell() -> Element {
             return;
         }
         crate::damage_metric_store::persist_proc_damage(include);
+    });
+    let mut proc_fold_restored = use_signal(|| false);
+    use_future(move || async move {
+        let mut fold = proc_fold;
+        if let Some(saved) = crate::damage_metric_store::load_proc_fold().await {
+            fold.set(saved);
+        }
+        proc_fold_restored.set(true);
+    });
+    use_effect(move || {
+        let fold = *proc_fold.read();
+        if !*proc_fold_restored.read() {
+            return;
+        }
+        crate::damage_metric_store::persist_proc_fold(fold);
     });
 
     // Restore the persisted picker defaults once on mount, then open the persist gate.
@@ -1351,6 +1371,13 @@ pub fn Shell() -> Element {
         // The one dashboard-stats config modal, hosted here for the same containment reason —
         // and unlike the three above it needs no database, since it configures display only.
         panels::stats_config::StatsConfigHost {}
+        // The dashboard row's sources card, hosted OUTSIDE both layout roots like the others.
+        panels::stats::StatTooltipHost {
+            database: match &*db.read() {
+                Some(Ok(database)) => Some(Db(database.clone())),
+                _ => None,
+            },
+        }
         panels::detailed_totals::DetailedTotalsHost {
             database: match &*db.read() {
                 Some(Ok(database)) => Some(Db(database.clone())),

@@ -381,11 +381,12 @@ pub fn PowerTooltipCard(view: PowerView, slotted_procs: Vec<SlottedProcRow>) -> 
 /// panel never looks the name up; it renders what `power_view::mechanic_names` took verbatim
 /// from the export.
 ///
-/// Slotted damage procs ride beside the hit, never inside it: their damage is flat, so a damage
-/// buff or the archetype cap that moved the headline does not move them, and folding them in
-/// would make the delta credit the build for damage it did not scale. They get their own line,
-/// their own colour on the bar, and a switch (the beta's "Procs") that also governs the attack
-/// chain.
+/// Slotted damage procs are flat, so a damage buff or the archetype cap that moved the hit does
+/// not move them. By default their average is added into the headline, since that is the number
+/// players expect, and an "In total" chip beside the switch takes it back out. The delta never
+/// includes it, or it would credit the build for damage it did not scale. Either way they keep
+/// their own line, their own colour on the bar, and a switch (the beta's "Procs") that also
+/// governs the attack chain.
 #[component]
 fn DamageBlock(
     damage: DamageView,
@@ -406,12 +407,16 @@ fn DamageBlock(
     let local_metric = use_signal(DamageMetric::default);
     let mut metric = try_use_context::<crate::damage_metric_store::DamageMetricPref>()
         .map_or(local_metric, |pref| pref.0);
-    let hero = damage.hero(metric());
     let local_procs = use_signal(|| true);
     let mut include_procs = try_use_context::<crate::damage_metric_store::ProcDamagePref>()
         .map_or(local_procs, |pref| pref.0);
+    let local_fold = use_signal(|| true);
+    let mut fold = try_use_context::<crate::damage_metric_store::ProcFoldPref>()
+        .map_or(local_fold, |pref| pref.0);
+    let fold_procs = fold();
     // Per cast, in damage units — what the bar draws. Zero when switched off or nothing fires.
     let procs_shown = proc_per_cast.filter(|_| include_procs()).unwrap_or(0.0);
+    let hero = damage.hero(metric(), if fold_procs { procs_shown } else { 0.0 });
     let proc_reading = damage
         .proc_reading(metric(), procs_shown)
         .filter(|v| *v > 0.0);
@@ -446,6 +451,17 @@ fn DamageBlock(
                             include_procs.set(!on);
                         },
                         "Procs"
+                    }
+                    // Only while procs are counted: with them off there is nothing to add in.
+                    if include_procs() {
+                        button {
+                            r#type: "button",
+                            class: "damage-procs",
+                            "aria-pressed": fold_procs,
+                            title: "Add the proc average into the damage number, rather than only listing it below. The % gain leaves it out either way, since proc damage is flat",
+                            onclick: move |_| fold.set(!fold_procs),
+                            "In total"
+                        }
                     }
                 }
                 // The beta's DMG / DPA / DPS / DPE switch. It changes the hero line only: the
@@ -497,8 +513,8 @@ fn DamageBlock(
             if let Some(reading) = proc_reading {
                 div {
                     class: "damage-proc",
-                    title: "Average damage the slotted procs add per activation: each proc's hit times its chance. Flat, so damage buffs and the damage cap do not touch it.",
-                    "+{reading:.1} proc"
+                    title: "Average damage the slotted procs add per activation: each proc's hit times its chance. Flat, so damage buffs and the damage cap do not touch it, and the % above leaves it out.",
+                    if fold_procs { "incl. +{reading:.1} proc" } else { "+{reading:.1} proc" }
                 }
             }
             if damage.reference > 0.0 {

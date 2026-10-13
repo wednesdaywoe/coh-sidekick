@@ -660,9 +660,10 @@ fn group_shares(breakdown: &KeyBreakdown) -> Option<Vec<(SourceGroup, f64)>> {
     (shares.len() > 1).then_some(shares)
 }
 
-/// One accumulator field's sources, under its own total.
+/// One accumulator field's sources, under its own total. Also the body of the dashboard's hover
+/// card ([`crate::panels::stats::StatTooltipHost`]).
 #[component]
-fn KeyBreakdownBlock(
+pub fn KeyBreakdownBlock(
     breakdown: KeyBreakdown,
     ledger_format: stat_registry::StatFormat,
     show_key_heading: bool,
