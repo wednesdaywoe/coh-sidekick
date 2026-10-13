@@ -380,6 +380,16 @@
       "id": "tracked-stats",
       "date": "2026-10-12",
       "preview": "Stat tracking is back from Sidekick Beta. Click or tap a stat in a dashboard pan"
+    },
+    {
+      "id": "stat-hover-sources",
+      "date": "2026-10-13",
+      "preview": "Stat hover cards have made it over from Sidekick Beta. Hovering a stat in a dash"
+    },
+    {
+      "id": "procs-in-damage-number",
+      "date": "2026-10-13",
+      "preview": "The Info panel's damage number now includes the average damage of your slotted d"
     }
   ]
 }
