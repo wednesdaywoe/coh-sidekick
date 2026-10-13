@@ -360,6 +360,26 @@
       "id": "fired-power-bonuses",
       "date": "2026-10-11",
       "preview": "Homecoming and Brainstorm: Sonic Clap and Deafening Wave now include Attune's da"
+    },
+    {
+      "id": "picker-select-sticks",
+      "date": "2026-10-12",
+      "preview": "The enhancement picker's Select box now stays active from power to power, and af"
+    },
+    {
+      "id": "slotting-switches-on",
+      "date": "2026-10-12",
+      "preview": "Slotting an enhancement into a toggle now switches it on. So does slotting a cli"
+    },
+    {
+      "id": "floating-tools",
+      "date": "2026-10-12",
+      "preview": "Every tool on the quickbar now opens in its own window over the planner, like De"
+    },
+    {
+      "id": "tracked-stats",
+      "date": "2026-10-12",
+      "preview": "Stat tracking is back from Sidekick Beta. Click or tap a stat in a dashboard pan"
     }
   ]
 }

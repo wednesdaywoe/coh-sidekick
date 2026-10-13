@@ -2,6 +2,9 @@
   {
     "date": "2026-10-12",
     "items": [
+      { "id": "picker-select-sticks", "type": "update", "message": "The enhancement picker's Select box now stays active from power to power, and after a reload, until you untick it. Dragging across a set's pieces now marks them while Select is on, too" },
+      { "id": "slotting-switches-on", "type": "update", "message": "Slotting an enhancement into a toggle now switches it on. So does slotting a click buff that lasts a minute or more, such as Hasten. Shorter ones like Build Up stay off until you turn them on." },
+      { "id": "floating-tools", "type": "update", "message": "Every tool on the quickbar now opens in its own window over the planner, like Detailed Totals. You can move and resize each one, it reopens where you left it, and clicking its button again closes it. Several can be open at once, and the one you used last sits on top" },
       { "id": "tracked-stats", "type": "feat", "message": "Stat tracking is back from Sidekick Beta. Click or tap a stat in a dashboard panel to track it. The enhancement picker then highlights sets with a bonus for that stat and names those bonuses under the set, and set bonus lists mark them. Stats whose bonuses hit the Rule of 5 are tracked for you" }
     ]
   },
