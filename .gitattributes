@@ -2,3 +2,4 @@
 contract/** linguist-generated
 fixtures/** linguist-generated
 exported_powers/** linguist-generated -diff
+worklog.jsonl merge=union

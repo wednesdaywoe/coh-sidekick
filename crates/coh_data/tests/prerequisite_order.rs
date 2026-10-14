@@ -1,4 +1,4 @@
-//! A held power's prerequisite counts only when it was picked at a lower level (GP1).
+//! A held power's prerequisite counts only when it was picked at a lower level (guided-picking-1).
 //!
 //! `requires_met` answers "does the build own Boxing?", which is right for a power about to be
 //! picked and wrong for one already placed: Boxing at 30 says nothing about whether Tough could
@@ -119,7 +119,7 @@ fn weave_counts_only_the_picks_below_it() {
     assert!(in_order(&db, "Weave", 22, &both_before));
 }
 
-// ---- which closed gates a free-form build may take early (GP2) -------------------------------
+// ---- which closed gates a free-form build may take early (guided-picking-2) ------------------
 
 /// Tough is closed only for want of an earlier Fighting pick, so it may be taken and flagged.
 #[test]

@@ -1772,9 +1772,9 @@ pub fn pick_gate(
 /// when it is in order, when it has no prerequisite, and for an auto-granted power, which has
 /// no pick level to be out of order at.
 ///
-/// Free-form lets a build go out of order and marks it (GP6), on the power's card and its row
-/// in the power list. An unreadable `requires` is not reported here: the row already shows
-/// that fault, and a guess about order on top of it would be noise.
+/// Free-form lets a build go out of order and marks it (guided-picking-6), on the power's card
+/// and its row in the power list. An unreadable `requires` is not reported here: the row
+/// already shows that fault, and a guess about order on top of it would be noise.
 pub fn out_of_order_reason(
     database: &Db,
     state: &coh_data::CharacterState,
@@ -2351,8 +2351,8 @@ fn AvailablePowerRow(
     } else {
         row_class.to_string()
     };
-    // A held power out of order (GP6) reads red and italic here, as Mids draws it, and its
-    // tooltip says what is missing in place of the give-back hint.
+    // A held power out of order (guided-picking-6) reads red and italic here, as Mids draws it,
+    // and its tooltip says what is missing in place of the give-back hint.
     let out_of_order = picked_at.and_then(|_| {
         let build = session.build.read();
         let held = build
@@ -2916,8 +2916,9 @@ pub fn PickedPowerCard(
     } else {
         "picked-power-card"
     };
-    // Held without its prerequisite at a lower level (GP6): a small mark after the name, its
-    // tooltip naming what is missing. It clears on the render after the build is reordered.
+    // Held without its prerequisite at a lower level (guided-picking-6): a small mark after the
+    // name, its tooltip naming what is missing. It clears on the render after the build is
+    // reordered.
     let out_of_order = out_of_order_reason(&database, &session.build.read(), &powerset_id, &power);
 
     rsx! {

@@ -1,4 +1,5 @@
-//! The guided planner's working level is the earliest pick slot the build has not filled (GP3).
+//! The guided planner's working level is the earliest pick slot the build has not filled
+//! (guided-picking-3).
 //!
 //! The app shows it beside the character's level as `50 (14)`, and it is
 //! `next_pick_level(taken, 1)`. Graded on Homecoming's own pick schedule, where level 1 grants
@@ -47,7 +48,7 @@ fn a_full_build_has_no_working_level() {
     assert_eq!(working(&schedule, &schedule.pick_levels()), None);
 }
 
-// ---- a clicked empty slot steers the next pick (GP5) -----------------------------------------
+// ---- a clicked empty slot steers the next pick (guided-picking-5) ----------------------------
 
 /// A level-2 power, with slot 24 clicked, goes into 24 rather than the earliest empty slot.
 #[test]
