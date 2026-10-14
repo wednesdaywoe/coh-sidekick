@@ -61,6 +61,9 @@ pub enum BrowserTarget {
     /// because it opens on a handle and `Browse` filters on a `user_id` — the resolve is what
     /// turns one into the other, and it can fail in a way a filter cannot: nobody holds it.
     Author(String),
+    /// The browser opened on the vault tab — the same modal as `Browse`, one click shorter for
+    /// the user who came for their own builds rather than the community's.
+    Mine,
 }
 
 /// Provided by the shell; raised by the main menu row and by the boot-time path reader.
@@ -98,7 +101,10 @@ pub fn BrowserHost(database: Option<Db>, dataset: Signal<DatasetId>) -> Element 
     rsx! {
         match target {
             BrowserTarget::Browse => rsx! {
-                BrowserModal { database: database }
+                BrowserModal { database: database, initial: BrowserView::All }
+            },
+            BrowserTarget::Mine => rsx! {
+                BrowserModal { database: database, initial: BrowserView::Mine }
             },
             BrowserTarget::Build(id) => rsx! {
                 // Keyed on the id so reopening a different build remounts the modal — the
@@ -117,7 +123,7 @@ pub fn BrowserHost(database: Option<Db>, dataset: Signal<DatasetId>) -> Element 
 /// open a build. The database feed the archetype and powerset dropdowns; the cloud feeds the
 /// rows; the two never meet, which is the point of the service layer.
 #[component]
-fn BrowserModal(database: Option<Db>) -> Element {
+fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
     let account = use_context::<Account>();
     let mut open = use_context::<BrowserOpen>().0;
     let filters = use_signal(SearchFilters::default);
@@ -134,7 +140,7 @@ fn BrowserModal(database: Option<Db>) -> Element {
     // neither of the other two is a filter over the public rows — each is a different list, and
     // both can hold a build the search never returns: a favourite may have gone unlisted, and a
     // vault row may be private, which is a visibility the public query is defined to exclude.
-    let mut view = use_signal(|| BrowserView::All);
+    let mut view = use_signal(|| initial);
     // Whether the tag chips are showing. Collapsed by default: thirty chips above the results
     // would push the builds themselves off the first screen, and most searches do not filter on
     // a tag at all. The ACTIVE ones stay visible when collapsed, so the disclosure never hides

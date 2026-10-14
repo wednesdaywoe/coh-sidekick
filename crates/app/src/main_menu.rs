@@ -107,6 +107,7 @@ fn FileEntries(
     rsx! {
         AccountEntries {}
         BrowseBuildsEntry {}
+        MyBuildsEntry {}
         div { class: "main-menu__hair" }
 
         // The steepest step in the menu: both of the acts above this hairline replace
@@ -231,6 +232,27 @@ fn BrowseBuildsEntry() -> Element {
             },
             span { class: "main-menu__label", "Browse builds…" }
             span { class: "main-menu__hint", "Search builds the community has shared" }
+        }
+    }
+}
+
+/// A direct door to the vault tab of the same browser. Shown signed out too: the tab then
+/// explains that there is no account to list, and still offers the reclaim box.
+#[component]
+fn MyBuildsEntry() -> Element {
+    let mut browser = use_context::<crate::cloud::browser::BrowserOpen>().0;
+    let mut menu = use_context::<crate::popover::PopoverOpen>().0;
+
+    rsx! {
+        button {
+            class: "main-menu__item",
+            r#type: "button",
+            onclick: move |_| {
+                browser.set(Some(crate::cloud::browser::BrowserTarget::Mine));
+                menu.set(false);
+            },
+            span { class: "main-menu__label", "My builds…" }
+            span { class: "main-menu__hint", "Builds you have saved to your account" }
         }
     }
 }
