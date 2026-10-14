@@ -390,6 +390,16 @@
       "id": "procs-in-damage-number",
       "date": "2026-10-13",
       "preview": "The Info panel's damage number now includes the average damage of your slotted d"
+    },
+    {
+      "id": "update-saved-build",
+      "date": "2026-10-14",
+      "preview": "Saving a build you loaded from My Builds now offers Update saved build, which ke"
+    },
+    {
+      "id": "select-replaces-clicked-slot",
+      "date": "2026-10-14",
+      "preview": "With Select on in the enhancement picker, the slot you clicked can now be replac"
     }
   ]
 }
