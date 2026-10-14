@@ -3773,7 +3773,7 @@ fn EnhancementPickerModal(
     // build behind it.
     let slot_filled = slots.get(slot_index as usize).is_some_and(Option::is_some);
     // The slots a bulk placement would fill, and therefore how many marks can actually land.
-    let open_slots = crate::picker_queue::empty_slots_from(&slots, slot_index as usize);
+    let open_slots = crate::picker_queue::slots_to_fill_from(&slots, slot_index as usize);
 
     let tab_class = |tab: PickerTab| {
         if active_tab() == tab {
@@ -4763,7 +4763,7 @@ fn EnhancementPickerModal(
                         }
                         if open_slots.len() < queue.read().len() {
                             span { class: "picker-queue-warn",
-                                "only {open_slots.len()} empty slot(s) — the rest won't fit"
+                                "only {open_slots.len()} slot(s) to fill — the rest won't fit"
                             }
                         }
                         // Takes back the newest mark. The touch route for removing one copy of a
@@ -4796,6 +4796,12 @@ fn EnhancementPickerModal(
                                 let database = database.clone();
                                 move |_| {
                                     let picks = queue.read().clone();
+                                    // The opened slot's current piece is being replaced, so it
+                                    // must not count against what the marks may hold.
+                                    let mut slots = slots.clone();
+                                    if let Some(opened) = slots.get_mut(slot_index as usize) {
+                                        *opened = None;
+                                    }
                                     let built = placeable_picks(
                                         &database, &picks, &slots, destination, defaults, &session,
                                     );

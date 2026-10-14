@@ -54,6 +54,8 @@ pub struct PendingImport {
     pub dataset: DatasetId,
     pub file_name: String,
     pub text: String,
+    /// The cloud row this text came from, when the viewer owns it ([`take_build`]).
+    pub library_id: Option<String>,
 }
 
 /// The parked file. Provided by the shell, written by the menu, read by [`BuildIoHost`].
@@ -71,6 +73,8 @@ pub struct CrossForkChoice {
     pub fork: DatasetId,
     pub file_name: String,
     pub text: String,
+    /// Carried to the switch, dropped by the port ([`adopt_as`]).
+    pub library_id: Option<String>,
 }
 
 /// The parked question, or `None`. Provided by the shell, written by the menu.
@@ -253,10 +257,13 @@ pub fn adopt(
     file_name: &str,
     database: &PowerDatabase,
     loaded: DatasetId,
+    library_id: Option<String>,
     session: BuildSession,
     report: Signal<Option<BuildIoOutcome>>,
 ) {
-    adopt_as(text, file_name, database, loaded, None, session, report);
+    adopt_as(
+        text, file_name, database, loaded, None, library_id, session, report,
+    );
 }
 
 /// [`adopt`], plus the fork to stamp the build with.
@@ -272,12 +279,16 @@ pub fn adopt_as(
     database: &PowerDatabase,
     loaded: DatasetId,
     stamp: Option<DatasetId>,
+    library_id: Option<String>,
     session: BuildSession,
     mut report: Signal<Option<BuildIoOutcome>>,
 ) {
     match decode_stamped(text, database, loaded, stamp) {
         Ok(decoded) => {
             let mut build = decoded.build;
+            // A port re-reads the row's build against another fork; updating the row with that
+            // would overwrite the author's original, so a ported build starts unlinked.
+            build.library_id = library_id.filter(|_| stamp.is_none());
             crate::inherents::sync(&mut build, database);
             crate::granted_powers::sync(&mut build, database);
             let picks = pick_count(&build);
@@ -319,6 +330,7 @@ pub fn adopt_as(
 pub(crate) fn take_build(
     text: String,
     file_name: String,
+    library_id: Option<String>,
     database: Option<Db>,
     dataset: Signal<DatasetId>,
     session: BuildSession,
@@ -332,6 +344,7 @@ pub(crate) fn take_build(
             fork,
             file_name,
             text,
+            library_id,
         })),
         // No database means the bundle is still loading, which is also the one case where
         // parking the text is the whole answer.
@@ -339,8 +352,11 @@ pub(crate) fn take_build(
             dataset: loaded,
             file_name,
             text,
+            library_id,
         })),
-        (Some(database), _) => adopt(&text, &file_name, &database, loaded, session, report),
+        (Some(database), _) => adopt(
+            &text, &file_name, &database, loaded, library_id, session, report,
+        ),
     }
 }
 
@@ -509,6 +525,7 @@ fn OpenFileEntry(database: Option<Db>, dataset: Signal<DatasetId>) -> Element {
                                 take_build(
                                     text,
                                     file_name,
+                                    None,
                                     database,
                                     dataset,
                                     session,
@@ -592,6 +609,7 @@ pub fn PasteBuildHost(database: Option<Db>, dataset: Signal<DatasetId>) -> Eleme
             take_build(
                 document,
                 "the pasted build".to_string(),
+                None,
                 database.clone(),
                 dataset,
                 session,
@@ -946,6 +964,7 @@ pub fn BuildIoChoiceHost(database: Option<Db>, dataset: Signal<DatasetId>) -> El
                 dataset: parked.fork,
                 file_name: parked.file_name.clone(),
                 text: parked.text.clone(),
+                library_id: parked.library_id.clone(),
             }));
             dataset.set(parked.fork);
             choice.set(None);
@@ -962,6 +981,7 @@ pub fn BuildIoChoiceHost(database: Option<Db>, dataset: Signal<DatasetId>) -> El
                     &database,
                     loaded,
                     Some(loaded),
+                    None,
                     session,
                     report,
                 );
@@ -1073,6 +1093,7 @@ pub fn BuildIoFragmentHost(dataset: Signal<DatasetId>) -> Element {
                 take_build(
                     text,
                     "the linked build".to_string(),
+                    None,
                     None,
                     dataset,
                     session,
@@ -1219,6 +1240,7 @@ fn OpenedReport(
                                                 dataset: fork,
                                                 file_name: file_name.clone(),
                                                 text: text.clone(),
+                                                library_id: None,
                                             }),
                                         );
                                     dataset.set(fork);

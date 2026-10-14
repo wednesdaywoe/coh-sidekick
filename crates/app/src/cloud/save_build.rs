@@ -35,7 +35,7 @@
 use super::account::Account;
 use super::owner_store::{self, QuickShare};
 use super::shared_builds::{
-    self, BuildVisibility, RateLimitAction, ShareError, ShareInput, Shared,
+    self, BuildVisibility, RateLimitAction, ShareError, ShareInput, Shared, SharedBuildSummary,
     CURRENT_PREVIEW_TEMPLATE_VERSION,
 };
 use super::tag_vocab;
@@ -159,6 +159,33 @@ pub fn combine_tags(chosen: &[String], raw: &str) -> Vec<String> {
         }
     }
     tags
+}
+
+/// A saved row's tags split back into the dialog's two halves: the curated ones as chips, in
+/// the vocabulary's spelling, and the rest as the free-text line they were typed into.
+pub fn split_tags(saved: &[String]) -> (Vec<String>, String) {
+    let mut chips = Vec::new();
+    let mut typed = Vec::new();
+    for tag in saved {
+        match tag_vocab::canonical(tag) {
+            Some(curated) => chips.push(curated.to_string()),
+            None => typed.push(tag.as_str()),
+        }
+    }
+    (chips, typed.join(", "))
+}
+
+/// The visibility a save sends. A new row states one. An update sends one only when the user
+/// changed it here, so re-saving can't revert a visibility set elsewhere since, and a holder of
+/// only an owner token (who may not publish) can update the build without asking to.
+pub fn sent_visibility(
+    chosen: BuildVisibility,
+    target: Option<&SharedBuildSummary>,
+) -> Option<BuildVisibility> {
+    match target {
+        Some(row) if row.visibility == chosen => None,
+        _ => Some(chosen),
+    }
 }
 
 /// Encode the working build the way it travels, and hand back the parsed envelope.
@@ -510,8 +537,57 @@ fn SaveBuildBody(database: Option<Db>) -> Element {
     // The last choice made here, restored once the async read lands — unless the user has
     // already clicked one, which must not be overwritten by a read that arrived late.
     let mut picked_visibility = use_signal(|| false);
+
+    // The saved row this build came from or was last saved as. Read once, at open: a save below
+    // relinks the build, and the form must not re-seed itself from the row it just wrote.
+    let linked = use_hook(|| session.build.peek().library_id.clone());
+    // That row as the server has it now: `None` while reading, `Some(None)` for a link the
+    // server no longer answers (the row was deleted), which falls back to a plain save.
+    let mut row = use_signal(|| None::<Option<SharedBuildSummary>>);
+    use_hook({
+        let account = account.clone();
+        let linked = linked.clone();
+        let opened_name = session.build.peek().name.clone();
+        move || {
+            let Some(id) = linked else {
+                return;
+            };
+            spawn(async move {
+                let found = match account.prepared().await {
+                    Ok(cloud) => shared_builds::get_shared_build(&cloud, &id)
+                        .await
+                        .ok()
+                        .flatten()
+                        .map(|shared| shared.summary),
+                    Err(_) => None,
+                };
+                if let Some(found) = &found {
+                    // The server overwrites every metadata column on an update, so a blank
+                    // field here would wipe the saved one. Seeded only while the form is still
+                    // as it opened, so a read that lands late can't undo the user's typing.
+                    let untouched = *name.peek() == opened_name
+                        && description.peek().is_empty()
+                        && tags.peek().is_empty()
+                        && chosen.peek().is_empty();
+                    if untouched {
+                        let (chips, typed) = split_tags(&found.tags);
+                        name.set(found.name.clone());
+                        description.set(found.description.clone());
+                        chosen.set(chips);
+                        tags.set(typed);
+                    }
+                    if !picked_visibility() {
+                        visibility.set(found.visibility);
+                    }
+                }
+                row.set(Some(found));
+            });
+        }
+    });
+    let is_linked = linked.is_some();
     use_hook(move || {
-        if signed_in {
+        // A linked build shows its row's visibility instead of the last one picked here.
+        if signed_in && !is_linked {
             spawn(async move {
                 if let Some(remembered) = owner_store::save_visibility().await {
                     if !picked_visibility() {
@@ -570,13 +646,17 @@ fn SaveBuildBody(database: Option<Db>) -> Element {
         }
     };
 
+    let reading = is_linked && row.read().is_none();
+    let updating = row.read().clone().flatten().map(|row| row.name);
+    let gone = matches!(*row.read(), Some(None));
+
     let hint = shared_builds::rate_limit_hint(RateLimitAction::for_requested(Some(visibility())));
 
-    let save_now = {
+    let save = {
         let database = database.clone();
         let account = account.clone();
         let identity = identity.clone();
-        move |_| {
+        move |as_new: bool| {
             let database = database.clone();
             let account = account.clone();
             let identity = identity.clone();
@@ -602,6 +682,10 @@ fn SaveBuildBody(database: Option<Db>) -> Element {
                     .as_ref()
                     .and_then(|u| u.display_name.clone())
                     .unwrap_or_default();
+                let target = match as_new {
+                    true => None,
+                    false => row.peek().clone().flatten(),
+                };
                 let input = share_input(
                     &identity,
                     envelope,
@@ -610,12 +694,16 @@ fn SaveBuildBody(database: Option<Db>) -> Element {
                     &author,
                     build.dataset.as_str(),
                     combine_tags(&chosen.peek().clone(), &tags.peek().clone()),
-                    Some(visibility()),
-                    None,
+                    sent_visibility(visibility(), target.as_ref()),
+                    target.map(|target| target.id),
                     preview,
                 );
                 match save(&account, input, signed_in).await {
-                    Ok(saved) => outcome.set(Some(saved)),
+                    Ok(saved) => {
+                        // The next save of this build updates the row this one wrote.
+                        session.link_library(saved.id.clone());
+                        outcome.set(Some(saved));
+                    }
                     Err(error) => refusal.set(Some(error.to_string())),
                 }
                 saving.set(false);
@@ -754,6 +842,17 @@ fn SaveBuildBody(database: Option<Db>) -> Element {
             }
             p { class: "sb-save__hint", "{hint}" }
 
+            if let Some(saved_as) = &updating {
+                p { class: "sb-save__hint",
+                    "This build is saved in My Builds as “{saved_as}”. Update it, or save a "
+                    "separate copy."
+                }
+            }
+            if gone {
+                p { class: "sb-save__hint",
+                    "The saved build this was opened from is gone, so this saves a new one."
+                }
+            }
             if let Some(reason) = refusal() {
                 p { class: "sb-save__error", "{reason}" }
             }
@@ -765,14 +864,83 @@ fn SaveBuildBody(database: Option<Db>) -> Element {
                     onclick: move |_| open.set(false),
                     "Cancel"
                 }
+                if updating.is_some() {
+                    button {
+                        class: "seg",
+                        r#type: "button",
+                        disabled: saving() || blocked.is_some(),
+                        onclick: {
+                            let save = save.clone();
+                            move |_| save(true)
+                        },
+                        "Save as new copy"
+                    }
+                }
                 button {
                     class: "seg is-primary",
                     r#type: "button",
-                    disabled: saving() || blocked.is_some(),
-                    onclick: save_now,
-                    if saving() { "Saving…" } else { "Save" }
+                    // A click before the row is read would mint the duplicate this exists to stop.
+                    disabled: saving() || blocked.is_some() || reading,
+                    onclick: move |_| save(false),
+                    if saving() {
+                        "Saving…"
+                    } else if reading {
+                        "Finding your saved build…"
+                    } else if updating.is_some() {
+                        "Update saved build"
+                    } else {
+                        "Save"
+                    }
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn row(visibility: &str) -> SharedBuildSummary {
+        serde_json::from_value(serde_json::json!({
+            "id": "row-1", "name": "Saved", "archetype": "", "archetype_name": "",
+            "primary_set": "", "primary_name": "", "secondary_set": "", "secondary_name": "",
+            "level": 50, "created_at": "", "updated_at": "", "visibility": visibility,
+        }))
+        .unwrap()
+    }
+
+    // An update that restated the dialog's visibility would undo a toggle made in My Builds
+    // since the dialog opened, and would ask the server to publish on a token holder's behalf.
+    #[test]
+    fn an_update_leaves_visibility_alone_unless_it_was_changed_here() {
+        let private = row("private");
+        assert_eq!(
+            sent_visibility(BuildVisibility::Private, Some(&private)),
+            None
+        );
+        assert_eq!(
+            sent_visibility(BuildVisibility::Public, Some(&private)),
+            Some(BuildVisibility::Public)
+        );
+        assert_eq!(
+            sent_visibility(BuildVisibility::Private, None),
+            Some(BuildVisibility::Private)
+        );
+    }
+
+    // The server overwrites every tag on an update, so a tag the form can't show is one the
+    // update deletes.
+    #[test]
+    fn saved_tags_go_back_where_they_were_entered() {
+        let saved = [
+            "dps".to_string(),
+            "my farm".to_string(),
+            "Complete".to_string(),
+        ];
+        let (chips, typed) = split_tags(&saved);
+        assert_eq!(chips, ["DPS", "Complete"]);
+        assert_eq!(typed, "my farm");
+        assert_eq!(combine_tags(&chips, &typed).len(), saved.len());
     }
 }

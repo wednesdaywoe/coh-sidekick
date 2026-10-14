@@ -1580,6 +1580,7 @@ fn DetailBody(
     mut load_refusal: Signal<Option<String>>,
 ) -> Element {
     let account = use_context::<Account>();
+    let load_account = account.clone();
     let mut open = use_context::<BrowserOpen>().0;
 
     // The document is unpacked from the row here and nowhere else. Everything below this line
@@ -1722,24 +1723,43 @@ fn DetailBody(
                 onclick: {
                     let shared = shared.clone();
                     let build_json = build_json.clone();
+                    let account = load_account.clone();
                     move |_| {
-                        let Ok(text) = serde_json::to_string(&build_json) else {
-                            load_refusal.set(Some("the shared build could not be read as text".to_string()));
-                            return;
-                        };
-                        crate::build_io::take_build(
-                            text,
-                            format!("Shared build — {}", shared.name),
-                            database.clone(),
-                            dataset,
-                            session,
-                            pending,
-                            choice,
-                            report,
-                        );
-                        // LAST: the planner now holds the build (or is about to ask about a
-                        // different fork), and the modal is done either way.
-                        open.set(None);
+                        let shared = shared.clone();
+                        let build_json = build_json.clone();
+                        let account = account.clone();
+                        let database = database.clone();
+                        async move {
+                            let Ok(text) = serde_json::to_string(&build_json) else {
+                                load_refusal.set(Some("the shared build could not be read as text".to_string()));
+                                return;
+                            };
+                            // Linked only for the owner, so the save dialog offers to update this
+                            // row. Anyone else's load is a fresh copy: the server would refuse the
+                            // update anyway, and offering it would only promise what it can't do.
+                            let token = crate::cloud::owner_store::owner_token(&shared.id).await;
+                            let user_id = account.user().peek().as_ref().map(|u| u.id.clone());
+                            let library_id = crate::cloud::save_build::is_owned(
+                                &shared,
+                                token.as_deref(),
+                                user_id.as_deref(),
+                            )
+                            .then(|| shared.id.clone());
+                            crate::build_io::take_build(
+                                text,
+                                format!("Shared build — {}", shared.name),
+                                library_id,
+                                database,
+                                dataset,
+                                session,
+                                pending,
+                                choice,
+                                report,
+                            );
+                            // LAST: the planner now holds the build (or is about to ask about a
+                            // different fork), and the modal is done either way.
+                            open.set(None);
+                        }
                     }
                 },
                 "Load into Planner"

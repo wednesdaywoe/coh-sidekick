@@ -165,6 +165,14 @@ pub struct CharacterState {
     /// survives the need shrinking and re-growing.
     #[serde(default)]
     pub shopping_acquired: BTreeMap<String, u32>,
+    /// The saved cloud build this one was loaded from or last saved as, so the save dialog can
+    /// update that row instead of minting a duplicate (the beta's `vaultId`). Set only when the
+    /// viewer owns the row. Planner bookkeeping, not build identity: the `.skif` codec never
+    /// carries it, so a shared copy can't point back at the author's row. Living on the build
+    /// rather than beside it is what makes undo safe: undoing a load restores the previous
+    /// build together with its own link, never the old build under the new link.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub library_id: Option<String>,
 }
 
 /// A saved attack chain — the rotation builder's persisted state (RB5-c, beta
@@ -205,6 +213,7 @@ impl CharacterState {
             crafting_obtained: BTreeSet::new(),
             crafting_salvage_checked: BTreeSet::new(),
             shopping_acquired: BTreeMap::new(),
+            library_id: None,
         }
     }
 

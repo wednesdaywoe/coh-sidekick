@@ -1,5 +1,14 @@
 [
   {
+    "date": "2026-10-14",
+    "items": [
+      { "id": "update-saved-build", "type": "feat", "message": "Saving a build you loaded from My Builds now offers Update saved build, which keeps your name, description, tags and visibility, alongside Save as new copy." }
+
+      { "id": "select-replaces-clicked-slot", "type": "fix", "message": "With Select on in the enhancement picker, the slot you clicked can now be replaced even when it already holds an enhancement. Before, a power with no empty slots said there were 0 slots to fill. Your first marked piece now goes into the clicked slot, and the rest fill the empty slots after it" }
+    ]
+  },
+
+  {
     "date": "2026-10-13",
     "items": [
       { "id": "stat-hover-sources", "type": "feat", "message": "Stat hover cards have made it over from Sidekick Beta. Hovering a stat in a dashboard panel will show a breakdown of every contributor: set bonuses, powers, procs, accolades and incarnates, each with its share, and the total" },

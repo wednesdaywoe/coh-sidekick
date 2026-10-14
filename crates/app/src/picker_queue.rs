@@ -19,12 +19,10 @@
 //! copy of a set piece in one power, but two Recharge IOs in Hasten is the ordinary build, and a
 //! queue that unmarked on the second click made it two trips through the picker.
 
-use coh_data::Enhancement;
-
 /// One marked pick, as the identity of a thing to place rather than the thing itself.
 ///
-/// A descriptor, not a built [`Enhancement`], so the header's craft level / attunement / booster
-/// apply at PLACEMENT time. Marking six pieces and then raising the level has to raise all six —
+/// A descriptor, not a built [`Enhancement`](coh_data::Enhancement), so the header's craft
+/// level / attunement / booster apply at PLACEMENT time. Marking six pieces and then raising the level has to raise all six —
 /// building at mark time would stamp each with whatever the dial read when it was clicked, and
 /// leave a queue whose pieces silently disagree.
 #[derive(Clone, PartialEq, Debug)]
@@ -89,18 +87,20 @@ pub fn badge(queue: &[QueuedPick], pick: &QueuedPick) -> Option<String> {
     (!places.is_empty()).then(|| places.join("·"))
 }
 
-/// The slots a bulk placement would fill: this power's empty slots from the one the picker was
-/// opened on, forward.
+/// The slots a bulk placement would fill: the slot the picker was opened on, then this power's
+/// empty slots after it.
 ///
-/// Forward from the opened slot rather than from zero, because the slot that was clicked is the
-/// one the user is pointing at — filling backwards into earlier empties would put the first
+/// The opened slot is a target even when it is full — the first mark replaces what is there, as a
+/// single pick would. Counting only empties left a fully-slotted power with nowhere to put a
+/// mark. Forward from the opened slot rather than from zero, because the slot that was clicked is
+/// the one the user is pointing at — filling backwards into earlier empties would put the first
 /// marked piece somewhere they did not ask for.
-pub fn empty_slots_from(slots: &[Option<Enhancement>], from: usize) -> Vec<usize> {
+pub fn slots_to_fill_from<T>(slots: &[Option<T>], from: usize) -> Vec<usize> {
     slots
         .iter()
         .enumerate()
         .skip(from)
-        .filter(|(_, slot)| slot.is_none())
+        .filter(|(index, slot)| *index == from || slot.is_none())
         .map(|(index, _)| index)
         .collect()
 }
@@ -151,5 +151,12 @@ mod tests {
         let mut queue = vec![recharge(), piece(), recharge()];
         unmark_last(&mut queue, &recharge());
         assert_eq!(queue, vec![recharge(), piece()]);
+    }
+
+    #[test]
+    fn the_opened_slot_is_filled_even_when_full() {
+        let slots = [Some(()), Some(()), None, Some(()), None];
+        assert_eq!(slots_to_fill_from(&slots, 1), vec![1, 2, 4]);
+        assert_eq!(slots_to_fill_from(&slots, 2), vec![2, 4]);
     }
 }

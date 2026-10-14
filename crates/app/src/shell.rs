@@ -1012,6 +1012,7 @@ pub fn Shell() -> Element {
             &parked.file_name,
             database,
             parked.dataset,
+            parked.library_id.clone(),
             session,
             build_io_report,
         );

@@ -77,6 +77,14 @@ impl BuildSession {
 
     /// Fold the current build into the envelope and write it to `localStorage`. The one
     /// side-effecting sink every edit funnels through.
+    /// Record the cloud row this build is saved as. Not an undoable edit: the user changed
+    /// nothing about the build, and an undo step that only dropped the link would turn the
+    /// next update back into a duplicate.
+    pub fn link_library(mut self, id: String) {
+        self.build.with_mut(|build| build.library_id = Some(id));
+        self.persist();
+    }
+
     fn persist(mut self) {
         let next = envelope::compose(&self.build.peek(), &self.stored.peek());
         self.stored.set(next.clone());
