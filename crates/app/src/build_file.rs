@@ -27,6 +27,8 @@ use coh_data::mxd_import;
 use coh_data::skif::{self, Decoded, SkifError, Unresolved};
 use coh_data::{CharacterState, DatasetId, PowerDatabase};
 
+use crate::naming;
+
 /// The extension, and the filter a save dialog offers.
 pub const EXTENSION: &str = "skif";
 
@@ -64,22 +66,32 @@ const WINDOWS_DEVICES: [&str; 22] = [
     "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
 ];
 
-/// What to call this build's file: its own name where it has one, its archetype where it does
-/// not, and [`UNNAMED`] where it has neither.
+/// What to call this build's file: its own name where it has one, its archetype and powersets
+/// where it does not (`Blaster - Fire Blast - Atomic Manipulation`), and [`UNNAMED`] where it
+/// has neither.
 ///
-/// The archetype comes from the id rather than the display name because the display name is
-/// not always there — [`skif::hydrate`] leaves it empty and lets the UI resolve it from the id
-/// — so naming a file after it would make the name depend on how the build arrived rather than
-/// on what it is.
-pub fn file_name_for(build: &CharacterState) -> String {
-    let stem = [
-        build.name.as_str(),
-        build.archetype.id.as_deref().unwrap_or_default(),
+/// The archetype alone told two unnamed builds of one archetype apart only by the browser's
+/// ` (1)` suffix, so the primary and secondary ride along.
+///
+/// The display names come from [`naming`], not the build's stored `name` fields: a build that
+/// arrived from a file has those blank, and the file name must not depend on how the build
+/// arrived.
+pub fn file_name_for(build: &CharacterState, database: &PowerDatabase) -> String {
+    let described = [
+        naming::archetype_name(build, database),
+        naming::powerset_name(&build.primary, database),
+        naming::powerset_name(&build.secondary, database),
     ]
-    .into_iter()
-    .map(filename_safe)
-    .find(|candidate| !candidate.is_empty())
-    .unwrap_or_else(|| UNNAMED.to_string());
+    .iter()
+    .flatten()
+    .map(|part| filename_safe(part))
+    .filter(|part| !part.is_empty())
+    .collect::<Vec<_>>()
+    .join(" - ");
+    let stem = [filename_safe(&build.name), filename_safe(&described)]
+        .into_iter()
+        .find(|candidate| !candidate.is_empty())
+        .unwrap_or_else(|| UNNAMED.to_string());
     format!("{stem}.{EXTENSION}")
 }
 
@@ -793,4 +805,69 @@ pub async fn write_png_file(suggested_name: &str, bytes: &[u8]) -> Result<Writte
     let path = handle.path().to_path_buf();
     std::fs::write(&path, bytes).map_err(|e| format!("{}: {e}", path.display()))?;
     Ok(Some(path.display().to_string()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    fn homecoming() -> PowerDatabase {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../contract/homecoming/bundle.json.gz");
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads")
+    }
+
+    /// A build as a file hands it over: ids only, every display name blank.
+    fn build(name: &str, archetype: &str, primary: &str, secondary: &str) -> CharacterState {
+        let id = |s: &str| (!s.is_empty()).then(|| s.to_string());
+        let mut build = CharacterState::empty(DatasetId::Homecoming);
+        build.name = name.to_string();
+        build.archetype.id = id(archetype);
+        build.primary.id = id(primary);
+        build.secondary.id = id(secondary);
+        build
+    }
+
+    #[test]
+    fn an_unnamed_build_is_called_after_its_archetype_and_powersets() {
+        let db = homecoming();
+        let unnamed = build(
+            "",
+            "blaster",
+            "blaster/fire-blast",
+            "blaster/atomic-manipulation",
+        );
+        assert_eq!(
+            file_name_for(&unnamed, &db),
+            "Blaster - Fire Blast - Atomic Manipulation.skif"
+        );
+    }
+
+    #[test]
+    fn a_name_the_user_gave_wins() {
+        let db = homecoming();
+        let named = build(
+            "My Fire",
+            "blaster",
+            "blaster/fire-blast",
+            "blaster/atomic-manipulation",
+        );
+        assert_eq!(file_name_for(&named, &db), "My Fire.skif");
+    }
+
+    #[test]
+    fn powersets_not_yet_picked_are_left_out() {
+        let db = homecoming();
+        assert_eq!(
+            file_name_for(&build("", "blaster", "", ""), &db),
+            "Blaster.skif"
+        );
+        assert_eq!(
+            file_name_for(&build("", "blaster", "blaster/fire-blast", ""), &db),
+            "Blaster - Fire Blast.skif"
+        );
+        assert_eq!(file_name_for(&build("", "", "", ""), &db), "build.skif");
+    }
 }

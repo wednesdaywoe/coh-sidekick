@@ -1469,7 +1469,8 @@ fn ExportImageBody(database: Option<Db>) -> Element {
     let ready = matches!(&*png.read(), Some(Ok(_)));
     let file_name = format!(
         "{}.png",
-        crate::build_file::file_name_for(&session.build.read()).trim_end_matches(".skif")
+        crate::build_file::file_name_for(&session.build.read(), &database)
+            .trim_end_matches(".skif")
     );
 
     rsx! {

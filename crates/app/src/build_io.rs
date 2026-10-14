@@ -683,7 +683,7 @@ fn SaveFileEntry(database: Option<Db>) -> Element {
                     };
                     // Both derived before the await: a `Signal` read guard held across one
                     // would outlive the render it belongs to.
-                    let file_name = build_file::file_name_for(&session.build.read());
+                    let file_name = build_file::file_name_for(&session.build.read(), &database);
                     let encoded = skif::encode(&session.build.read(), &database);
                     let written = match encoded {
                         Ok(text) => build_file::write_file(&file_name, &text).await.err(),
