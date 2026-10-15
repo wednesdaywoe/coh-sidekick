@@ -857,6 +857,58 @@ mod tests {
         assert_eq!(file_name_for(&named, &db), "My Fire.skif");
     }
 
+    /// Every slot past a power's base slot reads the level the Mids file placed it at, rather
+    /// than the earliest grant the schedule could give it.
+    ///
+    /// Powers are paired by the last segment of Mids' name and the level they were picked at,
+    /// since a few Mids names land on a differently named power here. A slot Mids places at a level Homecoming grants no slot at (its respec rows at
+    /// 47) has no level to keep, so it is left out of the comparison.
+    #[test]
+    fn mbd_import_keeps_the_files_slot_levels() {
+        let db = homecoming();
+        let schedule = db
+            .leveling_schedule
+            .as_ref()
+            .expect("homecoming has a schedule");
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../fixtures/mids/homecoming/blaster-assault-rifle-tactical-arrow-v3861.mbd");
+        let text = std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        let file = mbd::from_str(&text).expect("fixture parses");
+        let decoded = decode_mbd(&text, &db, DatasetId::Homecoming).expect("fixture imports");
+        let levels = coh_data::slot_levels::slot_levels(schedule, &decoded.build);
+
+        let mut compared = 0;
+        for power in decoded.build.all_selected() {
+            let Some(entry) = file.power_entries.iter().find(|entry| {
+                (power.level == 0 || i32::from(power.level) == entry.level)
+                    && entry
+                        .power_name
+                        .rsplit('.')
+                        .next()
+                        .is_some_and(|name| name.eq_ignore_ascii_case(&power.internal_name))
+            }) else {
+                continue;
+            };
+            let shown = coh_data::slot_levels::levels_of(&levels, &decoded.build, power)
+                .expect("an imported power has levels");
+            for (index, slot) in entry.slot_entries.iter().enumerate().skip(1) {
+                let stated = u8::try_from(slot.level).expect("a game level");
+                if schedule.slot_grants.get(&stated).copied().unwrap_or(0) == 0 {
+                    continue;
+                }
+                assert_eq!(
+                    shown[index],
+                    Some(stated),
+                    "{} slot {index}",
+                    entry.power_name
+                );
+                compared += 1;
+            }
+        }
+        // Most of the file's 64 placed slots, so a pairing that silently found nothing fails.
+        assert!(compared >= 50, "compared only {compared} slots");
+    }
+
     #[test]
     fn powersets_not_yet_picked_are_left_out() {
         let db = homecoming();

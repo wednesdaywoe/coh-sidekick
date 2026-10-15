@@ -378,11 +378,13 @@ fn catalog_stat(named: &[String], catalog: &EnhancementCatalog) -> Result<String
 
 use crate::accolades::ACCOLADE_CATEGORY;
 use crate::build_sets::{archetype_for_class, bucket_of, set_powers, Bucket, Roles, SetLookup};
+use crate::character::SlotLevelSource;
 use crate::inherent_grants::auto_granted_slot_count;
 use crate::leveling_schedule::LevelingSchedule;
 use crate::mbd::{MbdFile, MbdPowerEntry};
 use crate::mids_names::MidsNames;
-use crate::skif::{SkifBuild, SkifIncarnate, SkifPower, SkifSelection};
+use crate::skif::{SkifBuild, SkifIncarnate, SkifPower, SkifSelection, SkifSlotOrder};
+use crate::slot_levels::SlotCategory;
 use crate::{DatasetId, PowerDatabase};
 use std::collections::HashMap;
 
@@ -1237,6 +1239,7 @@ fn place(
             if power.level > 0 {
                 summary.picks_imported += 1;
             }
+            seed_slot_order(build, &bucket, &power, entry);
             match bucket {
                 Bucket::Inherent => build.inherents.push(power),
                 Bucket::Primary => push(&mut build.primary, set_id, power),
@@ -1254,6 +1257,56 @@ fn place(
             }
             true
         }
+    }
+}
+
+/// Record the level the file places each of `power`'s slots at.
+///
+/// Mids writes a `Level` on every `SlotEntry`, and it is the only record of when the author put
+/// that slot there: the grant schedule says which levels were available, never which one a slot
+/// took. Left empty, `slot_order` hands [`crate::slot_levels`] no history and it packs every
+/// slot at the earliest grant, as a respec would. The beta's `seedSlotOrderFromFile`.
+///
+/// Index 0 comes free with the pick and an `IsInherent` row is an auto-granted slot at a fixed
+/// level, so neither is an allocation and neither is recorded. A level is a preference: the
+/// solver honours it where the schedule can, and `freeze` clears one the schedule never grants.
+fn seed_slot_order(
+    build: &mut SkifBuild,
+    bucket: &Bucket,
+    power: &SkifPower,
+    entry: &MbdPowerEntry,
+) {
+    let category = match bucket {
+        Bucket::Inherent => SlotCategory::Inherent,
+        Bucket::Primary => SlotCategory::Primary,
+        Bucket::Secondary => SlotCategory::Secondary,
+        Bucket::Pool(_) => SlotCategory::Pool,
+        Bucket::Epic(_) => SlotCategory::Epic,
+    };
+    // `read_slots` keeps one slot per file row, so the two are parallel.
+    for (index, row) in entry
+        .slot_entries
+        .iter()
+        .enumerate()
+        .take(power.slots.len())
+        .skip(1)
+    {
+        if row.is_inherent {
+            continue;
+        }
+        let (Ok(slot_index), Ok(level)) = (u8::try_from(index), u8::try_from(row.level)) else {
+            continue;
+        };
+        if level == 0 {
+            continue;
+        }
+        build.slot_order.push(SkifSlotOrder {
+            power_name: power.internal_name.clone(),
+            slot_index,
+            category: Some(category.as_str().to_string()),
+            level: Some(level),
+            level_source: Some(SlotLevelSource::Authored),
+        });
     }
 }
 
