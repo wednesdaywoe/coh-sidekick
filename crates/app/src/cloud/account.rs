@@ -73,6 +73,17 @@ pub struct AuthUser {
     pub avatar_url: Option<String>,
 }
 
+impl AuthUser {
+    /// The provider's name, if it is fit to put on a shared build. SimpleLogin's `name` is the
+    /// account's email address, so for those accounts there is none and the author line starts
+    /// empty.
+    pub fn public_name(&self) -> Option<String> {
+        self.display_name
+            .clone()
+            .filter(|name| !crate::cloud::profile::contains_email(name))
+    }
+}
+
 /// Read the identity out of a session, or `None` if it carries none.
 ///
 /// A user with no `id` is not a user: the id is what every owner-scoped row is keyed on, and one

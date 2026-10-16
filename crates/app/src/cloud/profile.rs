@@ -386,11 +386,29 @@ pub fn author_identity(author_name: &str, author_handle: Option<&str>) -> Author
         .trim_start_matches(|c: char| c == '@' || !opens_a_name(c))
         .trim_end()
         .to_string();
+    // Rows quick-shared from the web client before the server dropped addresses still carry them.
+    let display = if contains_email(&display) { String::new() } else { display };
     match author_handle.and_then(normalize_handle) {
         Some(handle) => AuthorIdentity::Verified { display, handle },
         None if display.is_empty() => AuthorIdentity::Anonymous,
         None => AuthorIdentity::Unverified { display },
     }
+}
+
+/// An address shape anywhere in a name: `local@domain.tld`, no whitespace. Mirrors
+/// `containsEmail` in the beta's `_shared/author-name.ts`. SimpleLogin's `name` claim is an email
+/// address, and a name is public wherever it goes, so no author surface draws one or sends one.
+/// `Savant @ Everlasting` is not an address.
+pub fn contains_email(name: &str) -> bool {
+    name.split(char::is_whitespace).any(|word| {
+        let Some((local, domain)) = word.split_once('@') else { return false };
+        let Some((host, tld)) = domain.rsplit_once('.') else { return false };
+        !local.is_empty()
+            && !host.is_empty()
+            && !host.contains('@')
+            && tld.chars().count() >= 2
+            && !tld.contains('@')
+    })
 }
 
 // ============================================================
@@ -884,5 +902,32 @@ fn ProfileBody() -> Element {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod email_tests {
+    use super::*;
+
+    #[test]
+    fn an_address_is_never_an_author_line() {
+        assert_eq!(author_identity("jane.smith@example.com", None), AuthorIdentity::Anonymous);
+        assert_eq!(
+            author_identity("Jane (jane.smith@example.com)", Some("jane")),
+            AuthorIdentity::Verified { display: String::new(), handle: "jane".to_string() }
+        );
+        assert_eq!(
+            author_identity("Savant @ Everlasting", None),
+            AuthorIdentity::Unverified { display: "Savant @ Everlasting".to_string() }
+        );
+    }
+
+    #[test]
+    fn address_shapes() {
+        assert!(contains_email("abc.xyz@aleeas.com"));
+        assert!(contains_email("x@mail.example.co.uk"));
+        assert!(!contains_email("Savant@Everlasting"));
+        assert!(!contains_email("@savant"));
+        assert!(!contains_email("tigereyes#0"));
     }
 }

@@ -855,7 +855,7 @@ fn CopyShortLinkEntry(database: Option<Db>) -> Element {
                         let author = user
                             .peek()
                             .as_ref()
-                            .and_then(|u| u.display_name.clone())
+                            .and_then(|u| u.public_name())
                             .unwrap_or_default();
                         let shared = crate::cloud::save_build::quick_share(
                             &account,
