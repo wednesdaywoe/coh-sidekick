@@ -4130,90 +4130,141 @@ fn EnhancementPickerModal(
                                     }
                                 };
                                 let attuned_frame = attuned();
+                                // A row earns its place by offering a choice. One chip that is
+                                // already the whole list reads as a filter that does nothing —
+                                // unless it is the one switched on, which has to stay reachable
+                                // to be switched off.
+                                let show_types = type_counts.len() > 1 || set_category().is_some();
+                                let show_rarities = rarity_counts.len() > 1 || set_rarity().is_some();
+                                let show_sizes = size_counts.len() > 1 || set_size().is_some();
+                                let any_filter = set_category().is_some()
+                                    || set_rarity().is_some()
+                                    || set_size().is_some()
+                                    || procs_only();
                                 rsx! {
-                                    aside { class: "picker-sidebar",
-                                        div { class: "picker-sidebar-heading", "Set category" }
-                                        button {
-                                            class: if set_category().is_none() { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                            onclick: move |_| set_category.set(None),
-                                            "All sets ({total})"
-                                        }
-                                        for facet in type_counts {
-                                            button {
-                                                key: "{facet.value}",
-                                                class: if set_category().as_deref() == Some(facet.value.as_str()) { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                                onclick: {
-                                                    let value = facet.value.clone();
-                                                    move |_| set_category.set(Some(value.clone()))
-                                                },
-                                                "{facet.value} ({facet.count})"
+                                    // Each chip is a toggle: pressing the lit one clears its row,
+                                    // so no row needs an "any" chip of its own.
+                                    div { class: "picker-filters",
+                                        if show_types {
+                                            div { class: "picker-filter-row",
+                                                span { class: "picker-filter-label", "Category" }
+                                                div { class: "picker-filter-chips",
+                                                    for facet in type_counts {
+                                                        {
+                                                            let on = set_category().as_deref() == Some(facet.value.as_str());
+                                                            rsx! {
+                                                                button {
+                                                                    key: "{facet.value}",
+                                                                    class: if on { "picker-chip is-on" } else { "picker-chip" },
+                                                                    aria_pressed: "{on}",
+                                                                    onclick: {
+                                                                        let value = facet.value.clone();
+                                                                        move |_| set_category.set((!on).then(|| value.clone()))
+                                                                    },
+                                                                    "{facet.value}"
+                                                                    span { class: "picker-chip-count", "{facet.count}" }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                         // Rarity cuts ACROSS the slot categories above, so it gets
-                                        // its own headed section instead of extending that run.
-                                        // Derived from the export's own `category` vocabulary, so
-                                        // a fork that ships a seventh tier gets a button for it
-                                        // rather than having its sets fall out of the sidebar.
-                                        if rarity_counts.len() > 1 {
-                                            div { class: "picker-sidebar-heading", "Rarity" }
-                                            button {
-                                                class: if set_rarity().is_none() { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                                onclick: move |_| set_rarity.set(None),
-                                                "Any rarity ({total})"
+                                        // its own row instead of extending that run. Derived from
+                                        // the export's own `category` vocabulary, so a fork that
+                                        // ships a seventh tier gets a chip for it rather than
+                                        // having its sets fall out of the filters.
+                                        if show_rarities {
+                                            div { class: "picker-filter-row",
+                                                span { class: "picker-filter-label", "Rarity" }
+                                                div { class: "picker-filter-chips",
+                                                    for facet in rarity_counts {
+                                                        {
+                                                            let on = set_rarity().as_deref() == Some(facet.value.as_str());
+                                                            rsx! {
+                                                                button {
+                                                                    key: "{facet.value}",
+                                                                    class: if on { "picker-chip is-on" } else { "picker-chip" },
+                                                                    aria_pressed: "{on}",
+                                                                    onclick: {
+                                                                        let value = facet.value.clone();
+                                                                        move |_| set_rarity.set((!on).then(|| value.clone()))
+                                                                    },
+                                                                    "{crate::picker_sets::rarity_label(&facet.value)}"
+                                                                    span { class: "picker-chip-count", "{facet.count}" }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
-                                            for facet in rarity_counts {
+                                        }
+                                        if show_sizes {
+                                            div { class: "picker-filter-row",
+                                                span { class: "picker-filter-label", "Size" }
+                                                div { class: "picker-filter-chips",
+                                                    for (size, count) in size_counts.iter().copied() {
+                                                        button {
+                                                            key: "{size}",
+                                                            class: if set_size() == Some(size) { "picker-chip is-on" } else { "picker-chip" },
+                                                            aria_pressed: "{set_size() == Some(size)}",
+                                                            title: "Only {size}-piece sets, the full set \
+                                                                    fits in {size} slots",
+                                                            onclick: move |_| {
+                                                                let on = *set_size.peek() == Some(size);
+                                                                set_size.set((!on).then_some(size));
+                                                            },
+                                                            "{size} pieces"
+                                                            span { class: "picker-chip-count", "{count}" }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        div { class: "picker-filter-row",
+                                            span { class: "picker-filter-label", "Show" }
+                                            div { class: "picker-filter-chips",
                                                 button {
-                                                    key: "{facet.value}",
-                                                    class: if set_rarity().as_deref() == Some(facet.value.as_str()) { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                                    onclick: {
-                                                        let value = facet.value.clone();
-                                                        move |_| set_rarity.set(Some(value.clone()))
+                                                    class: if procs_only() { "picker-chip is-on" } else { "picker-chip" },
+                                                    aria_pressed: "{procs_only()}",
+                                                    title: "Only proc pieces, from the sets that carry one",
+                                                    onclick: move |_| {
+                                                        let next = !*procs_only.peek();
+                                                        procs_only.set(next);
                                                     },
-                                                    "{crate::picker_sets::rarity_label(&facet.value)} ({facet.count})"
+                                                    "Procs only"
                                                 }
                                             }
-                                        }
-                                        // Absent when every set here is one size — nothing to
-                                        // choose between, and a lone button reads as a filter
-                                        // that does nothing.
-                                        if size_counts.len() > 1 {
-                                            div { class: "picker-sidebar-heading", "Set size" }
-                                            button {
-                                                class: if set_size().is_none() { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                                onclick: move |_| set_size.set(None),
-                                                "Any size ({total})"
+                                            // Sort orders the list rather than narrowing it, so it
+                                            // is one choice of two and never off.
+                                            span { class: "picker-filter-label picker-filter-label-inline", "Sort" }
+                                            div { class: "picker-filter-chips",
+                                                for (label, sort) in [
+                                                    ("Name", crate::picker_sets::SetSort::Name),
+                                                    ("Level", crate::picker_sets::SetSort::Level),
+                                                ] {
+                                                    button {
+                                                        key: "{label}",
+                                                        class: if set_sort() == sort { "picker-chip is-on" } else { "picker-chip" },
+                                                        aria_pressed: "{set_sort() == sort}",
+                                                        onclick: move |_| set_sort.set(sort),
+                                                        "{label}"
+                                                    }
+                                                }
                                             }
-                                            for (size, count) in size_counts.iter().copied() {
+                                            span { class: "picker-filter-total", "{total} sets" }
+                                            if any_filter {
                                                 button {
-                                                    key: "{size}",
-                                                    class: if set_size() == Some(size) { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                                    title: "Only {size}-piece sets, the full set \
-                                                            fits in {size} slots",
-                                                    onclick: move |_| set_size.set(Some(size)),
-                                                    "{size} pieces ({count})"
+                                                    class: "picker-filter-clear",
+                                                    onclick: move |_| {
+                                                        set_category.set(None);
+                                                        set_rarity.set(None);
+                                                        set_size.set(None);
+                                                        procs_only.set(false);
+                                                    },
+                                                    "Clear filters"
                                                 }
-                                            }
-                                        }
-                                        div { class: "picker-sidebar-heading", "Show" }
-                                        button {
-                                            class: if procs_only() { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                            title: "Only proc pieces, from the sets that carry one",
-                                            onclick: move |_| {
-                                                let next = !*procs_only.peek();
-                                                procs_only.set(next);
-                                            },
-                                            "Procs only"
-                                        }
-                                        div { class: "picker-sidebar-heading", "Sort" }
-                                        for (label, sort) in [
-                                            ("Name", crate::picker_sets::SetSort::Name),
-                                            ("Level", crate::picker_sets::SetSort::Level),
-                                        ] {
-                                            button {
-                                                key: "{label}",
-                                                class: if set_sort() == sort { "picker-cat picker-cat-active" } else { "picker-cat" },
-                                                onclick: move |_| set_sort.set(sort),
-                                                "{label}"
                                             }
                                         }
                                     }
