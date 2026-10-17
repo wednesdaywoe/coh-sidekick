@@ -387,7 +387,11 @@ pub fn author_identity(author_name: &str, author_handle: Option<&str>) -> Author
         .trim_end()
         .to_string();
     // Rows quick-shared from the web client before the server dropped addresses still carry them.
-    let display = if contains_email(&display) { String::new() } else { display };
+    let display = if contains_email(&display) {
+        String::new()
+    } else {
+        display
+    };
     match author_handle.and_then(normalize_handle) {
         Some(handle) => AuthorIdentity::Verified { display, handle },
         None if display.is_empty() => AuthorIdentity::Anonymous,
@@ -401,8 +405,12 @@ pub fn author_identity(author_name: &str, author_handle: Option<&str>) -> Author
 /// `Savant @ Everlasting` is not an address.
 pub fn contains_email(name: &str) -> bool {
     name.split(char::is_whitespace).any(|word| {
-        let Some((local, domain)) = word.split_once('@') else { return false };
-        let Some((host, tld)) = domain.rsplit_once('.') else { return false };
+        let Some((local, domain)) = word.split_once('@') else {
+            return false;
+        };
+        let Some((host, tld)) = domain.rsplit_once('.') else {
+            return false;
+        };
         !local.is_empty()
             && !host.is_empty()
             && !host.contains('@')
@@ -911,14 +919,22 @@ mod email_tests {
 
     #[test]
     fn an_address_is_never_an_author_line() {
-        assert_eq!(author_identity("jane.smith@example.com", None), AuthorIdentity::Anonymous);
+        assert_eq!(
+            author_identity("jane.smith@example.com", None),
+            AuthorIdentity::Anonymous
+        );
         assert_eq!(
             author_identity("Jane (jane.smith@example.com)", Some("jane")),
-            AuthorIdentity::Verified { display: String::new(), handle: "jane".to_string() }
+            AuthorIdentity::Verified {
+                display: String::new(),
+                handle: "jane".to_string()
+            }
         );
         assert_eq!(
             author_identity("Savant @ Everlasting", None),
-            AuthorIdentity::Unverified { display: "Savant @ Everlasting".to_string() }
+            AuthorIdentity::Unverified {
+                display: "Savant @ Everlasting".to_string()
+            }
         );
     }
 
