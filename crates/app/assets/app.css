@@ -4179,6 +4179,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 
 .picker-empty, .picker-error { padding: 12px; font-size: 12px; line-height: 1.4; }
 .picker-empty { color: var(--text-dim); }
+.picker-hint { padding: 6px 12px; font-size: 11px; line-height: 1.4; color: var(--text-dim); }
 .picker-error { color: var(--action-danger); }
 
 .picker-footer {

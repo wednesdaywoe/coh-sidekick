@@ -4218,6 +4218,13 @@ fn EnhancementPickerModal(
                                         }
                                     }
                                     div { class: "picker-body",
+                                        // The old planner filtered by bonus here; this one starts
+                                        // from the stats panel, so say so where people look.
+                                        if tracked_stats.0.read().is_empty() && !visible.is_empty() {
+                                            div { class: "picker-hint",
+                                                "Click or tap a stat in a stats panel to track it, and every set with a bonus to it is highlighted here."
+                                            }
+                                        }
                                         if visible.is_empty() {
                                             // "None left after the filters" is a different
                                             // statement from "this power accepts none", and the
