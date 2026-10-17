@@ -63,6 +63,10 @@ pub const SITE_ORIGIN: &str = "https://coh-sidekick.com";
 pub const DISCORD_INVITE_URL: &str = "https://discord.gg/5HmYsACBv6";
 pub const DISCORD_FEEDBACK_DM_URL: &str = "https://discord.com/channels/@me/570068130320220172";
 
+/// The release list, not `/releases/latest`: an RC tag is cut as a prerelease, and `latest`
+/// skips prereleases, so it would show nothing until a full version ships.
+pub const DESKTOP_RELEASES_URL: &str = "https://github.com/wednesdaywoe/coh-sidekick/releases";
+
 /// The five actions, in the beta's order.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Action {

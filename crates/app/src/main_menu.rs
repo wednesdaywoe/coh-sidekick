@@ -166,6 +166,7 @@ fn AboutEntries() -> Element {
         ChangelogEntry {}
         AboutEntry {}
         DiscordEntry {}
+        DesktopDownloadEntry {}
         DonateEntry {}
     }
 }
@@ -619,6 +620,28 @@ fn DiscordEntry() -> Element {
             },
             span { class: "main-menu__label", "Join the Discord" }
             span { class: "main-menu__hint", "Questions, builds, and what is coming next" }
+        }
+    }
+}
+
+/// Where the desktop builds are downloaded. Web only: the desktop app is already the thing.
+#[component]
+fn DesktopDownloadEntry() -> Element {
+    let mut menu = use_context::<crate::popover::PopoverOpen>().0;
+
+    if cfg!(not(target_arch = "wasm32")) {
+        return rsx! {};
+    }
+    rsx! {
+        button {
+            class: "main-menu__item",
+            r#type: "button",
+            onclick: move |_| {
+                crate::app_actions::open_external(crate::app_actions::DESKTOP_RELEASES_URL);
+                menu.set(false);
+            },
+            span { class: "main-menu__label", "Get the desktop app" }
+            span { class: "main-menu__hint", "Windows, macOS and Linux downloads" }
         }
     }
 }

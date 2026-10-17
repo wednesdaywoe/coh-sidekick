@@ -321,9 +321,9 @@ pub fn AboutHost() -> Element {
             div { class: "about",
                 img { class: "about__mark", src: ABOUT_MARK, alt: "Sidekick" }
                 h3 { class: "about__title", "CoH Sidekick {APP_VERSION}" }
-                p { class: "about__body", "A ground-up rebuild of the Sidekick planner — the beta's data and its promise, in Rust and Dioxus. Every number on screen is read from the game's own export and interpreted by the engine; none is re-derived by hand." }
-                p { class: "about__body", "Data: Homecoming, Rebirth and Thunderspy, read from the binary export." }
-                p { class: "about__credit", "The original Sidekick planner was made by @wednesdaywoe." }
+                p { class: "about__body", "A ground-up rebuild of the Sidekick planner in Rust and Dioxus. Every number on screen is read from the game's own export and interpreted by the engine." }
+                p { class: "about__body", "Data: Homecoming, Rebirth and Thunderspy, all read from the binary export." }
+                p { class: "about__credit", "Designed by @wednesdaywoe. AI is used in the development of Sidekick" }
             }
         }
     }
