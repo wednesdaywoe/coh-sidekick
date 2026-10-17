@@ -1,5 +1,5 @@
-//! The app's own five actions — Help, What's New, Feedback, Discord, Support —
-//! at the right end of the quickbar row, under the brand.
+//! The app's own actions — Help, What's New, Feedback, Discord, the desktop download (web
+//! only), Support — at the right end of the quickbar row, under the brand.
 //!
 //! **They were a floating bottom-right cluster until 2026-09-15** (the beta's
 //! own arrangement, ported in `ui-parity`), and moving them up settles what the
@@ -67,13 +67,14 @@ pub const DISCORD_FEEDBACK_DM_URL: &str = "https://discord.com/channels/@me/5700
 /// skips prereleases, so it would show nothing until a full version ships.
 pub const DESKTOP_RELEASES_URL: &str = "https://github.com/wednesdaywoe/coh-sidekick/releases";
 
-/// The five actions, in the beta's order.
+/// The actions, in the beta's order, with the desktop download ahead of Support.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Action {
     Help,
     WhatsNew,
     Feedback,
     Discord,
+    Download,
     Support,
 }
 
@@ -102,11 +103,12 @@ pub enum Destination {
     External(&'static str),
 }
 
-pub const ACTIONS: [Action; 5] = [
+pub const ACTIONS: [Action; 6] = [
     Action::Help,
     Action::WhatsNew,
     Action::Feedback,
     Action::Discord,
+    Action::Download,
     Action::Support,
 ];
 
@@ -119,6 +121,7 @@ pub fn destination(action: Action) -> Destination {
         Action::WhatsNew => Destination::WelcomeModal,
         Action::Feedback => Destination::FeedbackModal,
         Action::Discord => Destination::External(DISCORD_INVITE_URL),
+        Action::Download => Destination::External(DESKTOP_RELEASES_URL),
         Action::Support => Destination::DonateModal,
     }
 }
@@ -327,7 +330,8 @@ pub fn AppActions() -> Element {
     let feedback = use_context::<crate::feedback::FeedbackOpen>().0;
     rsx! {
         div { class: "app-actions",
-            for action in ACTIONS {
+            // The desktop app is already the download, so it skips the button for it.
+            for action in ACTIONS.into_iter().filter(|a| cfg!(target_arch = "wasm32") || *a != Action::Download) {
                 { control(action, help, whats_new, support, feedback) }
             }
         }
@@ -382,6 +386,16 @@ fn control(
                 { discord_icon() }
             }
         },
+        Action::Download => rsx! {
+            button {
+                class: "app-actions__button app-actions__download",
+                r#type: "button",
+                title: "Get the desktop app",
+                "aria-label": "Get the desktop app",
+                onclick: move |_| open_external(DESKTOP_RELEASES_URL),
+                { download_icon() }
+            }
+        },
         Action::Support => rsx! {
             // The label is inside the capsule with the mark, not beside it: the two are one
             // control and one hit target. `aria-label` stays anyway — it is the accessible
@@ -413,6 +427,11 @@ fn whats_new_icon() -> Element {
 
 fn feedback_icon() -> Element {
     stroke_icon("M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z")
+}
+
+/// The same outline family as the three above; the beta had no download mark to port.
+fn download_icon() -> Element {
+    stroke_icon("M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4")
 }
 
 fn coffee_icon() -> Element {

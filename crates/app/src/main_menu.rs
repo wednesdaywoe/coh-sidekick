@@ -624,7 +624,8 @@ fn DiscordEntry() -> Element {
     }
 }
 
-/// Where the desktop builds are downloaded. Web only: the desktop app is already the thing.
+/// Where the desktop builds are downloaded. Web only: the desktop app is already the thing. On a
+/// touch screen app.css hides it, since a phone cannot run any of the downloads.
 #[component]
 fn DesktopDownloadEntry() -> Element {
     let mut menu = use_context::<crate::popover::PopoverOpen>().0;
@@ -634,7 +635,7 @@ fn DesktopDownloadEntry() -> Element {
     }
     rsx! {
         button {
-            class: "main-menu__item",
+            class: "main-menu__item main-menu__item--desktop-download",
             r#type: "button",
             onclick: move |_| {
                 crate::app_actions::open_external(crate::app_actions::DESKTOP_RELEASES_URL);

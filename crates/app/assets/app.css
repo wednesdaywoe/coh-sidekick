@@ -6457,6 +6457,10 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 /* A `<label>` is not a button, so it needs the pointer and the focus ring saying so — the ring
    comes from the input it wraps, which is the element that actually takes focus. */
 .main-menu__item--file:focus-within { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+/* A phone or tablet cannot run the Windows, macOS or Linux downloads, so the row is noise there.
+   The pointer, not the width, as the touch layer below argues. `.app-actions__download` repeats
+   this after `.app-actions__button`, which would otherwise win on source order. */
+@media (pointer: coarse) { .main-menu__item--desktop-download { display: none; } }
 /* Hidden from the eye, not from the accessibility tree or the keyboard: `display: none` would
    take it out of the tab order and out of the label's activation, which is the whole mechanism
    this row runs on. */
@@ -7314,9 +7318,9 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 
    The literal hues are brand marks, not theme tokens: the What's New amber, Discord blurple
    and Support purple are the beta's own per-button identities, and they move from the chip
-   BEHIND the glyph onto the glyph itself — which is what still tells five 16px marks apart
-   now that the shapes are all that is left. Feedback keeps the row's default ink because it
-   has no brand of its own to carry. */
+   BEHIND the glyph onto the glyph itself — which is what still tells the 16px marks apart
+   now that the shapes are all that is left. Feedback and the desktop download keep the row's
+   default ink because they have no brand of their own to carry. */
 .app-actions { display: flex; align-items: center; gap: 2px; flex: none; }
 .app-actions__button {
   display: flex; align-items: center; justify-content: center;
@@ -7331,6 +7335,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .app-actions__help { color: var(--text-brand); }
 .app-actions__whats-new { color: var(--stat-special); }
 .app-actions__discord { color: #5865f2; }
+@media (pointer: coarse) { .app-actions__download { display: none; } }
 /* The CTA. Sized off the row rather than off the old floating pill: 26px to match
    `.quickbar-action`'s height, the band's own chrome font, and the mark a step down at 14px so
    the words lead. Outlined rather than filled at rest — a solid purple lozenge on a row this
