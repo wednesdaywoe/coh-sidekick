@@ -102,3 +102,35 @@ fn projection_follows_the_count() {
     assert_eq!(recharge_at(None), 8.0);
     assert_eq!(recharge_at(Some(4)), 8.0 + 4.0 * 14.5);
 }
+
+/// The card's recharge tile is a granted row, built apart from the projection's own recharge,
+/// and it follows the count too. Chords of Despair on a Dominator, as reported.
+#[test]
+fn card_recharge_row_follows_the_count() {
+    let db = homecoming();
+    let row_at = |targets: Option<u32>| {
+        let mut state = CharacterState::empty(DatasetId::Homecoming);
+        state.level = 50;
+        state.archetype.id = Some("dominator".into());
+        state.primary.id = Some("dominator/symphony-control".into());
+        let mut pick = SelectedPower::picked("Chords_of_Despair", "dominator/symphony-control", 21);
+        pick.targets_hit = targets;
+        state.primary.powers = vec![pick];
+        let totals = coh_math::recalculate(&state, &db);
+        let projection = totals
+            .power_projection
+            .iter()
+            .find(|p| p.power_internal_name == "Chords_of_Despair")
+            .expect("Chords of Despair projected");
+        let row = projection
+            .granted_magnitudes
+            .iter()
+            .find(|row| row.effect_key == "recharge")
+            .expect("recharge row");
+        assert_eq!(row.value.base, projection.recharge.expect("recharge").base);
+        row.value.base
+    };
+    assert_eq!(row_at(None), 8.0);
+    assert_eq!(row_at(Some(4)), 8.0 + 4.0 * 14.5);
+    assert_eq!(row_at(Some(16)), 240.0);
+}

@@ -817,14 +817,14 @@ pub fn display_effects(
     // pool/epic ones. These are the same stats-first reads the projection's own fields use, so
     // one rule serves both. A zero is no stat, leaving any authored bag value standing.
     insert_number(&mut bag, "enduranceCost", base_endurance_cost(power));
-    for key in [
+    // An adaptive-recharge power's base moves with the foe count, as the projection's own
+    // recharge does; every other power's is `stats.recharge`.
+    insert_number(
+        &mut bag,
         "recharge",
-        "accuracy",
-        "range",
-        "castTime",
-        "radius",
-        "maxTargets",
-    ] {
+        crate::adaptive_recharge::base_recharge(power, targets_hit),
+    );
+    for key in ["accuracy", "range", "castTime", "radius", "maxTargets"] {
         insert_number(&mut bag, key, truthy_stat(power, key, key));
     }
 
