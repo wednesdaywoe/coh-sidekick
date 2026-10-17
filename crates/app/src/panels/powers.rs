@@ -3724,7 +3724,16 @@ fn EnhancementPickerModal(
     // sign they had been there. Derived rather than stored, so no handler can forget to update it.
     let mut sticky = defaults.select_mode;
     let mut queue = use_signal(Vec::<crate::picker_queue::QueuedPick>::new);
-    let marking = move || *sticky.peek() || !queue.peek().is_empty();
+    // Shift held: a click marks rather than slots, so the toggle shows ticked while it is down.
+    // Read back off every pointer move as well as the key events, because a Shift released in
+    // another window never sends its key-up here.
+    let mut shift_held = use_signal(|| false);
+    let mut track_shift = move |down: bool| {
+        if *shift_held.peek() != down {
+            shift_held.set(down);
+        }
+    };
+    let marking = move || *sticky.peek() || *shift_held.peek() || !queue.peek().is_empty();
     // The in-flight drag: the set it started in, the piece it started on, and how far it has
     // reached. Held per set because a range across two sets is not a range.
     let mut drag = use_signal(|| None::<(String, usize, usize)>);
@@ -3833,7 +3842,9 @@ fn EnhancementPickerModal(
 
     rsx! {
         Modal { title, size: ModalSize::Lg, on_close,
+            on_key: move |evt: KeyboardEvent| track_shift(evt.modifiers().shift()),
             div { class: "picker",
+                onpointermove: move |evt| track_shift(evt.modifiers().shift()),
                 div { class: "picker-tabs",
                     div { class: "picker-tablist",
                         button {
@@ -3971,16 +3982,17 @@ fn EnhancementPickerModal(
                     // strip both work without it, and show as ticked while their marks are
                     // held, so the box always says what the next click will do.
                     label {
-                        class: if sticky() || !queue.read().is_empty() { "picker-toggle picker-toggle-on" } else { "picker-toggle" },
+                        class: if sticky() || shift_held() || !queue.read().is_empty() { "picker-toggle picker-toggle-on" } else { "picker-toggle" },
                         title: "Mark several enhancements, then slot them all at once. Stays on for \
                                 every power until you untick it. Clicking an IO, special or origin \
                                 enhancement again marks another copy; right-click takes one off. A drag \
-                                across a set marks the range; shift-click marks without this toggle.",
+                                across a set marks the range; holding Shift marks without this toggle.",
                         input {
                             r#type: "checkbox",
-                            checked: sticky() || !queue.read().is_empty(),
+                            checked: sticky() || shift_held() || !queue.read().is_empty(),
                             onchange: move |_| {
-                                if marking() {
+                                // Not `marking()`: a held Shift is not a mode to leave.
+                                if *sticky.peek() || !queue.peek().is_empty() {
                                     // Leaving the mode drops the marks rather than hiding them —
                                     // a queue with no bar is a pending act with no way to see it.
                                     sticky.set(false);

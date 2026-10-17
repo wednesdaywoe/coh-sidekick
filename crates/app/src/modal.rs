@@ -51,6 +51,10 @@ pub fn Modal(
     title: String,
     #[props(default = ModalSize::Md)] size: ModalSize,
     on_close: EventHandler<()>,
+    /// Every key press and release inside the dialog, for a caller that reacts to a held key.
+    /// The backdrop holds focus on open, so a listener inside `children` would miss them.
+    #[props(default)]
+    on_key: Option<EventHandler<KeyboardEvent>>,
     children: Element,
 ) -> Element {
     rsx! {
@@ -65,6 +69,13 @@ pub fn Modal(
             onkeydown: move |evt| {
                 if evt.key() == Key::Escape {
                     on_close.call(());
+                } else if let Some(on_key) = on_key {
+                    on_key.call(evt);
+                }
+            },
+            onkeyup: move |evt| {
+                if let Some(on_key) = on_key {
+                    on_key.call(evt);
                 }
             },
             // Backdrop click closes; card clicks are stopped below, so this only
