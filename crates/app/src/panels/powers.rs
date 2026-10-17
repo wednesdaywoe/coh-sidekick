@@ -3975,34 +3975,34 @@ fn EnhancementPickerModal(
                                 }
                             }
                         }
-                    }
-                    // Multi-select. Marking is its own mode rather than only a modifier
-                    // because a finger has no shift key, and the mode is what gives touch the
-                    // same reach the keyboard gives a mouse. Shift+click and a drag across a
-                    // strip both work without it, and show as ticked while their marks are
-                    // held, so the box always says what the next click will do.
-                    label {
-                        class: if sticky() || shift_held() || !queue.read().is_empty() { "picker-toggle picker-toggle-on" } else { "picker-toggle" },
-                        title: "Mark several enhancements, then slot them all at once. Stays on for \
-                                every power until you untick it. Clicking an IO, special or origin \
-                                enhancement again marks another copy; right-click takes one off. A drag \
-                                across a set marks the range; holding Shift marks without this toggle.",
-                        input {
-                            r#type: "checkbox",
-                            checked: sticky() || shift_held() || !queue.read().is_empty(),
-                            onchange: move |_| {
-                                // Not `marking()`: a held Shift is not a mode to leave.
-                                if *sticky.peek() || !queue.peek().is_empty() {
-                                    // Leaving the mode drops the marks rather than hiding them —
-                                    // a queue with no bar is a pending act with no way to see it.
-                                    sticky.set(false);
-                                    queue.write().clear();
-                                } else {
-                                    sticky.set(true);
-                                }
-                            },
+                        // Multi-select. Marking is its own mode rather than only a modifier
+                        // because a finger has no shift key, and the mode is what gives touch the
+                        // same reach the keyboard gives a mouse. Shift+click and a drag across a
+                        // strip both work without it, and show as ticked while their marks are
+                        // held, so the box always says what the next click will do.
+                        label {
+                            class: if sticky() || shift_held() || !queue.read().is_empty() { "picker-toggle picker-toggle-on" } else { "picker-toggle" },
+                            title: "Mark several enhancements, then slot them all at once. Stays on for \
+                                    every power until you untick it. Clicking an IO, special or origin \
+                                    enhancement again marks another copy; right-click takes one off. A drag \
+                                    across a set marks the range; holding Shift marks without this toggle.",
+                            input {
+                                r#type: "checkbox",
+                                checked: sticky() || shift_held() || !queue.read().is_empty(),
+                                onchange: move |_| {
+                                    // Not `marking()`: a held Shift is not a mode to leave.
+                                    if *sticky.peek() || !queue.peek().is_empty() {
+                                        // Leaving the mode drops the marks rather than hiding them —
+                                        // a queue with no bar is a pending act with no way to see it.
+                                        sticky.set(false);
+                                        queue.write().clear();
+                                    } else {
+                                        sticky.set(true);
+                                    }
+                                },
+                            }
+                            span { "Select" }
                         }
-                        span { "Select" }
                     }
                 }
                 div { class: "picker-main",
