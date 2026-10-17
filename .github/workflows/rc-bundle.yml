@@ -548,6 +548,43 @@ jobs:
           test -n "$out" || { echo "::error::no .AppImage in $RUNNER_TEMP/rc-out — see the listing above"; exit 1; }
           echo "collected $out"
           mkdir -p dist && cp "$out" dist/
+      # linuxdeploy bundles libwebkit2gtk but none of the programs it starts, and the library looks
+      # for them in this runner's folder, so rc1's AppImage exited at launch on Fedora
+      # (linux-appimage). The script carries them in from this same WebKit install, and leaves
+      # Wayland's libraries to the host -- see its header for why each.
+      - name: WebKit's helper programs go inside the AppImage
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y --no-install-recommends -o Acquire::Retries=5 -o Acquire::http::Timeout=30 \
+            squashfs-tools patchelf
+          scripts/keys/rc-appimage-webkit.sh "$(find dist -maxdepth 1 -name "*.AppImage" -print -quit)"
+      # Ahead of the checksum and both uploads, so an AppImage that cannot open its window is never
+      # offered to anyone. rc1 built green and nothing here had ever started it.
+      - name: the AppImage opens its window on clean Ubuntu and Fedora
+        run: |
+          set -euo pipefail
+          app=$(find dist -maxdepth 1 -name "*.AppImage" -print -quit)
+          export OUT=$RUNNER_TEMP/launch
+          scripts/keys/rc-appimage-launch.sh ubuntu "$app"
+          scripts/keys/rc-appimage-launch.sh fedora "$app"
+      # A window can open and still draw nothing; the launch check catches the cause it knows of,
+      # and the screens are kept for the person cutting the RC to look at, also when the launch
+      # step is what failed. They get a manifest of their own because workflow-supply-chain.py
+      # reads every upload here as an RC artifact, and each upload spends the checksum before it.
+      - name: launch screenshots
+        if: always()
+        run: |
+          ls "$RUNNER_TEMP"/launch/*.xwd >/dev/null 2>&1 || exit 0
+          if command -v convert >/dev/null; then
+            for f in "$RUNNER_TEMP"/launch/*.xwd; do convert "$f" "${f%.xwd}.png" && rm "$f"; done
+          fi
+          python3 scripts/keys/rc-checksums.py "$RUNNER_TEMP/launch"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: launch-screens-linux
+          path: ${{ runner.temp }}/launch/
+          if-no-files-found: ignore
       # A checksum is not a signature and is not offered as one — it is
       # the one of that row's four asks that can be met without a certificate somebody has to
       # buy. It lets a tester tell whether the bundle they hold is the bundle this run built.
