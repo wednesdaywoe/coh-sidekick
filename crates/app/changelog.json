@@ -2,6 +2,7 @@
     {
     "date": "2026-10-18",
     "items": [
+      { "id": "radial-absorb-boost", "type": "fix", "message": "Resilient Radial's absorb boost shows on absorb powers" },
       { "id": "identity-menu-icons", "type": "feat", "message": "The Origin, Archetype, Primary and Secondary menus in Build Identity now show icons" },
       { "id": "build-card-icons", "type": "feat", "message": "Build cards in the build browser now show the archetype, primary and secondary icons" }
     ]

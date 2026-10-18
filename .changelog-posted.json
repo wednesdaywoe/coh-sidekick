@@ -400,6 +400,36 @@
       "id": "select-replaces-clicked-slot",
       "date": "2026-10-14",
       "preview": "With Select on in the enhancement picker, the slot you clicked can now be replac"
+    },
+    {
+      "id": "radial-absorb-boost",
+      "date": "2026-10-18",
+      "preview": "Resilient Radial's absorb boost shows on absorb powers"
+    },
+    {
+      "id": "identity-menu-icons",
+      "date": "2026-10-18",
+      "preview": "The Origin, Archetype, Primary and Secondary menus in Build Identity now show ic"
+    },
+    {
+      "id": "build-card-icons",
+      "date": "2026-10-18",
+      "preview": "Build cards in the build browser now show the archetype, primary and secondary i"
+    },
+    {
+      "id": "sidekick-desktop-link",
+      "date": "2026-10-17",
+      "preview": "A desktop version of Sidekick can be downloaded using the new button in the head"
+    },
+    {
+      "id": "conditional-switch-damage",
+      "date": "2026-10-17",
+      "preview": "A power's own bonus-damage switch, like Propel's Impact, now adds that damage to"
+    },
+    {
+      "id": "target-held-containment",
+      "date": "2026-10-17",
+      "preview": "Containment can now be counted in your damage. Turn on Target is held in Build S"
     }
   ]
 }
