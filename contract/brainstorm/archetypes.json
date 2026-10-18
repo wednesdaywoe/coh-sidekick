@@ -757,7 +757,8 @@
     "blaster/sonic-manipulation",
     "blaster/tactical-arrow",
     "blaster/temporal-manipulation"
-   ]
+   ],
+   "icon": "archetypeicon_Blaster.tga"
   },
   "controller": {
    "name": "Controller",
@@ -1517,7 +1518,8 @@
     "controller/time-manipulation",
     "controller/traps",
     "controller/trick-arrow"
-   ]
+   ],
+   "icon": "archetypeicon_Controller.tga"
   },
   "defender": {
    "name": "Defender",
@@ -2279,7 +2281,8 @@
     "defender/sonic-attack",
     "defender/storm-blast",
     "defender/water-blast"
-   ]
+   ],
+   "icon": "archetypeicon_Defender.tga"
   },
   "scrapper": {
    "name": "Scrapper",
@@ -3046,7 +3049,8 @@
     "scrapper/stone-armor",
     "scrapper/super-reflexes",
     "scrapper/willpower"
-   ]
+   ],
+   "icon": "archetypeicon_Scrapper.tga"
   },
   "tanker": {
    "name": "Tanker",
@@ -3813,7 +3817,8 @@
     "tanker/super-strength",
     "tanker/titan-weapons",
     "tanker/war-mace"
-   ]
+   ],
+   "icon": "archetypeicon_Tanker.tga"
   },
   "sentinel": {
    "name": "Sentinel",
@@ -4572,7 +4577,8 @@
     "sentinel/stone-armor",
     "sentinel/super-reflexes",
     "sentinel/willpower"
-   ]
+   ],
+   "icon": "Archetypeicon_sentinel.tga"
   },
   "brute": {
    "name": "Brute",
@@ -5339,7 +5345,8 @@
     "brute/stone-armor",
     "brute/super-reflexes",
     "brute/willpower"
-   ]
+   ],
+   "icon": "v_archetypeicon_brute.tga"
   },
   "corruptor": {
    "name": "Corruptor",
@@ -6101,7 +6108,8 @@
     "corruptor/time-manipulation",
     "corruptor/traps",
     "corruptor/trick-arrow"
-   ]
+   ],
+   "icon": "v_archetypeicon_corruptor.tga"
   },
   "dominator": {
    "name": "Dominator",
@@ -6857,7 +6865,8 @@
     "dominator/savage-assault",
     "dominator/sonic-assault",
     "dominator/thorny-assault"
-   ]
+   ],
+   "icon": "v_archetypeicon_dominator.tga"
   },
   "mastermind": {
    "name": "Mastermind",
@@ -7611,7 +7620,8 @@
     "mastermind/time-manipulation",
     "mastermind/traps",
     "mastermind/trick-arrow"
-   ]
+   ],
+   "icon": "v_archetypeicon_mastermind.tga"
   },
   "stalker": {
    "name": "Stalker",
@@ -8375,7 +8385,8 @@
     "stalker/stone-armor",
     "stalker/super-reflexes",
     "stalker/willpower"
-   ]
+   ],
+   "icon": "v_archetypeicon_stalker.tga"
   },
   "peacebringer": {
    "name": "Peacebringer",
@@ -9106,7 +9117,8 @@
    ],
    "secondarySets": [
     "peacebringer/luminous-aura"
-   ]
+   ],
+   "icon": "archetypeicon_Peacebringer.tga"
   },
   "warshade": {
    "name": "Warshade",
@@ -9838,7 +9850,8 @@
    ],
    "secondarySets": [
     "warshade/umbral-aura"
-   ]
+   ],
+   "icon": "archetypeicon_Warshade.tga"
   },
   "arachnos-soldier": {
    "name": "Arachnos Soldier",
@@ -10581,7 +10594,8 @@
      "primarySet": "arachnos-soldier/crab-spider-soldier",
      "secondarySet": "arachnos-soldier/crab-spider-training"
     }
-   }
+   },
+   "icon": "v_archetypeicon_arachnos_soldier.tga"
   },
   "arachnos-widow": {
    "name": "Arachnos Widow",
@@ -11324,7 +11338,8 @@
      "primarySet": "arachnos-widow/fortunata-training",
      "secondarySet": "arachnos-widow/fortunata-teamwork"
     }
-   }
+   },
+   "icon": "v_archetypeicon_arachnos_widow.tga"
   }
  },
  "epicArchetypeIds": [

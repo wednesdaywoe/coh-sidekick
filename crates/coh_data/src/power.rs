@@ -818,6 +818,10 @@ pub struct Powerset {
     pub archetype: Option<String>,
     pub category: Option<String>,
     pub powers: Vec<Power>,
+    /// The power whose icon stands for this set. The client ships no set icons, so the
+    /// emitter stamps one of the set's own powers (hand-data/powerset-icons.json). Only
+    /// primary and secondary sets carry one.
+    pub icon_power: Option<String>,
     pub extra: Map<String, Value>,
 }
 
@@ -840,11 +844,20 @@ struct PowersetWire {
     category: Option<String>,
     #[serde(default)]
     powers: Vec<Value>,
+    #[serde(default, rename = "iconPower")]
+    icon_power: Option<String>,
     #[serde(flatten)]
     extra: Map<String, Value>,
 }
 
 impl Powerset {
+    /// The power named by [`Self::icon_power`], or `None` when the set names none or names a
+    /// power it doesn't have.
+    pub fn icon_power_def(&self) -> Option<&Power> {
+        let name = self.icon_power.as_deref()?;
+        self.powers.iter().find(|power| power.name == name)
+    }
+
     pub fn from_value(registry_key: &str, value: Value) -> Result<Self, String> {
         let wire: PowersetWire = serde_json::from_value(value).map_err(|e| e.to_string())?;
         let powers = wire
@@ -863,6 +876,7 @@ impl Powerset {
             archetype: wire.archetype,
             category: wire.category,
             powers,
+            icon_power: wire.icon_power,
             extra: wire.extra,
         })
     }

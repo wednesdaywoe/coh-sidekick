@@ -23,6 +23,9 @@
  * binary ones exactly as the spread ordered them — and no authored field shadows a
  * binary one, in any archetype, on any fork.
  *
+ * ICON — the class's own `icon` (`archetypeicon_Blaster.tga`), read straight off
+ * `exported_powers/tables/<at>.json`. Display only; absent stays absent.
+ *
  * Runs after convert-archetypes.cjs and fails loud if its output is missing: an absent
  * stats file treated as an empty one yields a registry whose archetypes have no HP,
  * which loads fine and offers the player nothing.
@@ -44,6 +47,18 @@ const OUTPUT_PATH = pipelinePath(datasetId, 'archetypes.json');
 const AUTHORED_STATS = ['baseEndurance', 'baseRecovery', 'damageModifier', 'buffDebuffModifier', 'defenseCap'];
 // The order archetypes.ts wrote each block's fields in.
 const AT_FIELDS = ['name', 'side', 'description', 'inherent', 'stats', 'primarySets', 'secondarySets', 'branches'];
+
+// Same rule as convert-archetypes.cjs: HC's tables sit flat, the other forks' under their id.
+const RAW_BASE = path.join(REPO_ROOT, 'exported_powers');
+const TABLES_PATH = (datasetId === 'homecoming' && !fs.existsSync(path.join(RAW_BASE, datasetId, 'tables')))
+  ? path.join(RAW_BASE, 'tables')
+  : path.join(RAW_BASE, datasetId, 'tables');
+
+function classIcon(id) {
+  const file = path.join(TABLES_PATH, `${id.replace(/-/g, '_')}.json`);
+  if (!fs.existsSync(file)) return undefined;
+  return JSON.parse(fs.readFileSync(file, 'utf8')).icon || undefined;
+}
 
 function readJson(p, what) {
   if (!fs.existsSync(p)) {
@@ -81,6 +96,8 @@ for (const id of hand.archetypeOrder) {
     if (f === 'stats') out.stats = merged;
     else if (f in authored) out[f] = authored[f];
   }
+  const icon = classIcon(id);
+  if (icon) out.icon = icon;
   ARCHETYPES[id] = out;
 }
 

@@ -52,6 +52,9 @@ pub struct Archetype {
     /// base set id, which `crate::skif` still resolves). Empty for the 20-odd archetypes that
     /// have no branches.
     pub branches: Vec<ArchetypeBranch>,
+    /// The class's own icon file as the binary names it (`archetypeicon_Blaster.tga`).
+    /// Display only; `None` when the export carries none.
+    pub icon: Option<String>,
 }
 
 /// One VEAT branch — the powerset pair a specialisation swaps in.
@@ -114,6 +117,8 @@ struct ArchetypeWire {
     secondary_sets: Vec<String>,
     #[serde(default)]
     branches: serde_json::Map<String, Value>,
+    #[serde(default)]
+    icon: Option<String>,
 }
 
 impl Archetypes {
@@ -167,6 +172,7 @@ impl Archetypes {
                 primary_sets: at.primary_sets,
                 secondary_sets: at.secondary_sets,
                 branches,
+                icon: at.icon,
             });
         }
         Ok(Archetypes { ordered, epic_ids })

@@ -26,6 +26,39 @@ pub fn power_icon_url(icon: Option<&str>) -> String {
     }
 }
 
+/// An archetype's icon URL, from the class's own `icon` (vendored beside the power art under
+/// the same naming rule). `None` when the export names none, so the caller shows no picture.
+pub fn archetype_icon_url(archetype: &coh_data::Archetype) -> Option<String> {
+    let icon = archetype
+        .icon
+        .as_deref()
+        .map(str::trim)
+        .filter(|s| !s.is_empty())?;
+    Some(format!("{IMG_DIR}/powers/{}", vendored_power_icon(icon)))
+}
+
+/// A powerset's icon URL: the icon of the power the set names in `iconPower`. The client has no
+/// set icons of its own. `None` for a set that names none (pools, epics, inherents).
+pub fn powerset_icon_url(set: &coh_data::Powerset) -> Option<String> {
+    let power = set.icon_power_def()?;
+    let icon = power.extra.get("icon").and_then(|value| value.as_str())?;
+    Some(power_icon_url(Some(icon)))
+}
+
+/// A character origin's icon URL (`Origins/Magic.png`), keyed on this crate's lowercase origin
+/// vocabulary (`panels::identity`). `None` for an unrecognized origin.
+pub fn origin_icon_url(origin: &str) -> Option<String> {
+    let file = match origin.to_ascii_lowercase().as_str() {
+        "magic" => "Magic",
+        "mutation" => "Mutation",
+        "natural" => "Natural",
+        "science" => "Science",
+        "technology" => "Technology",
+        _ => return None,
+    };
+    Some(format!("{IMG_DIR}/Origins/{file}.png"))
+}
+
 /// The client's extensions for power art, longest first so `.texture.png` unwinds in one pass.
 const CLIENT_TEXTURE_EXTENSIONS: [&str; 3] = [".texture", ".dds", ".tga"];
 
@@ -316,4 +349,52 @@ fn stat_icon_file(stat: &str) -> Option<&'static str> {
         _ => return None,
     };
     Some(file)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use coh_data::PowerDatabase;
+    use std::path::PathBuf;
+
+    /// Every archetype, and every primary and secondary set, in every fork shows a picture
+    /// that is actually vendored. A missing file only shows up by picking that archetype on
+    /// that fork, which is how Sentinel and Guardian went unnoticed.
+    #[test]
+    fn every_identity_icon_is_vendored() {
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let file = |url: &str| {
+            let rel = url
+                .split_once("/powers/")
+                .map(|(_, name)| name)
+                .unwrap_or(url);
+            root.join("assets/img/powers").join(rel)
+        };
+        let mut missing = Vec::new();
+        for dataset in ["homecoming", "rebirth", "thunderspy", "brainstorm"] {
+            let path = root.join(format!("../../contract/{dataset}/bundle.json.gz"));
+            let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+            let db = PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads");
+            for at in db.archetypes().expect("archetypes decode").all() {
+                match archetype_icon_url(at) {
+                    Some(url) if file(&url).exists() => {}
+                    other => missing.push(format!("{dataset} {}: {other:?}", at.id)),
+                }
+                for id in at.primary_sets.iter().chain(&at.secondary_sets) {
+                    let Some(set) = db.find_powerset(id) else {
+                        continue;
+                    };
+                    match powerset_icon_url(set) {
+                        Some(url) if file(&url).exists() => {}
+                        other => missing.push(format!("{dataset} {id}: {other:?}")),
+                    }
+                }
+            }
+        }
+        assert!(
+            missing.is_empty(),
+            "no vendored icon for:\n{}",
+            missing.join("\n")
+        );
+    }
 }

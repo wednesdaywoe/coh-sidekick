@@ -363,6 +363,32 @@ function procDatabase() {
 
 const PROC_DATABASE = procDatabase();
 
+// The client ships no powerset icons (the bin's `fire_blast_set.ico` names point at nothing), so
+// each primary/secondary set borrows one of its own powers' icons. `iconPower` names that power:
+// the owner's pick from hand-data/powerset-icons.json, or, where this archetype's version of the
+// set lacks it, the earliest power the player picks. Fallbacks are printed, not hidden.
+function stampIconPowers(dataset, powersets) {
+  const picks = handJson('powerset-icons');
+  const roles = new Set(Object.values(datasetJson(dataset, 'archetypes').ARCHETYPES)
+    .flatMap((at) => [...(at.primarySets || []), ...(at.secondarySets || [])]));
+  const fallbacks = [];
+  for (const id of roles) {
+    const ps = powersets[id];
+    if (!ps) continue;
+    const names = (ps.powers || []).map((p) => p.name);
+    let pick = picks[ps.name] && picks[ps.name].pick;
+    if (!names.includes(pick)) {
+      const earliest = (ps.powers || [])
+        .filter((p) => !p.autoIssue && !p.free)
+        .sort((a, b) => (a.available ?? 0) - (b.available ?? 0))[0];
+      fallbacks.push(`${id} (${pick ? `no ${pick}` : 'no pick'} → ${earliest ? earliest.name : 'none'})`);
+      pick = earliest && earliest.name;
+    }
+    if (pick) powersets[id] = { ...ps, iconPower: pick };
+  }
+  if (fallbacks.length) console.log(`${dataset}: icon power fell back for ${fallbacks.length} sets: ${fallbacks.join(', ')}`);
+}
+
 function emitDataset(dataset) {
   const { powersets: composedPowersets, pools, epics } = loadComposed(dataset);
 
@@ -394,6 +420,8 @@ function emitDataset(dataset) {
     throw new Error(`${dataset}: pipeline/${dataset}/accolades.json has no ACCOLADES_POWERSET with an id`);
   }
   powersets[ACCOLADES_POWERSET.id] = ACCOLADES_POWERSET;
+
+  stampIconPowers(dataset, powersets);
 
   // per-powerset shards
   let powerCount = 0;
