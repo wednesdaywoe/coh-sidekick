@@ -115,7 +115,7 @@
     "archetypes": ["Corruptor", "Defender", "Mastermind"]
   },
   "Darkness Affinity": {
-    "pick": "Darkest Night",
+    "pick": "Fade",
     "choices": ["Twilight Grasp", "Tar Patch", "Darkest Night", "Chill of the Night", "Howling Twilight", "Shadow Fall", "Fade", "Soul Absorption", "Black Hole", "Dark Servant"],
     "archetypes": ["Controller"]
   },
@@ -135,7 +135,7 @@
     "archetypes": ["Mastermind"]
   },
   "Devices": {
-    "pick": "Targeting Drone",
+    "pick": "Toxic Web Grenade",
     "choices": ["Toxic Web Grenade", "Web Grenade", "Caltrops", "Taser", "Targeting Drone", "Smoke Grenade", "Field Operative", "Trip Mine", "Remote Bomb", "Gun Drone", "Time Bomb"],
     "archetypes": ["Blaster"]
   },
@@ -180,7 +180,7 @@
     "archetypes": ["Controller", "Dominator"]
   },
   "Electrical Affinity": {
-    "pick": "Shock",
+    "pick": "Rejuvenating Circuit",
     "choices": ["Shock", "Rejuvenating Circuit", "Galvanic Sentinel", "Discharge", "Energizing Circuit", "Faraday Cage", "Empowering Circuit", "Defibrillate", "Insulating Circuit", "Amp Up"],
     "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
   },
@@ -190,7 +190,7 @@
     "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
   },
   "Electrical Melee": {
-    "pick": "Jacobs Ladder",
+    "pick": "Havoc Punch",
     "choices": ["Charged Brawl", "Havoc Punch", "Jacobs Ladder", "Build Up", "Assassin's Shock", "Thunder Strike", "Taunt", "Confront", "Placate", "Chain Induction", "Lightning Clap", "Lightning Rod"],
     "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
   },
@@ -215,7 +215,7 @@
     "archetypes": ["Dominator", "Guardian"]
   },
   "Energy Aura": {
-    "pick": "Kinetic Shield",
+    "pick": "Repelling Force",
     "choices": ["Kinetic Shield", "Hide", "Dampening Field", "Kinetic Dampening", "Power Shield", "Entropic Aura", "Energy Protection", "Energize", "Entropy Shield", "Power Armor", "Energy Cloak", "Energy Drain", "Disrupt", "Repelling Force", "Overload", "Power Drain"],
     "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
   },
@@ -245,7 +245,7 @@
     "archetypes": ["Primalist"]
   },
   "Fiery Assault": {
-    "pick": "Flares",
+    "pick": "Cremate",
     "choices": ["Flares", "Incinerate", "Cremate", "Fire Breath", "Fire Blast", "Build Up", "Fire Ball", "Combustion", "Embrace of Fire", "Consume", "Blazing Bolt", "Blaze"],
     "archetypes": ["Dominator", "Guardian"]
   },
@@ -270,7 +270,7 @@
     "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
   },
   "Fire Blast": {
-    "pick": "Flares",
+    "pick": "Inferno",
     "choices": ["Flares", "Fire Blast", "Fire Ball", "Rain of Fire", "Fire Breath", "Blaze", "Aim", "Blazing Blast", "Blazing Bolt", "Inferno"],
     "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
   },
@@ -320,7 +320,7 @@
     "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
   },
   "Ice Blast": {
-    "pick": "Ice Bolt",
+    "pick": "Blizzard",
     "choices": ["Ice Bolt", "Ice Blast", "Frost Breath", "Aim", "Ice Storm", "Chilling Ray", "Freeze Ray", "Bitter Ice Blast", "Bitter Freeze Ray", "Blizzard"],
     "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
   },
@@ -330,7 +330,7 @@
     "archetypes": ["Guardian"]
   },
   "Ice Control": {
-    "pick": "Chilblain",
+    "pick": "Block of Ice",
     "choices": ["Chilblain", "Jack Frost", "Block of Ice", "Frostbite", "Arctic Air", "Cold Snap", "Shiver", "Ice Slick", "Flash Freeze", "Snow Storm", "Glacier"],
     "archetypes": ["Controller", "Dominator"]
   },
@@ -385,7 +385,7 @@
     "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
   },
   "Kinetics": {
-    "pick": "Fulcrum Shift",
+    "pick": "Transfusion",
     "choices": ["Transfusion", "Siphon Power", "Repel", "Siphon Speed", "Increase Density", "Speed Boost", "Inertial Reduction", "Transference", "Fulcrum Shift"],
     "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
   },
@@ -445,7 +445,7 @@
     "archetypes": ["Blaster"]
   },
   "Mercenaries": {
-    "pick": "Burst",
+    "pick": "Soldiers",
     "choices": ["Burst", "Soldiers", "Slug", "Equip Mercenary", "M30 Grenade", "Spec Ops", "Elite Spec Ops", "Serum", "Commando", "Tactical Upgrade"],
     "archetypes": ["Mastermind"]
   },
@@ -535,7 +535,7 @@
     "archetypes": ["Controller", "Dominator"]
   },
   "Plant Manipulation": {
-    "pick": "Skewer",
+    "pick": "Entangle",
     "choices": ["Entangle", "Skewer", "Strangler", "Toxins", "Spore Cloud", "Wild Fortress", "Ripper", "Vines", "Thorn Burst"],
     "archetypes": ["Blaster"]
   },
@@ -560,7 +560,7 @@
     "archetypes": ["Dominator", "Guardian"]
   },
   "Psionic Melee": {
-    "pick": "Telekinetic Blow",
+    "pick": "Greater Psi Blade",
     "choices": ["Mental Strike", "Psi Blade", "Telekinetic Blow", "Concentration", "Assassin's Psi Blade", "Psi Blade Sweep", "Taunt", "Confront", "Placate", "Boggle", "Greater Psi Blade", "Mass Levitate"],
     "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
   },
@@ -675,7 +675,7 @@
     "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
   },
   "Sonic Manipulation": {
-    "pick": "Strident Echo",
+    "pick": "Sonic Thrust",
     "choices": ["Sonic Thrust", "Strident Echo", "Echo Chamber", "Sound Booster", "Deafening Wave", "Sound Barrier", "Disruption Aura", "Sound Cannon", "Earsplitter"],
     "archetypes": ["Blaster"]
   },
