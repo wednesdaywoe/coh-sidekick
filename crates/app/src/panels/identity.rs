@@ -144,7 +144,7 @@ pub fn IdentityPanel(database: Db, dataset: Signal<DatasetId>) -> Element {
             // The control is the Available rail's own (LAY4): one roster, one gate, one commit,
             // two frames. This frame is the labelled form field; the rail's is a column head.
             div { class: "build-pair",
-                label { class: "build-field",
+                div { class: "build-field",
                     span { class: "field-label", "Primary" }
                     PowersetSelect {
                         database: database.clone(),
@@ -154,7 +154,7 @@ pub fn IdentityPanel(database: Db, dataset: Signal<DatasetId>) -> Element {
                     }
                 }
 
-                label { class: "build-field",
+                div { class: "build-field",
                     span { class: "field-label", "Secondary" }
                     PowersetSelect {
                         database: database.clone(),

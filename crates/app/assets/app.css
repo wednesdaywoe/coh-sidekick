@@ -1996,6 +1996,10 @@ button.power-pick--empty {
 /* No archetype, so no roster: the head says what it would offer and refuses to offer it,
    which is the same treatment `.build-select` gives the popover's copy of this control. */
 .powerset-group__select:disabled { opacity: 0.5; cursor: not-allowed; }
+/* The head's control is an icon select now, so its wrapper is the flex child, and the set's
+   icon is sized to the small caps beside it. */
+.icon-select:has(> .powerset-group__select) { flex: 1 1 auto; min-width: 0; }
+.powerset-group__select .icon-select__icon { width: 16px; height: 16px; }
 
 /* A shared section label (Primary / Secondary / a pool name / an inherents category / a band
    of the by-level ladder) over the cards it heads. Every group folds, and the label IS the

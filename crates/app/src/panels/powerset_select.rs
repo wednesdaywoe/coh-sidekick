@@ -13,9 +13,11 @@
 //! the desync this module exists to make unrepresentable.
 
 use crate::build_session::BuildSession;
+use crate::icon_select::{IconOption, IconSelect};
 use crate::panels::branch_view;
 use crate::panels::powers::BuildRole;
 use crate::shell::Db;
+use crate::view::icons;
 use coh_data::PowersetSelection;
 use dioxus::prelude::*;
 
@@ -93,25 +95,6 @@ pub fn set_choices(
     choices
 }
 
-/// One powerset `<option>`. A set the game refuses is still shown, disabled and carrying the
-/// refusal — a select that silently omits a set says nothing about why, which is the whole
-/// content of a gate.
-#[component]
-fn SetOption(choice: SetChoice, current: String) -> Element {
-    let selected = choice.id == current;
-    match &choice.blocked {
-        None => rsx! {
-            option { value: "{choice.id}", selected, "{choice.name}" }
-        },
-        // Still `selected` when it is what the build holds: a set can be refused AFTER it was
-        // chosen, and dropping the selection would silently rewrite the build to explain a
-        // rule to the user.
-        Some(reason) => rsx! {
-            option { value: "{choice.id}", selected, disabled: true, "{choice.name} — {reason}" }
-        },
-    }
-}
-
 /// Build a [`PowersetSelection`] for the chosen set id (empty id ⇒ cleared selection),
 /// resolving its display name from the choices list or the dataset.
 pub fn resolve_set(choices: &[SetChoice], database: &Db, set_id: &str) -> PowersetSelection {
@@ -131,7 +114,7 @@ pub fn resolve_set(choices: &[SetChoice], database: &Db, set_id: &str) -> Powers
     }
 }
 
-/// The `<select>` itself — the whole of the powerset choice, wrapped by whatever frame the
+/// The control itself — the whole of the powerset choice, wrapped by whatever frame the
 /// calling surface wants around it.
 ///
 /// It reads its own roster rather than taking one, which is what makes it the single write
@@ -144,7 +127,7 @@ pub fn resolve_set(choices: &[SetChoice], database: &Db, set_id: &str) -> Powers
 pub fn PowersetSelect(
     database: Db,
     role: BuildRole,
-    /// The `<select>`'s class, so a caller can frame the control without owning it.
+    /// The button's class, so a caller can frame the control without owning it.
     class: String,
     /// What an empty selection reads as. The rail's heads say it in fewer words than the
     /// popover's fields, because a column head is not a form label.
@@ -236,40 +219,56 @@ pub fn PowersetSelect(
     // Bumped when a switch is answered, so a refused switch remounts the select onto the
     // branch the build still holds (see `PendingBranchSwitch`).
     let answered = branch_ctx.map_or(0, |(_, pending)| (pending.answered)());
-    // A `<select>` clips rather than ellipsises, and the rail's heads are ~220px against set
-    // names like "Darkness Manipulation" — so the full name lives in the tooltip, which is the
-    // only place a native select will carry it.
-    let current_name = branch_options
+    let options: Vec<IconOption> = choices
         .iter()
-        .find(|(value, _)| *value == current_value)
-        .map(|(_, name)| name.clone())
-        .or_else(|| {
-            choices
-                .iter()
-                .find(|choice| choice.id == current)
-                .map(|choice| choice.name.clone())
+        .map(|choice| IconOption {
+            value: choice.id.clone(),
+            label: choice.name.clone(),
+            icon: database
+                .find_powerset(&choice.id)
+                .and_then(icons::powerset_icon_url),
+            // Still listed when it is what the build holds: a set can be refused AFTER it was
+            // chosen, and dropping it would silently rewrite the build to explain a rule.
+            blocked: choice.blocked.clone(),
         })
-        .unwrap_or_else(|| placeholder.clone());
+        .chain(
+            branches
+                .iter()
+                .zip(&branch_options)
+                .map(|(branch, (value, name))| {
+                    IconOption::new(
+                        value.clone(),
+                        name.clone(),
+                        branch
+                            .primary_set
+                            .as_deref()
+                            .and_then(|set| database.find_powerset(set))
+                            .and_then(icons::powerset_icon_url),
+                    )
+                }),
+        )
+        .collect();
 
     rsx! {
         for answered in std::iter::once(answered) {
-        select {
+        IconSelect {
             key: "{answered}",
             class: class.clone(),
-            title: "{current_name}",
             disabled: !has_archetype,
-            "aria-label": match role {
-                BuildRole::Primary => "Primary powerset",
-                BuildRole::Secondary => "Secondary powerset",
+            aria_label: match role {
+                BuildRole::Primary => "Primary powerset".to_string(),
+                BuildRole::Secondary => "Secondary powerset".to_string(),
             },
+            placeholder: placeholder.clone(),
+            value: current_value.clone(),
+            options: options.clone(),
             onchange: {
                 let choices = choices.clone();
                 let database = database.clone();
                 let current = current.clone();
                 let held_id = held_id.clone();
                 let branches = branches.clone();
-                move |evt: Event<FormData>| {
-                    let value = evt.value();
+                move |value: String| {
                     // A branch option, or the set itself while a branch is shown: a choice of
                     // which branch to show, which only reaches the build through the confirm.
                     if let Some((mut browsed, pending)) = branch_ctx {
@@ -301,17 +300,6 @@ pub fn PowersetSelect(
                     });
                 }
             },
-            // Selection is expressed per-option (`selected`), not via the select's `value`:
-            // the options are derived from the archetype, and a `value` set before those
-            // options exist (e.g. on a restore render) does not stick. Per-option `selected`
-            // is applied with the option, so it always does.
-            option { value: "", selected: current_value.is_empty(), "{placeholder}" }
-            for choice in choices.iter().cloned() {
-                SetOption { choice, current: current_value.clone() }
-            }
-            for (value, name) in branch_options.iter() {
-                option { value: "{value}", selected: *value == current_value, "{name}" }
-            }
         }
         }
     }
