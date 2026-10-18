@@ -1,5 +1,13 @@
 [
     {
+    "date": "2026-10-18",
+    "items": [
+      { "id": "identity-menu-icons", "type": "feat", "message": "The Origin, Archetype, Primary and Secondary menus in Build Identity now show the game's icon next to every choice, so you can match your origin colours to your archetype. The game has no icons for powersets, so each set uses the icon of one of its own powers" },
+      { "id": "build-card-icons", "type": "feat", "message": "Build cards in the build browser now show the archetype, primary and secondary icons" }
+    ]
+  },
+
+  {
     "date": "2026-10-17",
     "items": [
       { "id": "sidekick-desktop-link", "type": "feat", "message": "A desktop version of Sidekick can be downloaded using the new button in the header or under the Help menu. There are builds for PC Mac and Linux. PC and Mac versions are untested, and I can only test on Linux, so it may be rough." },
