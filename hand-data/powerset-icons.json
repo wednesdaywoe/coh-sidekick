@@ -1,0 +1,867 @@
+{
+  "Akimbo Assault": {
+    "pick": "Point Blank Shot",
+    "choices": ["Pistols", "Pistol Whip", "Dual Wield", "Bullet Rain", "Power Build Up", "Bullet Storm", "Point Blank Shot", "Reaction Time", "Piercing Rounds"],
+    "archetypes": ["Dominator"]
+  },
+  "Arachnos Soldier": {
+    "pick": "Single Shot",
+    "choices": ["Single Shot", "Pummel", "Burst", "Wide Area Web Grenade", "Heavy Burst", "Bayonet", "Venom Grenade", "Frag Grenade"],
+    "archetypes": ["Arachnos Soldier"]
+  },
+  "Archery": {
+    "pick": "Rain of Arrows",
+    "choices": ["Snap Shot", "Aimed Shot", "Fistful of Arrows", "Blazing Arrow", "Explosive Arrow", "Stunning Shot", "Aim", "Ranged Shot", "Perfect Shot", "Rain of Arrows"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Arsenal Assault": {
+    "pick": "Elbow Strike",
+    "choices": ["Burst", "Buttstroke", "Buckshot", "Elbow Strike", "Power Up", "Trip Mine", "Targeting Drone", "Sniper Rifle", "Ignite"],
+    "archetypes": ["Dominator"]
+  },
+  "Arsenal Control": {
+    "pick": "Cryo Freeze Ray",
+    "choices": ["Tranquilizer", "Cryo Freeze Ray", "Sleep Grenade", "Liquid Nitrogen", "Cloaking Device", "Smoke Canister", "Flash Bang", "Tear Gas", "Tri-Cannon"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Assault Rifle": {
+    "pick": "Full Auto",
+    "choices": ["Burst", "Single Shot", "Slug", "Disorienting Shot", "Buckshot", "M30 Grenade", "Beanbag", "Aim", "Sniper Rifle", "Ignite", "Flamethrower", "Full Auto"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Atmospheric Composition": {
+    "pick": "Static Shield",
+    "choices": ["Charged Armor", "Gale Winds", "Grounding Shield", "Static Shield", "Steamy Mist", "Mass Energize", "Snow Storm", "Power Sink", "Freezing Rain"],
+    "archetypes": ["Guardian"]
+  },
+  "Atomic Assault": {
+    "pick": "Devastating Blow",
+    "choices": ["Neutrino Bolt", "Contaminated Strike", "X-Ray Beam", "Neutron Bomb", "Fusion", "Atom Smasher", "Radiation Siphon", "Devastating Blow", "Proton Burst"],
+    "archetypes": ["Dominator"]
+  },
+  "Atomic Manipulation": {
+    "pick": "Electron Shackles",
+    "choices": ["Electron Shackles", "Contaminated Strike", "Negatron Slam", "Radioactive Smash", "Positron Cell", "Irradiated Ground", "Ionize", "Fission", "Beta Decay", "Radiation Siphon", "Metabolic Acceleration", "Particle Acceleration", "Atom Smasher", "Devastating Blow", "Radioactive Cloud", "Positronic Fist", "Neutron Burst", "Half-life"],
+    "archetypes": ["Blaster"]
+  },
+  "Battle Axe": {
+    "pick": "Chop",
+    "choices": ["Beheader", "Chop", "Gash", "Whirling Axe", "Build Up", "Pendulum", "Swoop", "Taunt", "Confront", "Feint", "Aim", "Axe Cyclone", "Cleave"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Tanker"]
+  },
+  "Beam Blast": {
+    "pick": "Overcharge",
+    "choices": ["Single Shot", "Charged Shot", "Cutting Beam", "Disintegrate", "Lancer Shot", "Piercing Beam", "Aim", "Penetrating Ray", "Overcharge"],
+    "archetypes": ["Blaster", "Corruptor", "Defender"]
+  },
+  "Beam Rifle": {
+    "pick": "Overcharge",
+    "choices": ["Single Shot", "Charged Shot", "Cutting Beam", "Disintegrate", "Aim", "Lancer Shot", "Penetrating Ray", "Refractor Beam", "Piercing Beam", "Overcharge"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Beast Mastery": {
+    "pick": "Summon Wolves",
+    "choices": ["Call Swarm", "Summon Wolves", "Call Hawk", "Train Beasts", "Call Ravens", "Summon Lions", "Fortify Pack", "Summon Dire Wolf", "Tame Beasts"],
+    "archetypes": ["Mastermind"]
+  },
+  "Bio Armor": {
+    "pick": "Hardened Carapace",
+    "choices": ["Efficient Adaptation", "Defensive Adaptation", "Offensive Adaptation", "Hardened Carapace", "Hide", "Inexhaustible", "Environmental Modification", "Environmental Adaptation", "Boundless Energy", "Evolving Armor", "Adaptation", "Ablative Carapace", "DNA Siphon", "Genetic Contamination", "Rebuild DNA", "Athletic Regulation", "Resurgence", "Parasitic Aura", "Genomic Evolution", "Genetic Corruption", "Parasitic Leech"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Broad Sword": {
+    "pick": "Hack",
+    "choices": ["Slash", "Hack", "Slice", "Boomerang Slice", "Build Up", "Assassin's Slash", "Parry", "Taunt", "Confront", "Placate", "Feint", "Whirling Sword", "Aim", "Disembowel", "Head Splitter"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Claws": {
+    "pick": "Swipe",
+    "choices": ["Swipe", "Strike", "Slash", "Spin", "Assassin's Claw", "Follow Up", "Build Up", "Taunt", "Confront", "Placate", "Focus", "Feint", "Eviscerate", "Shockwave"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Cold Domination": {
+    "pick": "Sleet",
+    "choices": ["Infrigidate", "Ice Shield", "Snow Storm", "Snow Field", "Glacial Shield", "Frostwork", "Arctic Fog", "Benumb", "Sleet", "Heat Loss"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Dark Armor": {
+    "pick": "Dark Embrace",
+    "choices": ["Dark Embrace", "Hide", "Death Shroud", "Murky Cloud", "Shadow Dweller", "Obsidian Shield", "Dark Regeneration", "Obscure Sustenance", "Cloak of Darkness", "Cloak of Fear", "Umbral Fade", "Oppressive Gloom", "Soul Transfer"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Dark Assault": {
+    "pick": "Midnight Grasp",
+    "choices": ["Dark Blast", "Smite", "Gloom", "Night Fall", "Build Up", "Dark Obliteration", "Engulfing Darkness", "Gather Shadows", "Life Drain", "Moonbeam", "Moon Beam", "Midnight Grasp"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Dark Blast": {
+    "pick": "Blackstar",
+    "choices": ["Dark Blast", "Gloom", "Umbral Torrent", "Moonbeam", "Tenebrous Tentacles", "Aim", "Abyssal Gaze", "Dark Pit", "Night Fall", "Life Drain", "Dark Obliteration", "Torrent", "Antumbral Beam", "Blackstar"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Dark Composition": {
+    "pick": "Obsidian Shield",
+    "choices": ["Dark Embrace", "Twilight Grasp", "Tar Patch", "Obsidian Shield", "Murky Haze", "Shadow Fall", "Cloak of Fear", "Soul Absorption", "Howling Twilight"],
+    "archetypes": ["Guardian"]
+  },
+  "Dark Melee": {
+    "pick": "Shadow Maul",
+    "choices": ["Shadow Punch", "Smite", "Shadow Maul", "Touch of Fear", "Assassin's Eclipse", "Siphon Life", "Build Up", "Taunt", "Confront", "Dark Consumption", "Placate", "Soul Drain", "Midnight Grasp"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Dark Miasma": {
+    "pick": "Darkest Night",
+    "choices": ["Twilight Grasp", "Tar Patch", "Darkest Night", "Chill of the Night", "Howling Twilight", "Shadow Fall", "Fearsome Stare", "Petrifying Gaze", "Black Hole", "Dark Servant"],
+    "archetypes": ["Corruptor", "Defender", "Mastermind"]
+  },
+  "Darkness Affinity": {
+    "pick": "Darkest Night",
+    "choices": ["Twilight Grasp", "Tar Patch", "Darkest Night", "Chill of the Night", "Howling Twilight", "Shadow Fall", "Fade", "Soul Absorption", "Black Hole", "Dark Servant"],
+    "archetypes": ["Controller"]
+  },
+  "Darkness Control": {
+    "pick": "Dark Grasp",
+    "choices": ["Shadowy Binds", "Umbra Beast", "Dark Grasp", "Living Shadows", "Possess", "Fearsome Stare", "Heart of Darkness", "Haunt", "Shadow Field", "Spirit Host"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Darkness Manipulation": {
+    "pick": "Penumbral Grasp",
+    "choices": ["Penumbral Grasp", "Smite", "Death Shroud", "Shadow Maul", "Soul Drain", "Touch of the Beyond", "Dark Consumption", "Dark Pit", "Midnight Grasp"],
+    "archetypes": ["Blaster"]
+  },
+  "Demon Summoning": {
+    "pick": "Summon Demonlings",
+    "choices": ["Corruption", "Summon Demonlings", "Lash", "Enchant Demon", "Crack Whip", "Summon Demons", "Hell on Earth", "Summon Demon Prince", "Abyssal Empowerment"],
+    "archetypes": ["Mastermind"]
+  },
+  "Devices": {
+    "pick": "Targeting Drone",
+    "choices": ["Toxic Web Grenade", "Web Grenade", "Caltrops", "Taser", "Targeting Drone", "Smoke Grenade", "Field Operative", "Trip Mine", "Remote Bomb", "Gun Drone", "Time Bomb"],
+    "archetypes": ["Blaster"]
+  },
+  "Dual Blades": {
+    "pick": "Power Slice",
+    "choices": ["Nimble Slash", "Power Slice", "Ablating Strike", "Typhoon's Edge", "Assassin's Blades", "Blinding Feint", "Build Up", "Taunt", "Confront", "Placate", "Feint", "Vengeful Slice", "Sweeping Strike", "One Thousand Cuts"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Dual Pistols": {
+    "pick": "Hail of Bullets",
+    "choices": ["Cryo Ammunition", "Incendiary Ammunition", "Chemical Ammunition", "Pistols", "Dual Wield", "Empty Clips", "Bullet Rain", "Swap Ammo", "Suppressive Fire", "Executioner's Shot", "Aim", "Piercing Rounds", "Hail of Bullets"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Earth Assault": {
+    "pick": "Seismic Smash",
+    "choices": ["Stone Spears", "Stone Mallet", "Stone Fist", "Fissure", "Tremor", "Hurl Boulder", "Build Up", "Power Up", "Power Boost", "Power Build Up", "Heavy Mallet", "Seismic Smash", "Mud Pots"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Earth Combat": {
+    "pick": "Hurl Boulder",
+    "choices": ["Stone Spears", "Stone Mallet", "Fissure", "Hurl Boulder", "Aim", "Heavy Mallet", "Tremor", "Mud Pots", "Seismic Smash"],
+    "archetypes": ["Defender"]
+  },
+  "Earth Control": {
+    "pick": "Fossilize",
+    "choices": ["Stone Prison", "Animate Stone", "Fossilize", "Stone Cages", "Quicksand", "Salt Crystals", "Stalagmites", "Earthquake", "Volcanic Gasses"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Earth Manipulation": {
+    "pick": "Stone Prison",
+    "choices": ["Stone Prison", "Heavy Mallet", "Salt Crystals", "Build Up", "Tremor", "Mud Bath", "Beryl Crystals", "Fracture", "Seismic Smash"],
+    "archetypes": ["Blaster"]
+  },
+  "Electric Armor": {
+    "pick": "Charged Armor",
+    "choices": ["Charged Armor", "Hide", "Lightning Field", "Conductive Shield", "Charged Shield", "Energize", "Static Shield", "Grounded", "Lightning Reflexes", "Power Sink", "Power Surge", "EMP"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Electric Control": {
+    "pick": "Tesla Cage",
+    "choices": ["Electric Fence", "Gremlins", "Tesla Cage", "Chain Fences", "Jolting Chain", "Conductive Aura", "Static Field", "Synaptic Overload", "Tesla Coil", "Paralyzing Blast", "Synaptic Surge"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Electrical Affinity": {
+    "pick": "Shock",
+    "choices": ["Shock", "Rejuvenating Circuit", "Galvanic Sentinel", "Discharge", "Energizing Circuit", "Faraday Cage", "Empowering Circuit", "Defibrillate", "Insulating Circuit", "Amp Up"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Electrical Blast": {
+    "pick": "Thunderous Blast",
+    "choices": ["Charged Bolts", "Lightning Bolt", "Ball Lightning", "Short Circuit", "Zapping Bolt", "Charge Up", "Zapp", "Aim", "Tesla Cage", "Voltaic Sentinel", "Thunderous Blast"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Electrical Melee": {
+    "pick": "Jacobs Ladder",
+    "choices": ["Charged Brawl", "Havoc Punch", "Jacobs Ladder", "Build Up", "Assassin's Shock", "Thunder Strike", "Taunt", "Confront", "Placate", "Chain Induction", "Lightning Clap", "Lightning Rod"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Electricity Assault": {
+    "pick": "Thunder Strike",
+    "choices": ["Charged Bolts", "Charged Brawl", "Havok Punch", "Lightning Bolt", "Chain Induction", "Build Up", "Havoc Punch", "Ball Lightning", "Static Discharge", "Power Build Up", "Zapp", "Short Circuit", "Thunder Strike", "Voltaic Sentinel", "Lightning Rod"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Electricity Manipulation": {
+    "pick": "Electric Fence",
+    "choices": ["Electric Fence", "Charged Brawl", "Build Up", "Lightning Field", "Havoc Punch", "Thunder Strike", "Dynamo", "Force of Thunder", "Power Sink", "Shocking Grasp"],
+    "archetypes": ["Blaster"]
+  },
+  "Empathy": {
+    "pick": "Healing Aura",
+    "choices": ["Healing Aura", "Heal Other", "Absorb Pain", "Empathize", "Resurrect", "Clear Mind", "Fortitude", "Recovery Aura", "Regeneration Aura", "Revitalization Aura", "Adrenaline Boost", "Adrenalin Boost"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Energy Assault": {
+    "pick": "Bone Smasher",
+    "choices": ["Power Bolt", "Bone Smasher", "Power Push", "Power Blast", "Build Up", "Explosive Blast", "Whirling Hands", "Power Up", "Power Boost", "Power Build Up", "Power Burst", "Total Focus", "Sniper Blast"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Energy Aura": {
+    "pick": "Kinetic Shield",
+    "choices": ["Kinetic Shield", "Hide", "Dampening Field", "Kinetic Dampening", "Power Shield", "Entropic Aura", "Energy Protection", "Energize", "Entropy Shield", "Power Armor", "Energy Cloak", "Energy Drain", "Disrupt", "Repelling Force", "Overload", "Power Drain"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Energy Blast": {
+    "pick": "Nova",
+    "choices": ["Power Bolt", "Power Blast", "Energy Torrent", "Power Burst", "Explosive Blast", "Sniper Blast", "Aim", "Power Push", "Focused Power Bolt", "Nova"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Energy Composition": {
+    "pick": "Entropy Shield",
+    "choices": ["Kinetic Shield", "Siphon Power", "Power Shield", "Entropy Shield", "Inertial Siphon", "Mass Energize", "Kinetic Dampening", "Transference", "Fulcrum Flip"],
+    "archetypes": ["Guardian"]
+  },
+  "Energy Manipulation": {
+    "pick": "Power Thrust",
+    "choices": ["Power Thrust", "Energy Punch", "Build Up", "Bone Smasher", "Energize", "Stun", "Staggering Burst", "Power Boost", "Boost Range", "Total Focus"],
+    "archetypes": ["Blaster"]
+  },
+  "Energy Melee": {
+    "pick": "Energy Punch",
+    "choices": ["Barrage", "Energy Punch", "Bone Smasher", "Build Up", "Assassin's Strike", "Power Crash", "Whirling Hands", "Taunt", "Confront", "Placate", "Total Focus", "Staggering Burst", "Stun", "Energy Transfer"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Feral Might": {
+    "pick": "Feral Blow",
+    "choices": ["Hunter's Howl", "Pounce", "Feral Blow", "Vicious Strike", "Brutal Swipe", "Hunter Form", "Pack Frenzy", "Call of the Wild", "Primal Strike", "Prowler Form", "Nature's Boon", "Primal Guile", "Upheaval", "Savage Blow"],
+    "archetypes": ["Primalist"]
+  },
+  "Fiery Assault": {
+    "pick": "Flares",
+    "choices": ["Flares", "Incinerate", "Cremate", "Fire Breath", "Fire Blast", "Build Up", "Fire Ball", "Combustion", "Embrace of Fire", "Consume", "Blazing Bolt", "Blaze"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Fiery Aura": {
+    "pick": "Fire Shield",
+    "choices": ["Fire Shield", "Hidden Flame", "Blazing Aura", "Molten Embrace", "Healing Flames", "Temperature Protection", "Consume", "Plasma Shield", "Burn", "Fiery Embrace", "Phoenix Rising", "Cauterizing Blaze", "Rise of the Phoenix"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Fiery Combat": {
+    "pick": "Flares",
+    "choices": ["Flares", "Fire Blast", "Scorch", "Fire Ball", "Blaze", "Fire Sword", "Fire Breath", "Aim", "Rain of Fire", "Fire Sword Circle", "Blazing Bolt", "Greater Fire Sword", "Inferno"],
+    "archetypes": ["Defender"]
+  },
+  "Fiery Composition": {
+    "pick": "Fire Shield",
+    "choices": ["Fire Shield", "Soothing Flames", "Temperature Protection", "Plasma Shield", "Consume", "Reforge", "Heat Exhaustion", "Melt Armor", "Phoenix Awakening"],
+    "archetypes": ["Guardian"]
+  },
+  "Fiery Melee": {
+    "pick": "Scorch",
+    "choices": ["Scorch", "Fire Sword", "Cremate", "Combustion", "Build Up", "Assassin's Blaze", "Breath of Fire", "Incinerate", "Taunt", "Confront", "Placate", "Fiery Breath", "Fire Sword Circle", "Greater Fire Sword"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Fire Blast": {
+    "pick": "Flares",
+    "choices": ["Flares", "Fire Blast", "Fire Ball", "Rain of Fire", "Fire Breath", "Blaze", "Aim", "Blazing Blast", "Blazing Bolt", "Inferno"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Fire Control": {
+    "pick": "Char",
+    "choices": ["Ring of Fire", "Fire Imps", "Char", "Fire Cages", "Smoke", "Hot Feet", "Flashfire", "Cinders", "Bonfire"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Fire Manipulation": {
+    "pick": "Ring of Fire",
+    "choices": ["Ring of Fire", "Fire Sword", "Combustion", "Fire Sword Circle", "Build Up", "Cauterizing Aura", "Consume", "Burn", "Hot Feet"],
+    "archetypes": ["Blaster"]
+  },
+  "Force Composition": {
+    "pick": "Containment Shell",
+    "choices": ["Temp Invulnerability", "Force Bolt", "Force Affinity", "Dispersion Bubble", "Force Barrier", "Containment Shell", "Repulsion Bomb", "Force Shielding", "Suppression Field"],
+    "archetypes": ["Guardian"]
+  },
+  "Force Field": {
+    "pick": "Personal Force Field",
+    "choices": ["Repulsion Field", "Personal Force Field", "Repulsion Bolt", "Deflection Shield", "Force Bolt", "Insulation Shield", "Detention Field", "Barrier Field", "Dispersion Bubble", "Containment Shell", "Force Bomb", "Damping Bubble", "Repulsion Bomb", "Force Bubble", "Suspension Bubble"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Gravity Control": {
+    "pick": "Gravity Distortion",
+    "choices": ["Crush", "Singularity", "Lift", "Gravity Distortion", "Propel", "Crushing Field", "Dimension Shift", "Wormhole", "Gravity Distortion Field", "Gravity Field"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Gun Fu": {
+    "pick": "Pistols",
+    "choices": ["Pistols", "Crane Kick", "Spinning Kick", "Dual Wield", "Focus Chi", "Empty Clips", "Crippling Axe Kick", "Piercing Rounds", "Eagles Claw"],
+    "archetypes": ["Guardian"]
+  },
+  "Hard Life": {
+    "pick": "Slug",
+    "choices": ["Slug", "Sucker Punch", "Buckshot", "Cryoshot", "It's A Hard Life", "Dragon's Breath", "Venom Shell", "Point Blank", "Frag 12"],
+    "archetypes": ["Tanker"]
+  },
+  "Hellfire Assault": {
+    "pick": "Hellfire Flares",
+    "choices": ["Hellfire Flares", "Hellfire Smash", "Crack Whip", "Corruption", "Soul Searing", "Hellfire Burst", "Lash", "Hellfire Blaze", "Wrath of Hell"],
+    "archetypes": ["Guardian"]
+  },
+  "Ice Armor": {
+    "pick": "Frozen Armor",
+    "choices": ["Frozen Armor", "Permafrost", "Hide", "Rime", "Hoarfrost", "Glacial Armor", "Chilling Embrace", "Wet Ice", "Frigid Shield", "Icicles", "Moisture Absorption", "Energy Absorption", "Hibernate", "Icy Bastion", "Frost Protection"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Ice Blast": {
+    "pick": "Ice Bolt",
+    "choices": ["Ice Bolt", "Ice Blast", "Frost Breath", "Aim", "Ice Storm", "Chilling Ray", "Freeze Ray", "Bitter Ice Blast", "Bitter Freeze Ray", "Blizzard"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Ice Composition": {
+    "pick": "Frost Armor",
+    "choices": ["Frost Armor", "Infrigidate", "Ice Pack", "Wet Ice", "Glacial Armor", "Arctic Fog", "Chilling Embrace", "Sleet", "Heat Loss"],
+    "archetypes": ["Guardian"]
+  },
+  "Ice Control": {
+    "pick": "Chilblain",
+    "choices": ["Chilblain", "Jack Frost", "Block of Ice", "Frostbite", "Arctic Air", "Cold Snap", "Shiver", "Ice Slick", "Flash Freeze", "Snow Storm", "Glacier"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Ice Manipulation": {
+    "pick": "Chilblain",
+    "choices": ["Chilblain", "Frozen Fists", "Ice Sword", "Frigid Protection", "Build Up", "Ice Patch", "Shiver", "Freezing Touch", "Frozen Aura"],
+    "archetypes": ["Blaster"]
+  },
+  "Ice Melee": {
+    "pick": "Greater Ice Sword",
+    "choices": ["Frozen Fists", "Ice Sword", "Frost", "Build Up", "Assassin's Ice Sword", "Assassin's Icicle", "Ice Patch", "Greater Ice Sword", "Placate", "Taunt", "Confront", "Freezing Touch", "Frozen Aura"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Icy Assault": {
+    "pick": "Ice Slash",
+    "choices": ["Ice Bolt", "Ice Sword", "Ice Sword Circle", "Ice Blast", "Build Up", "Frost Breath", "Power Up", "Power Boost", "Power Build Up", "Ice Slash", "Chilling Embrace", "Bitter Ice Blast", "Bitter Freeze Ray"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Icy Combat": {
+    "pick": "Blizzard",
+    "choices": ["Ice Bolt", "Ice Blast", "Ice Sword", "Frost Breath", "Ice Sword Circle", "Bitter Ice Blast", "Ice Slash", "Freeze Ray", "Aim", "Ice Storm", "Bitter Freeze Ray", "Freezing Touch", "Blizzard"],
+    "archetypes": ["Defender"]
+  },
+  "Illusion Control": {
+    "pick": "Blind",
+    "choices": ["Superior Invisibility", "Spectral Wounds", "Spectral Wall", "Blind", "Phantasm", "Deceive", "Flash", "Spectral Terror", "Group Invisibility", "Gleam", "Mass Hysteria", "Phantom Army"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Infiltrator Training": {
+    "pick": "Combat Reflexes",
+    "choices": ["Combat Reflexes", "Web Grenade", "Danger Sense", "Trained Mind", "Poison Trap", "Intrusion", "Seeker Drones", "Blinding Powder", "Shredder Mine"],
+    "archetypes": ["Guardian"]
+  },
+  "Invulnerability": {
+    "pick": "Resist Physical Damage",
+    "choices": ["Resist Physical Damage", "Hide", "Temp Invulnerability", "Dull Pain", "Durability", "Resist Elements", "Unyielding", "Resist Energies", "Invincibility", "Environmental Resistance", "Tough Hide", "Invincible", "Unstoppable"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Katana": {
+    "pick": "Gambler's Cut",
+    "choices": ["Sting of the Wasp", "Gambler's Cut", "Flashing Steel", "Build Up", "Divine Avalanche", "Dragon's Roar", "Calling the Wolf", "Feint", "The Lotus Drops", "Aim", "Soaring Dragon", "Golden Dragonfly"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Tanker"]
+  },
+  "Kinetic Assault": {
+    "pick": "Energetic Strike",
+    "choices": ["Kinetic Bolt", "Forceful Blow", "Crushing Blast", "Disrupting Torrent", "Coalescence", "Kinetic Shockwave", "Energetic Strike", "Kinetic Lance", "Mass Driver", "Velocity Siphon"],
+    "archetypes": ["Defender", "Dominator", "Guardian"]
+  },
+  "Kinetic Melee": {
+    "pick": "Smashing Blow",
+    "choices": ["Quick Strike", "Body Blow", "Smashing Blow", "Power Siphon", "Assassin's Strike", "Repulsing Torrent", "Build Up", "Taunt", "Confront", "Placate", "Burst", "Focused Burst", "Concentrated Strike"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Kinetics": {
+    "pick": "Fulcrum Shift",
+    "choices": ["Transfusion", "Siphon Power", "Repel", "Siphon Speed", "Increase Density", "Speed Boost", "Inertial Reduction", "Transference", "Fulcrum Shift"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Knights": {
+    "pick": "Call Archer",
+    "choices": ["Chop", "Call Archer", "Gash", "Equip Knights", "Whirling Axe", "Call Men At Arms", "Rally The Militia", "Call Knight", "Upgrade Equipment"],
+    "archetypes": ["Mastermind"]
+  },
+  "Light Affinity": {
+    "pick": "Prismatic Shield",
+    "choices": ["Protective Beam", "Blinding Beam", "Radiance", "Purifying Beam", "Lightfield", "Magnify", "Searing Beam", "Spotlight", "Prismatic Shield"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Luminous Assault": {
+    "pick": "Incandescent Strike",
+    "choices": ["Gleaming Bolt", "Luminous Smite", "Glinting Eye", "Radiant Strike", "Inner Light", "Proton Scatter", "Gleaming Blast", "Incandescent Strike", "Solar Flare"],
+    "archetypes": ["Guardian"]
+  },
+  "Luminous Aura": {
+    "pick": "White Dwarf",
+    "choices": ["Quantum Acceleration", "Incandescence", "Energy Flight", "Shining Shield", "Essence Boost", "Combat Flight", "Thermal Shield", "Quantum Shield", "Cosmic Burn", "Solar Glide", "Group Energy Flight", "White Dwarf", "White Dwarf Strike", "White Dwarf Smite", "White Dwarf Flare", "White Dwarf Sublimation", "White Dwarf Step", "White Dwarf Antagonize", "Reform Essence", "Energize", "Conserve Energy", "Renew Energy", "Starfall", "Quantum Maneuvers", "Quantum Flight", "Restore Essence", "Light Form"],
+    "archetypes": ["Peacebringer"]
+  },
+  "Luminous Blast": {
+    "pick": "Dawn Strike",
+    "choices": ["Gleaming Bolt", "Glinting Eye", "Gleaming Blast", "Bright Nova", "Bright Nova Bolt", "Bright Nova Blast", "Bright Nova Scatter", "Bright Nova Detonation", "Radiant Strike", "Proton Scatter", "Inner Light", "Luminous Detonation", "Incandescent Strike", "Pulsar", "Glowing Touch", "Solar Flare", "Photon Seekers", "Dawn Strike"],
+    "archetypes": ["Peacebringer"]
+  },
+  "Mace Assault": {
+    "pick": "Mace Beam",
+    "choices": ["Mace Beam", "Bash", "Mace Beam Blast", "Pulverize", "Build Up", "Poisonous Ray", "Mace Beam Volley", "Shatter", "Crowd Control"],
+    "archetypes": ["Guardian"]
+  },
+  "Marine Affinity": {
+    "pick": "Shoal Rush",
+    "choices": ["Shoal Rush", "Soothing Wave", "Toroidal Bubble", "Whitecap", "Tide Pool", "Brine", "Shifting Tides", "Barrier Reef", "Power of the Depths"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Martial Arts": {
+    "pick": "Eagles Claw",
+    "choices": ["Thunder Kick", "Storm Kick", "Crippling Axe Kick", "Cobra Strike", "Spinning Kick", "Focus Chi", "Assassin's Blow", "Crane Kick", "Warrior's Provocation", "Warriors Challenge", "Placate", "Dragon's Tail", "Eagles Claw"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Martial Assault": {
+    "pick": "Eagles Claw",
+    "choices": ["Shuriken Throw", "Thunder Kick", "Trick Shot", "Spinning Kick", "Envenomed Blades", "Explosive Shuriken", "Dragon's Tail", "Caltrops", "Masterful Throw", "Eagles Claw"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Martial Combat": {
+    "pick": "Ki Push",
+    "choices": ["Ki Push", "Shuriken Throw", "Storm Kick", "Thunder Kick", "Reach for the Limit", "Trick Shot", "Burst of Speed", "Explosive Shuriken", "Dragon's Tail", "Envenomed Blades", "Reaction Time", "Inner Will", "Eagles Claw", "Throw Sand", "Caltrops", "Masterful Throw"],
+    "archetypes": ["Blaster", "Defender"]
+  },
+  "Mental Manipulation": {
+    "pick": "Subdual",
+    "choices": ["Subdual", "Mind Probe", "World of Confusion", "Telekinetic Thrust", "Psychic Scream", "Concentration", "Drain Psyche", "Scare", "Psychic Shockwave"],
+    "archetypes": ["Blaster"]
+  },
+  "Mercenaries": {
+    "pick": "Burst",
+    "choices": ["Burst", "Soldiers", "Slug", "Equip Mercenary", "M30 Grenade", "Spec Ops", "Elite Spec Ops", "Serum", "Commando", "Tactical Upgrade"],
+    "archetypes": ["Mastermind"]
+  },
+  "Military Assault": {
+    "pick": "Shin Breaker",
+    "choices": ["Single Shot", "Pummel", "Burst", "Heavy Burst", "Build Up", "Shin Breaker", "Spinning Strike", "Sniper Round", "Incendiary Round"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Mind Control": {
+    "pick": "Dominate",
+    "choices": ["Mesmerize", "Confuse", "Levitate", "Dominate", "Mass Hypnosis", "Terrify", "Telekinesis", "Mass Confusion", "Total Domination"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Nature Affinity": {
+    "pick": "Spore Cloud",
+    "choices": ["Corrosive Enzymes", "Regrowth", "Corrosive Sap", "Wild Growth", "Spore Cloud", "Lifegiving Spores", "Living Spores", "Wild Bastion", "Rebirth", "Entangling Aura", "Overgrowth"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Nature Armor": {
+    "pick": "Wild Armor",
+    "choices": ["Grace", "Wild Armor", "Centered", "In Touch", "Radiating Light", "Allseer", "Lashing Life", "Geomancy", "Trembling Earth", "Primal Force", "One With All"],
+    "archetypes": ["Tanker"]
+  },
+  "Necromancy": {
+    "pick": "Zombie Horde",
+    "choices": ["Dark Blast", "Zombie Horde", "Gloom", "Enchant Undead", "Life Drain", "Grave Knight", "Soul Extraction", "Lich", "Dark Empowerment"],
+    "archetypes": ["Mastermind"]
+  },
+  "Ninja Assault": {
+    "pick": "Flashing Blade",
+    "choices": ["Flashing Blade", "Gambler's Cut", "Steel Wind", "Soaring Dragon", "Chi Strike", "Scorpion's Sting", "The Lotus Drops", "Caltrops", "Golden Dragonfly"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Ninja Blade": {
+    "pick": "Gambler's Cut",
+    "choices": ["Sting of the Wasp", "Gambler's Cut", "Flashing Steel", "Assassin's Blade", "Build Up", "Placate", "Divine Avalanche", "The Lotus Drops", "Soaring Dragon", "Golden Dragonfly"],
+    "archetypes": ["Stalker"]
+  },
+  "Ninja Training": {
+    "pick": "Immobilizing Dart",
+    "choices": ["Immobilizing Dart", "Sting of the Wasp", "Choking Powder", "Shinobi", "The Lotus Drops", "Kuji-In Toh", "Smoke Flash", "Blinding Powder", "Golden Dragonfly"],
+    "archetypes": ["Blaster"]
+  },
+  "Ninjas": {
+    "pick": "Call Genin",
+    "choices": ["Snap Shot", "Call Genin", "Aimed Shot", "Train Ninjas", "Fistful of Arrows", "Call Jounin", "Smoke Flash", "Oni", "Kuji-In Zen", "Kuji In Zen"],
+    "archetypes": ["Mastermind"]
+  },
+  "Ninjitsu": {
+    "pick": "Ninja Reflexes",
+    "choices": ["Ninja Reflexes", "Hide", "Danger Sense", "Shinobi-Iri", "Kuji-In Sha", "Kuji-In Rin", "Caltrops", "Seishinteki Kyoyo", "Smoke Flash", "Bo Ryaku", "Blinding Powder", "Kuji-In Retsu", "Quick Recovery"],
+    "archetypes": ["Scrapper", "Sentinel", "Stalker"]
+  },
+  "Obedience Training": {
+    "pick": "Praise",
+    "choices": ["Praise", "Vicious Mockery", "Inspire Betrayal", "Discipline Allies", "Identify Weakness", "Motivate Allies", "Punish", "Intimidating Presence", "Press On"],
+    "archetypes": ["Mastermind"]
+  },
+  "Organic Armor": {
+    "pick": "Hardened Carapace",
+    "choices": ["Efficient Adaptation", "Defensive Adaptation", "Offensive Adaptation", "Hardened Carapace", "Inexhaustible", "Environmental Modification", "Adaptation", "Ablative Carapace", "Evolving Armor", "DNA Siphon", "Genetic Contamination", "Parasitic Aura"],
+    "archetypes": ["Brute", "Scrapper", "Tanker"]
+  },
+  "Organic Composition": {
+    "pick": "Hardened Carapace",
+    "choices": ["Hardened Carapace", "Regrowth", "Environmental Modification", "Inexhaustible", "Wild Growth", "Evolving Armor", "DNA Siphon", "Wild Bastion", "Overgrowth"],
+    "archetypes": ["Guardian"]
+  },
+  "Pain Domination": {
+    "pick": "Nullify Pain",
+    "choices": ["Cruelty", "Nullify Pain", "Soothe", "Share Pain", "Conduit of Pain", "Enforced Morale", "Soothing Aura", "World of Pain", "Suppress Pain", "Anguishing Cry", "Painbringer"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Pain Focusing": {
+    "pick": "Mind Over Body",
+    "choices": ["Mind Over Body", "Nullify Pain", "Quick Recovery", "Indomitable Will", "Suppress Pain", "Heightened Senses", "Conduit of Pain", "Anguishing Cry", "World of Pain"],
+    "archetypes": ["Guardian"]
+  },
+  "Pale Blade": {
+    "pick": "Pale Blade",
+    "choices": ["Lash", "Fetid Presence", "Flay", "Rend Flesh", "Virulent", "Pale Wind", "Taunt", "Khloros", "Pale Blade", "Perdition"],
+    "archetypes": ["Tanker"]
+  },
+  "Plant Control": {
+    "pick": "Strangler",
+    "choices": ["Entangle", "Fly Trap", "Strangler", "Roots", "Spore Burst", "Seeds of Confusion", "Spirit Tree", "Vines", "Vine Eruption", "Carrion Creepers"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Plant Manipulation": {
+    "pick": "Skewer",
+    "choices": ["Entangle", "Skewer", "Strangler", "Toxins", "Spore Cloud", "Wild Fortress", "Ripper", "Vines", "Thorn Burst"],
+    "archetypes": ["Blaster"]
+  },
+  "Poison": {
+    "pick": "Envenom",
+    "choices": ["Alkaloid", "Envenom", "Alkaloid Splash", "Weaken", "Neurotoxic Breath", "Elixir of Life", "Paralytic Poison", "Antidote", "Venomous Gas", "Noxious Gas", "Hallucinogenic Spray", "Poison Trap"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Primal Gifts": {
+    "pick": "Will of the Wild",
+    "choices": ["Pack Master", "Thick Hide", "Rejuvenate", "Primal Ward", "Nature's Embrace", "Primal Howl", "Primalist's Cloak", "Primal Essence", "Wild Roar", "Shifter's Shield", "Grace of Nature", "Will of the Wild"],
+    "archetypes": ["Primalist"]
+  },
+  "Psionic Armor": {
+    "pick": "Psychic Wall",
+    "choices": ["Psychic Wall", "Hide", "Psionic Shield", "Impenetrable Mind", "Mask Presence", "Consume Psyche", "Impose Presence", "Psychokinetic Barrier", "Devour Psyche", "Precognition", "Aura of Insanity", "Memento Mori", "Aura of Madness"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Psionic Assault": {
+    "pick": "Mind Probe",
+    "choices": ["Psionic Dart", "Mind Probe", "Telekinetic Blow", "Mental Blast", "Telekinetic Thrust", "Telekinetic Blast", "Psychic Scream", "Concentration", "Psionic Tornado", "Drain Psyche", "Subdue", "Telekinetic Shockwave", "Psionic Lance", "Psychic Shockwave"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Psionic Melee": {
+    "pick": "Telekinetic Blow",
+    "choices": ["Mental Strike", "Psi Blade", "Telekinetic Blow", "Concentration", "Assassin's Psi Blade", "Psi Blade Sweep", "Taunt", "Confront", "Placate", "Boggle", "Greater Psi Blade", "Mass Levitate"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Psychic Blast": {
+    "pick": "Psychic Wail",
+    "choices": ["Dominate Will", "Subdue", "Psionic Dart", "Mental Blast", "Telekinetic Blast", "Psionic Lance", "Psionic Tornado", "Psychic Scream", "Psionic Darts", "Psychic Focus", "Will Domination", "Psionic Strike", "Scramble Thoughts", "Scramble Minds", "Psychic Wail"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Psychokinetic Assault": {
+    "pick": "Psi-Blade Spin",
+    "choices": ["Psi-Whip Lash", "Psi-Blade Slash", "Psi-Whip Crack", "Psi-Whip Thrash", "Manifest", "Psi-Blade Spin", "Psi-Blade Slam", "Psychokinetic Pulse", "Psi-Whip Coil"],
+    "archetypes": ["Dominator"]
+  },
+  "Pyrotechnic Control": {
+    "pick": "Dazzle",
+    "choices": ["Sparkling Cage", "Dazzle", "Sparkling Chain", "Glittering Column", "Hypnotizing Lights", "Brilliant Barrage", "Incendiary Aura", "Explosive Bouquet", "Catherine Wheel"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Radiant Blast": {
+    "pick": "Judgement",
+    "choices": ["Rebuke", "Admonish", "Purify", "Reckoning", "Wrath", "Radiance", "Consecrate", "Mote of Light", "Judgement"],
+    "archetypes": ["Defender"]
+  },
+  "Radiation Armor": {
+    "pick": "Alpha Barrier",
+    "choices": ["Alpha Barrier", "Hide", "Gamma Boost", "Proton Armor", "Fallout Shelter", "Radiation Therapy", "Beta Decay", "Proton Therapy", "Particle Shielding", "Particle Acceleration", "Ground Zero", "Meltdown"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Radiation Assault": {
+    "pick": "Devastating Blow",
+    "choices": ["Neutrino Bolt", "Radioactive Smash", "X-Ray Beam", "Electron Haze", "Fusion", "Radiation Siphon", "Devastating Blow", "Proton Volley", "Atom Smasher"],
+    "archetypes": ["Guardian"]
+  },
+  "Radiation Blast": {
+    "pick": "Atomic Blast",
+    "choices": ["Neutrino Bolt", "X-Ray Beam", "Irradiate", "Electron Haze", "Cosmic Burst", "Aim", "Proton Volley", "Neutron Bomb", "Proton Stream", "Fusion", "Atomic Blast"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Radiation Composition": {
+    "pick": "Particle Shielding",
+    "choices": ["Alpha Barrier", "Radiant Aura", "Proton Armor", "Fallout Shelter", "Accelerate Metabolism", "Enervating Field", "Particle Shielding", "Ground Zero", "EM Wave"],
+    "archetypes": ["Guardian"]
+  },
+  "Radiation Emission": {
+    "pick": "Radiation Infection",
+    "choices": ["Radiant Aura", "Radiation Infection", "Accelerate Metabolism", "Enervating Field", "Mutation", "Lingering Radiation", "Choking Cloud", "Fallout", "EM Pulse"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Radiation Melee": {
+    "pick": "Radioactive Smash",
+    "choices": ["Contaminated Strike", "Radioactive Smash", "Proton Sweep", "Fusion", "Assassin's Corruption", "Radiation Siphon", "Build Up", "Taunt", "Confront", "Placate", "Irradiated Ground", "Irradiating Aura", "Devastating Blow", "Atom Smasher"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Radioactive Assault": {
+    "pick": "Devastating Blow",
+    "choices": ["Neutrino Bolt", "Contaminated Strike", "X-Ray Beam", "Electron Haze", "Fusion", "Radiation Siphon", "Atom Smasher", "Proton Volley", "Devastating Blow"],
+    "archetypes": ["Dominator"]
+  },
+  "Reconstructive Healing": {
+    "pick": "Healing Aura",
+    "choices": ["Resilience", "Healing Aura", "Pain Absorption", "Dull Pain", "Integration", "Recovery Aura", "Regeneration Aura", "Revive", "Fortitude Aura"],
+    "archetypes": ["Guardian"]
+  },
+  "Regeneration": {
+    "pick": "Fast Healing",
+    "choices": ["Fast Healing", "Hide", "Reconstruction", "Quick Recovery", "Dull Pain", "Ailment Resistance", "Integration", "Resilience", "Reactive Regeneration", "Second Wind", "Instant Healing", "Moment of Glory", "Revive"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Robotics": {
+    "pick": "Battle Drones",
+    "choices": ["Pulse Rifle Blast", "Battle Drones", "Pulse Rifle Burst", "Equip Robot", "Photon Grenade", "Protector Bots", "Maintenance Drone", "Repair", "Assault Bot", "Upgrade Robot"],
+    "archetypes": ["Mastermind"]
+  },
+  "Savage Assault": {
+    "pick": "Vicious Slash",
+    "choices": ["Call Swarm", "Maiming Slash", "Vicious Slash", "Unkindness", "Spot Prey", "Rending Flurry", "Blood Craze", "Call Hawk", "Feral Charge"],
+    "archetypes": ["Dominator"]
+  },
+  "Savage Melee": {
+    "pick": "Savage Strike",
+    "choices": ["Savage Strike", "Maiming Slash", "Shred", "Blood Thirst", "Vicious Slash", "Assassin's Frenzy", "Rending Flurry", "Hemorrhage", "Build Up", "Taunt", "Confront", "Placate", "Feint", "Savage Leap"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Seismic Blast": {
+    "pick": "Meteor",
+    "choices": ["Encase", "Shatter", "Seismic Shockwaves", "Rock Shards", "Entomb", "Seismic Force", "Upthrust", "Tombstone", "Gravestone", "Stalagmite", "Meteor"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Shield Defense": {
+    "pick": "Deflection",
+    "choices": ["Deflection", "Hide", "Battle Agility", "True Grit", "Active Defense", "Against All Odds", "Phalanx Fighting", "Grant Cover", "Shield Charge", "One with the Shield"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Sonic Assault": {
+    "pick": "Earsplitter",
+    "choices": ["Shriek", "Strident Echo", "Scream", "Shockwave", "Bass Boost", "Deafening Wave", "Disruption Aura", "Shout", "Earsplitter"],
+    "archetypes": ["Dominator"]
+  },
+  "Sonic Attack": {
+    "pick": "Dreadful Wail",
+    "choices": ["Shriek", "Scream", "Howl", "Shockwave", "Shout", "Amplify", "Sirens Song", "Screech", "Siren's Song", "Dreadful Wail"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Sonic Attacks": {
+    "pick": "Dreadful Wail",
+    "choices": ["Shriek", "Scream", "Howl", "Shockwave", "Shout", "Amplify", "Sirens Song", "Screech", "Dreadful Wail"],
+    "archetypes": ["Corruptor"]
+  },
+  "Sonic Aura": {
+    "pick": "Sonic Diffusion",
+    "choices": ["Sonic Diffusion", "Ultrasonic Hide", "Attenuation Blanket", "Equalization", "Harmonic Distortion", "Disruption Aura", "Ultrasonic Flow", "Disruption Strike", "Somatic Aura", "Sonic Boom", "Noise Cancellation"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Sonic Manipulation": {
+    "pick": "Strident Echo",
+    "choices": ["Sonic Thrust", "Strident Echo", "Echo Chamber", "Sound Booster", "Deafening Wave", "Sound Barrier", "Disruption Aura", "Sound Cannon", "Earsplitter"],
+    "archetypes": ["Blaster"]
+  },
+  "Sonic Melee": {
+    "pick": "Strident Echo",
+    "choices": ["Sonic Thrust", "Strident Echo", "Attune", "Sonic Clap", "Sound Booster", "Assassin's Whisper", "Build Up", "Taunt", "Confront", "Placate", "Sandman's Whisper", "Deafening Wave", "Earsplitter"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Sonic Resonance": {
+    "pick": "Sonic Siphon",
+    "choices": ["Sonic Siphon", "Resonate", "Sonic Barrier", "Sonic Haven", "Sonic Cage", "Disruption Field", "Disruption Aura", "Sonic Dispersion", "Sonic Soothe", "Sonic Repulsion", "Clarity", "Liquefy", "Sonic  Repulsion"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Spectral Aura": {
+    "pick": "Spectral Shift",
+    "choices": ["Spectral Shift", "Phantasmal Phase", "Spectral Shroud", "Visions Of The End", "Convalesce", "Frightening Fade", "Haunting Haze", "Quick Recovery", "Beyond The Veil"],
+    "archetypes": ["Stalker"]
+  },
+  "Spectral Melee": {
+    "pick": "Haunting Blow",
+    "choices": ["Haunting Strike", "Haunting Blow", "Gripping Terror", "Assassin's Reave", "Build Up", "Possess", "Encroaching Nightmare", "Nightmarish Grasp", "Spirit Sunder"],
+    "archetypes": ["Stalker"]
+  },
+  "Spines": {
+    "pick": "Barb Swipe",
+    "choices": ["Barb Swipe", "Lunge", "Spine Burst", "Throw Spines", "Build Up", "Assassin's Impaler", "Impale", "Taunt", "Confront", "Placate", "Ripper", "Quills", "Thorntrops"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Staff Fighting": {
+    "pick": "Precise Strike",
+    "choices": ["Form of the Body", "Form of the Mind", "Form of the Soul", "Mercurial Blow", "Precise Strike", "Guarded Spin", "Assassin's Staff", "Eye of the Storm", "Build Up", "Staff Mastery", "Serpent's Reach", "Taunt", "Placate", "Confront", "Feint", "Innocuous Strikes", "Sky Splitter"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Stone Armor": {
+    "pick": "Rock Armor",
+    "choices": ["Rock Armor", "Hide", "Stone Skin", "Earth's Embrace", "Mud Pots", "Rooted", "Terra Firma", "Crystal Armor", "Brimstone Armor", "Minerals", "Granite Armor", "Geode"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Stone Composition": {
+    "pick": "Volcanic Armor",
+    "choices": ["Rocky Armor", "Stone Shelter", "Quicksand", "Volcanic Armor", "Gaia's Blessing", "Crystalline Armor", "Stone Skin", "Earthquake", "Eruption"],
+    "archetypes": ["Guardian"]
+  },
+  "Stone Melee": {
+    "pick": "Stone Fist",
+    "choices": ["Stone Fist", "Stone Mallet", "Heavy Mallet", "Fault", "Build Up", "Assassin's Smash", "Taunt", "Confront", "Placate", "Seismic Smash", "Seismic Mallet", "Hurl Boulder", "Tremor"],
+    "archetypes": ["Brute", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Storm Blast": {
+    "pick": "Category Five",
+    "choices": ["Gust", "Hailstones", "Jet Stream", "Storm Cell", "Intensify", "Direct Strike", "Lightning Strike", "Chain Lightning", "Cloudburst", "Category Five"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Storm Summoning": {
+    "pick": "Freezing Rain",
+    "choices": ["Gale", "O2 Boost", "Oxygenate", "Snow Storm", "Snow Field", "Steamy Mist", "Freezing Rain", "Hurricane", "Typhoon", "Thunder Clap", "Tornado", "Lightning Storm"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Street Justice": {
+    "pick": "Heavy Blow",
+    "choices": ["Initial Strike", "Heavy Blow", "Sweeping Cross", "Combat Readiness", "Assassin's Strike", "Rib Cracker", "Build Up", "Taunt", "Confront", "Placate", "Feint", "Spinning Strike", "Shin Breaker", "Crushing Uppercut"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Stalker", "Tanker"]
+  },
+  "Super Reflexes": {
+    "pick": "Focused Fighting",
+    "choices": ["Focused Fighting", "Hide", "Focused Senses", "Agile", "Dodge", "Practiced Brawler", "Reaction Time", "Master Brawler", "Quickness", "Evasion", "Enduring", "Lucky", "Block", "Quick Recovery", "Elude"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Super Strength": {
+    "pick": "Jab",
+    "choices": ["Jab", "Punch", "Haymaker", "Rage", "Hand Clap", "Mighty Shockwave", "Knockout Blow", "Taunt", "Hurl", "Foot Stomp"],
+    "archetypes": ["Brute", "Tanker"]
+  },
+  "Symphony Control": {
+    "pick": "Hymn of Dissonance",
+    "choices": ["Melodic Binding", "Hymn of Dissonance", "Aria of Stasis", "Impassioned Serenade", "Dreadful Discord", "Enfeebling Lullaby", "Confounding Chant", "Chords of Despair", "Reverberant"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Tactical Arrow": {
+    "pick": "Electrified Net Arrow",
+    "choices": ["Electrified Net Arrow", "Glue Arrow", "Ice Arrow", "Upshot", "Flash Arrow", "Eagle Eye", "Gymnastics", "ESD Arrow", "Oil Slick Arrow"],
+    "archetypes": ["Blaster"]
+  },
+  "Teamwork": {
+    "pick": "Combat Training: Defensive",
+    "choices": ["Combat Training: Defensive", "Combat Training: Evasive", "Combat Training: Offensive", "Tactical Training: Offensive", "Tactical Training: Maneuvers", "Tactical Training: Defensive", "Indomitable Will", "Tactical Training: Assault", "Foresight", "Tactical Training: Leadership"],
+    "archetypes": ["Arachnos Widow"]
+  },
+  "Temporal Manipulation": {
+    "pick": "Time Wall",
+    "choices": ["Time Wall", "Aging Touch", "Dangerous Acceleration", "Time Stop", "End of Time", "Chronos", "Temporal Healing", "Temporal Ablation", "Future Pain", "Be Gone", "Time Shift", "Time Lord", "Boost Range", "Stable Time Loop"],
+    "archetypes": ["Blaster"]
+  },
+  "Temporal Reaction": {
+    "pick": "Focused Fighter",
+    "choices": ["Focused Fighter", "Time Crawl", "Agile", "Practiced Brawler", "Time's Juncture", "Lucky", "Farsight", "Slowed Response", "Chrono Shift"],
+    "archetypes": ["Guardian"]
+  },
+  "Thermal Radiation": {
+    "pick": "Warmth",
+    "choices": ["Warmth", "Thermal Shield", "Fire Shield", "Cauterize", "Plasma Shield", "Power of the Phoenix", "Thaw", "Forge", "Heat Exhaustion", "Melt Armor"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Thorny Assault": {
+    "pick": "Skewer",
+    "choices": ["Thorny Darts", "Skewer", "Fling Thorns", "Impale", "Build Up", "Thorn Burst", "Aim", "Power Build Up", "Thorntrops", "Ripper", "Thorn Barrage"],
+    "archetypes": ["Dominator", "Guardian"]
+  },
+  "Thorny Combat": {
+    "pick": "Thorn Barrage",
+    "choices": ["Thorny Darts", "Skewer", "Fling Thorns", "Impale", "Thorn Burst", "Aim", "Thorntrops", "Thorn Barrage", "Ripper"],
+    "archetypes": ["Defender"]
+  },
+  "Thugs": {
+    "pick": "Call Thugs",
+    "choices": ["Pistols", "Call Thugs", "Dual Wield", "Equip Thugs", "Empty Clips", "Call Enforcer", "Gang War", "Call Bruiser", "Upgrade Equipment"],
+    "archetypes": ["Mastermind"]
+  },
+  "Time Manipulation": {
+    "pick": "Farsight",
+    "choices": ["Time Crawl", "Temporal Mending", "Time's Juncture", "Temporal Selection", "Distortion Field", "Time Stop", "Farsight", "Slowed Response", "Chrono Shift"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Titan Weapons": {
+    "pick": "Titan Sweep",
+    "choices": ["Defensive Sweep", "Crushing Blow", "Titan Sweep", "Follow Through", "Build Momentum", "Taunt", "Confront", "Rend Armor", "Whirling Smash", "Arc of Destruction"],
+    "archetypes": ["Brute", "Scrapper", "Tanker"]
+  },
+  "Training and Gadgets": {
+    "pick": "Wolf Spider Armor",
+    "choices": ["Wolf Spider Armor", "Combat Training: Defensive", "Combat Training: Evasive", "Combat Training: Offensive", "Tactical Training: Offensive", "Tactical Training: Maneuvers", "Tactical Training: Defensive", "Tactical Training: Assault", "Tactical Training: Leadership", "Mental Training", "Call Reinforcements"],
+    "archetypes": ["Arachnos Soldier"]
+  },
+  "Traps": {
+    "pick": "Acid Mortar",
+    "choices": ["Debilitating Web Grenade", "Web Grenade", "Shrapnel Grenade", "Triage Beacon", "Caltrops", "Acid Mortar", "Force Field Generator", "Poison Trap", "Seeker Drones", "Trip Mine", "Temporal Bomb", "Minefield", "Detonator", "Time Bomb", "Auto Turret"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Trick Arrow": {
+    "pick": "Disruption Arrow",
+    "choices": ["Entangling Arrow", "Flash Arrow", "Glue Arrow", "Ice Arrow", "Poison Gas Arrow", "Acid Arrow", "Disruption Arrow", "Oil Slick Arrow", "EMP Arrow"],
+    "archetypes": ["Controller", "Corruptor", "Defender", "Mastermind"]
+  },
+  "Umbral Assault": {
+    "pick": "Shadow Bolt",
+    "choices": ["Shadow Bolt", "Umbral Smite", "Gravimetric Snare", "Essence Drain", "Inner Umbra", "Gravitic Emanation", "Shadow Blast", "Gravity Well", "Dark Extraction"],
+    "archetypes": ["Guardian"]
+  },
+  "Umbral Aura": {
+    "pick": "Black Dwarf",
+    "choices": ["Absorption", "Shadow Step", "Gravity Shield", "Orbiting Death", "Starless Recall", "Penumbral Shield", "Shadow Recall", "Shadow Cloak", "Twilight Shield", "Black Dwarf", "Black Dwarf Strike", "Black Dwarf Smite", "Black Dwarf Drain", "Black Dwarf Mire", "Black Dwarf Step", "Black Dwarf Antagonize", "Stygian Circle", "Nebulous Form", "Starless Gateway", "Shadow Slip", "Inky Aspect", "Stygian Return", "Eclipse"],
+    "archetypes": ["Warshade"]
+  },
+  "Umbral Blast": {
+    "pick": "Quasar",
+    "choices": ["Shadow Bolt", "Ebon Eye", "Gravimetric Snare", "Dark Nova", "Dark Nova Bolt", "Dark Nova Blast", "Dark Nova Emanation", "Dark Nova Detonation", "Shadow Blast", "Dark Detonation", "Essence Drain", "Starless Step", "Sunless Mire", "Gravitic Emanation", "Extinguish Light", "Gravity Well", "Unchain Essence", "Dark Extraction", "Quasar"],
+    "archetypes": ["Warshade"]
+  },
+  "War Mace": {
+    "pick": "Pulverize",
+    "choices": ["Bash", "Pulverize", "Jawbreaker", "Whirling Mace", "Build Up", "Clobber", "Taunt", "Confront", "Feint", "Aim", "Shatter", "Crowd Control"],
+    "archetypes": ["Brute", "Defender", "Scrapper", "Tanker"]
+  },
+  "Water Blast": {
+    "pick": "Geyser",
+    "choices": ["Aqua Bolt", "Hydro Blast", "Water Burst", "Whirlpool", "Dehydrate", "Steam Spray", "Tidal Forces", "Water Jet", "Geyser"],
+    "archetypes": ["Blaster", "Corruptor", "Defender", "Sentinel"]
+  },
+  "Water Control": {
+    "pick": "Suffocate",
+    "choices": ["Deluge", "Water Golem", "Suffocate", "Hypothermia", "Turbulent Aura", "Geyser Burst", "Riptide", "Tidal Wave", "Drowning Pool"],
+    "archetypes": ["Controller", "Dominator"]
+  },
+  "Widow Training": {
+    "pick": "Strike",
+    "choices": ["Poison Dart", "Swipe", "Strike", "Dart Burst", "Follow Up", "Spin", "Lunge", "Confront"],
+    "archetypes": ["Arachnos Widow"]
+  },
+  "Willpower": {
+    "pick": "High Pain Tolerance",
+    "choices": ["High Pain Tolerance", "Hide", "Mind Over Body", "Fast Healing", "Reconstruction", "Indomitable Will", "Rise to the Challenge", "Quick Recovery", "Up to the Challenge", "Heightened Senses", "Resurgence", "Strength of Will"],
+    "archetypes": ["Brute", "Scrapper", "Sentinel", "Stalker", "Tanker"]
+  },
+  "Wind Control": {
+    "pick": "Downdraft",
+    "choices": ["Updraft", "Vortex", "Downdraft", "Clear Skies", "Breathless", "Wind Shear", "Thundergust", "Microburst", "Keening Winds", "Vacuum"],
+    "archetypes": ["Controller", "Dominator"]
+  }
+}

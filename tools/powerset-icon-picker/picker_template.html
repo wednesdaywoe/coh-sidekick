@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Powerset Icon Picker</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1d1c1a;--muted:#6b6862;--line:#dedbd4;--accent:#c2410c;--accent-soft:#fde7d9;--changed:#0f766e}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--card:#21201e;--ink:#ecebe8;--muted:#9c988f;--line:#36342f;--accent:#fb923c;--accent-soft:#3b2416;--changed:#5eead4}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,sans-serif}
+header{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+h1{font-size:16px;margin:0 12px 0 0}
+input[type=search]{flex:1 1 200px;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:inherit}
+button{padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+label.toggle{display:flex;gap:6px;align-items:center;color:var(--muted)}
+.status{color:var(--muted);font-size:13px}
+main{padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.card.changed{border-color:var(--changed)}
+.top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.name{font-weight:600}
+.ats{color:var(--muted);font-size:12px;margin:2px 0 8px}
+.icons{display:flex;flex-wrap:wrap;gap:4px}
+.icons button{padding:2px;border:2px solid transparent;border-radius:6px;background:none;line-height:0}
+.icons button:hover{border-color:var(--line)}
+.icons button[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft)}
+.icons img{width:32px;height:32px;display:block}
+.chosen{margin-top:6px;font-size:13px;color:var(--muted)}
+.chosen b{color:var(--ink);font-weight:500}
+.reset{font-size:12px;padding:2px 6px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Powerset icons</h1>
+  <input type="search" id="q" placeholder="Filter by set or archetype">
+  <label class="toggle"><input type="checkbox" id="onlyChanged"> Changed only</label>
+  <span class="status" id="status"></span>
+  <button id="copy">Copy JSON</button>
+  <button id="export" class="primary">Export JSON</button>
+</header>
+<main id="grid"></main>
+<script>
+const DATA=/*DATA*/null;
+const KEY='powerset-icon-picks-v1';
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const picks={};for(const s of DATA.sets)picks[s.name]=saved[s.name]&&s.choices.some(c=>c[0]===saved[s.name])?saved[s.name]:s.pick;
+const grid=document.getElementById('grid'),cards={};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(picks))}catch(e){}status()}
+function status(){const n=DATA.sets.filter(s=>picks[s.name]!==s.pick).length;document.getElementById('status').textContent=n+' changed of '+DATA.sets.length}
+function render(s){
+  const c=cards[s.name],changed=picks[s.name]!==s.pick;
+  c.el.classList.toggle('changed',changed);
+  c.btns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.p===picks[s.name]));
+  c.chosen.innerHTML='';const b=document.createElement('b');b.textContent=picks[s.name];c.chosen.append(b);
+  c.reset.hidden=!changed;
+}
+for(const s of DATA.sets){
+  const el=document.createElement('section');el.className='card';
+  el.innerHTML='<div class="top"><span class="name"></span><button class="reset" title="Back to the default">reset</button></div><div class="ats"></div><div class="icons"></div><div class="chosen"></div>';
+  el.querySelector('.name').textContent=s.name;el.querySelector('.ats').textContent=s.archetypes.join(', ');
+  const row=el.querySelector('.icons'),btns=[];
+  for(const [p,ic] of s.choices){
+    const b=document.createElement('button');b.dataset.p=p;b.title=p;b.setAttribute('aria-label',p);
+    const im=document.createElement('img');im.src=DATA.icons[ic];im.alt='';b.append(im);
+    b.onclick=()=>{picks[s.name]=p;render(s);save()};row.append(b);btns.push(b);
+  }
+  const reset=el.querySelector('.reset');reset.onclick=()=>{picks[s.name]=s.pick;render(s);save()};
+  cards[s.name]={el,btns,chosen:el.querySelector('.chosen'),reset,hay:(s.name+' '+s.archetypes.join(' ')).toLowerCase(),s};
+  grid.append(el);render(s);
+}
+function filter(){const q=document.getElementById('q').value.toLowerCase(),oc=document.getElementById('onlyChanged').checked;
+  for(const c of Object.values(cards))c.el.hidden=!(c.hay.includes(q)&&(!oc||picks[c.s.name]!==c.s.pick))}
+document.getElementById('q').oninput=filter;document.getElementById('onlyChanged').onchange=filter;
+function json(){const o={};for(const s of DATA.sets)o[s.name]={pick:picks[s.name],choices:s.choices.map(c=>c[0]),archetypes:s.archetypes};
+  return '{\n'+Object.entries(o).map(([k,v],i,a)=>'  '+JSON.stringify(k)+': {\n    "pick": '+JSON.stringify(v.pick)+',\n    "choices": '+JSON.stringify(v.choices).replace(/","/g,'", "')+',\n    "archetypes": '+JSON.stringify(v.archetypes).replace(/","/g,'", "')+'\n  }'+(i<a.length-1?',':'')).join('\n')+'\n}\n'}
+document.getElementById('export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([json()],{type:'application/json'}));a.download='powerset-icons.json';a.click()};
+document.getElementById('copy').onclick=async e=>{try{await navigator.clipboard.writeText(json());e.target.textContent='Copied'}catch(_){e.target.textContent='Copy failed'}setTimeout(()=>e.target.textContent='Copy JSON',1500)};
+status();
+</script>
+</body>
+</html>
