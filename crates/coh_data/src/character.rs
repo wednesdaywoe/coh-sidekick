@@ -1127,6 +1127,15 @@ pub struct CombatContext {
     /// dashboard input like [`Self::target_class`]; a pre-field saved build loads as PvE.
     #[serde(default)]
     pub target_is_player: bool,
+    /// Whether the target is held — the `kHeld target>` the target-mez gates read. Containment
+    /// is the main one, and every fork's Containment gate is an `||` with `kHeld` in it, so this
+    /// one answer settles all of them; the Stalker critical's `kHeld … kSleep ||` too.
+    ///
+    /// `false` leaves the target's mez state unstated rather than claiming it is free: those
+    /// components stay "only in some situations" instead of disappearing. A live dashboard
+    /// input like [`Self::target_class`]; a pre-field saved build loads unstated.
+    #[serde(default)]
+    pub target_held: bool,
     /// The what-if TEAM-BUFF layer: how much of each stat to pretend a teammate is handing the
     /// build, keyed by the `GlobalBonuses` field name the buff lands in
     /// (`"damage"`, `"toHit"`, `"recharge"`, …) and valued in that field's own units.
@@ -1172,6 +1181,7 @@ impl Default for CombatContext {
             active_modes: BTreeSet::new(),
             target_class: None,
             target_is_player: false,
+            target_held: false,
             what_if_buffs: BTreeMap::new(),
         }
     }

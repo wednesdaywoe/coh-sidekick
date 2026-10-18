@@ -46,6 +46,7 @@ use coh_data::{
     TableScope,
 };
 use serde_json::Value as Json;
+use std::collections::HashMap;
 
 /// How a resolved component applies — the three things the export's chance fields say, kept apart
 /// because summing across them would be summing different kinds of claim.
@@ -148,6 +149,11 @@ pub struct DamageComponent {
     /// rows. [`Self::total`] then covers every hit the pet lands in one summon, which is
     /// [`Self::base`] × [`SummonedHit::fires`] × [`SummonedHit::count`].
     pub summoned: Option<SummonedHit>,
+    /// The label of the per-power switch this component answers to (`Impact (Gravity
+    /// Distortion)`), when the converter tied its atom to one of the power's
+    /// `conditionalEffects`. The game names the mechanic only in that entry, so without it the
+    /// row has nothing to be called — Propel's Impact carries no tag.
+    pub condition: Option<String>,
 }
 
 /// How a summoned component repeats: which pet lands it, how many times one copy of the pet
@@ -260,6 +266,9 @@ pub struct UnresolvedDamage {
     /// Whether the only thing missing is the target's RANK (`arch target>`) — the one gap the
     /// planner has a control for, so a surface can offer that control instead of the gate text.
     pub waits_on_rank: bool,
+    /// Whether saying the target is held ([`crate::expr::TargetIdentity::held`]) would settle
+    /// the gate — Containment, chiefly. Like the rank, a gap the planner has a control for.
+    pub waits_on_held: bool,
     /// The component as it lands when the gate does hold. The gate decides WHETHER it applies,
     /// not how much, so the amount is usually knowable while the condition is not — Containment's
     /// doubled hit is a number even with nobody saying the foe is held. `None` when the value
@@ -289,6 +298,10 @@ pub struct PowerDamage {
     pub high: Option<ThreeTier>,
     /// Whether the archetype's damage-strength cap bound [`Self::r#final`].
     pub capped: bool,
+    /// How many components are here only because the target is said to be held — the other
+    /// half of [`UnresolvedDamage::waits_on_held`], so a surface can keep that switch in reach
+    /// on the powers it moved once it is on.
+    pub held_counted: usize,
 }
 
 impl PowerDamage {
@@ -338,6 +351,7 @@ pub fn resolve_power_damage(
         level,
         strength,
         None,
+        &conditional_switches(power),
         target_context,
         database,
         errors,
@@ -668,6 +682,7 @@ fn resolve_pet_ability(
                 ),
                 tags: tags_of(atom),
                 waits_on_rank: false,
+                waits_on_held: false,
                 if_it_lands: None,
             });
         }
@@ -707,6 +722,8 @@ fn resolve_pet_ability(
         level,
         pet.strength,
         Some(&hit),
+        // A pet's atoms answer to no switch on the summoner's power.
+        &HashMap::new(),
         target_context,
         database,
         errors,
@@ -754,6 +771,7 @@ fn resolve_atoms(
     level: i32,
     strength: Strength,
     summoned: Option<&SummonedHit>,
+    switches: &HashMap<String, String>,
     target_context: &SourceContext,
     database: &PowerDatabase,
     errors: &mut Vec<CalcError>,
@@ -793,6 +811,7 @@ fn resolve_atoms(
                     reason,
                     tags: tags_of(atom),
                     waits_on_rank: false,
+                    waits_on_held: false,
                     if_it_lands: None,
                 });
                 continue;
@@ -800,9 +819,32 @@ fn resolve_atoms(
         }
         // An unanswered gate still has its component valued below, so the line can state what
         // it adds when it applies; every exit from here on files `pending` in its own place.
+        //
+        // A gate the context can't answer but a switched-on per-power conditional claims is the
+        // player answering it: Propel's Impact asks how long ago Gravity Distortion hit the
+        // target, which no build state says, and the switch is the "recently". Only an Unknown
+        // is lifted — a gate that FAILS (the PvP twin of a PvE hit) still fails — and not one
+        // still waiting on a rank, which the switch does not answer.
+        let condition = atom
+            .conditional_id
+            .as_deref()
+            .and_then(|id| switches.get(id).map(|label| (id, label)));
         let pending = match gate_holds(atom, target_context) {
-            GateVerdict::Holds => None,
+            GateVerdict::Holds => {
+                if held_was_needed(atom, target_context) {
+                    damage.held_counted += 1;
+                }
+                None
+            }
             GateVerdict::Fails => continue,
+            GateVerdict::Unknown {
+                waits_on_rank: false,
+                ..
+            } if condition
+                .is_some_and(|(id, _)| target_context.active_conditionals.contains(id)) =>
+            {
+                None
+            }
             GateVerdict::Unknown {
                 reason,
                 waits_on_rank,
@@ -812,6 +854,7 @@ fn resolve_atoms(
                 reason,
                 tags: tags_of(atom),
                 waits_on_rank,
+                waits_on_held: !waits_on_rank && held_settles(atom, target_context),
                 if_it_lands: None,
             }),
         };
@@ -833,6 +876,7 @@ fn resolve_atoms(
                 ),
                     tags: tags_of(atom),
                     waits_on_rank: false,
+                    waits_on_held: false,
                     if_it_lands: None,
                 }));
             continue;
@@ -864,6 +908,7 @@ fn resolve_atoms(
                 reason,
                 tags: tags_of(atom),
                 waits_on_rank: false,
+                waits_on_held: false,
                 if_it_lands: None,
             })
         };
@@ -956,6 +1001,7 @@ fn resolve_atoms(
             tags: tags_of(atom),
             spread,
             summoned: summoned.cloned(),
+            condition: condition.map(|(_, label)| label.clone()),
         };
         match pending {
             Some(mut line) => {
@@ -1419,6 +1465,57 @@ fn pv_mode_holds(atom: &AtomicEffect, context: &SourceContext) -> GateVerdict {
     } else {
         GateVerdict::Fails
     }
+}
+
+/// The power's per-power conditionals by id, each with the label its switch shows — the
+/// entries a damage atom's [`AtomicEffect::conditional_id`] can name. Global ones are caster
+/// state with their own control and never claim a damage gate here.
+fn conditional_switches(power: &Power) -> HashMap<String, String> {
+    power
+        .extra
+        .get("conditionalEffects")
+        .and_then(Json::as_array)
+        .into_iter()
+        .flatten()
+        .filter(|entry| entry.get("scope").and_then(Json::as_str) != Some("global"))
+        .filter_map(|entry| {
+            let id = entry.get("id").and_then(Json::as_str)?;
+            let label = entry.get("label").and_then(Json::as_str).unwrap_or(id);
+            Some((id.to_string(), label.to_string()))
+        })
+        .collect()
+}
+
+/// Whether an unanswered gate would hold were the target said to be held. Asked of the gate
+/// itself rather than spotted by reader name: the reason an Unknown carries is only the FIRST
+/// unknown reader, and Containment's names `kTerrorized` before it ever reaches `kHeld`.
+fn held_settles(atom: &AtomicEffect, context: &SourceContext) -> bool {
+    let Some(target) = context.target.as_ref().filter(|target| !target.held) else {
+        return false;
+    };
+    let held = SourceContext {
+        target: Some(crate::expr::TargetIdentity {
+            held: true,
+            ..target.clone()
+        }),
+        ..context.clone()
+    };
+    matches!(gate_holds(atom, &held), GateVerdict::Holds)
+}
+
+/// Whether a gate that holds would NOT have without the target being said to be held.
+fn held_was_needed(atom: &AtomicEffect, context: &SourceContext) -> bool {
+    let Some(target) = context.target.as_ref().filter(|target| target.held) else {
+        return false;
+    };
+    let unstated = SourceContext {
+        target: Some(crate::expr::TargetIdentity {
+            held: false,
+            ..target.clone()
+        }),
+        ..context.clone()
+    };
+    !matches!(gate_holds(atom, &unstated), GateVerdict::Holds)
 }
 
 /// Whether an atom's `requires` gate holds for this target. An ungated atom always holds.

@@ -187,6 +187,12 @@ pub struct DamageView {
     /// How many components are waiting only on a target rank. They are kept out of `unresolved`
     /// because the planner can answer them: the panel offers the rank instead of the gate text.
     pub waiting_on_rank: usize,
+    /// How many of the situational rows would join the hit if the target were said to be held
+    /// (Containment, chiefly). The panel offers that switch beside them.
+    pub waiting_on_held: usize,
+    /// How many components are in the hit only because the target is said to be held. With
+    /// [`Self::waiting_on_held`], whether the held switch moves this power at all.
+    pub held_counted: usize,
     /// The certain rows summed, three-tier. `None` when there is nothing to sum: no certain
     /// component at all, or exactly one — whose own row already is the total.
     pub total: Option<EffectRow>,
@@ -800,6 +806,12 @@ fn damage_view(
             .iter()
             .filter(|unresolved| unresolved.waits_on_rank)
             .count(),
+        waiting_on_held: damage
+            .unresolved
+            .iter()
+            .filter(|unresolved| unresolved.waits_on_held && unresolved.if_it_lands.is_some())
+            .count(),
+        held_counted: damage.held_counted,
         unresolved: damage
             .unresolved
             .iter()
@@ -966,7 +978,15 @@ fn damage_row(index: usize, component: &DamageComponent, note: &str) -> EffectRo
     let high = component.spread.as_ref().map(|spread| spread.total);
     // The mechanic is part of the key: an attack's base component and its critical read the same
     // damage type off the same table, and against a player Beheader ships both.
-    let mechanic = mechanic_names(&component.damage_type, &component.tags);
+    // The switch's own label joins the tags: it is where the game names a rider whose group
+    // carries none, as Propel's Impact does.
+    let mechanic = match (
+        mechanic_names(&component.damage_type, &component.tags),
+        &component.condition,
+    ) {
+        (Some(tags), Some(condition)) => Some(format!("{condition} · {tags}")),
+        (tags, condition) => tags.or_else(|| condition.clone()),
+    };
     EffectRow {
         key: format!(
             "damage:{index}:{}:{}:{}",

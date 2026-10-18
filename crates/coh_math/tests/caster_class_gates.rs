@@ -33,6 +33,7 @@ fn context(db: &PowerDatabase, archetype: &str) -> SourceContext {
             archetype_class: None,
             entity_type: "critter".to_string(),
             modes: Default::default(),
+            held: false,
         }),
         caster_class: Some(
             db.class_name_of(archetype)

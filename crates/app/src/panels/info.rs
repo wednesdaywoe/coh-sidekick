@@ -397,6 +397,7 @@ fn DamageBlock(
 ) -> Element {
     let session = use_context::<crate::build_session::BuildSession>();
     let target_class = session.build.read().combat.target_class.clone();
+    let target_held = session.build.read().combat.target_held;
     // The per-component rows only earn their space where there is more than one component to
     // tell apart — with a single one the headline number IS that row, and printing it again
     // under itself reads as a second hit rather than the same one named. `total` is `Some`
@@ -547,6 +548,12 @@ fn DamageBlock(
             // Components that turn on the enemy's rank (the Scrapper critical, chiefly) wait on a
             // choice the planner can make, so the choice is offered here rather than the gate
             // printed. It writes the same target the Combat panel's Target row does.
+            // Containment and its kin wait on the foe's mez state, which the planner can't see but
+            // the player can say. Kept in reach once said, on the powers it moved, so it can be
+            // taken back where it was given.
+            if damage.waiting_on_held > 0 || damage.held_counted > 0 {
+                HeldPrompt { held: target_held }
+            }
             if damage.waiting_on_rank > 0 {
                 RankPrompt {
                     count: damage.waiting_on_rank,
@@ -557,6 +564,28 @@ fn DamageBlock(
             for (index , note) in damage.unresolved.iter().enumerate() {
                 p { key: "{index}", class: "info-gap", "{note}" }
             }
+        }
+    }
+}
+
+/// The held-target switch for damage that waits on the foe being controlled. Reads and writes
+/// [`coh_data::CombatContext::target_held`], the same setting as the Combat panel's row.
+#[component]
+fn HeldPrompt(held: bool) -> Element {
+    let session = use_context::<crate::build_session::BuildSession>();
+    rsx! {
+        label {
+            class: "info-rank",
+            title: "Counts damage that needs a held, stunned, slept, immobilized or afraid foe, such as Containment. Also in the Combat panel.",
+            input {
+                r#type: "checkbox",
+                checked: held,
+                onchange: move |evt: Event<FormData>| {
+                    let on = evt.checked();
+                    session.commit(move |s| s.combat.target_held = on);
+                },
+            }
+            span { "Count it as if the target is held (Containment)" }
         }
     }
 }

@@ -528,8 +528,9 @@ fn AttackChainBody(database: Db) -> Element {
             if unresolved_total > 0 {
                 div { class: "chain-notice",
                     "Some damage is unresolved against the current combat context "
-                    "({unresolved_total} rows, usually no target chosen). Those components are "
-                    "missing from these numbers: pick a target in the Combat menu."
+                    "({unresolved_total} rows). Those components are missing from these "
+                    "numbers. In Build Settings, pick a target rank, or turn on Target is held "
+                    "to count Containment."
                 }
             }
             for notice in walk_notices.iter() {

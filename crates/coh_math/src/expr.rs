@@ -992,6 +992,12 @@ pub struct SourceContext {
     /// `… 0 ==`) without claiming a figure, so a threshold such as Scourge's stays open. Only a
     /// per-power projection sets it; the totals context has no one target to vouch for.
     pub target_alive: bool,
+    /// The per-power conditionals switched on for the power being projected, by the entry's
+    /// `id` — the same answer [`crate::effective`] reads to merge their effects. A damage atom
+    /// the converter stamped with one of these ids ([`coh_data::AtomicEffect::conditional_id`])
+    /// lands when its gate is otherwise unanswerable: the switch is the player answering it.
+    /// Empty everywhere but a per-power projection.
+    pub active_conditionals: HashSet<String>,
 }
 
 /// The reader a target-rank gate asks through. It is Indeterminate exactly when no rank is chosen,
@@ -1023,6 +1029,10 @@ pub struct TargetIdentity {
     /// A mode absent here is Indeterminate rather than false: a teammate, or the target itself,
     /// can set it too, and the build cannot say whether one has.
     pub modes: HashSet<String>,
+    /// `kHeld target>`: the player says the target is held. `false` is unstated, not free, so
+    /// the reader stays Indeterminate — a foe nobody has held may still be stunned or asleep,
+    /// and every target-mez gate is an `||` that a `false` here would wrongly close.
+    pub held: bool,
 }
 
 impl EvalContext for SourceContext {
@@ -1129,6 +1139,7 @@ impl EvalContext for SourceContext {
                     // base damage with `cur.kUntouchable target> 0 <=`, and leaving it unknown
                     // filed the attack's only hit as situational.
                     "cur.kuntouchable" => Ok(Value::Number(0.0)),
+                    "kheld" if target.held => Ok(Value::Number(1.0)),
                     _ => indeterminate(),
                 }
             }

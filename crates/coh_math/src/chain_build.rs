@@ -752,6 +752,7 @@ pub fn schedule_chain(
         archetype_class,
         entity_type: entity_type.to_string(),
         modes: gathered.target_modes,
+        held: state.combat.target_held,
     });
 
     let base_key = CtxKey::new(meter.map(|_| declared_hidden), &BTreeMap::new());

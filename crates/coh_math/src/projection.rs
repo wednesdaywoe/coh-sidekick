@@ -413,6 +413,7 @@ fn gate_context(
             archetype_class: target_class,
             entity_type: target_entity.to_string(),
             modes: target_modes.clone(),
+            held: state.combat.target_held,
         }),
         source_modes: crate::gather::live_modes(source_modes, state.combat.in_combat),
         source_attributes,
@@ -615,13 +616,19 @@ fn project_one(
     // in combat is a different attack — and the build's chosen target, which its atoms' gates
     // ask about by name. No target chosen leaves those gates Indeterminate, so the components
     // come back unresolved rather than partly summed (RB5).
+    // The per-power switches are the player answering gates no build state can, so damage
+    // hears them too — the merge above only reaches the bag.
+    let damage_gate = SourceContext {
+        active_conditionals: crate::effective::active_conditional_ids(shown, state, gate, db),
+        ..gate.clone()
+    };
     let damage = resolve_power_damage(
         shown,
         archetype,
         level,
         enhancement.get("damage"),
         g.damage / 100.0,
-        gate,
+        &damage_gate,
         db,
         errors,
     );
@@ -865,6 +872,13 @@ pub fn damage_ceiling(
                 distance: Some(crate::distance::bounds(power, None)),
                 target_alive: true,
                 ..gate.clone()
+            };
+            // As the shown power reads them, so the scale and the hit agree on what counts.
+            let gate = SourceContext {
+                active_conditionals: crate::effective::active_conditional_ids(
+                    power, state, &gate, db,
+                ),
+                ..gate
             };
             let damage = resolve_power_damage(
                 power,

@@ -112,6 +112,7 @@ fn leap_banks(db: &PowerDatabase, distance: Option<f64>) -> (f64, usize) {
             archetype_class: None,
             entity_type: "critter".into(),
             modes: Default::default(),
+            held: false,
         }),
         distance: Some(bounds(leap, distance)),
     };

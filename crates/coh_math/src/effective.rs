@@ -94,6 +94,21 @@ pub fn effective_power<'a>(
     effective
 }
 
+/// The ids of `power`'s conditionals that are on — the same answer [`effective_power`] merges
+/// by, for the damage projection's [`SourceContext::active_conditionals`].
+pub fn active_conditional_ids(
+    power: &Power,
+    state: &CharacterState,
+    gate: &SourceContext,
+    db: &PowerDatabase,
+) -> std::collections::HashSet<String> {
+    let caster_class = coh_data::caster_class_name(state, db);
+    active_conditionals(power, state, gate, caster_class, db)
+        .into_iter()
+        .filter_map(|entry| entry.get("id").and_then(Value::as_str).map(str::to_string))
+        .collect()
+}
+
 /// The variant the game redirects to while one of the build's modes is live. `None` when the
 /// power has no mode table or no live mode selects an entry.
 ///

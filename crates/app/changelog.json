@@ -1,4 +1,13 @@
 [
+    {
+    "date": "2026-10-17",
+    "items": [
+      { "id": "sidekick-desktop-link", "type": "feat", "message": "A desktop version of Sidekick can be downloaded using the new button in the header or under the Help menu. There are builds for PC Mac and Linux. PC and Mac versions are untested, and I can only test on Linux, so it may be rough." },
+      { "id": "conditional-switch-damage", "type": "fix", "message": "A power's own bonus-damage switch, like Propel's Impact, now adds that damage to the power's total in the Info panel and the attack chain." },
+      { "id": "target-held-containment", "type": "feat", "message": "Containment can now be counted in your damage. Turn on Target is held in Build Settings, or the box under an attack's damage in the Info panel.It's off by default" }
+    ]
+  },
+
   {
     "date": "2026-10-14",
     "items": [

@@ -153,6 +153,7 @@ pub fn Combat(database: Option<Db>) -> Element {
         power_state: _,
         target_class,
         target_is_player,
+        target_held,
         pvp,
         // The what-if team-buff layer has its own modal ([`crate::panels::what_if`]) — it is a
         // whole vocabulary of controls rather than one, and keeping it out of this panel is
@@ -430,6 +431,25 @@ pub fn Combat(database: Option<Db>) -> Element {
                         onchange: move |evt: Event<FormData>| {
                             let on = evt.checked();
                             session.commit(move |s| s.combat.target_is_player = on);
+                        },
+                    }
+                    span { class: "switch-track" }
+                }
+            }
+
+            // The target's mez state, for Containment and the other gates that ask whether the
+            // foe is controlled. Every fork's such gate accepts held, so one switch answers all.
+            div {
+                class: "combat-row",
+                title: "Counts damage that needs a held, stunned, slept, immobilized or afraid foe, such as Containment.",
+                span { class: "combat-label", "Target is held" }
+                label { class: "switch",
+                    input {
+                        r#type: "checkbox",
+                        checked: target_held,
+                        onchange: move |evt: Event<FormData>| {
+                            let on = evt.checked();
+                            session.commit(move |s| s.combat.target_held = on);
                         },
                     }
                     span { class: "switch-track" }
@@ -860,6 +880,9 @@ pub fn drift_summary(combat: &CombatContext) -> Vec<String> {
     }
     if combat.target_is_player != default.target_is_player {
         parts.push("Player target".to_string());
+    }
+    if combat.target_held != default.target_held {
+        parts.push("Held target".to_string());
     }
 
     parts
