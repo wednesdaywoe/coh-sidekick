@@ -544,7 +544,7 @@
       "label": "Absorb",
       "category": "buff",
       "format": "value",
-      "enhancementAspect": "heal",
+      "enhancementAspect": "absorb",
       "strengthAspect": "absorb",
       "priority": 15,
       "valueFromTable": true,
