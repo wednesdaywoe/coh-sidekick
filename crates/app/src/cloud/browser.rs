@@ -46,6 +46,7 @@ use crate::cloud::shared_builds::{
 use crate::cloud::tag_vocab;
 use crate::modal::{Modal, ModalSize};
 use crate::shell::Db;
+use crate::view::icons;
 use coh_data::{DatasetId, Powerset};
 use dioxus::prelude::*;
 
@@ -113,7 +114,7 @@ pub fn BrowserHost(database: Option<Db>, dataset: Signal<DatasetId>) -> Element 
             },
             BrowserTarget::Author(handle) => rsx! {
                 // Keyed for the same reason: the resolve and the build list are per-handle.
-                AuthorModal { key: "{handle}", handle }
+                AuthorModal { key: "{handle}", handle, database }
             },
         }
     }
@@ -487,7 +488,7 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                                     }
                                     div { class: "sb-cards",
                                         for build in &found.builds {
-                                            BuildCard { key: "{build.id}", shared: build.clone() }
+                                            BuildCard { key: "{build.id}", shared: build.clone(), database: database.clone() }
                                         }
                                     }
                                     if found.total_pages > 1 {
@@ -537,7 +538,7 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                                     p { class: "sb-count", "{builds.len()} {noun}" }
                                     div { class: "sb-cards",
                                         for build in builds {
-                                            BuildCard { key: "{build.id}", shared: build.clone() }
+                                            BuildCard { key: "{build.id}", shared: build.clone(), database: database.clone() }
                                         }
                                     }
                                 }
@@ -545,7 +546,7 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                         }
                     }
                 } else {
-                    VaultPanel {}
+                    VaultPanel { database: database.clone() }
                 }
             }
         }
@@ -581,7 +582,7 @@ enum BrowserView {
 /// the panel says so — and still draws [`ReclaimBox`], because reclaiming touches no network and
 /// no session at all: it is the recovery path for somebody who has no account by choice.
 #[component]
-fn VaultPanel() -> Element {
+fn VaultPanel(database: Option<Db>) -> Element {
     let account = use_context::<Account>();
     let user = account.user();
 
@@ -749,7 +750,7 @@ fn VaultPanel() -> Element {
                                                 "{visibility_label(row.visibility)}"
                                             }
                                         }
-                                        BuildCard { shared: row.clone() }
+                                        BuildCard { shared: row.clone(), database: database.clone() }
                                     }
                                 }
                             }
@@ -939,7 +940,7 @@ fn ReclaimBox() -> Element {
 /// nobody holds stops at the first request, and that is a page that says so rather than an empty
 /// grid that reads as an author with no builds.
 #[component]
-fn AuthorModal(handle: String) -> Element {
+fn AuthorModal(handle: String, database: Option<Db>) -> Element {
     let account = use_context::<Account>();
     let mut open = use_context::<BrowserOpen>().0;
     let page = use_signal(|| 1usize);
@@ -1092,7 +1093,7 @@ fn AuthorModal(handle: String) -> Element {
                                     p { class: "sb-count", "{found.total} {noun}" }
                                     div { class: "sb-cards",
                                         for build in &found.builds {
-                                            BuildCard { key: "{build.id}", shared: build.clone() }
+                                            BuildCard { key: "{build.id}", shared: build.clone(), database: database.clone() }
                                         }
                                     }
                                     if found.total_pages > 1 {
@@ -1387,7 +1388,7 @@ fn DetailAuthor(identity: profile::AuthorIdentity) -> Element {
 /// cleared it. `None` until that read lands — a control that has not been told yet draws nothing
 /// rather than guessing at hollow.
 #[component]
-fn BuildCard(shared: SharedBuildSummary) -> Element {
+fn BuildCard(shared: SharedBuildSummary, database: Option<Db>) -> Element {
     let account = use_context::<Account>();
     let mut open = use_context::<BrowserOpen>().0;
     let created = share_date(&shared.created_at);
@@ -1402,6 +1403,20 @@ fn BuildCard(shared: SharedBuildSummary) -> Element {
 
     let star_id = shared.id.clone();
     let open_id = shared.id.clone();
+    // Looked up in whichever dataset is loaded: a summary does not say which fork the build is
+    // from, and a set the loaded one lacks just shows its name with no picture.
+    let archetype_icon = database.as_ref().and_then(|db| {
+        let catalog = db.archetypes().ok()?;
+        icons::archetype_icon_url(catalog.get(&shared.archetype)?)
+    });
+    let set_icon = |id: &str| {
+        database
+            .as_ref()
+            .and_then(|db| db.find_powerset(id))
+            .and_then(icons::powerset_icon_url)
+    };
+    let primary_icon = set_icon(&shared.primary_set);
+    let secondary_icon = set_icon(&shared.secondary_set);
 
     rsx! {
         div { class: "sb-card__wrap",
@@ -1414,8 +1429,24 @@ fn BuildCard(shared: SharedBuildSummary) -> Element {
                     span { class: "sb-card__level", "Lv {shared.level}" }
                 }
                 div { class: "sb-card__sets",
-                    span { class: "sb-card__archetype", "{shared.archetype_name}" }
-                    span { "{shared.primary_name} / {shared.secondary_name}" }
+                    span { class: "sb-card__archetype",
+                        if let Some(icon) = &archetype_icon {
+                            img { class: "sb-card__icon", src: "{icon}", alt: "" }
+                        }
+                        "{shared.archetype_name}"
+                    }
+                    span { class: "sb-card__set",
+                        if let Some(icon) = &primary_icon {
+                            img { class: "sb-card__icon", src: "{icon}", alt: "" }
+                        }
+                        "{shared.primary_name}"
+                    }
+                    span { class: "sb-card__set",
+                        if let Some(icon) = &secondary_icon {
+                            img { class: "sb-card__icon", src: "{icon}", alt: "" }
+                        }
+                        "{shared.secondary_name}"
+                    }
                 }
                 if !shared.description.is_empty() {
                     p { class: "sb-card__desc", "{shared.description}" }

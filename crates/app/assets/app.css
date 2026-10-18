@@ -7701,6 +7701,9 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .sb-card__level { flex: 0 0 auto; font-size: 10.5px; color: var(--text-faint); }
 .sb-card__sets { display: flex; flex-direction: column; gap: 1px; font-size: 11px; color: var(--text-dim); }
 .sb-card__archetype { color: var(--action-active); }
+/* Archetype and both sets, a line each with the game's icon in front. */
+.sb-card__archetype, .sb-card__set { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.sb-card__icon { width: 16px; height: 16px; flex: none; }
 .sb-card__desc { margin: 0; font-size: 11px; line-height: 1.45; color: var(--text-faint); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .sb-card__foot { display: flex; justify-content: space-between; gap: 8px; padding-top: 6px; border-top: 1px solid var(--seam); font-size: 10px; color: var(--text-faint); }
 
