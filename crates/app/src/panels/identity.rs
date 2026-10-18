@@ -9,9 +9,11 @@
 //! surface was grid width the loadout needed more (the beta `BuildIdentityPopover`).
 
 use crate::build_session::BuildSession;
+use crate::icon_select::{IconOption, IconSelect};
 use crate::panels::powers::BuildRole;
 use crate::panels::powerset_select::PowersetSelect;
 use crate::shell::Db;
+use crate::view::icons;
 use coh_data::{ArchetypeSelection, DatasetId, PowersetSelection};
 use dioxus::prelude::*;
 
@@ -75,36 +77,48 @@ pub fn IdentityPanel(database: Db, dataset: Signal<DatasetId>) -> Element {
             // decides which DO/SO overlay frame an origin enhancement wears
             // (`icons::origin_overlay_url`) and nothing else, so it sits with the other
             // identity facts rather than in the app's set-and-forget preferences.
-            label { class: "build-field",
+            // A `div`, not a `label`: a label re-clicks its control on any click inside it,
+            // which would reopen the icon select's list on every pick (see `icon_select`).
+            div { class: "build-field",
                 span { class: "field-label", "Origin" }
-                select {
-                    class: "build-select",
+                IconSelect {
+                    class: "build-select".to_string(),
+                    aria_label: "Origin".to_string(),
+                    placeholder: "— choose origin —".to_string(),
                     value: build.read().origin.clone().unwrap_or_default(),
-                    onchange: move |evt: Event<FormData>| {
-                        let chosen = evt.value();
+                    options: ORIGINS
+                        .iter()
+                        .map(|(value, label)| {
+                            IconOption::new(*value, *label, icons::origin_icon_url(value))
+                        })
+                        .collect::<Vec<_>>(),
+                    onchange: move |chosen: String| {
                         session.commit(move |state| {
                             state.origin = (!chosen.is_empty()).then(|| chosen.clone());
                         });
                     },
-                    option { value: "", "— choose origin —" }
-                    for (value, label) in ORIGINS {
-                        option { value: "{value}", "{label}" }
-                    }
                 }
             }
 
             // Archetype is the focal decision: it gates the sets, pools, and inherent
             // below it. The `focal` class arc-colors its label (arc = "live" in the weld
             // theme) and enlarges the control, so the eye lands here first.
-            label { class: "build-field focal",
+            div { class: "build-field focal",
                 span { class: "field-label", "Archetype" }
-                select {
-                    class: "build-select hero",
+                IconSelect {
+                    class: "build-select hero".to_string(),
+                    aria_label: "Archetype".to_string(),
+                    placeholder: "— choose archetype —".to_string(),
+                    value: current_archetype.clone(),
+                    options: archetypes
+                        .all()
+                        .iter()
+                        .map(|at| IconOption::new(&at.id, &at.name, icons::archetype_icon_url(at)))
+                        .collect::<Vec<_>>(),
                     onchange: {
                         let archetypes = archetypes.all().to_vec();
                         let database = database.clone();
-                        move |evt: Event<FormData>| {
-                            let id = evt.value();
+                        move |id: String| {
                             let name = archetypes
                                 .iter()
                                 .find(|a| a.id == id)
@@ -121,14 +135,6 @@ pub fn IdentityPanel(database: Db, dataset: Signal<DatasetId>) -> Element {
                             });
                         }
                     },
-                    // Selection is expressed per-option (`selected`), not via the select's
-                    // `value`: primary/secondary options are derived from the archetype, and a
-                    // `value` set before those options exist (e.g. on a restore render) does not
-                    // stick. Per-option `selected` is applied with the option, so it always does.
-                    option { value: "", selected: current_archetype.is_empty(), "— choose archetype —" }
-                    for at in archetypes.all() {
-                        option { value: "{at.id}", selected: at.id == current_archetype, "{at.name}" }
-                    }
                 }
             }
 

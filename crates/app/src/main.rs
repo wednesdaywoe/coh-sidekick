@@ -31,6 +31,7 @@ mod grid;
 mod help;
 mod history;
 mod hit_chance_alert_store;
+mod icon_select;
 mod inherents;
 mod layout_store;
 mod layout_sync;

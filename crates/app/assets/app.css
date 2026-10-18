@@ -1276,6 +1276,56 @@
   box-shadow: 0 0 8px color-mix(in srgb, var(--focus-ring) 40%, transparent);
 }
 .build-select:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---- icon select (icon_select.rs) ----
+   A button standing in for a `<select>`, so it borrows the element-level select caret
+   (tokens.css) and takes the caller's field class beside its own. The list is `position: fixed`
+   and placed by script from the button's box; a grid surface holding an open one is lifted over
+   its neighbours, or the panel below would paint across the list. */
+.icon-select { position: relative; min-width: 0; }
+.icon-select__trigger {
+  display: flex; align-items: center; gap: 7px;
+  width: 100%; min-width: 0;
+  text-align: left;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 14px center, right 9px center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.icon-select__trigger:disabled { cursor: not-allowed; }
+.icon-select__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon-select__icon { width: 22px; height: 22px; flex: none; display: block; }
+.icon-select__backdrop { position: fixed; inset: 0; z-index: 1000; }
+.icon-select__list {
+  position: fixed; z-index: 1001;
+  max-width: calc(100vw - 16px);
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 4px;
+  background: var(--surface-panel);
+  border: 1px solid var(--seam-raised);
+  border-radius: var(--r);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-chrome);
+}
+.icon-select__option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 8px;
+  border-radius: var(--r);
+  font-size: 13px; color: var(--text);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.icon-select__option.is-active { background: var(--surface-raised); }
+.icon-select__option[aria-selected="true"] { color: var(--action-active); font-weight: 600; }
+.icon-select__option[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+.icon-select__icon-slot { width: 22px; height: 22px; flex: none; }
+.icon-select__reason { margin-left: auto; padding-left: 12px; font-size: 11px; color: var(--text-faint); }
+.surface:has(.icon-select.is-open) { z-index: 1000; }
+/* A finger needs a taller row than a pointer does. */
+@media (pointer: coarse) { .icon-select__option { padding: 8px 10px; } }
 .build .hint { color: var(--text-faint); font-size: 12px; line-height: 1.5; }
 
 /* ---- power card: inset capsule marker ----
