@@ -430,6 +430,21 @@
       "id": "target-held-containment",
       "date": "2026-10-17",
       "preview": "Containment can now be counted in your damage. Turn on Target is held in Build S"
+    },
+    {
+      "id": "incarnate-recipe-numbers",
+      "date": "2026-10-20",
+      "preview": "Fixed an issue that was mixing up the incarnate recipe numbers"
+    },
+    {
+      "id": "same-name-powers",
+      "date": "2026-10-20",
+      "preview": "Powers that share a name across sets, like Thermal Radiation's and Fire Mastery'"
+    },
+    {
+      "id": "critical-strikes-proc-chance",
+      "date": "2026-10-20",
+      "preview": "The Critical Strikes and Superior Critical Strikes +Critical Hit procs now show "
     }
   ]
 }
