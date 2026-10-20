@@ -54,10 +54,11 @@ fn ice_arrow_is_the_breadth_case() {
 #[test]
 fn dark_consumption_caps_everything_despite_its_aoe() {
     // The 8ft AoE tax is real (÷1.9) and 180s of recharge overwhelms it, down to the 1.5 PPM
-    // Performance Shifter. Its knockdown and -Res procs cap too, not just damage.
+    // Performance Shifter. Its knockdown and -Res procs cap too, not just damage. Both
+    // Critical Strikes procs (2 and 4 PPM) count here; the beta mislabelled them always-on.
     let db = load(DatasetId::Homecoming);
     let p = potential(&db, "scrapper/dark-melee", "Dark_Consumption");
-    assert_eq!((p.entries.len(), p.at_cap), (12, 12));
+    assert_eq!((p.entries.len(), p.at_cap), (14, 14));
     assert!((p.area_factor - 1.9).abs() < 1e-3, "{}", p.area_factor);
     assert_eq!(p.window, 180.0);
     assert_eq!(
@@ -76,7 +77,7 @@ fn dark_consumption_caps_everything_despite_its_aoe() {
 fn a_fast_attack_caps_nothing_however_large_its_pool() {
     let db = load(DatasetId::Homecoming);
     let p = potential(&db, "scrapper/dark-melee", "Shadow_Punch");
-    assert_eq!((p.entries.len(), p.at_cap), (14, 0));
+    assert_eq!((p.entries.len(), p.at_cap), (16, 0));
     assert!(p.entries.iter().all(|e| e.chance < 0.3));
     assert_eq!(p.tier(), ProcTier::Unremarkable);
 }

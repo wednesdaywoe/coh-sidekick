@@ -1299,7 +1299,7 @@
     "ppm": 2,
     "mechanics": "Chance to give +50% chance to Critical Hit for 3.25s for slotted power",
     "pvpNotes": "",
-    "type": "Global",
+    "type": "Proc",
     "levelRange": "10--50",
     "pool": "",
     "unique": "Exclusive"
@@ -1604,10 +1604,10 @@
   "Superior Critical Strikes: Recharge/Chance for +Critical Hit%": {
     "setName": "Superior Critical Strikes",
     "ioName": "Recharge/Chance for +Critical Hit%",
-    "ppm": null,
-    "mechanics": "+Critical Hit Chance (+5% vs Minions, +8% others) for ALL powers",
+    "ppm": 4,
+    "mechanics": "Chance to give +50% chance to Critical Hit for 3.25s for slotted power",
     "pvpNotes": "",
-    "type": "Global",
+    "type": "Proc",
     "levelRange": "50",
     "pool": "",
     "unique": "Exclusive"

@@ -1,5 +1,12 @@
 [
     {
+    "date": "2026-10-20",
+    "items": [
+      { "id": "critical-strikes-proc-chance", "type": "fix", "message": "The Critical Strikes and Superior Critical Strikes +Critical Hit procs now show their chance to fire in a power, instead of saying they're always on" }
+    ]
+  },
+
+    {
     "date": "2026-10-18",
     "items": [
       { "id": "radial-absorb-boost", "type": "fix", "message": "Resilient Radial's absorb boost shows on absorb powers" },

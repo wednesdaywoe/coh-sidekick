@@ -2816,16 +2816,10 @@
   "ppm": 2,
   "mechanics": "Chance to give +50% chance to Critical Hit for 3.25s for slotted power",
   "pvpNotes": "",
-  "type": "Global",
+  "type": "Proc",
   "levelRange": "10--50",
   "pool": "",
   "unique": "Exclusive",
-  "effects": [
-   {
-    "category": "Special",
-    "target": "pets"
-   }
-  ],
   "activatePeriod": 10,
   "boostsAllowed": [
    "Damage",
@@ -3590,20 +3584,22 @@
  "Superior Critical Strikes: Recharge/Chance for +Critical Hit%": {
   "setName": "Superior Critical Strikes",
   "ioName": "Recharge/Chance for +Critical Hit%",
-  "ppm": null,
-  "mechanics": "+Critical Hit Chance (+5% vs Minions, +8% others) for ALL powers",
+  "ppm": 4,
+  "mechanics": "Chance to give +50% chance to Critical Hit for 3.25s for slotted power",
   "pvpNotes": "",
-  "type": "Global",
+  "type": "Proc",
   "levelRange": "50",
   "pool": "",
   "unique": "Exclusive",
-  "effects": [
-   {
-    "category": "Special",
-    "target": "pets"
-   }
-  ],
-  "activatePeriod": 10
+  "activatePeriod": 10,
+  "boostsAllowed": [
+   "Damage",
+   "Natural",
+   "Technology",
+   "Magic",
+   "Mutation",
+   "Science"
+  ]
  },
  "Superior Stalker's Guile: Recharge/Chance for Hidden Status": {
   "setName": "Superior Stalker's Guile",
