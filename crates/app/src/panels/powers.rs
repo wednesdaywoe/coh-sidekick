@@ -1372,13 +1372,6 @@ pub fn AvailablePanel(database: Db) -> Element {
         };
     }
 
-    // Picked powers across every set, with the level each was taken at — a picked row stays in
-    // its set's list and reads as taken (LAY3), so this marks rather than filters.
-    let picked_levels: Vec<(String, u8)> = build
-        .read()
-        .all_selected()
-        .map(|p| (p.internal_name.clone(), p.level))
-        .collect();
     // The pick levels already spent, so each row can resolve the level its own pick would
     // land at (and disable itself when the build has none left it could legally take).
     let taken_levels: Vec<u8> = build.read().picked_powers().map(|p| p.level).collect();
@@ -1451,7 +1444,6 @@ pub fn AvailablePanel(database: Db) -> Element {
                         select_role: BuildRole::Primary,
                         current_level,
                         taken_levels: taken_levels.clone(),
-                        picked_levels: picked_levels.clone(),
                     }
                     if let Some(offer) = primary_branch {
                         AvailablePowersGroup {
@@ -1463,8 +1455,7 @@ pub fn AvailablePanel(database: Db) -> Element {
                             set_blocked: offer.blocked.clone(),
                             current_level,
                             taken_levels: taken_levels.clone(),
-                            picked_levels: picked_levels.clone(),
-                        }
+                            }
                     }
                 }
                 div { class: "available-column",
@@ -1476,7 +1467,6 @@ pub fn AvailablePanel(database: Db) -> Element {
                         select_role: BuildRole::Secondary,
                         current_level,
                         taken_levels: taken_levels.clone(),
-                        picked_levels: picked_levels.clone(),
                     }
                     if let Some(offer) = secondary_branch {
                         AvailablePowersGroup {
@@ -1488,8 +1478,7 @@ pub fn AvailablePanel(database: Db) -> Element {
                             set_blocked: offer.blocked.clone(),
                             current_level,
                             taken_levels: taken_levels.clone(),
-                            picked_levels: picked_levels.clone(),
-                        }
+                            }
                     }
                 }
             }
@@ -1529,14 +1518,8 @@ pub fn PoolsPanel(database: Db) -> Element {
         };
     }
 
-    // The same three reads the rail makes, for the same three reasons: a picked row stays in
-    // its list and reads as taken (LAY3), each row resolves the level its own pick would land
-    // at, and a gate is answered against the level on screen.
-    let picked_levels: Vec<(String, u8)> = build
-        .read()
-        .all_selected()
-        .map(|p| (p.internal_name.clone(), p.level))
-        .collect();
+    // The same reads the rail makes, for the same reasons: each row resolves the level its own
+    // pick would land at, and a gate is answered against the level on screen.
     let taken_levels: Vec<u8> = build.read().picked_powers().map(|p| p.level).collect();
     let current_level = build.read().level;
     let pools = build.read().pools.clone();
@@ -1554,7 +1537,6 @@ pub fn PoolsPanel(database: Db) -> Element {
                         origin: SetOrigin::Pool,
                         current_level,
                         taken_levels: taken_levels.clone(),
-                        picked_levels: picked_levels.clone(),
                     }
                 }
                 if let Some(epic) = epic {
@@ -1565,7 +1547,6 @@ pub fn PoolsPanel(database: Db) -> Element {
                         origin: SetOrigin::Epic,
                         current_level,
                         taken_levels,
-                        picked_levels,
                     }
                 }
             }
@@ -1870,9 +1851,6 @@ fn AvailablePowersGroup(
     set_blocked: Option<String>,
     current_level: u8,
     taken_levels: Vec<u8>,
-    /// Every power the build holds, with the level it was taken at — build state, not a
-    /// prerequisite verdict, which is why it rides beside [`PickGate`] rather than inside it.
-    picked_levels: Vec<(String, u8)>,
 ) -> Element {
     let session = use_context::<BuildSession>();
     let build = session.build;
@@ -1926,10 +1904,12 @@ fn AvailablePowersGroup(
                 archetype_id.as_deref(),
                 &database.set_paths,
             );
-            let picked_at = picked_levels
-                .iter()
-                .find(|(name, _)| name == power.ident())
-                .map(|(_, level)| *level);
+            // Looked up in this set, not by name across the build: Thermal Radiation and Fire
+            // Mastery both have a `Fire_Shield`, and holding one marked the other taken.
+            let picked_at = build
+                .read()
+                .selected_power(&set_id, power.ident())
+                .map(|held| held.level);
             (power, gate, picked_at)
         })
         .filter(|(_, gate, _)| *gate != PickGate::Granted)
@@ -2356,8 +2336,8 @@ fn AvailablePowerRow(
     let out_of_order = picked_at.and_then(|_| {
         let build = session.build.read();
         let held = build
-            .all_selected()
-            .find(|held| held.internal_name == power_internal && held.level > 0)?
+            .selected_power(&set_id, &power_internal)
+            .filter(|held| held.level > 0)?
             .clone();
         out_of_order_reason(&database, &build, &set_id, &held)
     });
