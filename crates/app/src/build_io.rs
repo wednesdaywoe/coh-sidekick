@@ -45,7 +45,7 @@ use crate::modal::{Modal, ModalSize};
 use crate::shell::Db;
 use coh_data::import_link::{self, LinkError, LinkPayload};
 use coh_data::skif::{self, Unresolved};
-use coh_data::{game_export, mbd, CharacterState, DatasetId, PowerDatabase};
+use coh_data::{game_export, mbd, mxd, CharacterState, DatasetId, PowerDatabase};
 use dioxus::prelude::*;
 
 /// A file read off disk and waiting for its own fork's bundle, plus the restore that follows it.
@@ -187,10 +187,14 @@ pub fn open_route(text: &str, loaded: DatasetId) -> OpenRoute {
 ///
 /// A document is claimed FIRST, before anything is treated as a link. A `.skif` can hold a `#`
 /// anywhere in it and a character's name is allowed one, so splitting on `#` before asking
-/// whether this is already a build would cut a pasted document in half.
+/// whether this is already a build would cut a pasted document in half. A `.mxd` post is the
+/// same: its data block is not base64, so it has to be claimed here or the link reader refuses it.
 pub fn read_pasted(pasted: &str) -> Result<String, LinkError> {
     let trimmed = pasted.trim();
-    if build_file::is_json_document(trimmed) || game_export::parse(trimmed).is_ok() {
+    if build_file::is_json_document(trimmed)
+        || mxd::is_mxd_document(trimmed)
+        || game_export::parse(trimmed).is_ok()
+    {
         return Ok(trimmed.to_string());
     }
     let fragment = trimmed.split_once('#').map_or(trimmed, |(_, tail)| tail);
@@ -619,7 +623,7 @@ pub fn PasteBuildHost(database: Option<Db>, dataset: Signal<DatasetId>) -> Eleme
             );
             close();
         }
-        Err(error) => refusal.set(Some(error.to_string())),
+        Err(error) => refusal.set(Some(paste_refusal(&error))),
     };
 
     rsx! {
@@ -630,7 +634,7 @@ pub fn PasteBuildHost(database: Option<Db>, dataset: Signal<DatasetId>) -> Eleme
             div { class: "build-report",
                 p { class: "build-report__note",
                     "A share link, the part of one after the #, or a whole build's text; a "
-                    ".skif, a Mids .mbd, or what /buildsave wrote."
+                    ".skif, a Mids .mbd or .mxd, or what /buildsave wrote."
                 }
                 textarea {
                     class: "build-paste__box mono",
@@ -659,6 +663,20 @@ pub fn PasteBuildHost(database: Option<Db>, dataset: Signal<DatasetId>) -> Eleme
                 }
             }
         }
+    }
+}
+
+/// What the paste box says when nothing read the text.
+///
+/// Anything no document reader claims is tried as a link last, so "not base64" is what most
+/// wrong pastes get, and it means nothing to whoever pasted a forum post.
+fn paste_refusal(error: &LinkError) -> String {
+    match error {
+        LinkError::NotBase64 => "This isn't a build Sidekick can read. A Mids forum post needs \
+                                 its data block, the lines between the |MxDz…| header and the \
+                                 dashes at the end; the readable list alone isn't enough."
+            .to_string(),
+        other => other.to_string(),
     }
 }
 
@@ -1253,5 +1271,47 @@ fn OpenedReport(
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    fn mxd_fixtures() -> Vec<(PathBuf, String)> {
+        let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/mids/mxd");
+        let mut files: Vec<_> = std::fs::read_dir(&dir)
+            .unwrap_or_else(|e| panic!("read {dir:?}: {e}"))
+            .flatten()
+            .map(|entry| entry.path())
+            .filter(|path| path.extension().is_some_and(|e| e == "mxd"))
+            .map(|path| {
+                let text = std::fs::read_to_string(&path).expect("fixture is text");
+                (path, text)
+            })
+            .collect();
+        files.sort();
+        files
+    }
+
+    #[test]
+    fn a_pasted_mxd_post_reaches_the_mxd_reader() {
+        let files = mxd_fixtures();
+        assert_eq!(files.len(), 8);
+        for (path, text) in files {
+            let read = read_pasted(&text).unwrap_or_else(|e| panic!("{path:?}: {e}"));
+            assert_eq!(build_file::document_kind(&read), Document::Mxd, "{path:?}");
+        }
+    }
+
+    #[test]
+    fn a_readable_list_without_its_data_block_is_refused_without_base64() {
+        let (_, text) = mxd_fixtures().remove(0);
+        let readable = &text[..text.find("|MxD").expect("fixture has a data block")];
+        let error = read_pasted(readable).expect_err("no data block, no build");
+        let message = paste_refusal(&error);
+        assert!(!message.contains("base64"), "{message}");
+        assert!(message.contains("data block"), "{message}");
     }
 }

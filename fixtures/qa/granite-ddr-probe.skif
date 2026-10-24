@@ -1,0 +1,96 @@
+{
+  "version": 5,
+  "authoredAgainst": {
+    "dataset": "homecoming",
+    "contractSchema": 1,
+    "datasetSchema": 1
+  },
+  "build": {
+    "name": "Granite DDR probe",
+    "dataset": "homecoming",
+    "archetype": "tanker",
+    "level": 50,
+    "primary": {
+      "id": "tanker/stone-armor",
+      "powers": [
+        {
+          "internalName": "Granite_Armor",
+          "level": 26,
+          "slots": [
+            {
+              "type": "io-generic",
+              "stat": "Defense",
+              "level": 50
+            },
+            {
+              "type": "io-generic",
+              "stat": "Defense",
+              "level": 50
+            },
+            {
+              "type": "io-generic",
+              "stat": "Defense",
+              "level": 50
+            },
+            {
+              "type": "io-generic",
+              "stat": "Defense",
+              "level": 50
+            },
+            {
+              "type": "io-generic",
+              "stat": "Defense",
+              "level": 50
+            },
+            {
+              "type": "io-generic",
+              "stat": "Defense",
+              "level": 50
+            }
+          ],
+          "isActive": true
+        }
+      ]
+    },
+    "secondary": {
+      "id": "tanker/super-strength"
+    },
+    "slotOrder": [
+      {
+        "powerName": "Granite_Armor",
+        "slotIndex": 1,
+        "category": "primary",
+        "level": 27,
+        "levelSource": "authored"
+      },
+      {
+        "powerName": "Granite_Armor",
+        "slotIndex": 2,
+        "category": "primary",
+        "level": 27,
+        "levelSource": "authored"
+      },
+      {
+        "powerName": "Granite_Armor",
+        "slotIndex": 3,
+        "category": "primary",
+        "level": 29,
+        "levelSource": "authored"
+      },
+      {
+        "powerName": "Granite_Armor",
+        "slotIndex": 4,
+        "category": "primary",
+        "level": 29,
+        "levelSource": "authored"
+      },
+      {
+        "powerName": "Granite_Armor",
+        "slotIndex": 5,
+        "category": "primary",
+        "level": 31,
+        "levelSource": "authored"
+      }
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+ "version": 5,
+ "authoredAgainst": {
+  "dataset": "homecoming",
+  "contractSchema": 1,
+  "datasetSchema": 1
+ },
+ "build": {
+  "name": "DDR cap probe",
+  "dataset": "homecoming",
+  "archetype": "tanker",
+  "level": 50,
+  "primary": {
+   "id": "tanker/super-reflexes",
+   "powers": [
+    {
+     "internalName": "Focused_Fighting",
+     "level": 1,
+     "slots": [],
+     "isActive": true
+    },
+    {
+     "internalName": "Focused_Senses",
+     "level": 1,
+     "slots": [],
+     "isActive": true
+    },
+    {
+     "internalName": "Agile",
+     "level": 1,
+     "slots": [],
+     "isActive": true
+    },
+    {
+     "internalName": "Dodge",
+     "level": 7,
+     "slots": [],
+     "isActive": true
+    },
+    {
+     "internalName": "Evasion",
+     "level": 11,
+     "slots": [],
+     "isActive": true
+    },
+    {
+     "internalName": "Lucky",
+     "level": 17,
+     "slots": [],
+     "isActive": true
+    },
+    {
+     "internalName": "Elude",
+     "level": 25,
+     "slots": [],
+     "isActive": true
+    }
+   ]
+  },
+  "secondary": {
+   "id": "tanker/super-strength"
+  }
+ }
+}

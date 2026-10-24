@@ -1615,8 +1615,8 @@ impl<'a, 'b> WalkCtx<'a, 'b> {
     fn apply_debuff_resistance(&mut self, g: &mut GlobalBonuses) {
         // === Pass 2b: DEBUFF RESISTANCE, per-type — atom-native (ATOM13 / PASS2B-11) ===
         // Foresight, Tactical Training: Leadership, Combat Training: Offensive, Mental
-        // Training. Each type resolves `resolveScaledEffect × 100 × enhMultiplier` into the
-        // field `add_debuff_resistance` routes it to (bag `movement` → `debuff_resist_slow`).
+        // Training. Each type resolves `resolveScaledEffect × 100` into the field
+        // `add_debuff_resistance` routes it to (bag `movement` → `debuff_resist_slow`).
         // Unlike the regen/recovery buffs, a `Res_Boolean` table is RESOLVED here, not skipped —
         // the boolean IS the value.
         //
@@ -1632,11 +1632,28 @@ impl<'a, 'b> WalkCtx<'a, 'b> {
         // `accuracy` and `range` are in that map since DEBUFFRES-1; the oracle has no field for
         // either, so those two are the one place this pass reads higher than the frozen calc.
         //
-        // Only `debuffResistDefense` carries an enhancement multiplier — `× (1 + enh.get("defense"))`
-        // (Defense enhancement boosts defense-debuff resistance; the beta's `debuffResEnhMapping`);
-        // every other type is unenhanced. NOT boosted by +Strength(Defense) — the beta uses
-        // `enhBonuses`, not `strengthBuffs`, here. `adjustForStacking` is the corpus-zero no-op seam
-        // (default combat context).
+        // NO debuff-resistance type is enhanced, defense included — DDR-1. Both planner
+        // lineages said otherwise: the beta's `debuffResEnhMapping = { defense: 'defense' }`
+        // (legacy-totals.oracle.ts:837) and Mids Reborn's `GBPA_Pass1_EnhancePreED`, which
+        // special-cases `EffectType == ResEffect && ETModifies == Defense` onto `eEnhance.Defense`
+        // (clsToonX.cs:1798). Two independent planners agreeing is strong evidence, and it was
+        // still wrong — measured on the Homecoming test server, a level-50 Tanker with Granite
+        // Armor ON reads 43.25% Defense DDR with 0, 1, 2, 3, 4, 5 or 6 level-50 Defense IOs
+        // slotted: flat. The unslotted 43.25 is `scale 1.0 × Tanker melee_res_boolean[50]`, so
+        // the table read is right and only the multiplier was wrong (it had been inflating this
+        // to 73.48% at six slots).
+        //
+        // The data agrees with the game once the right boost token is asked about. A DDR row is
+        // `Base_Defense` with `aspect=Resistance`; the boost that governs resisting a defense
+        // debuff is `Debuff_Defense`, and over all four datasets 1168 powers carry a DDR row and
+        // 2373 allow `Debuff_Defense` — with an overlap of exactly ZERO. What the 118 DDR powers
+        // do allow is `Buff_Defense`, which is the token for the positional defense BUFF, a
+        // different row of the same power. The beta read the power's Defense slots and applied
+        // what it found to the wrong row; Mids has no per-row token either and hardcodes the
+        // same pairing. So `allowedEnhancements` containing "Defense" does NOT mean the DDR row
+        // is enhanceable — it means the power's positional defense rows are.
+        //
+        // `adjustForStacking` is the corpus-zero no-op seam (default combat context).
         let debuff_resistance_entries: Option<Vec<(String, Scaled)>> =
             debuff_resistance_value(self.power).map(|es| {
                 es.into_iter()
@@ -1646,14 +1663,7 @@ impl<'a, 'b> WalkCtx<'a, 'b> {
         if let Some(entries) = debuff_resistance_entries {
             for (ty, s) in entries {
                 let s = self.stack(s, StackFamily::DebuffResistance);
-                // Only defense-debuff-resistance is enhanced — by Defense enhancement (the beta's
-                // `debuffResEnhMapping = { defense: 'defense' }`); every other type is unenhanced.
-                // Not boosted by +Strength(Defense): the beta uses `enhBonuses`, not `strengthBuffs`.
-                let enh_multiplier = if ty == "defense" {
-                    1.0 + self.enh.get("defense")
-                } else {
-                    1.0
-                };
+                // DDR-1: no multiplier for any type, defense included. See the block comment.
                 let percent = resolve_scaled_effect(
                     s.scale,
                     s.table.as_deref(),
@@ -1661,8 +1671,7 @@ impl<'a, 'b> WalkCtx<'a, 'b> {
                     self.level,
                     self.db,
                     self.errors,
-                ) * 100.0
-                    * enh_multiplier;
+                ) * 100.0;
                 surface_route(
                     g.add_debuff_resistance(&ty, percent),
                     "Debuff resistance",
