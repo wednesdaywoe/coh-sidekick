@@ -2,7 +2,8 @@
     {
     "date": "2026-10-25",
     "items": [
-      { "id": "my-builds-sort", "type": "feat", "message": "My Builds can now be sorted: last edited (the default), newest, oldest, or by name A–Z and Z–A" }
+      { "id": "my-builds-sort", "type": "feat", "message": "My Builds can now be sorted: last edited (the default), newest, oldest, or by name A–Z and Z–A" },
+      { "id": "browser-keeps-filters", "type": "feat", "message": "The build browser now remembers your search, filters, tags and pinned author." }
     ]
   },
 
