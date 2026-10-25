@@ -1,5 +1,12 @@
 [
     {
+    "date": "2026-10-25",
+    "items": [
+      { "id": "my-builds-sort", "type": "feat", "message": "My Builds can now be sorted: last edited (the default), newest, oldest, or by name A–Z and Z–A" }
+    ]
+  },
+
+    {
     "date": "2026-10-24",
     "items": [
       { "id": "defense-debuff-resistance-enhancement", "type": "fix", "message": "Defense Debuff Resistance no longer grows when you slot Defense enhancement into the power that grants it. Powers like Granite Armor now show the correct number." }

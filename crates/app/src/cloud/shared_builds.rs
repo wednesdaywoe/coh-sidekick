@@ -368,18 +368,68 @@ pub async fn search(cloud: &Cloud, filters: &SearchFilters) -> Result<SearchResu
     })
 }
 
-/// The PostgREST wire for [`my_builds`]: one `eq.` on the owning account, newest edit first.
+/// The order the vault read (the "My builds" tab) comes back in.
+///
+/// The default is the order the beta's `getMyBuilds` ships (`sharedBuilds.ts:698`): the build
+/// touched last first, because the list is a workspace and the one wanted first is the one
+/// last touched — the opposite of what the public browse defaults to, which sorts by
+/// publication. The rest are the orders the request asked for — by publication, and by name —
+/// and each is one PostgREST order spec the SERVER applies, so the client draws the rows in
+/// the order it was given them and never re-sorts a list it was told the order of.
+///
+/// The name orders carry an `updated_at.desc` tiebreak: two rows may share a name (quick shares
+/// file under the same generated name — see [`quick_share_name`]), and without a tiebreak
+/// their relative order is whatever the planner says, which is a different order on every
+/// refetch. The date orders carry none: `created_at` is stamped at creation and not rewritten
+/// by an edit, and a microsecond-precision stamp makes two rows collide only when they are
+/// saved in the same microsecond — the same tiebreak-free date order the public browse ships.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum VaultSort {
+    /// Last edited first — the beta's `getMyBuilds` order, and the default.
+    RecentlyEdited,
+    /// Newest by creation first.
+    Newest,
+    /// Oldest by creation first.
+    Oldest,
+    /// Name, A to Z.
+    NameAsc,
+    /// Name, Z to A.
+    NameDesc,
+}
+
+impl Default for VaultSort {
+    /// The tab opens in the order it shipped in: the last edit first.
+    fn default() -> Self {
+        Self::RecentlyEdited
+    }
+}
+
+impl VaultSort {
+    /// The PostgREST `order` spec this sort reads with. `created_at` and `updated_at` are
+    /// ISO-8601, which sort lexicographically the way they sort chronologically, and the spec
+    /// is what the server applies — a multi-key spec is comma-joined the way the wire spells
+    /// it.
+    pub fn order(self) -> &'static str {
+        match self {
+            Self::RecentlyEdited => "updated_at.desc",
+            Self::Newest => "created_at.desc",
+            Self::Oldest => "created_at.asc",
+            Self::NameAsc => "name.asc,updated_at.desc",
+            Self::NameDesc => "name.desc,updated_at.desc",
+        }
+    }
+}
+
+/// The PostgREST wire for [`my_builds`]: one `eq.` on the owning account, in the order the
+/// user asked for.
 ///
 /// Split out for the reason [`search_wire`] is — the filter IS the meaning of "mine", and a
 /// filter that silently widened would list somebody else's builds under the user's own tab.
 /// Gradeable without a server.
-fn my_builds_wire(user_id: &str) -> (Vec<(String, String)>, &'static str) {
+fn my_builds_wire(user_id: &str, sort: VaultSort) -> (Vec<(String, String)>, &'static str) {
     (
         vec![("user_id".to_string(), format!("eq.{user_id}"))],
-        // `updated_at`, not `created_at`: this list is a workspace, so the build touched last is
-        // the one wanted first. The beta orders the same way (`sharedBuilds.ts:698`), and it is
-        // the opposite of what the public browse defaults to, which sorts by publication.
-        "updated_at.desc",
+        sort.order(),
     )
 }
 
@@ -391,6 +441,10 @@ fn my_builds_wire(user_id: &str) -> (Vec<(String, String)>, &'static str) {
 /// the rows the server already agrees are theirs. Unlike [`search`] it is unpaged and uncounted,
 /// which mirrors the beta — a personal vault is tens of rows, not thousands, and a pager over it
 /// would be furniture around an empty state.
+///
+/// `sort` is the order the read comes back in ([`VaultSort`]); the default keeps the beta's
+/// last-edit-first order, and a changed sort is one refetch, which is the cost of the order
+/// being the server's rather than a re-sort of the rows the client already holds.
 ///
 /// **The beta's pre-migration tolerance is deliberately NOT ported.** `getMyBuilds` sniffs the
 /// error text for `user_id` and `does not exist` and answers with an empty list, covering a
@@ -409,8 +463,9 @@ fn my_builds_wire(user_id: &str) -> (Vec<(String, String)>, &'static str) {
 pub async fn my_builds(
     cloud: &Cloud,
     user_id: &str,
+    sort: VaultSort,
 ) -> Result<Vec<SharedBuildSummary>, CloudError> {
-    let (filters, order) = my_builds_wire(user_id);
+    let (filters, order) = my_builds_wire(user_id, sort);
     let refs: Vec<(&str, &str)> = filters
         .iter()
         .map(|(k, v)| (k.as_str(), v.as_str()))
@@ -988,5 +1043,52 @@ pub fn quick_share_name(name: &str, archetype: &str, primary: &str, secondary: &
     match parts.is_empty() {
         true => "Shared Build".to_string(),
         false => parts.join(" - "),
+    }
+}
+
+#[cfg(test)]
+mod vault_sort_tests {
+    use super::*;
+
+    /// The tab must open exactly as it did before the picker existed: the build touched last
+    /// first, the beta's `getMyBuilds` order. A default that silently switched to publication
+    /// order would refile a user's workspace on an update.
+    #[test]
+    fn the_vault_opens_in_the_order_the_beta_ships() {
+        assert_eq!(VaultSort::default(), VaultSort::RecentlyEdited);
+        assert_eq!(VaultSort::RecentlyEdited.order(), "updated_at.desc");
+    }
+
+    /// Each sort is exactly the spec the server applies. The date orders are the two directions
+    /// of creation, the name orders are the two directions of the name with the edit timestamp
+    /// as the tiebreak — a name order without it leaves same-named rows in the planner's
+    /// arbitrary order, which shuffles on every refetch.
+    #[test]
+    fn each_sort_is_the_spec_the_server_applies() {
+        assert_eq!(VaultSort::Newest.order(), "created_at.desc");
+        assert_eq!(VaultSort::Oldest.order(), "created_at.asc");
+        assert_eq!(VaultSort::NameAsc.order(), "name.asc,updated_at.desc");
+        assert_eq!(VaultSort::NameDesc.order(), "name.desc,updated_at.desc");
+    }
+
+    /// The wire carries the chosen order beside the ownership filter, and the filter is still
+    /// exactly the one `eq.` on the owning account — a sort must not be able to widen what
+    /// "mine" means.
+    #[test]
+    fn the_vault_wire_carries_the_sort() {
+        for sort in [
+            VaultSort::RecentlyEdited,
+            VaultSort::Newest,
+            VaultSort::Oldest,
+            VaultSort::NameAsc,
+            VaultSort::NameDesc,
+        ] {
+            let (filters, order) = my_builds_wire("account-1", sort);
+            assert_eq!(
+                filters,
+                vec![("user_id".to_string(), "eq.account-1".to_string())],
+            );
+            assert_eq!(order, sort.order());
+        }
     }
 }

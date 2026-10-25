@@ -41,7 +41,7 @@ use crate::cloud::avatar::avatar_src;
 use crate::cloud::favorites;
 use crate::cloud::profile;
 use crate::cloud::shared_builds::{
-    self, BuildVisibility, SearchFilters, SharedBuild, SharedBuildSummary, SortBy,
+    self, BuildVisibility, SearchFilters, SharedBuild, SharedBuildSummary, SortBy, VaultSort,
 };
 use crate::cloud::tag_vocab;
 use crate::modal::{Modal, ModalSize};
@@ -581,6 +581,13 @@ enum BrowserView {
 /// service's own doc refuses to tell. Signed out there is no account to make a claim about, so
 /// the panel says so — and still draws [`ReclaimBox`], because reclaiming touches no network and
 /// no session at all: it is the recovery path for somebody who has no account by choice.
+///
+/// **The sort picker changes the order the read comes back in, not the rows.** A pick re-runs
+/// the vault read with the chosen [`VaultSort`], the order the server applies, rather than
+/// re-sorting the rows the panel already holds: the list stays one query, and "what order am I
+/// looking at" is answered by the same place that answered "whose builds are these". The
+/// default is the order the tab has always shipped in, so the picker's arrival refiles
+/// nothing for a user who never touches it.
 #[component]
 fn VaultPanel(database: Option<Db>) -> Element {
     let account = use_context::<Account>();
@@ -590,6 +597,10 @@ fn VaultPanel(database: Option<Db>) -> Element {
     let mut working = use_signal(|| false);
     let mut refusal = use_signal(|| None::<String>);
     let mut confirming = use_signal(|| false);
+    // The order the vault comes back in. Read INSIDE the resource for the reason the account id
+    // is (the note above): a pick made while the panel is open re-runs the read in the chosen
+    // order rather than re-sorting a list the server ordered a different way.
+    let mut sort = use_signal(VaultSort::default);
 
     // The account id is read INSIDE the resource, not captured outside it, so the list re-runs
     // when a sign-in lands while the panel is open. Captured outside it, the closure would hold
@@ -598,12 +609,15 @@ fn VaultPanel(database: Option<Db>) -> Element {
     let mut builds = use_resource(move || {
         let account = list_account.clone();
         let id = user.read().as_ref().map(|u| u.id.clone());
+        // `VaultSort` is `Copy`, so the read's value is taken out of the ref and the ref
+        // itself is dropped before the async block runs.
+        let sort = *sort.read();
         async move {
             let Some(id) = id else {
                 return Ok(Vec::new());
             };
             let cloud = account.prepared().await?;
-            shared_builds::my_builds(&cloud, &id).await
+            shared_builds::my_builds(&cloud, &id, sort).await
         }
     });
 
@@ -669,6 +683,22 @@ fn VaultPanel(database: Option<Db>) -> Element {
                         rsx! {
                             div { class: "sb-vault__bar",
                                 p { class: "sb-count", "{rows.len()} {noun}" }
+                                // The order the list comes back in. The default ("Last edited")
+                                // is the order the tab has always shipped in, so the picker
+                                // appearing changes nothing for nobody who does not use it.
+                                select {
+                                    class: "sb-select",
+                                    value: vault_sort_value(sort()),
+                                    onchange: move |evt| {
+                                        sort.set(vault_sort_for_value(evt.value().as_str()));
+                                    },
+                                    "aria-label": "Sort your builds",
+                                    option { value: "edited", "Last edited" }
+                                    option { value: "newest", "Newest" }
+                                    option { value: "oldest", "Oldest" }
+                                    option { value: "name-asc", "Name (A–Z)" }
+                                    option { value: "name-desc", "Name (Z–A)" }
+                                }
                                 if picked > 0 {
                                     span { class: "sb-owner__note", "{picked} selected" }
                                     for (option, label) in [
@@ -809,6 +839,31 @@ fn visibility_label(visibility: BuildVisibility) -> &'static str {
         BuildVisibility::Public => "Public",
         BuildVisibility::Unlisted => "Unlisted",
         BuildVisibility::Private => "Private",
+    }
+}
+
+/// The select's value for a [`VaultSort`], and the walk back from it. The enum is the state;
+/// the strings are the control's, and the two are joined here rather than in the rsx! so a
+/// value the control reports (a hand-edited DOM, a stale option) lands on the default rather
+/// than on a guess about what the user meant.
+fn vault_sort_value(sort: VaultSort) -> &'static str {
+    match sort {
+        VaultSort::RecentlyEdited => "edited",
+        VaultSort::Newest => "newest",
+        VaultSort::Oldest => "oldest",
+        VaultSort::NameAsc => "name-asc",
+        VaultSort::NameDesc => "name-desc",
+    }
+}
+
+fn vault_sort_for_value(value: &str) -> VaultSort {
+    match value {
+        "newest" => VaultSort::Newest,
+        "oldest" => VaultSort::Oldest,
+        "name-asc" => VaultSort::NameAsc,
+        "name-desc" => VaultSort::NameDesc,
+        // "edited" and anything the control was not offered: the default.
+        _ => VaultSort::RecentlyEdited,
     }
 }
 
@@ -2224,5 +2279,37 @@ fn boot_target(pathname: &str) -> Option<BrowserTarget> {
         ["builds", id] if !id.is_empty() => Some(BrowserTarget::Build(id.to_string())),
         ["author", handle] => super::profile::normalize_handle(handle).map(BrowserTarget::Author),
         _ => None,
+    }
+}
+
+#[cfg(test)]
+mod vault_sort_control_tests {
+    use super::*;
+
+    /// Every option the picker offers must walk the value → enum walk back to itself: an option
+    /// that mapped to the wrong order would silently refile the vault in a sort the user did
+    /// not pick.
+    #[test]
+    fn the_picker_round_trips_to_the_enum() {
+        for sort in [
+            VaultSort::RecentlyEdited,
+            VaultSort::Newest,
+            VaultSort::Oldest,
+            VaultSort::NameAsc,
+            VaultSort::NameDesc,
+        ] {
+            assert_eq!(vault_sort_for_value(vault_sort_value(sort)), sort);
+        }
+    }
+
+    /// A value the control reports but the picker never offers — a hand-edited DOM, a stale
+    /// option — lands on the default, the order the tab has always shipped in, rather than on
+    /// a guess about what the user meant.
+    #[test]
+    fn an_unoffered_value_is_the_default_not_a_guess() {
+        assert_eq!(vault_sort_for_value(""), VaultSort::default());
+        assert_eq!(vault_sort_for_value("views"), VaultSort::default());
+        assert_eq!(vault_sort_for_value("Newest"), VaultSort::default());
+        assert_eq!(vault_sort_for_value("edited"), VaultSort::default());
     }
 }
