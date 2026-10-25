@@ -456,6 +456,10 @@ pub struct StatDef {
     /// have. `None` for the stats that show the engine's own number and stand alone in their
     /// section, which is most of them.
     pub annotate: Option<fn(&CalculatedTotals) -> String>,
+    /// A per-second rate drawn after the value, for the two stats the game also reads as a rate
+    /// (Regeneration as HP/s, Recovery as End/s). Visible, not a tooltip: the rate is the number
+    /// a player compares against incoming damage and toggle drain.
+    pub rate: Option<fn(&CalculatedTotals) -> String>,
 }
 
 /// A stat IS its [`id`](StatDef::id) — that is what the persisted config stores and what
@@ -481,7 +485,10 @@ impl StatDef {
     pub fn resolve(&self, totals: &CalculatedTotals) -> ResolvedStat {
         let value = (self.read)(totals);
         ResolvedStat {
-            text: self.format.render(value),
+            text: match self.rate {
+                Some(rate) => format!("{} · {}", self.format.render(value), rate(totals)),
+                None => self.format.render(value),
+            },
             note: self.annotate.map(|note| note(totals)).unwrap_or_default(),
             at_cap: self
                 .cap
@@ -497,6 +504,19 @@ impl StatDef {
             simulated: totals.what_if.touches(self.ledger_keys),
         }
     }
+}
+
+/// HP per second at the build's regeneration: base regeneration refills max HP in 240 s, and the
+/// buff scales that rate.
+fn regen_rate(t: &CalculatedTotals) -> String {
+    let per_sec = t.stats.max_hp_absolute / 240.0 * (1.0 + t.stats.regeneration / 100.0);
+    format!("{per_sec:.2} HP/s")
+}
+
+/// Endurance per second at the build's recovery: base recovery refills max endurance in 60 s.
+fn recovery_rate(t: &CalculatedTotals) -> String {
+    let per_sec = t.stats.max_endurance_absolute / 60.0 * (1.0 + t.stats.recovery / 100.0);
+    format!("{per_sec:.2} End/s")
 }
 
 /// The buff percentage a travel speed was projected from, for that row's tooltip. The face shows
@@ -661,6 +681,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.damage,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "accuracy",
@@ -674,6 +695,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.accuracy,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "tohit",
@@ -687,6 +709,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.to_hit,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "recharge",
@@ -700,6 +723,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.recharge,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "range_bonus",
@@ -713,6 +737,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.range,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "level_shift",
@@ -726,6 +751,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::LevelShift,
         read: |t| t.bonuses.level_shift,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "stealth_pve",
@@ -739,6 +765,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Feet,
         read: |t| t.bonuses.stealth_radius_pve,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "stealth_pvp",
@@ -752,6 +779,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Feet,
         read: |t| t.bonuses.stealth_radius_pvp,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "perception_bonus",
@@ -765,6 +793,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.perception_radius,
         annotate: None,
+        rate: None,
     },
     // The six OFFENSIVE control durations — how much longer the mez this build APPLIES lasts.
     // They live in Offense, not beside the `prot_*`/`mezres_*` rows those names echo: those two
@@ -788,6 +817,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.hold_duration,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "control_stun",
@@ -801,6 +831,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.stun_duration,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "control_immob",
@@ -814,6 +845,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.immobilize_duration,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "control_sleep",
@@ -827,6 +859,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.sleep_duration,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "control_confuse",
@@ -840,6 +873,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.confuse_duration,
         annotate: None,
+        rate: None,
     },
     StatDef {
         // `terrorDuration` is the accumulator's spelling; every other surface in this family
@@ -855,6 +889,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.terror_duration,
         annotate: None,
+        rate: None,
     },
     // Offensive knockback magnitude, and the seventh member of the block above in every way that
     // matters: outward-facing, and read by `GLOBAL_BONUS_ASPECTS` to scale the knockback DISTANCE
@@ -872,6 +907,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.knockback_strength,
         annotate: None,
+        rate: None,
     },
     // ---- Defense ----
     StatDef {
@@ -886,6 +922,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_melee,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "defense_ranged",
@@ -899,6 +936,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_ranged,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "defense_aoe",
@@ -912,6 +950,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_aoe,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "def_smashing",
@@ -925,6 +964,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_smashing,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "def_lethal",
@@ -938,6 +978,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_lethal,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "def_fire",
@@ -951,6 +992,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_fire,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "def_cold",
@@ -964,6 +1006,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_cold,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "def_energy",
@@ -977,6 +1020,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_energy,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "def_negative",
@@ -990,6 +1034,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_negative,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "defense_psionic",
@@ -1003,6 +1048,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_psionic,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "defense_toxic",
@@ -1016,6 +1062,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.def_toxic,
         annotate: None,
+        rate: None,
     },
     // ---- Resistance ----
     StatDef {
@@ -1030,6 +1077,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.res_smashing,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "res_lethal",
@@ -1043,6 +1091,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.res_lethal,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "res_fire",
@@ -1056,6 +1105,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.res_fire,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "res_cold",
@@ -1069,6 +1119,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.res_cold,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "res_energy",
@@ -1082,6 +1133,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.res_energy,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "res_negative",
@@ -1095,6 +1147,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.res_negative,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "res_psionic",
@@ -1108,6 +1161,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.res_psionic,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "res_toxic",
@@ -1121,6 +1175,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.res_toxic,
         annotate: None,
+        rate: None,
     },
     // ---- Survival ----
     StatDef {
@@ -1135,6 +1190,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.max_hp_absolute,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "absorb",
@@ -1148,6 +1204,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::HitPoints,
         read: |t| t.stats.absorb,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "regeneration",
@@ -1161,6 +1218,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.regeneration,
         annotate: None,
+        rate: Some(regen_rate),
     },
     StatDef {
         id: "heal_other",
@@ -1174,6 +1232,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.heal_other,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "heal_received",
@@ -1187,6 +1246,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.heal_received,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "maxend",
@@ -1200,6 +1260,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Points,
         read: |t| t.stats.max_endurance_absolute,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "recovery",
@@ -1213,6 +1274,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.recovery,
         annotate: None,
+        rate: Some(recovery_rate),
     },
     StatDef {
         id: "endreduction",
@@ -1226,6 +1288,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.endurance_reduction,
         annotate: None,
+        rate: None,
     },
     // The Step 9.7 pair. Both are ABSOLUTE end/sec, not percentages, and both read
     // `GlobalBonuses` rather than `stats` — the projection fills them after the stats are
@@ -1244,6 +1307,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::EndurancePerSecond,
         read: |t| t.bonuses.toggle_end_cost,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "netend",
@@ -1257,6 +1321,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedEndurancePerSecond,
         read: |t| t.bonuses.net_end_per_sec,
         annotate: None,
+        rate: None,
     },
     // ---- Movement ----
     StatDef {
@@ -1271,6 +1336,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.run_speed.value,
         annotate: Some(|t| travel_note(t.bonuses.run_speed)),
+        rate: None,
     },
     StatDef {
         id: "flyspeed",
@@ -1284,6 +1350,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.fly_speed.value,
         annotate: Some(|t| travel_note(t.bonuses.fly_speed)),
+        rate: None,
     },
     StatDef {
         id: "jumpspeed",
@@ -1297,6 +1364,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.jump_speed.value,
         annotate: Some(|t| travel_note(t.bonuses.jump_speed)),
+        rate: None,
     },
     StatDef {
         id: "jumpheight",
@@ -1310,6 +1378,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.jump_height.value,
         annotate: Some(|t| travel_note(t.bonuses.jump_height)),
+        rate: None,
     },
     // The two travel PENALTIES. They read `bonuses` rather than `stats` because nothing
     // projects them onto a speed: unlike the four axes above, these have no base to raise —
@@ -1327,6 +1396,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.movement_control,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "movefriction",
@@ -1340,6 +1410,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.movement_friction,
         annotate: None,
+        rate: None,
     },
     // ---- Status Protection ----
     StatDef {
@@ -1354,6 +1425,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Magnitude,
         read: |t| t.bonuses.protection_hold,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "prot_stun",
@@ -1367,6 +1439,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Magnitude,
         read: |t| t.bonuses.protection_stun,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "prot_immob",
@@ -1380,6 +1453,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Magnitude,
         read: |t| t.bonuses.protection_immobilize,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "prot_sleep",
@@ -1393,6 +1467,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Magnitude,
         read: |t| t.bonuses.protection_sleep,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "prot_confuse",
@@ -1406,6 +1481,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Magnitude,
         read: |t| t.bonuses.protection_confuse,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "prot_fear",
@@ -1419,6 +1495,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Magnitude,
         read: |t| t.bonuses.protection_fear,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "prot_kb",
@@ -1432,6 +1509,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Magnitude,
         read: |t| t.bonuses.protection_knockback,
         annotate: None,
+        rate: None,
     },
     // Repel protection is its own row for the same reason the Repel row exists under Status
     // Resistance: it protects against the continuous push, not knockback, and a power can grant
@@ -1449,6 +1527,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::Magnitude,
         read: |t| t.bonuses.protection_repel,
         annotate: None,
+        rate: None,
     },
     // ---- Status Resistance ----
     // The six status mezzes show residual DURATION; knockback resistance reduces distance
@@ -1465,6 +1544,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_hold,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "mezres_stun",
@@ -1478,6 +1558,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_stun,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "mezres_immob",
@@ -1491,6 +1572,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_immobilize,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "mezres_sleep",
@@ -1504,6 +1586,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_sleep,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "mezres_confuse",
@@ -1517,6 +1600,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_confuse,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "mezres_fear",
@@ -1530,6 +1614,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_fear,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "mezres_kb",
@@ -1543,6 +1628,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_knockback,
         annotate: None,
+        rate: None,
     },
     // Repel joins Knockback on the raw percentage for the same reason: it resists a force, and
     // the residual-duration convention describes a mez that has a duration to shorten.
@@ -1558,6 +1644,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_repel,
         annotate: None,
+        rate: None,
     },
     // Teleport joins them for the third time: it resists being moved, not being held, so there is
     // no duration to shorten. Only the caster-facing carriers reach this total — the reader
@@ -1574,6 +1661,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_teleport,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "mezres_taunt",
@@ -1587,6 +1675,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_taunt,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "mezres_placate",
@@ -1600,6 +1689,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.mez_resist_placate,
         annotate: None,
+        rate: None,
     },
     // ---- Debuff Resistance ----
     StatDef {
@@ -1614,6 +1704,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.debuff_resist_defense,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "debuff_tohit",
@@ -1627,6 +1718,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.debuff_resist_to_hit,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "debuff_recharge",
@@ -1640,6 +1732,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.debuff_resist_recharge,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "debuff_endurance",
@@ -1656,6 +1749,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.debuff_resist_endurance,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "debuff_recovery",
@@ -1669,6 +1763,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.debuff_resist_recovery,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "debuff_regen",
@@ -1682,6 +1777,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.debuff_resist_regeneration,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "debuff_slow",
@@ -1695,6 +1791,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.debuff_resist_slow,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "debuff_perception",
@@ -1708,6 +1805,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.stats.debuff_resist_perception,
         annotate: None,
+        rate: None,
     },
     // DEBUFFRES-1. These two read the accumulator, not `stats`: the beta `CharacterStats` has no
     // field for either, so `finalize`'s projection — which mirrors that struct — has nowhere to
@@ -1724,6 +1822,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.debuff_resist_accuracy,
         annotate: None,
+        rate: None,
     },
     StatDef {
         id: "debuff_range",
@@ -1737,6 +1836,7 @@ pub static ALL: &[StatDef] = &[
         ledger_format: StatFormat::SignedPercent,
         read: |t| t.bonuses.debuff_resist_range,
         annotate: None,
+        rate: None,
     },
 ];
 
