@@ -186,25 +186,51 @@ pub struct SharedBuild {
 
 /// What search is being asked to filter and sort by. Mirrors the beta's `SearchFilters`
 /// (`types/shared.ts`), minus the fields nothing anon can act on yet.
-#[derive(Clone, Debug, PartialEq, Eq)]
+///
+/// `Serialize`/`Deserialize` exist for [`crate::browser_store`], which keeps the browser's
+/// last search across close/reopen and reloads. The `#[serde(default)]` facets are that save's
+/// forward-compatibility: a stored state missing one facet reads it as "unfiltered", the same
+/// answer a fresh `Default` gives, rather than failing the whole state over one absent field.
+/// The two page fields default to the app's own page one and page size, which are the only
+/// values the browser ever writes — a missing `page` is page one, never zero, so the
+/// validation in [`crate::browser_store::validate`] sees what the save meant.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SearchFilters {
+    #[serde(default)]
     pub archetype: Option<String>,
+    #[serde(default)]
     pub primary_set: Option<String>,
+    #[serde(default)]
     pub secondary_set: Option<String>,
     /// Free-text query over name/description/author. Empty means no text filter.
+    #[serde(default)]
     pub query: String,
     /// The canonical author filter (a specific account). `author_name` only filters when this
     /// is absent — for anonymous build cards there is no id to match.
+    #[serde(default)]
     pub author_id: Option<String>,
     /// Display filter when no `author_id` is available.
+    #[serde(default)]
     pub author_name: Option<String>,
     /// Tags a row must carry ALL of. Empty means no tag filter. Conjunctive because that is what
     /// the picker's chips read as — ticking `AFK farming` and `Budget` asks for builds that are
     /// both, not for the union, which would be a longer list than no filter at all on one of them.
+    #[serde(default)]
     pub tags: Vec<String>,
+    #[serde(default)]
     pub sort_by: SortBy,
+    #[serde(default = "default_page")]
     pub page: usize,
+    #[serde(default = "default_page_size")]
     pub page_size: usize,
+}
+
+fn default_page() -> usize {
+    1
+}
+
+fn default_page_size() -> usize {
+    DEFAULT_PAGE_SIZE
 }
 
 impl Default for SearchFilters {
@@ -224,10 +250,18 @@ impl Default for SearchFilters {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SortBy {
     Newest,
     Views,
+}
+
+impl Default for SortBy {
+    /// The browse default: newest first. A persisted state that lost its sort reads back the
+    /// default rather than "no sort", which the wire does not have.
+    fn default() -> Self {
+        Self::Newest
+    }
 }
 
 /// A page of search results, with what the page control needs to know it is not alone.

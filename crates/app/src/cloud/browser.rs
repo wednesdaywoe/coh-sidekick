@@ -33,6 +33,14 @@
 //! from the detail modal, once per open, only for builds whose own dataset is loaded (the beta
 //! hid the same step in a second wasm boot behind `?previewCapture=`; this instance IS the
 //! renderer, so there is no second boot and no empty-build race to hide from).
+//!
+//! The browser's state is the browser's: a user filed that closing it — opening a build and
+//! coming back, switching tabs, reloading the page — resets the tab, the search and the
+//! filters to default, and the answer is the one every other preference in this app takes.
+//! [`crate::browser_store`] keeps the whole surface (tab, search, filters, pinned author, tag
+//! picker) in `localStorage`, the modal reads it once at mount before the first search goes
+//! out, and every state mutation funnels through the one `persist` that writes it back. A
+//! missing or corrupt save opens the browser the way a fresh install does.
 
 use crate::build_io::{BuildIoChoice, BuildIoPending, BuildIoReport};
 use crate::build_session::BuildSession;
@@ -63,7 +71,8 @@ pub enum BrowserTarget {
     /// turns one into the other, and it can fail in a way a filter cannot: nobody holds it.
     Author(String),
     /// The browser opened on the vault tab — the same modal as `Browse`, one click shorter for
-    /// the user who came for their own builds rather than the community's.
+    /// the user who came for their own builds rather than the community's. Always the vault tab,
+    /// even when [`crate::browser_store`] remembers another; the other doors reopen the saved tab.
     Mine,
 }
 
@@ -123,6 +132,12 @@ pub fn BrowserHost(database: Option<Db>, dataset: Signal<DatasetId>) -> Element 
 /// The search surface. Everything anon can do with the public rows: filter, sort, page, and
 /// open a build. The database feed the archetype and powerset dropdowns; the cloud feeds the
 /// rows; the two never meet, which is the point of the service layer.
+///
+/// The state survives the modal. `initial` is the fresh-browser answer — the tab the menu row
+/// named — and [`crate::browser_store`] is the user's answer: read once at mount, applied to
+/// the signals below before the first search goes out, and written back by the `save_state`
+/// funnel on every mutation. The two meet in the user's favour, which is the feature: a browser
+/// with a save opens where the user left it, and the one without opens where the row sent it.
 #[component]
 fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
     let account = use_context::<Account>();
@@ -130,23 +145,80 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
     let filters = use_signal(SearchFilters::default);
     // The search box's draft text, committed to `filters` on submit — the beta's `BuildFilters`
     // keeps them apart for the same reason: a keystroke is not a search, and every keystroke
-    // being one would fire a request per character.
+    // being one would fire a request per character. Persisted with `filters` on the same write,
+    // so a typed-but-unsubmitted search is back in the box on the next open.
     let mut query_input = use_signal(String::new);
     // Who the author filter is pinned to, for the chip. Held beside `filters.author_id` rather
     // than derived from it because the id is what the query needs and a name is what the user
     // recognises, and the rows the list comes back with are the wrong place to look one up: a
-    // filter that matched nothing would leave the chip with no name to draw.
+    // filter that matched nothing would leave the chip with no name to draw. Persisted as the
+    // reduced [`crate::browser_store::PinnedAuthor`] — the chip draws the name and the handle,
+    // the query carries the id, and the RPC's similarity score is not drawn, so it is not
+    // carried.
     let mut pinned = use_signal(|| None::<profile::AuthorSearchResult>);
     // Which of the three views is showing. A signal rather than a `SearchFilters` field because
     // neither of the other two is a filter over the public rows — each is a different list, and
     // both can hold a build the search never returns: a favourite may have gone unlisted, and a
     // vault row may be private, which is a visibility the public query is defined to exclude.
+    // Persisted as a token: a tab the user selected is an option like any filter, and a save
+    // that remembered "AFK farming" but forgot "My builds" would be the same reset in a
+    // smaller hat.
     let mut view = use_signal(|| initial);
     // Whether the tag chips are showing. Collapsed by default: thirty chips above the results
     // would push the builds themselves off the first screen, and most searches do not filter on
     // a tag at all. The ACTIVE ones stay visible when collapsed, so the disclosure never hides
-    // state — only the menu of choices.
+    // state — only the menu of choices. Persisted with the rest, so the picker opens the way
+    // it was left.
     let mut tags_open = use_signal(|| false);
+
+    // The persisted state, read once at mount and applied to the signals above. The first
+    // search waits for this to land (the `restored` gate in `result` below): a
+    // default-filtered request sent before the answer to "where did the user leave this"
+    // would flash the unfiltered results, and it is one the user never asked for. A
+    // missing or corrupt save sets nothing and flips the gate — the browser then opens on
+    // `initial` with fresh filters, which is what a fresh install has.
+    let restored = use_signal(|| false);
+    use_future(move || async move {
+        // `Signal::set` takes `&mut self` in this dioxus, and a move capture of a
+        // non-`mut` binding is immutable — the shadow is the same one the handlers below take.
+        let mut view = view;
+        let mut query_input = query_input;
+        let mut filters = filters;
+        let mut pinned = pinned;
+        let mut tags_open = tags_open;
+        let mut restored = restored;
+        if let Some(saved) = crate::browser_store::load().await {
+            // "My builds…" names its tab, so it wins over the save; every other door reopens
+            // the tab the user left.
+            if initial != BrowserView::Mine {
+                if let Some(tab) = view_from_token(&saved.view) {
+                    view.set(tab);
+                }
+            }
+            query_input.set(saved.query);
+            filters.set(saved.filters);
+            pinned.set(saved.pinned.map(pinned_to_result));
+            tags_open.set(saved.tags_open);
+        }
+        restored.set(true);
+    });
+
+    // The funnel every state mutation in this modal funnels through: read the live state and
+    // persist it. Every capture is a `Copy` signal, so the closure is `Copy` and the nine
+    // handlers below each hold one — the plain-closure shape [`VaultPanel`]'s `run` reaches
+    // for a `Callback` because its captures are not `Copy`, and this one's are. A click that
+    // beats the `use_future` read to the write races it the way the `ui_scale` default races
+    // the persisted value: the window is one `eval` round trip wide, and accepted.
+    let save_state = move || {
+        let state = crate::browser_store::BrowserState {
+            view: view_token(view()).to_string(),
+            query: query_input.read().clone(),
+            filters: filters.read().clone(),
+            pinned: pinned.read().as_ref().map(pinned_from_result),
+            tags_open: tags_open(),
+        };
+        crate::browser_store::persist(&state);
+    };
 
     // The favourites grid. Keyed on the view flag, so entering the tab re-reads the local list
     // and re-fetches; a star toggled WHILE the tab is open deliberately does not re-run it, and
@@ -168,10 +240,17 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
 
     let result = use_resource(move || {
         let account = account.clone();
+        let ready = restored();
         let filters = filters.read().clone();
         async move {
+            // `Ok(None)` until the persisted state has landed (the `restored` gate): the
+            // modal draws its search spinner on it, and the first REAL search carries the
+            // restored filters rather than the defaults they replace.
+            if !ready {
+                return Ok(None);
+            }
             let cloud = account.prepared().await?;
-            shared_builds::search(&cloud, &filters).await
+            shared_builds::search(&cloud, &filters).await.map(Some)
         }
     });
 
@@ -206,6 +285,8 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
         let mut next = filters.write();
         next.query = query;
         next.page = 1;
+        drop(next);
+        save_state();
     };
     let set_archetype = move |value: String| {
         let mut filters = filters;
@@ -214,6 +295,8 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
         next.primary_set = None;
         next.secondary_set = None;
         next.page = 1;
+        drop(next);
+        save_state();
     };
     let set_picker = move |filter: Picker, value: String| {
         let mut filters = filters;
@@ -230,11 +313,15 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
             }
         }
         next.page = 1;
+        drop(next);
+        save_state();
     };
     let turn_page = move |delta: isize| {
         let mut filters = filters;
         let mut next = filters.write();
         next.page = next.page.saturating_add_signed(delta).max(1);
+        drop(next);
+        save_state();
     };
     // Tags accumulate rather than replace: each one narrows the list further (the filter is
     // conjunctive — see `SearchFilters::tags`), so the control cannot be the same shape as the
@@ -259,6 +346,8 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
             None => next.tags.push(tag.to_string()),
         }
         next.page = 1;
+        drop(next);
+        save_state();
     };
 
     let select_class = "sb-select";
@@ -285,7 +374,10 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                             key: "{label}",
                             class: if view() == option { "seg active" } else { "seg" },
                             r#type: "button",
-                            onclick: move |_| view.set(option),
+                            onclick: move |_| {
+                                view.set(option);
+                                save_state();
+                            },
                             "{label}"
                         }
                     }
@@ -348,7 +440,10 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                         button {
                             class: if tags_open() || !active_tags.is_empty() { "seg active" } else { "seg" },
                             r#type: "button",
-                            onclick: move |_| tags_open.toggle(),
+                            onclick: move |_| {
+                                tags_open.toggle();
+                                save_state();
+                            },
                             if active_tags.is_empty() {
                                 "Tags ▾"
                             } else {
@@ -424,6 +519,7 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                                     next.page = 1;
                                     drop(next);
                                     pinned.set(Some(author));
+                                    save_state();
                                 },
                             }
                         },
@@ -460,6 +556,7 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                                             next.page = 1;
                                             drop(next);
                                             pinned.set(None);
+                                            save_state();
                                         },
                                         "Clear"
                                     }
@@ -472,7 +569,11 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                         Some(Err(error)) => rsx! {
                             div { class: "load-state error", "{error}" }
                         },
-                        Some(Ok(found)) => {
+                        // The `restored` gate: the persisted state has not landed yet, so no
+                        // search has run with the filters it carries. The spinner, not a
+                        // default-filtered grid, is what the user sees in the meantime.
+                        Some(Ok(None)) => rsx! { div { class: "load-state", "Searching builds…" } },
+                        Some(Ok(Some(found))) => {
                             if found.builds.is_empty() {
                                 rsx! {
                                     div { class: "empty-state",
@@ -1316,6 +1417,55 @@ fn build_word(count: i64) -> &'static str {
         "build"
     } else {
         "builds"
+    }
+}
+
+/// The browser's tab, as the persisted save spells it. One spelling, used by the tab buttons,
+/// the save and the validation, so a rename of the enum cannot desynchronise the three
+/// ([`crate::browser_store::view`]).
+fn view_token(view: BrowserView) -> &'static str {
+    match view {
+        BrowserView::All => crate::browser_store::view::ALL,
+        BrowserView::Favourites => crate::browser_store::view::FAVOURITES,
+        BrowserView::Mine => crate::browser_store::view::MINE,
+    }
+}
+
+/// The tab a persisted state names, or `None` for a token this build does not draw. Unreachable
+/// after [`crate::browser_store::validate`] has passed — the restore arm keeps the `if let`
+/// anyway, because a total mapping over a validated value does not need the panic to be safe.
+fn view_from_token(token: &str) -> Option<BrowserView> {
+    match token {
+        crate::browser_store::view::ALL => Some(BrowserView::All),
+        crate::browser_store::view::FAVOURITES => Some(BrowserView::Favourites),
+        crate::browser_store::view::MINE => Some(BrowserView::Mine),
+        _ => None,
+    }
+}
+
+/// The pin's stored half, from the RPC row. `sim` is not drawn anywhere in the app, so the
+/// save does not carry it — a score that is "carried because it is in the row, not drawn" has
+/// nowhere to go in a save, and drawing it on restore would be the lie a zero would not be.
+fn pinned_from_result(author: &profile::AuthorSearchResult) -> crate::browser_store::PinnedAuthor {
+    crate::browser_store::PinnedAuthor {
+        user_id: author.user_id.clone(),
+        handle: author.handle.clone(),
+        display_name: author.display_name.clone(),
+        avatar_url: author.avatar_url.clone(),
+        build_count: author.build_count,
+    }
+}
+
+/// The pin back to the RPC row, for the chip and the `author_id` filter. `sim` reads back as
+/// zero for the reason above: nothing in the app reads it, so nothing notices.
+fn pinned_to_result(p: crate::browser_store::PinnedAuthor) -> profile::AuthorSearchResult {
+    profile::AuthorSearchResult {
+        user_id: p.user_id,
+        handle: p.handle,
+        display_name: p.display_name,
+        avatar_url: p.avatar_url,
+        build_count: p.build_count,
+        sim: 0.0,
     }
 }
 
