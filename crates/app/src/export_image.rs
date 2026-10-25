@@ -1244,7 +1244,13 @@ fn draw_stat_section(
 ) {
     let rows: Vec<_> = stat_registry::in_section(*section)
         .filter(|stat| visibility.shows(stat.id))
-        .map(|stat| (stat.label, stat.resolve(totals)))
+        // The plain value, without a per-second rate: the card truncates the label to fit the
+        // value, and "+371.2% · 61.32 HP/s" cut "Regeneration" to "Regen...".
+        .map(|stat| {
+            let mut resolved = stat.resolve(totals);
+            resolved.text = stat.format.render((stat.read)(totals));
+            (stat.label, resolved)
+        })
         .collect();
 
     let height = stat_card_height(rows.len(), scale);

@@ -445,6 +445,26 @@
       "id": "critical-strikes-proc-chance",
       "date": "2026-10-20",
       "preview": "The Critical Strikes and Superior Critical Strikes +Critical Hit procs now show "
+    },
+    {
+      "id": "my-builds-sort",
+      "date": "2026-10-25",
+      "preview": "My Builds can now be sorted: last edited (the default), newest, oldest, or by na"
+    },
+    {
+      "id": "browser-keeps-filters",
+      "date": "2026-10-25",
+      "preview": "The build browser now remembers your search, filters, tags and pinned author."
+    },
+    {
+      "id": "defense-debuff-resistance-enhancement",
+      "date": "2026-10-24",
+      "preview": "Defense Debuff Resistance no longer grows when you slot Defense enhancement into"
+    },
+    {
+      "id": "paste-mids-mxd",
+      "date": "2026-10-20",
+      "preview": "Pasting an older Mids build post (.mxd) into Paste a build now opens it. Paste t"
     }
   ]
 }
