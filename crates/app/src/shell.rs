@@ -897,12 +897,15 @@ pub fn Shell() -> Element {
     use_future(move || async move {
         let mut defaults = picker_defaults;
         let mut memory = picker_memory;
-        if let Some((io_level, attuned, boost, places, select_mode)) = picker_store::load().await {
+        if let Some((io_level, attuned, boost, places, select_mode, filter_to_piece)) =
+            picker_store::load().await
+        {
             defaults.io_level.set(io_level);
             defaults.attuned.set(attuned);
             defaults.boost.set(boost);
             memory.set(places);
             defaults.select_mode.set(select_mode);
+            defaults.filter_to_piece.set(filter_to_piece);
         }
         picker_restored.set(true);
     });
@@ -915,10 +918,18 @@ pub fn Shell() -> Element {
         let boost = *picker_defaults.boost.read();
         let memory = picker_memory.read().clone();
         let select_mode = *picker_defaults.select_mode.read();
+        let filter_to_piece = *picker_defaults.filter_to_piece.read();
         if !*picker_restored.read() {
             return;
         }
-        picker_store::persist(io_level, attuned, boost, memory, select_mode);
+        picker_store::persist(
+            io_level,
+            attuned,
+            boost,
+            memory,
+            select_mode,
+            filter_to_piece,
+        );
     });
 
     // Boot pre-peek (beta `bootServerId`): read the persisted envelope, then aim the
@@ -982,6 +993,10 @@ pub fn Shell() -> Element {
         // loading out of the undo history.
         crate::inherents::sync(&mut restored, database);
         crate::granted_powers::sync(&mut restored, database);
+        // A switch from another fork swaps in a different build; the first restore does not.
+        if loaded_for.peek().is_some() {
+            crate::cloud::owner_store::clear_quick_share();
+        }
         session.load(restored);
         loaded_for.set(Some(target));
     });

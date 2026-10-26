@@ -373,6 +373,10 @@ pub async fn save(
 /// Mirrors the beta's `quickShareBuild` including the order of its fallbacks, which is the part
 /// worth reading twice:
 ///
+/// The cache is one row, and it belongs to the build in the planner: loading or starting a
+/// different build forgets it (`owner_store::clear_quick_share`), so that build's copy makes a
+/// new row instead of rewriting the link already sent for the last one.
+///
 /// 1. An unchanged build whose cached row was rendered under the current card template returns
 ///    the cached URL with **no network call**. That is what makes the button instant on a second
 ///    press, and what stops a re-copy burning a rate-limit slot.

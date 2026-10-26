@@ -3676,11 +3676,16 @@ fn EnhancementPickerModal(
     // a starting value, and subscribing to the memory here would re-run the modal every time it
     // records where the user just navigated to.
     let remembered = memory.peek().place(&address).cloned();
-    let opening = crate::picker_memory::opening_location(
+    let mut opening = crate::picker_memory::opening_location(
         slots.get(slot_index as usize).and_then(Option::as_ref),
         database.io_sets.as_ref(),
         remembered.as_ref(),
     );
+    // "Filter to piece" off: still the piece's tab and its set scrolled into view, but every set.
+    if opening.jump_to_set.is_some() && !*defaults.filter_to_piece.peek() {
+        opening.place.set_type = None;
+        opening.place.rarity = None;
+    }
 
     let mut active_tab = use_signal(|| PickerTab::from_token(&opening.place.tab));
     // Sidebar slot-category facet for the IO Sets tab; `None` = every eligible set.
@@ -3703,6 +3708,7 @@ fn EnhancementPickerModal(
     // and the NEXT plain click would otherwise place and close, throwing the marks away with no
     // sign they had been there. Derived rather than stored, so no handler can forget to update it.
     let mut sticky = defaults.select_mode;
+    let mut filter_to_piece = defaults.filter_to_piece;
     let mut queue = use_signal(Vec::<crate::picker_queue::QueuedPick>::new);
     // Shift held: a click marks rather than slots, so the toggle shows ticked while it is down.
     // Read back off every pointer move as well as the key events, because a Shift released in
@@ -3982,6 +3988,20 @@ fn EnhancementPickerModal(
                                 },
                             }
                             span { "Select" }
+                        }
+                        label {
+                            class: if filter_to_piece() { "picker-toggle picker-toggle-on" } else { "picker-toggle" },
+                            title: "Changing a slotted set piece opens on its category and rarity. Untick to \
+                                    see every set instead. Stays as you leave it.",
+                            input {
+                                r#type: "checkbox",
+                                checked: filter_to_piece(),
+                                onchange: move |_| {
+                                    let on = *filter_to_piece.peek();
+                                    filter_to_piece.set(!on);
+                                },
+                            }
+                            span { "Filter to piece" }
                         }
                     }
                 }

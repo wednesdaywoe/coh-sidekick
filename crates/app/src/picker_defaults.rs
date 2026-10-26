@@ -136,6 +136,9 @@ pub struct PickerDefaults {
     /// one visit: someone filling a build marks across power after power, and a toggle that
     /// reset on every open had to be ticked again each time.
     pub select_mode: Signal<bool>,
+    /// Whether changing a slotted set piece opens the list narrowed to that piece's category
+    /// and rarity. On by default; someone shopping for a replacement turns it off.
+    pub filter_to_piece: Signal<bool>,
 }
 
 impl PickerDefaults {
@@ -148,6 +151,7 @@ impl PickerDefaults {
             boost: Signal::new(0),
             relative_level: Signal::new(0),
             select_mode: Signal::new(false),
+            filter_to_piece: Signal::new(true),
         }
     }
 

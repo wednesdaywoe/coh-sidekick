@@ -297,6 +297,8 @@ pub fn adopt_as(
             crate::granted_powers::sync(&mut build, database);
             let picks = pick_count(&build);
             session.commit(move |working| *working = build);
+            // A different build now: its short link must not update the last one's row.
+            crate::cloud::owner_store::clear_quick_share();
             report.set(Some(BuildIoOutcome::Opened {
                 file_name: file_name.to_string(),
                 picks,
@@ -440,6 +442,7 @@ fn NewBuildEntry(dataset: Signal<DatasetId>) -> Element {
                         onclick: move |_| {
                             let empty = CharacterState::empty(dataset());
                             session.commit(move |working| *working = empty);
+                            crate::cloud::owner_store::clear_quick_share();
                             tracked.clear();
                             confirming.set(false);
                             menu.set(false);
