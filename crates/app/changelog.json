@@ -3,7 +3,8 @@
     "date": "2026-10-26",
     "items": [
       { "id": "short-link-overwrite", "type": "fix", "message": "Copy short link no longer changes a link you already sent. Copying a link for a different build now makes a new link instead of replacing the last one" },
-      { "id": "picker-filter-to-piece", "type": "feat", "message": "The enhancement picker has a new Filter to piece checkbox. Untick it to see every set when you click an enhancement that's already slotted, instead of only that piece's category and rarity" }
+      { "id": "picker-filter-to-piece", "type": "feat", "message": "The enhancement picker has a new Filter to piece checkbox. Untick it to see every set when you click an enhancement that's already slotted, instead of only that piece's category and rarity" },
+      { "id": "powers-in-level-order", "type": "fix", "message": "Your chosen powers now list in the order you took them, by level. A power added later no longer drops to the bottom of its group" }
     ]
   },
 

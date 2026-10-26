@@ -465,6 +465,11 @@
       "id": "paste-mids-mxd",
       "date": "2026-10-20",
       "preview": "Pasting an older Mids build post (.mxd) into Paste a build now opens it. Paste t"
+    },
+    {
+      "id": "regen-recovery-per-second",
+      "date": "2026-10-25",
+      "preview": "Regeneration and Recovery now also show their per-second rate: HP/s for Regenera"
     }
   ]
 }

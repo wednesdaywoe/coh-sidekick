@@ -2434,7 +2434,7 @@ fn PickedPowersGroupPrimary(database: Db) -> Element {
 
     rsx! {
         PowerGroup { title: "Primary".to_string(), count: primary.powers.len(),
-            for (i, power) in primary.powers.iter().enumerate() {
+            for (i, power) in in_level_order(&primary.powers).into_iter().enumerate() {
                 PickedPowerCard {
                     key: "primary-{i}",
                     database: db.clone(),
@@ -2444,6 +2444,14 @@ fn PickedPowersGroupPrimary(database: Db) -> Element {
             }
         }
     }
+}
+
+/// A group's picks in the order they were taken, whatever order they were added in. Grants
+/// (level 0) stay after the picks, and the sort is stable, so ties keep the build's order.
+fn in_level_order(powers: &[coh_data::SelectedPower]) -> Vec<&coh_data::SelectedPower> {
+    let mut ordered: Vec<&coh_data::SelectedPower> = powers.iter().collect();
+    ordered.sort_by_key(|power| (power.is_locked, power.level));
+    ordered
 }
 
 /// The set a pick belongs to: its own, falling back to the list it sits in.
@@ -2470,7 +2478,7 @@ fn PickedPowersGroupSecondary(database: Db) -> Element {
 
     rsx! {
         PowerGroup { title: "Secondary".to_string(), count: secondary.powers.len(),
-            for (i, power) in secondary.powers.iter().enumerate() {
+            for (i, power) in in_level_order(&secondary.powers).into_iter().enumerate() {
                 PickedPowerCard {
                     key: "secondary-{i}",
                     database: db.clone(),
@@ -2491,7 +2499,7 @@ fn PickedPowersGroupPool(database: Db, pool: coh_data::PoolSelection) -> Element
 
     rsx! {
         PowerGroup { title: pool_name, count: pool.powers.len(),
-            for (i, power) in pool.powers.iter().enumerate() {
+            for (i, power) in in_level_order(&pool.powers).into_iter().enumerate() {
                 PickedPowerCard {
                     key: "pool-power-{i}",
                     database: db.clone(),
@@ -2547,7 +2555,7 @@ fn PickedPowersGroupEpic(database: Db, pool: coh_data::PoolSelection) -> Element
 
     rsx! {
         PowerGroup { title: pool_name, count: pool.powers.len(),
-            for (i, power) in pool.powers.iter().enumerate() {
+            for (i, power) in in_level_order(&pool.powers).into_iter().enumerate() {
                 PickedPowerCard {
                     key: "epic-power-{i}",
                     database: db.clone(),
@@ -6120,6 +6128,40 @@ fn remove_slot_at(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// A pick added late still reads at its level, not at the bottom: Confuse at 6 and Mass
+    /// Hypnosis at 8 were listed after Mass Confusion at 32 (reported 2026-10-26).
+    #[test]
+    fn picks_list_by_level_with_grants_after() {
+        let set = "controller/mind-control";
+        let mut grant = coh_data::SelectedPower::picked("Granted", set, 0);
+        grant.is_locked = true;
+        let powers: Vec<coh_data::SelectedPower> = [("Mesmerize", 1), ("Total_Domination", 18)]
+            .into_iter()
+            .map(|(name, level)| coh_data::SelectedPower::picked(name, set, level))
+            .chain([grant])
+            .chain(
+                [("Mass_Confusion", 32), ("Confuse", 6), ("Mass_Hypnosis", 8)]
+                    .into_iter()
+                    .map(|(name, level)| coh_data::SelectedPower::picked(name, set, level)),
+            )
+            .collect();
+        let names: Vec<&str> = in_level_order(&powers)
+            .iter()
+            .map(|power| power.internal_name.as_str())
+            .collect();
+        assert_eq!(
+            names,
+            [
+                "Mesmerize",
+                "Confuse",
+                "Mass_Hypnosis",
+                "Total_Domination",
+                "Mass_Confusion",
+                "Granted"
+            ]
+        );
+    }
 
     fn verdict(gate: &PickGate, level_up_mode: bool) -> RowAction {
         row_verdict(RowInputs {
