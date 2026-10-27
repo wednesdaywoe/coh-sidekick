@@ -146,9 +146,9 @@ fn round6(x: f64) -> f64 {
 /// `mapAlphaEffectsToEnhancementBonuses`. Two keys are renamed to the aggregation's aspect
 /// vocabulary: `enduranceReduction → endurance` and `enduranceModification → enduranceMod`
 /// (writing the long form dropped the bonus silently in the beta's gate). The movement keys
-/// (`runSpeed`/`jumpSpeed`/`flySpeed`) are carried verbatim as the beta writes them. They do
-/// NOT match the aggregation's `run`/`fly`/`jump` vocabulary, so a gated power never accepts
-/// them; inert in practice (no Alpha buffs movement), preserved for a faithful mapping.
+/// are renamed too, `runSpeed`/`jumpSpeed`/`flySpeed → run`/`jump`/`fly`: under the beta's
+/// long names no travel power accepted them, so Agility, Musculature, Nerve and Spiritual
+/// Radial never moved a speed. One `jump` aspect covers both jump speed and jump height.
 fn alpha_effects_to_bonuses(alpha: &AlphaEffects) -> EnhancementBonuses {
     let mut pairs: Vec<(&'static str, f64)> = Vec::new();
     let mut put = |key: &'static str, value: Option<f64>| {
@@ -176,9 +176,9 @@ fn alpha_effects_to_bonuses(alpha: &AlphaEffects) -> EnhancementBonuses {
     put("defenseDebuff", alpha.defense_debuff);
     put("tohit", alpha.to_hit_buff);
     put("taunt", alpha.taunt);
-    put("runSpeed", alpha.run_speed);
-    put("jumpSpeed", alpha.jump_speed);
-    put("flySpeed", alpha.fly_speed);
+    put("run", alpha.run_speed);
+    put("jump", alpha.jump_speed);
+    put("fly", alpha.fly_speed);
     put("absorb", alpha.absorb);
     EnhancementBonuses::from_aspect_values(pairs)
 }
