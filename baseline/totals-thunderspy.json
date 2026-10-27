@@ -3,8 +3,8 @@
   "dataset": "thunderspy",
   "inputs": {
     "bundle": "contract/thunderspy/bundle.json.gz",
-    "bundleFnv1a64": "e1b9ed4053da12ba",
-    "bundleBytes": 1620923,
+    "bundleFnv1a64": "c310ec0b65d5cfa2",
+    "bundleBytes": 1622671,
     "builds": "fixtures/totals/thunderspy/synthetic.jsonl",
     "buildsFnv1a64": "16e01d3a8859956a",
     "buildsBytes": 124215
@@ -162,6 +162,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -332,6 +342,16 @@
         "defense_ceiling": 225.05,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -502,6 +522,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -672,6 +702,16 @@
         "defense_ceiling": 225.05,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -842,6 +882,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -1012,6 +1062,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 47.5,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -1182,6 +1242,16 @@
         "defense_ceiling": 225.05,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -1352,6 +1422,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -1522,6 +1602,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -1692,6 +1782,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -1862,6 +1962,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -2032,6 +2142,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -2202,6 +2322,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -2372,6 +2502,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 47.5,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -2542,6 +2682,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -2712,6 +2862,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 19.329545454545453,
           "cap": 92.49545454545455
@@ -2882,6 +3042,16 @@
         "defense_ceiling": 225.05,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 4.295454545454546,
           "cap": 92.49545454545455
@@ -3035,8 +3205,8 @@
         "debuff_resist_slow": 0.0,
         "debuff_resist_defense": 0.0,
         "debuff_resist_recharge": 0.0,
-        "debuff_resist_endurance": 138.39999437332153,
-        "debuff_resist_recovery": 138.39999437332153,
+        "debuff_resist_endurance": 95.0,
+        "debuff_resist_recovery": 95.0,
         "debuff_resist_to_hit": 0.0,
         "debuff_resist_regeneration": 0.0,
         "debuff_resist_perception": 0.0,
@@ -3052,6 +3222,16 @@
         "defense_ceiling": 225.05,
         "max_endurance_absolute": 115.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -3222,6 +3402,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -3392,6 +3582,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -3562,6 +3762,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -3732,6 +3942,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 39.375,
           "cap": 92.49545454545455
@@ -3902,6 +4122,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -4072,6 +4302,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -4242,6 +4482,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -4412,6 +4662,16 @@
         "defense_ceiling": 225.05,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -4582,6 +4842,16 @@
         "defense_ceiling": 225.05,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -4752,6 +5022,16 @@
         "defense_ceiling": 200.38,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -4922,6 +5202,16 @@
         "defense_ceiling": 225.05,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -5092,6 +5382,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -5262,6 +5562,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -5432,6 +5742,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -5602,6 +5922,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455
@@ -5772,6 +6102,16 @@
         "defense_ceiling": 175.0,
         "max_endurance_absolute": 100.0,
         "max_endurance_cap": 365.0,
+        "debuff_resist_cap": {
+          "defense": 95.0,
+          "toHit": 95.0,
+          "endurance": 95.0,
+          "recovery": 95.0,
+          "regeneration": 95.0,
+          "slow": 100.0,
+          "recharge": 100.0,
+          "perception": 100.0
+        },
         "run_speed": {
           "value": 14.318181818181818,
           "cap": 92.49545454545455

@@ -41,7 +41,7 @@
 use crate::movement::{self, MovementCapBumps, MovementStat, ProjectedMovement};
 use crate::purple_patch::{self, ContentMode};
 use crate::totals::{CalcError, GlobalBonuses};
-use coh_data::{ArchetypeCaps, DatasetId, PurplePatch};
+use coh_data::{ArchetypeCaps, DebuffResist, PurplePatch};
 
 /// The projected, capped display stats — the beta `CharacterStats`
 /// (`src/utils/calculations/stats.ts:14`) in Rust snake_case, plus the two finalize-only
@@ -168,13 +168,12 @@ pub struct CharacterStats {
     pub max_endurance_absolute: f64,
     /// The per-level endurance-pool ceiling [`Self::max_endurance_absolute`] was clamped to.
     pub max_endurance_cap: f64,
-    /// The debuff-resistance ceiling (percent) the five scaled rows were clamped to
-    /// (DDR-CAP-1) — see [`debuff_resistance_cap`]. Carried for the same reason
-    /// [`Self::resistance_cap`] is: the clamp happens here, so a clamped 95 is otherwise
-    /// indistinguishable from a build that happens to have exactly 95. `0.0` reads as
-    /// "unknown", never as "capped at zero". The movement and recharge rows have their own
-    /// flat 100 ceiling, which needs no carrying because it is a constant.
-    pub debuff_resist_cap: f64,
+    /// The ceiling (percent) each debuff-resistance row was clamped to (DDR-CAP-1), from the
+    /// archetype's ResistanceMaxTable at this level. Carried for the same reason
+    /// [`Self::resistance_cap`] is: a clamped 95 is otherwise indistinguishable from a build
+    /// that happens to have exactly 95. All `0.0` ("unknown") without archetype caps, when
+    /// every row stays raw.
+    pub debuff_resist_cap: DebuffResist<f64>,
     /// The travel speeds the build actually reaches, in the units the game shows them in — mph
     /// for the three speeds, feet for jump height — each already clamped to its ceiling and
     /// carrying that ceiling, for the same reason [`Self::resistance_cap`] travels with `res_*`.
@@ -412,51 +411,16 @@ pub fn absolute_max_hp(caps: &ArchetypeCaps, max_hp_buff_pct: f64, level: i32) -
     }
 }
 
-/// The flat ceiling on the slow and recharge debuff-resistance rows (DDR-CAP-1): the
-/// Homecoming wiki's "The maximum debuff resistance against movement and recharge debuffs is
-/// 100%. A character with 100% slow resistance is effectively immune to slows", and the flat
-/// 100 the original Paragon wiki and Rebirth's wiki both publish for every debuff resistance
-/// but defense and to-hit. Constant across forks and levels, so it needs no carrying.
-pub const DEBUFF_RESIST_FLAT_CAP: f64 = 100.0;
-
-/// The ceiling on the five SCALED debuff-resistance rows — defense, endurance, recovery,
-/// regeneration and to hit (DDR-CAP-1).
-///
-/// **Homecoming scales it with level**: 20% at level 1, +1.64 points per level, 95% from level
-/// 47. Source: Unofficial Homecoming Wiki, `Limits` ▸ Debuff Resistance ▸ Maximum, which gives
-/// 20.0 / 26.6 / 34.8 / 43.0 / 51.2 / 59.4 / 67.6 / 75.8 / 84.0 / 92.2 / 95.0 at levels
-/// 1 / 5 / 10 / 15 / 20 / 25 / 30 / 35 / 40 / 45 / 47. `20 + (level − 1) × 1.64` reproduces
-/// every one of those rows to the tenth of a point, and `20 + 46 × 1.64 = 95.44` is the first
-/// level that passes 95 — which is exactly where the wiki says the curve stops. The slope is
-/// not fitted to a subset: 1.64 is the only hundredth that satisfies all eleven rows.
-///
-/// **The other three forks keep the flat 95** the original Paragon wiki publishes ("Defense
-/// 95%, ToHit 95%") and Rebirth's own wiki repeats. That is a per-fork answer, not a curve
-/// left unported: the scaling is a Homecoming change, and the old wiki's flat 95 is that
-/// curve's level-47 value — which is why the old wiki is not wrong, merely level-50-only.
-/// Owner's call 2026-10-24.
-pub fn debuff_resistance_cap(dataset: DatasetId, level: i32) -> f64 {
-    match dataset {
-        DatasetId::Homecoming => (20.0 + (i64::from(level) - 1) as f64 * 1.64).min(95.0),
-        DatasetId::Rebirth | DatasetId::Brainstorm | DatasetId::Thunderspy => 95.0,
-    }
-}
-
 /// `convertToCharacterStats` + D4 caps. Projects `bonuses` into [`CharacterStats`]: straight
 /// copies, the combine-by-`max` pairs, the resistance-cap and absolute-HP clamps, and the
 /// defense-softcap threshold. `caps`/`defense_softcap` are `Option` so a hand-built db
 /// without cap data fails loud (a [`CalcError`] per missing input) instead of clamping to a
 /// fabricated ceiling; the returned errors are appended to the accumulator by the caller.
-///
-/// `dataset` selects the debuff-resistance ceiling ([`debuff_resistance_cap`]), which is the
-/// one cap here that comes from the FORK rather than from the archetype — so unlike every
-/// other clamp in this function it applies even when `caps` is `None`.
 pub fn convert_to_character_stats(
     bonuses: &GlobalBonuses,
     caps: Option<&ArchetypeCaps>,
     defense_softcap: Option<f64>,
     level: i32,
-    dataset: DatasetId,
     movement_cap_bumps: &MovementCapBumps,
 ) -> (CharacterStats, Vec<CalcError>) {
     let mut errors = Vec::new();
@@ -528,7 +492,7 @@ pub fn convert_to_character_stats(
         defense_ceiling: 0.0,
         max_endurance_absolute: 0.0,
         max_endurance_cap: 0.0,
-        debuff_resist_cap: 0.0,
+        debuff_resist_cap: DebuffResist::default(),
         // Projected below; without AT caps there is no base scale to project FROM, so these stay
         // at their zero default rather than reporting a speed derived from a fabricated base.
         run_speed: ProjectedMovement::default(),
@@ -656,6 +620,24 @@ pub fn convert_to_character_stats(
                 stats.max_endurance_cap = pool_cap;
                 stats.max_endurance_absolute = (base_pool + bonuses.max_endurance).min(pool_cap);
             }
+            // DDR-CAP-1: each debuff-resistance row clamps to the class's own ResistanceMaxTable
+            // row at this level — the same curve on every fork, 20% at level 1 to 95% at 47,
+            // but endurance gets there at 39 and control-AT regeneration stops at 47.5%.
+            if let Some(ceilings) = caps.debuff_resistance_cap_table.at_level(level) {
+                stats.debuff_resist_cap = ceilings;
+                for (ddr, ceiling) in [
+                    (&mut stats.debuff_resist_defense, ceilings.defense),
+                    (&mut stats.debuff_resist_to_hit, ceilings.to_hit),
+                    (&mut stats.debuff_resist_endurance, ceilings.endurance),
+                    (&mut stats.debuff_resist_recovery, ceilings.recovery),
+                    (&mut stats.debuff_resist_regeneration, ceilings.regeneration),
+                    (&mut stats.debuff_resist_slow, ceilings.slow),
+                    (&mut stats.debuff_resist_recharge, ceilings.recharge),
+                    (&mut stats.debuff_resist_perception, ceilings.perception),
+                ] {
+                    *ddr = ddr.min(ceiling);
+                }
+            }
         }
         // No caps: leave resistance raw and absolute HP 0 rather than fabricating a
         // baseline (Rule 1). Deliberately NOT an error here — this function cannot tell a
@@ -663,30 +645,6 @@ pub fn convert_to_character_stats(
         // are the right answers) from an archetype the dataset has no caps for. Only the
         // caller knows which, so `recalculate` raises it there.
         None => {}
-    }
-
-    // DDR-CAP-1: debuff resistance is capped. Deliberately OUTSIDE the `caps` match above —
-    // this ceiling comes from the dataset, not the archetype, so a build with no archetype
-    // picked yet is capped exactly as a finished one is, and there is no "unknown" state to
-    // carry (both branches are constants the wiki states outright).
-    //
-    // Five rows take the level-scaled ceiling: defense, endurance, recovery, regeneration and
-    // to hit. Slow and recharge take the flat 100. Perception, accuracy and range are left
-    // RAW on every fork — the wiki page lists a maximum for none of the three, and a ceiling
-    // invented to fill a row is worse than a row with no ceiling, because it reads as sourced.
-    let scaled_cap = debuff_resistance_cap(dataset, level);
-    stats.debuff_resist_cap = scaled_cap;
-    for ddr in [
-        &mut stats.debuff_resist_defense,
-        &mut stats.debuff_resist_endurance,
-        &mut stats.debuff_resist_recovery,
-        &mut stats.debuff_resist_regeneration,
-        &mut stats.debuff_resist_to_hit,
-    ] {
-        *ddr = ddr.min(scaled_cap);
-    }
-    for ddr in [&mut stats.debuff_resist_slow, &mut stats.debuff_resist_recharge] {
-        *ddr = ddr.min(DEBUFF_RESIST_FLAT_CAP);
     }
 
     match defense_softcap {
@@ -724,7 +682,6 @@ mod tests {
             Some(&caps),
             Some(45.0),
             50,
-            DatasetId::Homecoming,
             &MovementCapBumps::default(),
         );
 
@@ -736,144 +693,97 @@ mod tests {
         assert_eq!(stats.def_fc, 12.0);
     }
 
-    /// Every row of the Homecoming wiki's `Limits` ▸ Debuff Resistance table, verbatim.
-    /// Rounded to the tenth the wiki prints, because the table is published to one decimal
-    /// and the underlying curve is exact.
-    #[test]
-    fn homecoming_debuff_resist_cap_matches_the_wiki_table() {
-        let wiki: &[(i32, f64)] = &[
-            (1, 20.0),
-            (5, 26.6),
-            (10, 34.8),
-            (15, 43.0),
-            (20, 51.2),
-            (25, 59.4),
-            (30, 67.6),
-            (35, 75.8),
-            (40, 84.0),
-            (45, 92.2),
-            (47, 95.0),
-        ];
-        for &(level, published) in wiki {
-            let ours = debuff_resistance_cap(DatasetId::Homecoming, level);
-            assert_eq!(
-                (ours * 10.0).round() / 10.0,
-                published,
-                "level {level}: wiki says {published}, we say {ours}"
-            );
+    /// A per-level table with one distinct value per row: `base + level`, so a test can tell
+    /// which row and which level a ceiling came from.
+    fn ddr_table() -> DebuffResist<Vec<f64>> {
+        let row = |base: f64| {
+            (1..=50)
+                .map(|level| (base + f64::from(level)) / 100.0)
+                .collect()
+        };
+        DebuffResist {
+            defense: row(10.0),
+            to_hit: row(11.0),
+            endurance: row(12.0),
+            recovery: row(13.0),
+            regeneration: row(14.0),
+            slow: row(15.0),
+            recharge: row(16.0),
+            perception: row(17.0),
         }
     }
 
-    /// The curve stops climbing at 47 and never comes back down: 46 is the last level below
-    /// the ceiling, and 50 is still exactly 95.
-    #[test]
-    fn the_scaled_cap_flattens_at_47_and_stays_there() {
-        let below = debuff_resistance_cap(DatasetId::Homecoming, 46);
-        assert!(below < 95.0, "level 46 should still be climbing, got {below}");
-        for level in 47..=60 {
-            assert_eq!(
-                debuff_resistance_cap(DatasetId::Homecoming, level),
-                95.0,
-                "level {level} should sit on the 95 ceiling"
-            );
-        }
+    fn project_ddr(caps: Option<&ArchetypeCaps>, level: i32, value: f64) -> CharacterStats {
+        let bonuses = GlobalBonuses {
+            debuff_resist_defense: value,
+            debuff_resist_to_hit: value,
+            debuff_resist_endurance: value,
+            debuff_resist_recovery: value,
+            debuff_resist_regeneration: value,
+            debuff_resist_slow: value,
+            debuff_resist_recharge: value,
+            debuff_resist_perception: value,
+            ..GlobalBonuses::default()
+        };
+        convert_to_character_stats(
+            &bonuses,
+            caps,
+            Some(45.0),
+            level,
+            &MovementCapBumps::default(),
+        )
+        .0
     }
 
-    /// The other three forks keep the flat 95 the original Paragon wiki publishes. This is a
-    /// per-fork answer, not an unported curve, so it is pinned rather than left to the match
-    /// arm's shape.
+    /// Each row clamps to its own row of the table at the build's level, and carries it.
     #[test]
-    fn the_other_forks_keep_the_flat_ceiling_at_every_level() {
-        for dataset in DatasetId::ALL
-            .into_iter()
-            .filter(|&d| d != DatasetId::Homecoming)
-        {
-            for level in [1, 25, 46, 47, 50] {
-                assert_eq!(
-                    debuff_resistance_cap(dataset, level),
-                    95.0,
-                    "{dataset:?} at level {level} should be the flat 95"
+    fn each_debuff_resistance_row_clamps_to_its_own_ceiling() {
+        let caps = ArchetypeCaps {
+            debuff_resistance_cap_table: ddr_table(),
+            ..ArchetypeCaps::default()
+        };
+        for level in [1, 30, 50] {
+            let stats = project_ddr(Some(&caps), level, 500.0);
+            let lvl = f64::from(level);
+            let shown = [
+                stats.debuff_resist_defense,
+                stats.debuff_resist_to_hit,
+                stats.debuff_resist_endurance,
+                stats.debuff_resist_recovery,
+                stats.debuff_resist_regeneration,
+                stats.debuff_resist_slow,
+                stats.debuff_resist_recharge,
+                stats.debuff_resist_perception,
+            ];
+            for (i, value) in shown.into_iter().enumerate() {
+                let expected = 10.0 + i as f64 + lvl;
+                assert!(
+                    (value - expected).abs() < 1e-9,
+                    "row {i} at level {level}: {value}"
                 );
             }
+            assert!((stats.debuff_resist_cap.endurance - (12.0 + lvl)).abs() < 1e-9);
         }
     }
 
-    /// A level-1 Homecoming build is capped at 20, not 95 — the case a flat constant would
-    /// get wrong by 75 points, and the reason the cap is a function of level at all.
-    #[test]
-    fn a_low_level_homecoming_build_clamps_far_below_95() {
-        let bonuses = GlobalBonuses {
-            debuff_resist_defense: 43.25,
-            ..GlobalBonuses::default()
-        };
-        let (stats, _) = convert_to_character_stats(
-            &bonuses,
-            None,
-            Some(45.0),
-            1,
-            DatasetId::Homecoming,
-            &MovementCapBumps::default(),
-        );
-        assert_eq!(stats.debuff_resist_defense, 20.0, "level 1 caps at 20");
-        assert_eq!(stats.debuff_resist_cap, 20.0, "the ceiling travels with it");
-    }
-
-    /// The five scaled rows clamp, slow and recharge clamp at their own 100, and perception
-    /// stays raw because no wiki page states a ceiling for it.
-    #[test]
-    fn the_five_scaled_rows_clamp_and_the_unlisted_rows_stay_raw() {
-        let bonuses = GlobalBonuses {
-            debuff_resist_defense: 121.1,
-            debuff_resist_endurance: 138.4,
-            debuff_resist_recovery: 138.4,
-            debuff_resist_regeneration: 200.0,
-            debuff_resist_to_hit: 300.0,
-            debuff_resist_slow: 150.0,
-            debuff_resist_recharge: 150.0,
-            debuff_resist_perception: 400.0,
-            ..GlobalBonuses::default()
-        };
-        let (stats, _) = convert_to_character_stats(
-            &bonuses,
-            None,
-            Some(45.0),
-            50,
-            DatasetId::Homecoming,
-            &MovementCapBumps::default(),
-        );
-        assert_eq!(stats.debuff_resist_defense, 95.0);
-        assert_eq!(stats.debuff_resist_endurance, 95.0);
-        assert_eq!(stats.debuff_resist_recovery, 95.0);
-        assert_eq!(stats.debuff_resist_regeneration, 95.0);
-        assert_eq!(stats.debuff_resist_to_hit, 95.0);
-        assert_eq!(
-            stats.debuff_resist_slow, 100.0,
-            "slow takes the flat 100, not the 95"
-        );
-        assert_eq!(stats.debuff_resist_recharge, 100.0);
-        assert_eq!(
-            stats.debuff_resist_perception, 400.0,
-            "perception has no published ceiling and must stay raw"
-        );
-    }
-
-    /// A build under the ceiling is untouched — the clamp must not round anything.
+    /// A build under its ceilings is untouched — the clamp must not round anything.
     #[test]
     fn a_build_under_the_ceiling_is_untouched() {
-        let bonuses = GlobalBonuses {
-            debuff_resist_defense: 43.25,
-            debuff_resist_slow: 56.9,
-            ..GlobalBonuses::default()
+        let caps = ArchetypeCaps {
+            debuff_resistance_cap_table: ddr_table(),
+            ..ArchetypeCaps::default()
         };
-        let (stats, _) = convert_to_character_stats(
-            &bonuses,
-            None,
-            Some(45.0),
-            50,
-            DatasetId::Homecoming,
-            &MovementCapBumps::default(),
-        );
+        let stats = project_ddr(Some(&caps), 50, 43.25);
         assert_eq!(stats.debuff_resist_defense, 43.25);
-        assert_eq!(stats.debuff_resist_slow, 56.9);
+        assert_eq!(stats.debuff_resist_perception, 43.25);
+    }
+
+    /// No archetype caps: every row stays raw and the ceilings read as unknown, the same
+    /// posture as the resistance clamp.
+    #[test]
+    fn without_caps_debuff_resistance_stays_raw() {
+        let stats = project_ddr(None, 50, 138.4);
+        assert_eq!(stats.debuff_resist_endurance, 138.4);
+        assert_eq!(stats.debuff_resist_cap, DebuffResist::default());
     }
 }

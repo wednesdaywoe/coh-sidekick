@@ -62,7 +62,7 @@ pub mod target_classes;
 
 pub use accolades::{AccoladeFaction, AccoladeToggle, ACCOLADE_CATEGORY};
 pub use archetype_stats::{
-    at_level, ArchetypeCaps, ArchetypeStats, MovementAxes, MovementAxisTables,
+    at_level, ArchetypeCaps, ArchetypeStats, DebuffResist, MovementAxes, MovementAxisTables,
 };
 pub use archetypes::{Archetype, ArchetypeInherent, Archetypes};
 pub use at_tables::{AtTables, TableScope};

@@ -221,6 +221,23 @@ _CEILED_ATTRIBS = {
 _DEFENSE_ATTRIBS = ["Ranged", "Melee", "Area", "Smashing", "Lethal", "Fire",
                     "Cold", "Energy", "Negative_Energy", "Psionic", "Toxic"]
 
+# The debuff-resistance ceilings, keyed by the export name each row is written
+# under in `debuff_resistance_cap`. Debuff resistance is a Resistance-aspect mod
+# on the debuffed attribute, so its ceiling is that attribute's
+# ResistanceMaxTable row. Where one planner row stands for several attributes
+# (slow resists all three travel speeds) every listed row must agree, or the
+# export raises. Defense reads the typed slots `_authored_defense_attribs`
+# names, the same way. DDR-CAP-1.
+_DEBUFF_RESIST_ATTRIBS = {
+    "to_hit": ["ToHit"],
+    "endurance": ["Endurance"],
+    "recovery": ["Recovery"],
+    "regeneration": ["Regeneration"],
+    "slow": ["RunningSpeed", "FlyingSpeed", "JumpingSpeed"],
+    "recharge": ["RechargeTime"],
+    "perception": ["PerceptionRadius"],
+}
+
 # The attributes whose BASE is itself a per-level AttribMaxTable row, with the
 # ceiling one table further out in AttribMaxMaxTable — HitPoints' shape, the one
 # `ClampMax` bounds rather than `ClampCur`. Keyed by the export name the base is
@@ -416,6 +433,36 @@ def _defense_floor(name, attrib_min, authored) -> float | None:
     return agreed
 
 
+def _debuff_resistance_caps(name, resistance_max, groups) -> dict | None:
+    """The per-level debuff-resistance ceilings, one row per planner row.
+
+    `groups` maps each export name to `{attrib: struct_index}`; every row in a
+    group must agree. Returns None when any group has no row with a full level
+    run (NPC classes), so a partial set is never exported.
+    """
+    if not resistance_max or not resistance_max[0]:
+        return None
+    table = resistance_max[0]
+    out = {}
+    for key, attribs in groups.items():
+        agreed, agreed_by = None, None
+        for attrib, struct_index in attribs.items():
+            table_index = _table_index(struct_index)
+            if len(table) <= table_index or len(table[table_index]) < _PLAYER_LEVELS:
+                continue
+            row = table[table_index][:_PLAYER_LEVELS]
+            if agreed is None:
+                agreed, agreed_by = row, attrib
+            elif row != agreed:
+                raise ValueError(
+                    f"{name}: debuff-resistance ceiling {attrib} disagrees with "
+                    f"{agreed_by} under {key} — the export must split that row")
+        if agreed is None:
+            return None
+        out[key] = agreed
+    return out
+
+
 def _extract_attribs(name, attrib_min, attrib_base, attrib_max, attrib_max_max,
                      strength_max, resistance_max, strength_min,
                      struct_indices) -> dict:
@@ -451,6 +498,9 @@ def _extract_attribs(name, attrib_min, attrib_base, attrib_max, attrib_max_max,
     between — one per-level ceiling curve and one scalar floor, each proven
     against every typed defense slot the dataset authors (see [`_defense_cap`],
     [`_defense_floor`], [`_authored_defense_attribs`]).
+    debuff_resistance_cap: `{defense, to_hit, endurance, recovery,
+    regeneration, slow, recharge, perception}` per-level ResistanceMaxTable rows
+    (see [`_debuff_resistance_caps`]).
 
     recharge: 0.25 / 5.0 on every player class of all three datasets — the −75%
     recharge-debuff floor and the +400% recharge cap.
@@ -523,6 +573,11 @@ def _extract_attribs(name, attrib_min, attrib_base, attrib_max, attrib_max_max,
             defense_floor = _defense_floor(name, attrib_min, authored)
             if defense_floor is not None:
                 out["defense_floor"] = defense_floor
+        ddr_cap = _debuff_resistance_caps(
+            name, resistance_max,
+            {"defense": authored, **struct_indices["debuff_resistance"]})
+        if ddr_cap is not None:
+            out["debuff_resistance_cap"] = ddr_cap
     return out
 
 
@@ -595,6 +650,10 @@ def _read_class_record(r, flavor: str) -> ClassRecord:
                       for export_name, attrib in _MAX_STYLE_ATTRIBS.items()},
         "defense": {attrib: _attrib_struct_index(flavor, attrib)
                     for attrib in _DEFENSE_ATTRIBS},
+        "debuff_resistance": {
+            key: {attrib: _attrib_struct_index(flavor, attrib)
+                  for attrib in attribs}
+            for key, attribs in _DEBUFF_RESIST_ATTRIBS.items()},
     }
     rec["attribs"] = _extract_attribs(rec["name"], attrib_min, attrib_base,
                                       attrib_max, attrib_max_max, strength_max,

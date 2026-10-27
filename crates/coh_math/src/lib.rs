@@ -488,14 +488,7 @@ pub fn recalculate_in_cast_context(
         state.combat.content_mode,
     );
     let (stats, mut projection_errors) =
-        finalize::convert_to_character_stats(
-        &g,
-        caps,
-        defense_softcap,
-        level,
-        state.dataset,
-        &movement_cap_bumps,
-    );
+        finalize::convert_to_character_stats(&g, caps, defense_softcap, level, &movement_cap_bumps);
     g.errors.append(&mut projection_errors);
 
     // PROD6B-1 — the per-power non-DPS execution + perma projection. Runs last: it reads the

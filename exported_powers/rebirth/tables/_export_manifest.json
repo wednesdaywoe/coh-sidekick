@@ -1,7 +1,7 @@
 {
   "schema": "bin-crawler-export-manifest/3",
   "note": "classes_fingerprint is the sha256 of the classes exporter (every .py in bin_crawler) at export time. If it disagrees with the current committed exporter source, THIS tables/ tree is stale \u2014 re-run export_classes for this dataset and commit. Guarded by audit:export-integrity (staleness). `source` names the assets shard the bytes were read from; guarded by audit:export-integrity (provenance). `content_digest` is the sha256 of the bytes this export WROTE; guarded by audit:export-integrity (contents).",
-  "classes_fingerprint": "691705cee5d4c3879849a5c54614708ee49e797e27ec56bc4c5da96c3261cd65",
+  "classes_fingerprint": "a3935ddbb467983b773c22642b0fa78685d007e33f4d2e5f70e809f73d2bc625",
   "source": {
     "assets_dir": "/mnt/games-1tb/Games/coh-sweettea/drive_c/users/jiiwii/AppData/Local/Thunderspy Gaming/Sweet Tea/rebirth",
     "shard": "rebirth",
@@ -14,7 +14,7 @@
       }
     ]
   },
-  "content_digest": "d018d98e0537f1bdcd68a6f43e1ac1670bbba07dbad6c33558a086db30bea4fa",
+  "content_digest": "e1f160a6cd9305ba45e19ad3201a7cdbbb00ca3b7f5d8ff29c1de924e87032f1",
   "file_count": 59,
   "class_files": 59
 }

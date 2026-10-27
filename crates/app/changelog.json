@@ -2,7 +2,8 @@
     {
     "date": "2026-10-27",
     "items": [
-      { "id": "homecoming-data-2026-10-20", "type": "update", "message": "Homecoming data updated to the October 20 patch: Sonic Repulsion is now a hold and no longer takes damage enhancements, Clarity protects allies around the target as well as the target itself, Sonic Cage and Detention Field respect your recharge, Trip Mine's proc rate matches Traps, and Sleet, Ice Storm, Rain of Fire and the other placed area powers no longer make foes run" }
+      { "id": "homecoming-data-2026-10-20", "type": "update", "message": "Homecoming data updated to the October 20 patch: Sonic Repulsion is now a hold and no longer takes damage enhancements, Clarity protects allies around the target as well as the target itself, Sonic Cage and Detention Field respect your recharge, Trip Mine's proc rate matches Traps, and Sleet, Ice Storm, Rain of Fire and the other placed area powers no longer make foes run" },
+      { "id": "debuff-resistance-ceilings", "type": "fix", "message": "Debuff resistance now stops at the game's own ceiling on every server, read from each archetype's data: 20% at level 1 rising to 95% at 47. Endurance drain resistance reaches 95% at level 39, Controllers, Dominators and Masterminds top out at 47.5% regeneration debuff resistance, and slow, recharge and perception stop at 100%" }
     ]
   },
   {

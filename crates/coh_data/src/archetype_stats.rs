@@ -17,7 +17,8 @@
 //! Source: the contract's `archetype-stats.<at> = { baseHP, maxHP, absorbCap, resistanceCap,
 //! damageCap, rechargeFloor, rechargeCap, hpTable, hpCapTable, absorbCapTable, toHitBase,
 //! toHitCapTable, regenerationBase, regenerationCapTable, recoveryBase, recoveryCapTable,
-//! defenseCeilingTable, maxEnduranceTable, maxEnduranceCapTable }` section.
+//! defenseCeilingTable, maxEnduranceTable, maxEnduranceCapTable, debuffResistanceCapTable }`
+//! section.
 //! Absent ≠ malformed, like
 //! [`crate::at_tables`] / [`crate::purple_patch`]: an ABSENT section degrades to empty
 //! (every `get` misses — a hand-constructed `PowerDatabase` needs no cap data, and the
@@ -26,7 +27,7 @@
 //! `resistanceCap` would silently clamp resistance to 0% (all 45 contract entries carry
 //! every field, censused 2026-07-28).
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 
@@ -56,6 +57,39 @@ pub struct MovementAxisTables {
     pub jump_speed: Vec<f64>,
     #[serde(rename = "jumpHeight")]
     pub jump_height: Vec<f64>,
+}
+
+/// The eight debuff-resistance rows the planner shows, named as the calc's `debuffResist*`
+/// totals are. Holds the per-level tables (`Vec<f64>`, fractions) in the contract and one
+/// level's ceilings (`f64`, percent) once [`Self::at_level`] has read them.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DebuffResist<T> {
+    pub defense: T,
+    pub to_hit: T,
+    pub endurance: T,
+    pub recovery: T,
+    pub regeneration: T,
+    pub slow: T,
+    pub recharge: T,
+    pub perception: T,
+}
+
+impl DebuffResist<Vec<f64>> {
+    /// Every row's ceiling at `level`, as a PERCENT. `None` if any row misses the level.
+    pub fn at_level(&self, level: i32) -> Option<DebuffResist<f64>> {
+        let pct = |table: &[f64]| at_level(table, level).map(|v| v * 100.0);
+        Some(DebuffResist {
+            defense: pct(&self.defense)?,
+            to_hit: pct(&self.to_hit)?,
+            endurance: pct(&self.endurance)?,
+            recovery: pct(&self.recovery)?,
+            regeneration: pct(&self.regeneration)?,
+            slow: pct(&self.slow)?,
+            recharge: pct(&self.recharge)?,
+            perception: pct(&self.perception)?,
+        })
+    }
 }
 
 /// One archetype's caps. `resistance_cap` is a FRACTION (0.75 = 75%); `damage_cap` is a
@@ -200,6 +234,12 @@ pub struct ArchetypeCaps {
     /// +MaxEnd buffs can raise the pool, not the pool itself.
     #[serde(rename = "maxEnduranceCapTable")]
     pub max_endurance_cap_table: Vec<f64>,
+    /// The debuff-resistance ceilings per level — ResistanceMaxTable's rows (DDR-CAP-1). 20%
+    /// at level 1 rising to 95% at 47 on every fork, except endurance (95% from 39), slow,
+    /// recharge and perception (a flat 100%), and Controller/Dominator/Mastermind
+    /// regeneration, which stops at 47.5%.
+    #[serde(rename = "debuffResistanceCapTable")]
+    pub debuff_resistance_cap_table: DebuffResist<Vec<f64>>,
 }
 
 impl ArchetypeCaps {

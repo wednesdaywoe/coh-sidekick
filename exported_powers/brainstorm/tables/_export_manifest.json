@@ -1,7 +1,7 @@
 {
   "schema": "bin-crawler-export-manifest/3",
   "note": "classes_fingerprint is the sha256 of the classes exporter (every .py in bin_crawler) at export time. If it disagrees with the current committed exporter source, THIS tables/ tree is stale \u2014 re-run export_classes for this dataset and commit. Guarded by audit:export-integrity (staleness). `source` names the assets shard the bytes were read from; guarded by audit:export-integrity (provenance). `content_digest` is the sha256 of the bytes this export WROTE; guarded by audit:export-integrity (contents).",
-  "classes_fingerprint": "691705cee5d4c3879849a5c54614708ee49e797e27ec56bc4c5da96c3261cd65",
+  "classes_fingerprint": "a3935ddbb467983b773c22642b0fa78685d007e33f4d2e5f70e809f73d2bc625",
   "source": {
     "assets_dir": "/home/jiiwii/.wine/drive_c/Games/Homecoming/assets/beta",
     "shard": "beta",
@@ -50,7 +50,7 @@
       }
     ]
   },
-  "content_digest": "8f7f206cdc632172bab400aaa37ba46e1c05a109503f76bcf09a86738bd3a125",
+  "content_digest": "80cd5bc291a845d2893b1a26d45b9e52f9acd32056d7cb6f4328a1e1dae08c2f",
   "file_count": 71,
   "class_files": 71
 }

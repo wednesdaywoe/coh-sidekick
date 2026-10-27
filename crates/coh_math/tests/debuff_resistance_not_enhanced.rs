@@ -132,8 +132,7 @@ fn granite_positional_defense_still_takes_defense_enhancement() {
 }
 
 /// DDR-CAP-1: the Super Reflexes stack reaches 121.1% raw and the game caps it. At level 50
-/// every fork's ceiling is 95 — Homecoming's curve has flattened there, the other three are
-/// flat — so this is the one level where the two rules agree.
+/// every fork's ceiling is 95: the archetype tables' curve has flattened there.
 #[test]
 fn the_super_reflexes_stack_clamps_to_95_at_level_50() {
     for &dataset in DATASETS {
@@ -144,26 +143,19 @@ fn the_super_reflexes_stack_clamps_to_95_at_level_50() {
             "{dataset:?}: the seven-toggle stack should clamp to 95, not read its raw 121.1"
         );
         assert_eq!(
-            totals.stats.debuff_resist_cap, 95.0,
+            totals.stats.debuff_resist_cap.defense, 95.0,
             "{dataset:?}: the ceiling travels with the clamped number"
         );
     }
 }
 
-/// Below level 47 the two rules part company, and this is what the per-fork match exists for.
-/// A flat 95 would pass the level-50 test above and get every row here wrong.
-///
-/// The stack's raw value is 280 × the Tanker's `melee_res_boolean` row, so it scales with
-/// level too: 52.5 at level 1, 86.1 at 25, 107.1 at 40. That gives two distinct regimes, and
-/// both are graded:
-///
-///  - **below level 40** the raw value is under the flat 95, so the other three forks read it
-///    raw while Homecoming clamps to its curve — a gap of 32 points at level 1.
-///  - **from level 40** the raw value clears 95 and every fork clamps, but to different
-///    numbers: Homecoming to the curve, the rest to 95.
+/// Below level 47 the ceiling climbs with level on every fork — the archetype tables carry the
+/// same curve on all four, 20% at level 1 to 95% at 47. A flat 95 would pass the level-50 test
+/// above and get every row here wrong: the stack's raw value (280 × the Tanker's
+/// `melee_res_boolean` row) is under 95 until level 40, so a flat ceiling would read it raw.
 #[test]
-fn below_level_47_homecoming_clamps_to_the_curve_and_the_others_do_not() {
-    // (level, raw 280 × melee_res_boolean, Homecoming's curve)
+fn below_level_47_every_fork_clamps_to_the_curve() {
+    // (level, raw 280 × melee_res_boolean, the curve)
     const ROWS: &[(u8, f64, f64)] = &[
         (1, 52.50, 20.00),
         (10, 65.10, 34.76),
@@ -176,19 +168,14 @@ fn below_level_47_homecoming_clamps_to_the_curve_and_the_others_do_not() {
         for &(level, raw, curve) in ROWS {
             let totals = coh_math::recalculate(&super_reflexes(dataset, level), &db);
             let shown = totals.stats.debuff_resist_defense;
-            let expected = if dataset == DatasetId::Homecoming {
-                curve
-            } else {
-                raw.min(95.0)
-            };
             assert!(
-                (shown - expected).abs() < 1e-4,
-                "{dataset:?} at level {level}: shows {shown}, expected {expected} \
-                 (raw {raw}, Homecoming curve {curve})"
+                (shown - curve).abs() < 1e-4,
+                "{dataset:?} at level {level}: shows {shown}, expected the curve's {curve} \
+                 (raw {raw})"
             );
             assert!(
-                shown <= coh_math::finalize::debuff_resistance_cap(dataset, level as i32) + 1e-9,
-                "{dataset:?} at level {level}: {shown} is over its ceiling"
+                (totals.stats.debuff_resist_cap.defense - curve).abs() < 1e-4,
+                "{dataset:?} at level {level}: the ceiling travels with it"
             );
         }
     }

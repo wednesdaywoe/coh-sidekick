@@ -86,6 +86,19 @@ const CEILED_ATTRIBS = {
   recovery: 'recovery',
 };
 
+// The debuff-resistance rows, mapping the exporter's `_DEBUFF_RESIST_ATTRIBS` keys (plus
+// defense) onto the camelCase names of the calc's `debuffResist*` totals.
+const DEBUFF_RESIST_ROWS = {
+  defense: 'defense',
+  to_hit: 'toHit',
+  endurance: 'endurance',
+  recovery: 'recovery',
+  regeneration: 'regeneration',
+  slow: 'slow',
+  recharge: 'recharge',
+  perception: 'perception',
+};
+
 /**
  * The attribute ceilings and their bases (CAPS-1). Per-level rows, because the
  * ToHit, regeneration and defense curves all rise with level — exemplaring down
@@ -141,6 +154,24 @@ function attributeCeilings(at, attribs) {
   out.defenseFloor = r4(defenseFloor);
   if (!perLevel('max_endurance', 'maxEnduranceTable')) return null;
   if (!perLevel('max_endurance_cap', 'maxEnduranceCapTable')) return null;
+  // The debuff-resistance ceilings (DDR-CAP-1): ResistanceMaxTable's rows, per level and per
+  // archetype, because they differ by both — endurance reaches 95% at 39 where the rest wait
+  // until 47, and Controller/Dominator/Mastermind regeneration stops at 47.5%.
+  const ddr = attribs.debuff_resistance_cap;
+  if (!ddr) {
+    console.warn(`Warning: ${at} missing debuff_resistance_cap — re-run export_classes.py — skipping`);
+    return null;
+  }
+  const debuffResistanceCapTable = {};
+  for (const [exportKey, name] of Object.entries(DEBUFF_RESIST_ROWS)) {
+    const row = ddr[exportKey];
+    if (!Array.isArray(row) || row.length < PLAYER_LEVELS) {
+      console.warn(`Warning: ${at} debuff_resistance_cap.${exportKey} has ${row?.length} levels (expected ${PLAYER_LEVELS}) — skipping`);
+      return null;
+    }
+    debuffResistanceCapTable[name] = row.slice(0, PLAYER_LEVELS).map(r4);
+  }
+  out.debuffResistanceCapTable = debuffResistanceCapTable;
   return out;
 }
 
