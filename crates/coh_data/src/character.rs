@@ -1141,9 +1141,10 @@ pub struct CombatContext {
     /// (`"damage"`, `"toHit"`, `"recharge"`, …) and valued in that field's own units.
     ///
     /// A PREVIEW INPUT, not build design — the same category as [`Self::destiny_time`] and
-    /// [`Self::hit_points_percent`]. It is deliberately not persisted with a build: a shared
-    /// build carrying a hidden +damage would present a simulated number as the build's own
-    /// (decision 2026-08-01). A pre-field saved build loads with the layer empty.
+    /// [`Self::hit_points_percent`]. It is deliberately not written into a build file or a
+    /// share: a shared build carrying a hidden +damage would present a simulated number as the
+    /// build's own (decision 2026-08-01). The browser's own autosave keeps it, so the layer
+    /// survives closing the window (2026-10-26). A pre-field saved build loads with it empty.
     ///
     /// The vocabulary is the accumulator's, not a list written here: a key is whatever
     /// `GlobalBonuses::add_by_camel_name` routes, so a stat with no accumulator behind it

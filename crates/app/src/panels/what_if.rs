@@ -277,8 +277,8 @@ fn WhatIfBody() -> Element {
                     strong { "simulated" }
                     ". They are injected where a teammate's real buff would land — into the \
                      build's globals before anything is projected — so every archetype ceiling \
-                     binds against them and every surface agrees. They are never saved or \
-                     shared with the build."
+                     binds against them and every surface agrees. They are kept on this \
+                     device between visits, but never saved into a build file or shared."
                 }
                 if active_count > 0 || !active.is_empty() {
                     button {

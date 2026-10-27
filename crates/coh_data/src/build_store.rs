@@ -153,9 +153,6 @@ pub fn select_active(builds: &StoredBuilds, dataset: DatasetId) -> CharacterStat
         .cloned()
         .unwrap_or_else(|| CharacterState::empty(dataset));
     build.dataset = dataset;
-    // Belt to [`compose`]'s braces: an envelope written by an older build (or a foreign one)
-    // could still hold a what-if layer, and a build must never LOAD already simulating.
-    build.combat.what_if_buffs.clear();
     // Same reason, other axis: a foreign or hand-edited envelope can hold a booster on an
     // attuned piece or a pure proc — a combine the game refuses — and a build must never LOAD
     // showing a number the game cannot reach.
@@ -175,15 +172,10 @@ pub fn select_active(builds: &StoredBuilds, dataset: DatasetId) -> CharacterStat
 /// edited is by definition the active one.
 pub fn compose(active: &CharacterState, builds: &StoredBuilds) -> StoredBuilds {
     let mut by_dataset = builds.builds_by_dataset.clone();
-    let mut stored = active.clone();
-    // The what-if team-buff layer is a preview input, and this is the one place a build turns
-    // into bytes someone else can open. Dropping it HERE — rather than clearing it on load —
-    // is what makes "a shared build cannot carry a hidden +damage" structural: the number
-    // never gets written, so there is nothing for a reader to inherit or a banner to warn
-    // about (decision 2026-08-01; rejected: persist-with-warning-banner, because a banner is
-    // dismissible and the number is not).
-    stored.combat.what_if_buffs.clear();
-    by_dataset.insert(active.dataset, stored);
+    // The what-if team-buff layer travels with it: this envelope is this browser's own
+    // workspace, never handed to anyone, so a user's simulated buffs survive closing the window.
+    // A build file and a share are `skif`, which still writes no layer and refuses one on read.
+    by_dataset.insert(active.dataset, active.clone());
     StoredBuilds {
         active_dataset: active.dataset,
         builds_by_dataset: by_dataset,

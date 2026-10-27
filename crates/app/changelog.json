@@ -6,7 +6,8 @@
       { "id": "picker-filter-to-piece", "type": "feat", "message": "The enhancement picker has a new Filter to piece checkbox. Untick it to see every set when you click an enhancement that's already slotted, instead of only that piece's category and rarity" },
       { "id": "powers-in-level-order", "type": "fix", "message": "Your chosen powers now list in the order you took them, by level. A power added later no longer drops to the bottom of its group" },
       { "id": "alpha-movement-boosts", "type": "fix", "message": "Alpha incarnates that boost run, fly or jump speed (Agility, Musculature, Nerve and Spiritual Radial) now raise your travel speeds" },
-      { "id": "cross-punch-boxing-kick", "type": "fix", "message": "Cross Punch's +ToHit and +Recharge now count Boxing and Kick: 5% for each one you have, so 10% with both and nothing with neither" }
+      { "id": "cross-punch-boxing-kick", "type": "fix", "message": "Cross Punch's +ToHit and +Recharge now count Boxing and Kick: 5% for each one you have, so 10% with both and nothing with neither" },
+      { "id": "what-if-kept", "type": "fix", "message": "What-if team buffs are now kept on your device when you close the app. They still never go into a saved build file or a shared link" }
     ]
   },
 
