@@ -453,6 +453,64 @@ pub fn active_conditional_powers(
     out
 }
 
+/// The `@StdResult` of a self-buff magnitude program read as 1, every other reader the build's.
+/// What comes back is the multiplier the program puts on the atom's stated scale.
+struct OwnershipMultiplier<'a> {
+    build: &'a SourceContext,
+}
+
+impl crate::expr::EvalContext for OwnershipMultiplier<'_> {
+    fn resolve(
+        &self,
+        reader: &str,
+        operands: &[crate::expr::Value],
+    ) -> Result<crate::expr::Value, crate::expr::EvalError> {
+        match reader {
+            "@StdResult" => Ok(crate::expr::Value::Number(1.0)),
+            _ => crate::expr::EvalContext::resolve(self.build, reader, operands),
+        }
+    }
+}
+
+/// `def` with its +ToHit / +Recharge atoms scaled by what their magnitude program says the
+/// build's picks are worth, or `None` when no such atom has a program that reads them.
+///
+/// Cross Punch's self-buff (and Homecoming Brawl's) is `@StdResult × (Kick owned + Boxing
+/// owned)`: the stated 5% once per partner power the build has, so 10% with both and nothing
+/// with neither. The appliers read `scale` alone, so the multiplier is folded into it here,
+/// where the build's ownership is known. A program that reads anything this context can't
+/// answer (a target, the caster's HP) stays Indeterminate and its atom is left as it was.
+pub fn scale_by_ownership(def: &Power, owned: &HashMap<String, f64>) -> Option<Power> {
+    let build = SourceContext {
+        owned_powers: owned.clone(),
+        ..Default::default()
+    };
+    let ctx = OwnershipMultiplier { build: &build };
+    let mut scaled = None::<Power>;
+    for (i, atom) in def.atoms.iter().enumerate() {
+        if !matches!(
+            atom.effect_type,
+            Some(EffectType::ToHit | EffectType::RechargeTime)
+        ) {
+            continue;
+        }
+        let Some(program) = atom.magnitude_expression.as_deref() else {
+            continue;
+        };
+        if crate::expr::caster_owned_paths(program).next().is_none() {
+            continue;
+        }
+        let Ok(crate::expr::Value::Number(multiplier)) = crate::expr::eval(program, &ctx) else {
+            continue;
+        };
+        let power = scaled.get_or_insert_with(|| def.clone());
+        let atom = &mut power.atoms[i];
+        atom.scale = atom.scale.map(|s| s * multiplier);
+        atom.magnitude_expression = None;
+    }
+    scaled
+}
+
 /// An active power's definition paired with the per-power calc inputs its SELECTION carries.
 ///
 /// The def alone isn't enough once a pass needs a user input that lives on the pick rather

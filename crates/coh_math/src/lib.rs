@@ -121,7 +121,34 @@ pub fn recalculate_in_cast_context(
     // A selection the dataset can't resolve surfaces as a per-item error while the
     // rest of the build still computes (Rule 1) — never a silently smaller total.
     g.errors.extend(gathered.unresolved);
-    let powers = gathered.powers;
+    // What the build owns, for every caster-ownership gate downstream. Resolved ONCE and passed
+    // down rather than rebuilt per consumer: it walks the dataset's whole gate corpus to learn
+    // which paths are asked about, so a second construction would repeat that walk on every
+    // recalculation for an answer that cannot have changed.
+    let mut owned = gather::owned_powers(state, db);
+    for (path, count) in owned_overlay {
+        let normalized = expr::normalize_power_path(path);
+        owned
+            .entry(normalized)
+            .and_modify(|held| *held = held.max(*count))
+            .or_insert(*count);
+    }
+    // A self-buff sized by the build's picks (Cross Punch's +ToHit / +Recharge, 5% per Boxing
+    // and Kick owned) gets that size here, before any pass reads its scale.
+    let ownership_scaled: Vec<Option<coh_data::Power>> = gathered
+        .powers
+        .iter()
+        .map(|ap| gather::scale_by_ownership(ap.def, &owned))
+        .collect();
+    let powers: Vec<gather::ActivePower> = gathered
+        .powers
+        .iter()
+        .zip(&ownership_scaled)
+        .map(|(ap, scaled)| gather::ActivePower {
+            def: scaled.as_ref().unwrap_or(ap.def),
+            ..*ap
+        })
+        .collect();
     let source_modes = gathered.source_modes;
     let target_modes = gathered.target_modes;
     let archetype = state.archetype.id.as_deref().unwrap_or("");
@@ -222,18 +249,6 @@ pub fn recalculate_in_cast_context(
     // the movement/stealth resolves below — so any conditional travel/stealth/absorb feeds those too.
     // Empty strength + inactive Alpha + no slots honor the mode atoms' `ignoreStrength` (the beta passes
     // `emptyStrengthBuffs()` / `{}` alpha for the same reason); the contributions SUM onto `g`.
-    // What the build owns, for every caster-ownership gate downstream. Resolved ONCE and passed
-    // down rather than rebuilt per consumer: it walks the dataset's whole gate corpus to learn
-    // which paths are asked about, so a second construction would repeat that walk on every
-    // recalculation for an answer that cannot have changed.
-    let mut owned = gather::owned_powers(state, db);
-    for (path, count) in owned_overlay {
-        let normalized = expr::normalize_power_path(path);
-        owned
-            .entry(normalized)
-            .and_modify(|held| *held = held.max(*count))
-            .or_insert(*count);
-    }
     let conditional_powers = gather::active_conditional_powers(
         &powers,
         &source_modes,
