@@ -70,6 +70,7 @@ mod tracked_stats;
 mod ui_scale;
 mod update_banner;
 mod view;
+mod window_memory;
 
 static TOKENS_CSS: Asset = asset!("/assets/tokens.css");
 static APP_CSS: Asset = asset!("/assets/app.css");
@@ -223,7 +224,10 @@ fn desktop_window() -> dioxus::desktop::Config {
             WindowBuilder::new()
                 .with_title("CoH Sidekick")
                 .with_inner_size(LogicalSize::new(1440.0, 960.0))
-                .with_min_inner_size(LogicalSize::new(960.0, 640.0)),
+                .with_min_inner_size(LogicalSize::new(
+                    window_memory::MIN_SIZE.0,
+                    window_memory::MIN_SIZE.1,
+                )),
         )
 }
 

@@ -145,7 +145,10 @@ pub struct WindowRect {
 /// Separate from [`spawn_window`] because it is the half of the gate with no window in it, and a
 /// stored `(0, 0)` surviving into `with_position` is the regression worth holding a test against.
 #[cfg(feature = "desktop")]
-fn restorable_position(rect: Option<WindowRect>, backend_reports: bool) -> Option<(f64, f64)> {
+pub(crate) fn restorable_position(
+    rect: Option<WindowRect>,
+    backend_reports: bool,
+) -> Option<(f64, f64)> {
     rect.filter(|_| backend_reports)
         .and_then(|rect| rect.x.zip(rect.y))
 }
@@ -319,6 +322,9 @@ pub use desktop::PoppedPanelProps;
 use desktop::open_window;
 
 #[cfg(feature = "desktop")]
+pub(crate) use desktop::{backend_reports_position, converge_inner_size, viewport_size};
+
+#[cfg(feature = "desktop")]
 mod desktop {
     use super::{PoppedGeometry, PoppedOut, PoppedRecord, WindowRect};
     use crate::grid::model::{DashboardId, GridItem, PanelKind};
@@ -449,7 +455,7 @@ mod desktop {
 
     /// This webview's content box, which is the size [`spawn_window`] asked for and the size a
     /// restore has to reproduce.
-    async fn viewport_size() -> Option<(f64, f64)> {
+    pub(crate) async fn viewport_size() -> Option<(f64, f64)> {
         let value = document::eval("return [window.innerWidth, window.innerHeight];")
             .await
             .ok()?;
@@ -489,10 +495,20 @@ mod desktop {
             report_size(geometry, panel).await;
             return;
         };
+        if !converge_inner_size(target_width, target_height).await {
+            return;
+        }
+        report_size(geometry, panel).await;
+    }
+
+    /// Bring this window's content box to `target`, by the re-ask-and-measure loop
+    /// [`settle_size`] explains. `false` when the DOM could not be read at all. The main window
+    /// restores through it too ([`crate::window_memory`]).
+    pub(crate) async fn converge_inner_size(target_width: f64, target_height: f64) -> bool {
         let (mut asked_width, mut asked_height) = (target_width, target_height);
         for _ in 0..3 {
             let Some((width, height)) = viewport_size().await else {
-                return;
+                return false;
             };
             let (short_by, shy_by) = (target_width - width, target_height - height);
             if short_by.abs() < 1.0 && shy_by.abs() < 1.0 {
@@ -505,7 +521,7 @@ mod desktop {
             // reading it too early feeds the loop its own stale answer.
             tokio::time::sleep(Duration::from_millis(50)).await;
         }
-        report_size(geometry, panel).await;
+        true
     }
 
     /// Record where this window is, from the payload of a `Moved` event and nothing else. See
@@ -554,7 +570,7 @@ mod desktop {
     /// Left trusting and untested: a native X11 session rather than XWayland, and every non-Linux
     /// target. Declining costs nothing — the position never worked on Linux, so recording
     /// `(0, 0)` was strictly worse than recording nothing.
-    fn backend_reports_position() -> bool {
+    pub(crate) fn backend_reports_position() -> bool {
         cfg!(not(target_os = "linux"))
     }
 

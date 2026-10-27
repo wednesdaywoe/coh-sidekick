@@ -153,6 +153,9 @@ pub fn Shell() -> Element {
     // Layout writes start counting as edits at the first pointer or key press (see
     // `layout_sync`), so the app's own writes while it loads never date the layout.
     use_effect(crate::layout_sync::arm_edit_stamps);
+    // The desktop window back where it was closed. Here for the same reason as the owner claim:
+    // this is the main window's root and no other window's.
+    crate::window_memory::use_main_window_memory();
 
     // The session, and who it says is signed in. Built synchronously here so no consumer needs an
     // arm for "not yet"; the storage read and the OAuth callback happen in `start`, below, after
