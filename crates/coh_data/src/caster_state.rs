@@ -480,12 +480,7 @@ pub fn global_mechanics(state: &CharacterState, db: &PowerDatabase) -> Vec<Mecha
             if owned.contains(&conditional.id) || conditional.answered_by_picks(db) {
                 continue;
             }
-            let active = state
-                .combat
-                .global_conditionals
-                .get(&conditional.id)
-                .copied()
-                .unwrap_or(conditional.default_active);
+            let active = global_state_on(state, &conditional.id, conditional.default_active);
             toggles
                 .entry(conditional.id.clone())
                 .or_insert_with(|| MechanicToggle {
@@ -514,12 +509,50 @@ pub fn global_mechanics(state: &CharacterState, db: &PowerDatabase) -> Vec<Mecha
 /// never arrive here at all.
 ///
 /// One call is one act, so the whole choice lands in a single commit and a single undo step.
+/// Whether the build-wide state `id` is on: as the build records it (`default_active` where it
+/// never has), or through an archetype inherent of the same name switched on as a power.
+///
+/// The Dominator's is the one case on every fork: Domination's own ON pill and the Combat
+/// panel's "Domination Active" are two controls over one state, so either one turns it on and
+/// [`set_global_mechanic`] / [`mirror_inherent_switch`] keep the other in step.
+pub fn global_state_on(state: &CharacterState, id: &str, default_active: bool) -> bool {
+    let inherent_on = state.inherents.iter().any(|power| {
+        power.inherent_category == Some(crate::InherentCategory::Archetype)
+            && power.is_active
+            && power.internal_name.eq_ignore_ascii_case(id)
+    });
+    inherent_on
+        || state
+            .combat
+            .global_conditionals
+            .get(id)
+            .copied()
+            .unwrap_or(default_active)
+}
+
+/// After an archetype inherent's own pill is switched, the build-wide state of the same name
+/// follows it, where the build records one. A state never set is left unset, so no inherent
+/// writes a key nothing declares.
+pub fn mirror_inherent_switch(state: &mut CharacterState, internal_name: &str, on: bool) {
+    let id = internal_name.to_ascii_lowercase();
+    if let Some(recorded) = state.combat.global_conditionals.get_mut(&id) {
+        *recorded = on;
+    }
+}
+
 pub fn set_global_mechanic(
     state: &mut CharacterState,
     mechanics: &[MechanicToggle],
     id: &str,
     on: bool,
 ) {
+    // The archetype inherent of the same name is the same state (see [`global_state_on`]).
+    for power in state.inherents.iter_mut().filter(|power| {
+        power.inherent_category == Some(crate::InherentCategory::Archetype)
+            && power.internal_name.eq_ignore_ascii_case(id)
+    }) {
+        power.is_active = on;
+    }
     let group = mechanics
         .iter()
         .find(|mechanic| mechanic.id == id)

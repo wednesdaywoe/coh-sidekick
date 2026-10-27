@@ -592,6 +592,26 @@ pub(crate) fn resolve_power<'a>(
     db.resolve_power(set_id, name)
 }
 
+/// Whether any power the build holds declares the build-wide state `id` (a `global`
+/// `conditionalEffects` entry), which is what makes an archetype inherent of that name a switch
+/// rather than an always-on mechanic Pass 3 owns.
+fn declares_global_state(state: &CharacterState, db: &PowerDatabase, id: &str) -> bool {
+    state.all_selected().any(|selection| {
+        resolve_power(db, &selection.powerset, &selection.internal_name).is_some_and(|power| {
+            power
+                .extra
+                .get("conditionalEffects")
+                .and_then(Value::as_array)
+                .into_iter()
+                .flatten()
+                .any(|entry| {
+                    entry.get("scope").and_then(Value::as_str) == Some("global")
+                        && entry.get("id").and_then(Value::as_str) == Some(id)
+                })
+        })
+    })
+}
+
 /// The contributing power set: every selected power that's auto or toggled on, in
 /// `all_selected` order, with each active parent's stance sub-power appended after the
 /// real powers (mirrors `collectAllPowers`, whose stance block runs last).
@@ -610,7 +630,29 @@ fn resolve_active_powers<'a>(
         // powerset ships in the contract, this skip is load-bearing (before extraction there
         // was no def to resolve). Mirrors the beta `collectAllPowers` archetype-inherent skip.
         // Fitness/prestige/basic inherents stay ordinary powers.
+        //
+        // One exception, and it is a click: an archetype inherent that IS a build-wide state of
+        // its own name, switched on by its pill or by that state ([`coh_data::global_state_on`]). The Dominator's `domination` state is the
+        // only one on any fork, and while it is on, Domination's own buff (Homecoming's +25%
+        // ToHit, the mez protection) is running. Counted for as long as the switch is on, as a
+        // clicked Build Up is.
         if selection.inherent_category == Some(InherentCategory::Archetype) {
+            let id = selection.internal_name.to_ascii_lowercase();
+            let switched_on = declares_global_state(state, db, &id)
+                && coh_data::global_state_on(state, &id, false);
+            if switched_on {
+                if let Some(power_def) =
+                    resolve_power(db, &selection.powerset, &selection.internal_name)
+                {
+                    active.push(ActivePower {
+                        def: power_def,
+                        kind: PowerSourceKind::Inherent,
+                        power_set: &selection.powerset,
+                        targets_hit: selection.targets_hit,
+                        slots: &selection.slots,
+                    });
+                }
+            }
             continue;
         }
         let Some(power_def) = resolve_power(db, &selection.powerset, &selection.internal_name)

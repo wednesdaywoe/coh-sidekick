@@ -2994,6 +2994,14 @@ pub fn PickedPowerCard(
                                         PowerPill::Active => {
                                             if let Some(sp) = state.selected_power_mut(&powerset_id, &power_id) {
                                                 sp.is_active = checked;
+                                                // Domination's pill and the Combat panel's
+                                                // "Domination Active" are one state.
+                                                if sp.inherent_category
+                                                    == Some(coh_data::InherentCategory::Archetype)
+                                                {
+                                                    let name = sp.internal_name.clone();
+                                                    coh_data::mirror_inherent_switch(state, &name, checked);
+                                                }
                                             }
                                         }
                                         PowerPill::BuffPet(key) => {

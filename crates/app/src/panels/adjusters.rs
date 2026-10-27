@@ -263,8 +263,8 @@ fn AdjusterContribution(adjuster: PowerAdjuster) -> Element {
             span { class: "adjuster-note", "{shown}" }
         }
         if !adjuster.extra_instances.is_empty() {
-            span { class: "adjuster-note is-unshown",
-                "second instance of {adjuster.extra_instances.join(\", \")}, not shown below"
+            span { class: "adjuster-note",
+                "adds a second {adjuster.extra_instances.join(\", \")}, on its own row"
             }
         }
         if !adjuster.unlabelled.is_empty() {
@@ -275,8 +275,8 @@ fn AdjusterContribution(adjuster: PowerAdjuster) -> Element {
     }
 }
 
-/// The "adds X, Y" phrase for one adjuster, empty when everything it brings is an unshowable
-/// second instance.
+/// The "adds X, Y" phrase for one adjuster, empty when everything it brings is a second
+/// instance (which has its own note).
 fn contribution_text(adjuster: &PowerAdjuster) -> String {
     let mut named: Vec<String> = adjuster.adds.clone();
     if adjuster.adds_damage {

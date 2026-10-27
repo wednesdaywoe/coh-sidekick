@@ -53,8 +53,9 @@ pub struct PowerAdjuster {
     /// `effects` key, so it has no registry label to answer for it.
     pub adds_damage: bool,
     /// Effects it casts a SECOND simultaneous instance of. The additive merge keeps the base
-    /// value on a colliding key — two instances of a hold are not one stronger hold — so no
-    /// projected row can carry these, and the control has to say so itself.
+    /// value on a colliding key — two instances of a hold are not one stronger hold — so each
+    /// gets a row of its own on the card, named for this conditional
+    /// ([`crate::effective::CONDITIONAL_INSTANCE_KEY`]).
     pub extra_instances: Vec<String>,
     /// Effects it brings that the DISPLAY vocabulary has no label for, by their wire key.
     ///
@@ -80,10 +81,9 @@ impl PowerAdjuster {
         !self.shows_something() && self.extra_instances.is_empty()
     }
 
-    /// Whether turning it on puts something new in front of the reader — which is not the same
-    /// as it being worth a control. A conditional whose whole contribution collides with the
-    /// base casts a second simultaneous instance the merge refuses to fold into one row, so it
-    /// shows nothing while still being a state worth recording.
+    /// Whether turning it on adds or replaces a row of the base kind — which is not the same as
+    /// it being worth a control. A conditional whose whole contribution collides with the base
+    /// casts a second simultaneous instance instead, shown on a row of its own.
     pub fn shows_something(&self) -> bool {
         !self.adds.is_empty() || self.adds_damage || !self.unlabelled.is_empty()
     }

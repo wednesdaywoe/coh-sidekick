@@ -395,16 +395,15 @@ fn active_conditionals<'a>(
                 .get("defaultActive")
                 .and_then(Value::as_bool)
                 .unwrap_or(false);
-            let global = conditional.get("scope").and_then(Value::as_str) == Some("global");
-            let toggle = if global {
-                state.combat.global_conditionals.get(id)
-            } else {
-                state
-                    .combat
-                    .per_power_conditionals
-                    .get(&format!("{internal_name}:{id}"))
-            };
-            toggle.copied().unwrap_or(default)
+            if conditional.get("scope").and_then(Value::as_str) == Some("global") {
+                return coh_data::global_state_on(state, id, default);
+            }
+            state
+                .combat
+                .per_power_conditionals
+                .get(&format!("{internal_name}:{id}"))
+                .copied()
+                .unwrap_or(default)
         })
         .collect()
 }
@@ -425,6 +424,16 @@ pub const CONDITIONAL_DELTA_KEY: &str = "activeConditionalEffects";
 /// Blinding Beam's Radiance -ToHit is a second -ToHit beside the base one, and the display sums
 /// the two ([`sum_stacked`]) rather than replacing either.
 pub const CONDITIONAL_STACK_KEY: &str = "activeConditionalStacks";
+
+/// A SECOND simultaneous instance a live conditional casts of an effect the base already has,
+/// where the two do not sum into one row (a mez: Domination's Sleep runs beside the base Sleep,
+/// half again as long). Each is keyed `<effect key>@<conditional label>` and gets a row of its
+/// own on the card, labelled with the conditional; its recorded duration, if any, sits under
+/// `durations` in the same map, keyed the same way.
+pub const CONDITIONAL_INSTANCE_KEY: &str = "activeConditionalInstances";
+
+/// Between the effect key and the conditional's label in a [`CONDITIONAL_INSTANCE_KEY`] entry.
+pub const INSTANCE_SEP: char = '@';
 
 /// `base` and `extra` as one value when both resolve through the same table: scales add. `None`
 /// when they don't (two tables, or shapes that don't line up), and the caller keeps the base.
@@ -465,12 +474,19 @@ pub fn sum_stacked(base: &Value, extra: &Value) -> Option<Value> {
 fn with_active_conditionals(power: &Power, dataset: DatasetId, active: &[&Value]) -> Power {
     let mut merged = power.clone();
     set(&mut merged, "damage", merged_damage(power, active));
-    let (delta, stacks) = conditional_delta(power, dataset, active);
+    let (delta, stacks, instances) = conditional_delta(power, dataset, active);
     if !stacks.is_empty() {
         set(
             &mut merged,
             CONDITIONAL_STACK_KEY,
             Some(Value::Object(stacks)),
+        );
+    }
+    if !instances.is_empty() {
+        set(
+            &mut merged,
+            CONDITIONAL_INSTANCE_KEY,
+            Some(Value::Object(instances)),
         );
     }
     if let Some(effects) = merged_effects(&delta) {
@@ -621,15 +637,17 @@ fn merged_effects(delta: &Map<String, Value>) -> Option<Map<String, Value>> {
 /// the baseline self-buff, a drowning debuff replacing the not-drowning one). The default
 /// `additive` mode contributes only keys the base LACKS: a colliding key means two simultaneous
 /// instances, and overwriting the base with one of them would display a single misleadingly
-/// stronger effect. The beta records those collisions as `extraInstances` for a separate row;
-/// nothing in the projection carries them.
+/// stronger effect. Those collisions come back as the third map, [`CONDITIONAL_INSTANCE_KEY`]'s,
+/// for a row of their own: the beta's `extraInstances`.
 fn conditional_delta(
     power: &Power,
     dataset: DatasetId,
     active: &[&Value],
-) -> (Map<String, Value>, Map<String, Value>) {
+) -> (Map<String, Value>, Map<String, Value>, Map<String, Value>) {
     let mut delta = Map::new();
     let mut stacks = Map::new();
+    let mut instances = Map::new();
+    let mut instance_durations = Map::new();
     // STRIP-1: the collision check reads the ATOM-PROJECTED base surface, not the literal base
     // bag, which the strip emptied for ordinary powerset powers. Key PRESENCE under the
     // pre-strip bag is that surface — the same `window_slots` [`crate::adjusters`] keys its
@@ -644,6 +662,11 @@ fn conditional_delta(
             continue;
         };
         let replace = conditional.get("mode").and_then(Value::as_str) == Some("replace");
+        let label = conditional
+            .get("label")
+            .or_else(|| conditional.get("id"))
+            .and_then(Value::as_str)
+            .unwrap_or_default();
         for (key, value) in from {
             // Key PRESENCE decides, not truthiness: an authored zero or null is still a base
             // value the additive merge must not overwrite.
@@ -658,6 +681,13 @@ fn conditional_delta(
                     if let Some(summed) = summed {
                         stacks.insert(key, summed);
                     }
+                } else if key == "durations" {
+                    for (of, seconds) in value.as_object().into_iter().flatten() {
+                        instance_durations
+                            .insert(format!("{of}{INSTANCE_SEP}{label}"), seconds.clone());
+                    }
+                } else {
+                    instances.insert(format!("{key}{INSTANCE_SEP}{label}"), value);
                 }
                 continue;
             }
@@ -666,7 +696,12 @@ fn conditional_delta(
             }
         }
     }
-    (delta, stacks)
+    // A duration only means something beside the instance it times.
+    instance_durations.retain(|of, _| instances.contains_key(of));
+    if !instance_durations.is_empty() {
+        instances.insert("durations".into(), Value::Object(instance_durations));
+    }
+    (delta, stacks, instances)
 }
 
 /// One active conditional's contribution, projected from the ATOMS it claims.

@@ -76,8 +76,9 @@ pub use boost_index::{BoostEntry, BoostIndex, OriginTier};
 pub use build_store::StoredBuilds;
 pub use caster_state::{
     castable_in_mode, caster_class_name, caster_modes, conditional_for_class, form_modes,
-    global_mechanics, group_label, mode_label, picks_answer, set_global_mechanic, set_stance,
-    stance_group_for, stance_groups, MechanicToggle, ModeToggle, StanceGroup, StanceOption,
+    global_mechanics, global_state_on, group_label, mirror_inherent_switch, mode_label,
+    picks_answer, set_global_mechanic, set_stance, stance_group_for, stance_groups, MechanicToggle,
+    ModeToggle, StanceGroup, StanceOption,
 };
 pub use character::power_address;
 pub use character::{

@@ -813,6 +813,26 @@ pub fn display_effects(
         }
     }
 
+    // A second instance that does not sum with its base row (Domination's longer Sleep beside
+    // the base one) keeps a row of its own, under its suffixed key, with its duration beside it.
+    if let Some(instances) = extra_object(power, crate::effective::CONDITIONAL_INSTANCE_KEY) {
+        for (key, value) in instances {
+            if key != "durations" {
+                bag.insert(key.clone(), value.clone());
+                continue;
+            }
+            let Some(timed) = value.as_object() else {
+                continue;
+            };
+            if let Value::Object(durations) = bag
+                .entry("durations")
+                .or_insert_with(|| Value::Object(Map::new()))
+            {
+                durations.extend(timed.clone());
+            }
+        }
+    }
+
     // Execution stats live on `stats` for primary/secondary powers and in the bag itself for
     // pool/epic ones. These are the same stats-first reads the projection's own fields use, so
     // one rule serves both. A zero is no stat, leaving any authored bag value standing.
@@ -1988,10 +2008,16 @@ pub fn resolve_display_bag(
         // renders flat (the same treatment a marked value under the base key gets), so the
         // registry keeps one entry per family and a power with both halves shows both rows, the
         // way the game's own monitor does, one tagged "Ignores buffs and enhancements" (ENT-6).
-        let (config, effect_key, from_split_slot) = match effect_registry::lookup(bag_key) {
-            Some(config) => (config, bag_key.as_str(), false),
+        // A conditional's second instance ([`crate::effective::CONDITIONAL_INSTANCE_KEY`])
+        // resolves through its effect's own key and is labelled after the walk.
+        let lookup_key = bag_key
+            .split_once(crate::effective::INSTANCE_SEP)
+            .map_or(bag_key.as_str(), |(effect, _)| effect);
+        let is_instance = lookup_key != bag_key;
+        let (config, effect_key, from_split_slot) = match effect_registry::lookup(lookup_key) {
+            Some(config) => (config, lookup_key, false),
             None => {
-                let split = bag_key
+                let split = lookup_key
                     .strip_suffix("Unenhanced")
                     .and_then(|base| effect_registry::lookup(base).map(|config| (base, config)));
                 let Some((base_key, config)) = split else {
@@ -2006,6 +2032,7 @@ pub fn resolve_display_bag(
         // reads each entry's own (absent) one. A non-expandable value falls through to the
         // generic path, as in the beta.
         if !from_split_slot
+            && !is_instance
             && config.expand_by_type
             && value.is_object()
             && push_expanded_rows(
@@ -2123,6 +2150,12 @@ pub fn resolve_display_bag(
         });
     }
 
+    // A second instance reads as its effect, named for the conditional that casts it.
+    for row in &mut rows {
+        if let Some((_, conditional)) = row.row_key.split_once(crate::effective::INSTANCE_SEP) {
+            row.label = format!("{} ({conditional})", row.label);
+        }
+    }
     rows
 }
 
