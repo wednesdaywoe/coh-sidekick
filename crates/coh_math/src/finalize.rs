@@ -784,11 +784,10 @@ mod tests {
     /// arm's shape.
     #[test]
     fn the_other_forks_keep_the_flat_ceiling_at_every_level() {
-        for dataset in [
-            DatasetId::Rebirth,
-            DatasetId::Brainstorm,
-            DatasetId::Thunderspy,
-        ] {
+        for dataset in DatasetId::ALL
+            .into_iter()
+            .filter(|&d| d != DatasetId::Homecoming)
+        {
             for level in [1, 25, 46, 47, 50] {
                 assert_eq!(
                     debuff_resistance_cap(dataset, level),

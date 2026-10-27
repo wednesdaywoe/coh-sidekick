@@ -49,7 +49,7 @@ fn sleep_rows(db: &PowerDatabase, state: &CharacterState) -> Vec<(String, f64)> 
 
 #[test]
 fn domination_adds_a_longer_sleep_row() {
-    for dataset in [DatasetId::Homecoming, DatasetId::Rebirth] {
+    for dataset in DatasetId::ALL {
         let db = load(dataset);
         let off = sleep_rows(&db, &dominator(dataset, false));
         assert_eq!(
@@ -71,7 +71,12 @@ fn domination_adds_a_longer_sleep_row() {
 
 #[test]
 fn domination_buff_counts_while_on() {
-    for (dataset, to_hit) in [(DatasetId::Homecoming, 25.0), (DatasetId::Rebirth, 0.0)] {
+    for (dataset, to_hit) in [
+        (DatasetId::Homecoming, 25.0),
+        (DatasetId::Rebirth, 0.0),
+        (DatasetId::Thunderspy, 0.0),
+        (DatasetId::Brainstorm, 25.0),
+    ] {
         let db = load(dataset);
         let off = coh_math::recalculate(&dominator(dataset, false), &db).bonuses;
         let on = coh_math::recalculate(&dominator(dataset, true), &db).bonuses;
