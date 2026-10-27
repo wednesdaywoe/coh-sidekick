@@ -99,8 +99,7 @@
             "display_name": "Freezing Rain",
             "priority_list": "PL_StaticObject",
             "redirects": [
-              "Pets.Freezing_Rain.FreezingRain",
-              "Pets.Freezing_Rain.Avoid"
+              "Pets.Freezing_Rain.FreezingRain"
             ],
             "type": "EntCreate"
           },

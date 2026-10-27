@@ -1,5 +1,11 @@
 [
     {
+    "date": "2026-10-27",
+    "items": [
+      { "id": "homecoming-data-2026-10-20", "type": "update", "message": "Homecoming data updated to the October 20 patch: Sonic Repulsion is now a hold and no longer takes damage enhancements, Clarity protects allies around the target as well as the target itself, Sonic Cage and Detention Field respect your recharge, Trip Mine's proc rate matches Traps, and Sleet, Ice Storm, Rain of Fire and the other placed area powers no longer make foes run" }
+    ]
+  },
+  {
     "date": "2026-10-26",
     "items": [
       { "id": "short-link-overwrite", "type": "fix", "message": "Copy short link no longer changes a link you already sent. Copying a link for a different build now makes a new link instead of replacing the last one" },

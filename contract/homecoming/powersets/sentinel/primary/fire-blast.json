@@ -2178,7 +2178,6 @@
     "duration": 15,
     "isPseudoPet": true,
     "powers": [
-     "Pets.RainofFire_Sentinel.Avoid",
      "Pets.RainofFire_Sentinel.RainofFire"
     ],
     "resolvedEntities": [

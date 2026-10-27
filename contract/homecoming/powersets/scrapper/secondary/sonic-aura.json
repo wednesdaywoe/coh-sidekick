@@ -882,7 +882,7 @@
     [
      "MezResist",
      "Knockup",
-     0,
+     1,
      1,
      0.75,
      "Melee_Ones",
@@ -902,7 +902,7 @@
     [
      "MezResist",
      "Knockback",
-     0,
+     1,
      1,
      0.75,
      "Melee_Ones",

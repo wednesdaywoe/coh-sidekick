@@ -3124,6 +3124,35 @@
    "maxSlots": 6,
    "atoms": [
     [
+     "GrantPower",
+     null,
+     1,
+     1,
+     0,
+     "Melee_Ones",
+     "Cur",
+     "Magnitude",
+     "Target",
+     "Any",
+     false,
+     "Stack",
+     2,
+     null,
+     null,
+     1,
+     null,
+     true,
+     null,
+     null,
+     null,
+     null,
+     [
+      "Power_DisallowGroupFly",
+      "target.TokenOwned?",
+      "!"
+     ]
+    ],
+    [
      "Movement",
      "FlyMode",
      2,
@@ -3408,6 +3437,41 @@
      "VFX",
      null,
      "null"
+    ],
+    [
+     "GrantPower",
+     null,
+     1,
+     1,
+     0,
+     "Melee_Ones",
+     "Cur",
+     "Magnitude",
+     "Self",
+     "Any",
+     false,
+     "Stack",
+     2,
+     null,
+     null,
+     1,
+     null,
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SelfAndPets"
     ],
     [
      "Movement",
@@ -3788,6 +3852,15 @@
      null,
      "HypersonicFly"
     ]
+   ],
+   "grantEdges": [
+    {
+     "op": "grant",
+     "path": "Temporary_Powers.Temporary_Powers.Group_Fly_Opt_Toggle",
+     "count": 1,
+     "expires": 20,
+     "maxCount": 1
+    }
    ],
    "setsModes": [
     "FlightActive"

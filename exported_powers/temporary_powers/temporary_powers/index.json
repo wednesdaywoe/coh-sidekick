@@ -79,9 +79,11 @@
     "Temporary_Powers.Temporary_Powers.Radiation_Control_GammaBurstDebuff",
     "Temporary_Powers.Temporary_Powers.StormBlast_StormBrewing",
     "Temporary_Powers.Temporary_Powers.Street_Cred",
-    "Temporary_Powers.Temporary_Powers.Personal_Force_Field_Auto"
+    "Temporary_Powers.Temporary_Powers.Personal_Force_Field_Auto",
+    "Temporary_Powers.Temporary_Powers.Group_Fly_Opt_Toggle"
   ],
   "available_level": [
+    0,
     0,
     0,
     0,
@@ -233,7 +235,8 @@
     "Gamma Rays",
     "Storm Brewing",
     "Street Cred",
-    "Personal Force Field"
+    "Personal Force Field",
+    "Group Fly Opt-Out"
   ],
   "power_short_helps": [
     "Self Rez",
@@ -310,7 +313,8 @@
     "Contaminated",
     "Special",
     "Street Cred",
-    "Toggle: Self +Def, Res, +Max END"
+    "Toggle: Self +Def, Res, +Max END",
+    "Toggle: Group Fly Opt-Out"
   ],
   "buy_requires": [],
   "buy_requires_failed": "",

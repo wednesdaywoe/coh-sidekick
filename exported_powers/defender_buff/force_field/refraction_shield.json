@@ -336,9 +336,10 @@
             "conditional_fx": "PFX"
           },
           "flags": [
+            "IgnoreStrength",
             "IgnoreResistance"
           ],
-          "flags_raw": 1056
+          "flags_raw": 1072
         },
         {
           "attribs": [

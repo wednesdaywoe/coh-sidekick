@@ -378197,7 +378197,9 @@
        "table": "Melee_Ones",
        "mezTypes": [
         "Fear",
-        "Sleep"
+        "Sleep",
+        "Knockup",
+        "Knockback"
        ],
        "ignoreStrength": true
       },
@@ -378233,26 +378235,15 @@
        "scale": 0.2,
        "table": "Melee_Ones",
        "resistanceTypes": [
+        "smashing",
         "lethal",
-        "cold"
+        "fire",
+        "cold",
+        "energy",
+        "negative",
+        "psionic",
+        "toxic"
        ]
-      },
-      {
-       "type": "SelfResistance",
-       "scale": 0.3,
-       "table": "Melee_Ones",
-       "resistanceTypes": [
-        "psionic"
-       ]
-      },
-      {
-       "type": "SelfResistance",
-       "scale": -0.2,
-       "table": "Melee_Ones",
-       "resistanceTypes": [
-        "energy"
-       ],
-       "ignoreStrength": true
       },
       {
        "type": "SelfMezResistance",
@@ -378297,6 +378288,46 @@
       [
        "Mez",
        "Sleep",
+       -4,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Cur",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Mez",
+       "Knockup",
+       -4,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Cur",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Mez",
+       "Knockback",
        -4,
        1,
        10.3,
@@ -378396,7 +378427,43 @@
       ],
       [
        "Resistance",
+       "Smashing",
+       0.2,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Res",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1
+      ],
+      [
+       "Resistance",
        "Lethal",
+       0.2,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Res",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1
+      ],
+      [
+       "Resistance",
+       "Fire",
        0.2,
        1,
        10.3,
@@ -378432,8 +378499,8 @@
       ],
       [
        "Resistance",
-       "Psionic",
-       0.3,
+       "Energy",
+       0.2,
        1,
        10.3,
        "Melee_Ones",
@@ -378450,8 +378517,8 @@
       ],
       [
        "Resistance",
-       "Energy",
-       -0.2,
+       "Negative",
+       0.2,
        1,
        10.3,
        "Melee_Ones",
@@ -378464,9 +378531,43 @@
        2,
        null,
        null,
+       1
+      ],
+      [
+       "Resistance",
+       "Psionic",
+       0.2,
        1,
+       10.3,
+       "Melee_Ones",
+       "Res",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
        null,
-       true
+       null,
+       1
+      ],
+      [
+       "Resistance",
+       "Toxic",
+       0.2,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Res",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1
       ],
       [
        "MezResist",

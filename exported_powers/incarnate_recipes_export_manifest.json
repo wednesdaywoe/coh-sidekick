@@ -7,15 +7,15 @@
     "sources": [
       {
         "name": "bin.pigg",
-        "bytes": 11351526,
-        "modified": "2026-09-29T20:22:49Z",
-        "sha256": "6afbd203d4d7de90ca60c2b13bcc2d626cfb1b7057c5fcaecb3f712d7f8254ea"
+        "bytes": 11351853,
+        "modified": "2026-10-17T15:10:03Z",
+        "sha256": "ae5752be81cc73eeb297c3216633f54c45eec263fb9f5e06e58c9ea103c5d089"
       },
       {
         "name": "bin_fxinfo.pigg",
-        "bytes": 3760630,
-        "modified": "2026-09-29T20:22:48Z",
-        "sha256": "c4c80c5720a46e5bb625553df74df03a07c6517f6c2dede26d13856ef244f94b"
+        "bytes": 3760714,
+        "modified": "2026-10-17T15:10:03Z",
+        "sha256": "d9613446c7c20bd25a1f685cae6599d431c730c83d50ba38af56f9b87dd5acee"
       },
       {
         "name": "bin_minimap.pigg",
@@ -31,9 +31,9 @@
       },
       {
         "name": "bin_powers.pigg",
-        "bytes": 5375523,
-        "modified": "2026-09-29T20:22:48Z",
-        "sha256": "4adae8f89f8411d6b50f187c6873df1cdc15787b6ae4bd1a1cdacfcefead0d76"
+        "bytes": 5372705,
+        "modified": "2026-10-17T15:10:03Z",
+        "sha256": "cdacbd77e1029369c659c4783bc08d37c0c0941917b77074b96ebd86391b3a51"
       },
       {
         "name": "bin_sequencers.pigg",
@@ -43,9 +43,9 @@
       },
       {
         "name": "bin_villaincostume.pigg",
-        "bytes": 1416882,
-        "modified": "2026-09-15T17:38:58Z",
-        "sha256": "b9c53287cc34623feaffe5a959c0f724f9954883b12d22fd07c05fbb1771c754"
+        "bytes": 1416868,
+        "modified": "2026-10-17T15:10:02Z",
+        "sha256": "47d11113d84e16de88ae8c5963e93f604c14eb97956adc67096432ec998c70ce"
       }
     ]
   },

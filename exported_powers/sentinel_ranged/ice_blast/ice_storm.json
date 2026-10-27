@@ -97,7 +97,6 @@
             "display_name": "Ice Storm",
             "priority_list": "PL_StaticObject",
             "redirects": [
-              "Pets.IceStorm_Sentinel.Avoid",
               "Pets.IceStorm_Sentinel.IceStorm"
             ],
             "type": "EntCreate"

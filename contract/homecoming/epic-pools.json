@@ -67666,8 +67666,7 @@
      "isPseudoPet": true,
      "displayName": "Sleet",
      "powers": [
-      "Pets.Sleet_Epic.Sleet",
-      "Pets.Sleet_Epic.Avoid"
+      "Pets.Sleet_Epic.Sleet"
      ],
      "duration": 15,
      "copyBoosts": true

@@ -3339,7 +3339,7 @@
    "autoIssue": false,
    "free": false,
    "description": "Your control of sonic waves extends to nearby allies. Any teammates who remain nearby gain a bonus to their resistance. While this power is active, the sonic waves will bounce back to you like sonar, granting some resistance to ToHit and Perception debuffs, as well as increased perception.",
-   "shortHelp": "PBAoE Team +RES(All), Self +RES(Defense Debuff, ToHit, Perception) +Perception",
+   "shortHelp": "PBAoE Team +RES(All), Self +RES(ToHit, Perception) +Perception",
    "icon": "sonicaura_somaticaura.png",
    "powerType": "Toggle",
    "targetType": "Self",

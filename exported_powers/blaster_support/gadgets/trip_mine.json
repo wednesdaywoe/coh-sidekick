@@ -184,6 +184,7 @@
       ]
     }
   ],
+  "area_factor_override": 2.8,
   "modes_disallowed": [
     "Disable_All"
   ],

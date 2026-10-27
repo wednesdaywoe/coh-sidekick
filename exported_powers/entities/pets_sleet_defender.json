@@ -14,16 +14,13 @@
     "display_class_name": "",
     "power_full_names": [
       "Pets.ResistAll.ResistAll",
-      "Pets.Sleet_Defender.Sleet",
-      "Pets.Sleet_Defender.Avoid"
+      "Pets.Sleet_Defender.Sleet"
     ],
     "power_display_names": [
       "ResistAll",
-      "Sleet",
-      "Avoid"
+      "Sleet"
     ],
     "power_levels": [
-      0,
       0,
       0
     ],

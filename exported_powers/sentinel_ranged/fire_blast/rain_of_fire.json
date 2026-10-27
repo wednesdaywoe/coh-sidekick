@@ -95,7 +95,6 @@
             "display_name": "Rain of Fire",
             "priority_list": "PL_StaticObject",
             "redirects": [
-              "Pets.RainofFire_Sentinel.Avoid",
               "Pets.RainofFire_Sentinel.RainofFire"
             ],
             "type": "EntCreate"
