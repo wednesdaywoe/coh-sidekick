@@ -225,3 +225,62 @@ fn an_epic_patch_has_its_damage() {
         }
     }
 }
+
+/// A pet's hit can fork on its owner's archetype (`arch source.owner>`), and the owner of a pet
+/// the build summoned is the player. Left unanswered, Fallout showed no damage on any archetype
+/// and a Blaster's Meteor listed the Corruptor's Scourge as a hit it might land.
+#[test]
+fn a_pets_hit_knows_its_owner() {
+    for dataset in [DatasetId::Homecoming, DatasetId::Brainstorm] {
+        let db = load(dataset);
+        let scourge = |damage: &PowerDamage| {
+            damage
+                .unresolved
+                .iter()
+                .any(|u| u.gate.contains("Class_Corruptor"))
+        };
+        for (set, archetype, owns_scourge) in [
+            ("blaster/seismic-blast", "blaster", false),
+            ("defender/seismic-blast", "defender", false),
+            ("corruptor/seismic-blast", "corruptor", true),
+        ] {
+            let meteor = db.find_power(set, "Meteor").expect("Meteor");
+            let damage = damage(&db, archetype, meteor);
+            assert_eq!(scourge(&damage), owns_scourge, "{dataset:?} {set}");
+        }
+        for archetype in ["controller", "corruptor", "defender", "mastermind"] {
+            let set = format!("{archetype}/radiation-emission");
+            let fallout = db.find_power(&set, "Fallout").expect("Fallout");
+            let damage = damage(&db, archetype, fallout);
+            assert!(damage.base > 0.0, "{dataset:?} {set}: no damage");
+        }
+    }
+}
+
+/// Carrion Creepers' patch grows a vine under each foe in it, half the time, every 10 seconds,
+/// and the vine fights with its own powers. One foe in the patch for its 120 seconds sees 13
+/// tries, so 6.5 vines.
+#[test]
+fn a_patch_counts_the_vines_it_grows() {
+    for dataset in [DatasetId::Homecoming, DatasetId::Brainstorm] {
+        let db = load(dataset);
+        for archetype in ["controller", "dominator"] {
+            let set = format!("{archetype}/plant-control");
+            let creepers = db
+                .find_power(&set, "Carrion_Creepers")
+                .expect("Carrion Creepers");
+            let damage = damage(&db, archetype, creepers);
+            let vines: Vec<_> = damage
+                .components
+                .iter()
+                .filter_map(|c| c.summoned.as_ref())
+                .filter(|s| s.entity == "Carrion Creeper Vine")
+                .collect();
+            assert!(!vines.is_empty(), "{dataset:?} {set}: no vine hits");
+            for vine in vines {
+                assert_eq!(vine.count, 6.5, "{dataset:?} {set}");
+                assert_eq!(vine.lifespan, 14.0, "{dataset:?} {set}");
+            }
+        }
+    }
+}

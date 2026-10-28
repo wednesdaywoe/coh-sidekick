@@ -977,6 +977,10 @@ pub struct SourceContext {
     /// `caster_archetypes` stamp can't carry them; answering it here lets `&&` absorb the other
     /// archetypes' arms instead of reporting them unresolved.
     pub caster_class: Option<String>,
+    /// `arch source.owner>`: the class of whoever owns the source. Set only when the source is a
+    /// pet the build summoned, whose owner is the player: Meteor's Scourge hit asks it to keep
+    /// the Corruptor's bonus off every other archetype's meteor. `None` leaves it Indeterminate.
+    pub owner_class: Option<String>,
     /// `distance`: how far the target is, in feet, as the bounds the caller can vouch for — the
     /// band the player chose for this power, or `0` to the power's reach when they chose none
     /// ([`crate::distance`]). `None` (the default, and every context that is not about one
@@ -1061,6 +1065,11 @@ impl EvalContext for SourceContext {
 
             "source>" | "Source>" if name(0)?.eq_ignore_ascii_case("arch") => self
                 .caster_class
+                .as_deref()
+                .map(|class| Value::Symbol(class.into()))
+                .ok_or_else(|| EvalError::Indeterminate(reader.into())),
+            "source.owner>" if name(0)?.eq_ignore_ascii_case("arch") => self
+                .owner_class
                 .as_deref()
                 .map(|class| Value::Symbol(class.into()))
                 .ok_or_else(|| EvalError::Indeterminate(reader.into())),

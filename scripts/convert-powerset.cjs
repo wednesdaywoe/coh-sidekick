@@ -2795,6 +2795,35 @@ function collectTemplatesWithChance(effects, visited = new Set(), depth = 0, cum
  * @param {string[]} redirectNames - the EntCreate's params.redirects
  * @returns {Array} synthesized PetAbility[]
  */
+/**
+ * The real pets a shell's power grows each time it fires, with the chance it does: Carrion
+ * Creepers' patch grows a vine under each foe in it, half the time, every 10 seconds. Their hits
+ * are the vine's own, so the engine reads them off the pet table; this only says how many grow.
+ *
+ * A gated or PvP-only group is left out rather than guessed at, and a shell (a create that
+ * names redirects) is not a pet: `attachResolvedPseudoPets` resolves those.
+ */
+function _grownPets(effects, chance = 1) {
+  const out = [];
+  for (const effect of effects || []) {
+    if (effect.is_pvp === 'PVP_ONLY' || (effect.requires_expression || []).length) continue;
+    const c = chance * (typeof effect.chance === 'number' ? effect.chance : 1);
+    if (c <= 0) continue;
+    for (const t of effect.templates || []) {
+      const p = t.params || {};
+      if (p.type !== 'EntCreate' || !p.entity_def || p.redirects?.length) continue;
+      if (/^P\d+$/.test(p.entity_def)) continue;
+      out.push({
+        entity: p.entity_def,
+        ...(c < 1 ? { chance: Math.round(c * 1000) / 1000 } : {}),
+        ...((t.flags || []).includes('CopyBoosts') ? { copyBoosts: true } : {}),
+      });
+    }
+    out.push(..._grownPets(effect.child_effects, c));
+  }
+  return out;
+}
+
 function resolveSummonRedirects(redirectNames) {
   const abilities = [];
   for (const name of redirectNames || []) {
@@ -2860,7 +2889,8 @@ function resolveSummonRedirects(redirectNames) {
       }
     }
 
-    if (damage.length === 0 && effects.length === 0) continue; // ResistAll etc.
+    const spawns = _grownPets(json.effects);
+    if (damage.length === 0 && effects.length === 0 && spawns.length === 0) continue; // ResistAll etc.
 
     // How often does this redirect's damage actually land? Classify from the
     // per-template chance/gated flags of the damage leaves.
@@ -2936,6 +2966,7 @@ function resolveSummonRedirects(redirectNames) {
       ...(json.max_targets_hit > 0 ? { maxTargets: json.max_targets_hit } : {}),
       ...(json.area_factor_override ? { areaFactorOverride: json.area_factor_override } : {}),
       ...(json.ppm_mod ? { ppmMod: json.ppm_mod } : {}),
+      ...(spawns.length > 0 ? { spawns } : {}),
       // The redirect's atoms, minted the way convert-pet-entities mints an entity ability's,
       // so the engine reads both pseudo-pet routes through one atom path. `damage` above is a
       // lossy view (PvP dropped, gates and chances flattened into flags); the summoned-damage
@@ -3517,6 +3548,9 @@ function attachResolvedPseudoPets(powerJson, effects) {
       abilities = resolveSummonRedirects(g.infoRedirects);
     }
     if (abilities.length === 0) continue;
+    // A shell that only grows pets leaves them to the pet table. Poison Trap's gas is reached
+    // through the trap's own entity, which resolving the shell here would displace.
+    if (abilities.every((a) => a.damage.length === 0 && !a.effects)) continue;
     if (g.shellName) resolvedShellNames.push(g.shellName);
     const count = g.occurrences.filter(o => o.chance > 0).length || 1;
     // Per-entity lifespan: prefer the EntCreate's own Duration (Category Five's

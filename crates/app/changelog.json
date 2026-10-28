@@ -2,7 +2,9 @@
     {
     "date": "2026-10-28",
     "items": [
-      { "id": "placed-attack-damage", "type": "fix", "message": "Attacks that do their damage through something they place now show it: Meteor, Trip Mine, Carrion Creepers, Bonfire from Fire Mastery and Sleet from the Dominator's Ice Mastery. The Dominator's Trip Mine counts as one explosion" }
+      { "id": "placed-attack-damage", "type": "fix", "message": "Attacks that do their damage through something they place now show it: Meteor, Trip Mine, Carrion Creepers, Bonfire from Fire Mastery and Sleet from the Dominator's Ice Mastery. The Dominator's Trip Mine counts as one explosion" },
+      { "id": "pet-damage-by-archetype", "type": "fix", "message": "Powers whose placed effect hits differently for each archetype now show your archetype's damage instead of none: Fallout, Irradiated Ground and Enflame, and on Rebirth and Thunderspy also Savage Leap, Spring Attack, Corrosive Vial, Ignite, Afterburner, Choking Cloud and Quantum Acceleration. Meteor no longer lists the Corruptor's Scourge bonus on other archetypes" },
+      { "id": "carrion-creepers-vines", "type": "fix", "message": "Carrion Creepers now counts the vines it grows: half the time, every 10 seconds, under each foe in the patch. One foe in the patch for its whole two minutes sees six or seven vines" }
     ]
   },
     {

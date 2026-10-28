@@ -3512,6 +3512,114 @@
         ]
        },
        {
+        "name": "Vines",
+        "displayName": "Vines",
+        "type": "Auto",
+        "damage": [],
+        "recharge": 0,
+        "castTime": 0,
+        "activatePeriod": 10,
+        "effectArea": "Sphere",
+        "targetsAffected": [
+         "Foe"
+        ],
+        "radius": 20,
+        "maxTargets": 10,
+        "spawns": [
+         {
+          "entity": "Pets_Creeper_Vine",
+          "chance": 0.5,
+          "copyBoosts": true
+         }
+        ],
+        "redirectAtoms": [
+         [
+          "Meta",
+          null,
+          0,
+          0,
+          0,
+          "Melee_Ones",
+          "Cur",
+          "Magnitude",
+          "Target",
+          "Any",
+          true,
+          "Stack",
+          2,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "null"
+         ],
+         [
+          "EntCreate",
+          null,
+          -1,
+          1,
+          14,
+          "Ranged_Ones",
+          "Cur",
+          "Magnitude",
+          "Target",
+          "Any",
+          false,
+          "Ignore",
+          2,
+          null,
+          null,
+          0.5,
+          null,
+          true,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "CreeperVine",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          true
+         ]
+        ]
+       },
+       {
         "name": "Bramble",
         "displayName": "Bramble",
         "type": "Auto",
@@ -3633,6 +3741,47 @@
            "critter",
            "eq"
           ]
+         ]
+        ]
+       },
+       {
+        "name": "FX",
+        "displayName": "E74KWDDQV99GY7LE7YNYUFP9QX",
+        "type": "Auto",
+        "damage": [],
+        "recharge": 0,
+        "castTime": 0,
+        "activatePeriod": 2,
+        "effectArea": "SingleTarget",
+        "targetsAffected": [
+         "Self"
+        ],
+        "spawns": [
+         {
+          "entity": "Pets_Creeper_FX",
+          "copyBoosts": true
+         }
+        ],
+        "redirectAtoms": [
+         [
+          "EntCreate",
+          null,
+          -1,
+          1,
+          0,
+          "Ranged_Ones",
+          "Cur",
+          "Magnitude",
+          "Self",
+          "Any",
+          false,
+          "Ignore",
+          2,
+          null,
+          null,
+          1,
+          null,
+          true
          ]
         ]
        }

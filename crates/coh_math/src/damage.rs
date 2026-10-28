@@ -430,6 +430,11 @@ fn resolve_summoned(
     let Some(summon) = power.summon() else {
         return;
     };
+    // The pets' atoms are cast by the pet, so the one owning it is the player.
+    let target_context = &SourceContext {
+        owner_class: target_context.caster_class.clone(),
+        ..target_context.clone()
+    };
     // Soul Extraction's tier ghosts: exactly one materializes, so their hits are alternatives and
     // no sum of them is a number any cast produces.
     if summon.get("mutuallyExclusive").and_then(Json::as_bool) == Some(true) {
@@ -577,6 +582,74 @@ fn resolve_summoned(
                 errors,
                 damage,
             );
+            // The pets the ability grows each time it fires, hitting with their own powers under
+            // their own class: Carrion Creepers' vines, one under the foe half the time. Their
+            // number needs the shell's window, so without one their hits go unresolved.
+            let period = ability
+                .get("activatePeriod")
+                .and_then(Json::as_f64)
+                .unwrap_or(0.0);
+            let grows = match pet.lifespan.filter(|lifespan| *lifespan > 0.0) {
+                Some(lifespan) if period > 0.0 => Some(nominal_ticks(lifespan, period)),
+                Some(_) => Some(1.0),
+                None => None,
+            };
+            for spawn in ability
+                .get("spawns")
+                .and_then(Json::as_array)
+                .into_iter()
+                .flatten()
+            {
+                let Some(root) = spawn.get("entity").and_then(Json::as_str) else {
+                    continue;
+                };
+                let chance = spawn.get("chance").and_then(Json::as_f64).unwrap_or(1.0);
+                let boosted = spawn.get("copyBoosts").and_then(Json::as_bool) == Some(true);
+                for entity in summoned_entity_chain(database, root) {
+                    if follows_owner(entity) {
+                        continue;
+                    }
+                    let Some(class) = entity.get("characterClass").and_then(Json::as_str) else {
+                        errors.push(CalcError::new(
+                            "summoned-damage",
+                            format!(
+                                "pet entity {root:?} states no characterClass to resolve under"
+                            ),
+                        ));
+                        continue;
+                    };
+                    let copies = boosted
+                        || entity.get("copyCreatorMods").and_then(Json::as_bool) == Some(true);
+                    let grown = Pet {
+                        name: entity
+                            .get("displayName")
+                            .and_then(Json::as_str)
+                            .unwrap_or(root),
+                        count: pet.count * grows.unwrap_or(1.0) * chance,
+                        lifespan: grows.and(entity.get("lifespan").and_then(Json::as_f64)),
+                        one_shot: entity.get("oneShot").and_then(Json::as_bool) == Some(true),
+                        condition: None,
+                        scope: TableScope::Pet(class),
+                        strength: Strength::of(
+                            if copies { enhancement } else { 0.0 },
+                            global_damage,
+                            None,
+                        ),
+                    };
+                    for ability in entity_abilities(entity) {
+                        resolve_pet_ability(
+                            ability,
+                            "atoms",
+                            &grown,
+                            level,
+                            target_context,
+                            database,
+                            errors,
+                            damage,
+                        );
+                    }
+                }
+            }
         }
     }
 }
