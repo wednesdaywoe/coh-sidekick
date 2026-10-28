@@ -164,3 +164,64 @@ fn a_power_with_its_own_hit_keeps_it() {
         assert!(damage.components.iter().all(|c| c.summoned.is_none()));
     }
 }
+
+/// Meteor's shell places a second shell that runs the hit, and a Trip Mine's self-destruct fires
+/// the hit as a power of its own. The pet's atoms stopped a hop short of both, so each attack
+/// showed no damage at all. Homecoming's only: the other forks state these pets differently.
+#[test]
+fn a_hit_one_hop_further_on_still_lands() {
+    for dataset in [DatasetId::Homecoming, DatasetId::Brainstorm] {
+        let db = load(dataset);
+        let meteor = db
+            .find_power("blaster/seismic-blast", "Meteor")
+            .expect("Blaster Meteor");
+        let meteor = damage(&db, "blaster", meteor);
+        // 1.0 Fire and 3.0 Smashing, from one meteor.
+        let expected = 4.0 * table(&db, "blaster", "Ranged_Damage");
+        assert!(
+            (meteor.base - expected).abs() < 0.01,
+            "{dataset:?} Meteor: {} against {expected}",
+            meteor.base
+        );
+
+        let mut mines = 0;
+        for set in db.powersets.iter() {
+            let Some(mine) = set.powers.iter().find(|p| p.ident() == "Trip_Mine") else {
+                continue;
+            };
+            let archetype = set.archetype.as_deref().expect("an archetype set");
+            let damage = damage(&db, archetype, mine);
+            assert!(damage.base > 0.0, "{dataset:?} {}: no damage", set.id);
+            // A mine goes off once, however long it waits: the Dominator's names its
+            // self-destruct differently, and read nine detonations over its 170s.
+            for component in &damage.components {
+                let fires = component.summoned.as_ref().map(|s| s.fires);
+                assert_eq!(fires, Some(1.0), "{dataset:?} {}", set.id);
+            }
+            mines += 1;
+        }
+        assert_eq!(mines, 6, "{dataset:?}: every archetype's Trip Mine");
+    }
+}
+
+/// The epic converter built the summon but never read what a placed shell does, so epic Bonfire
+/// and the Dominator's Sleet came through as pets with no payload.
+#[test]
+fn an_epic_patch_has_its_damage() {
+    for dataset in [DatasetId::Homecoming, DatasetId::Brainstorm] {
+        let db = load(dataset);
+        for (set, ident) in [
+            ("flame_mastery", "Bonfire"),
+            ("heat_mastery_stalker", "Bonfire"),
+            ("ice_mastery_dominator", "Ice_Blast"),
+        ] {
+            let power = db
+                .epic_powers
+                .iter()
+                .find(|p| p.set_id == set && p.power.ident() == ident)
+                .unwrap_or_else(|| panic!("{dataset:?}: no {set} {ident}"));
+            let damage = damage(&db, "blaster", &power.power);
+            assert!(damage.base > 0.0, "{dataset:?} {set} {ident}: no damage");
+        }
+    }
+}

@@ -21,6 +21,7 @@ const {
   BOOST_TYPE_MAP,
   extractEffects,
   extractPowerSummon,
+  attachResolvedPseudoPets,
   extractDamage,
   extractFormVariants,
   extractGrantEdges,
@@ -295,6 +296,9 @@ function convertEpicPower(rawJson, rank, availableLevel) {
     // reader answers for both partitions.
     const summon = extractPowerSummon(allTemplates, rawJson.name);
     if (summon) power.summon = summon;
+    // What a placed shell does lives on its redirects, which only this step reads. Without it
+    // epic Bonfire's patch came through as a pet with no payload, and no damage.
+    attachResolvedPseudoPets(rawJson, power);
 
   }
 

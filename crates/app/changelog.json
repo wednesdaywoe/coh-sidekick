@@ -1,5 +1,11 @@
 [
     {
+    "date": "2026-10-28",
+    "items": [
+      { "id": "placed-attack-damage", "type": "fix", "message": "Attacks that do their damage through something they place now show it: Meteor, Trip Mine, Carrion Creepers, Bonfire from Fire Mastery and Sleet from the Dominator's Ice Mastery. The Dominator's Trip Mine counts as one explosion" }
+    ]
+  },
+    {
     "date": "2026-10-27",
     "items": [
       { "id": "homecoming-data-2026-10-20", "type": "update", "message": "Homecoming data updated to the October 20 patch: Sonic Repulsion is now a hold and no longer takes damage enhancements, Clarity protects allies around the target as well as the target itself, Sonic Cage and Detention Field respect your recharge, Trip Mine's proc rate matches Traps, and Sleet, Ice Storm, Rain of Fire and the other placed area powers no longer make foes run" },

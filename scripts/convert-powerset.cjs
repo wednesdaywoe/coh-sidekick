@@ -2945,7 +2945,7 @@ function resolveSummonRedirects(redirectNames) {
       // loader's `collect_into`, the emitter, audit-form-coverage), so that key would turn each
       // redirect into a phantom power nested inside its summoner.
       ...(() => {
-        const templates = collectAtomTemplates(json.effects);
+        const templates = collectAtomTemplates(json.effects, false, [], null, 0, new Set([name]), true);
         const atoms = encodeAtomsForEmit(templates, templates, json.name);
         return atoms ? { redirectAtoms: atoms } : {};
       })(),
@@ -3392,6 +3392,26 @@ function rebuildTierConditionalSummon(powerJson, effects) {
   effects.summon = summon;
 }
 
+/**
+ * The delay on a redirect's own self-kill, or undefined when it has none: a Self-targeted
+ * `Silent_Kill` (Parse6 spells it `Create_Entity`, told apart by having no EntCreate params),
+ * as convert-pet-entities' `extractSelfDestructDelay` reads it.
+ */
+function _selfKillDelay(name) {
+  const isStandardRedirect = name.toLowerCase().startsWith('redirects.');
+  const file = (isStandardRedirect ? null : resolveAuxRedirectPath(name)) || resolveRedirectPath(name);
+  if (!fs.existsSync(file)) return undefined;
+  for (const group of _readPowerFile(file).effects || []) {
+    for (const t of group.templates || []) {
+      const attribs = t.attribs || [];
+      if (!attribs.includes('Silent_Kill') && !attribs.includes('Create_Entity')) continue;
+      if (t.target !== 'Self' || t.params) continue;
+      return typeof t.delay === 'number' ? t.delay : 0;
+    }
+  }
+  return undefined;
+}
+
 function attachResolvedPseudoPets(powerJson, effects) {
   if (!effects || !effects.summon) return;
 
@@ -3506,9 +3526,11 @@ function attachResolvedPseudoPets(powerJson, effects) {
     if (g.override) overrides.push(g.override);
     // A bomb, by convert-pet-entities' `detectOneShot` rule: an immediate Self_Destruct among
     // the redirects and one damaging Click. Issue 28 Page 4 moved Trip Mine onto this path,
-    // where without it the 260s window read as nine detonations.
+    // where without it the 260s window read as nine detonations. The sidecar only knows files
+    // named `self_destruct.json`, so a redirect it doesn't name is read for its own self-kill
+    // (the Dominator's mine is `TripMine_SelfDestruct`).
     const selfDestructDelay = (g.redirects || [])
-      .map((r) => petSidecar('self-destruct-delays')[r])
+      .map((r) => petSidecar('self-destruct-delays')[r] ?? _selfKillDelay(r))
       .find((v) => typeof v === 'number');
     const damaging = abilities.filter((a) => a.damage.length > 0);
     const oneShot = selfDestructDelay !== undefined && selfDestructDelay <= 1
@@ -5462,7 +5484,8 @@ function _hasRequiredEvents(t) {
  * same power JSON is safe.
  */
 function collectAtomTemplates(effects, parentCombatGated = false, ancestorRequires = [],
-                              ancestorArchetypes = null, ancestorDelay = 0, visited = new Set()) {
+                              ancestorArchetypes = null, ancestorDelay = 0, visited = new Set(),
+                              pet = false) {
   const templates = [];
   for (const effect of effects || []) {
     let combatGated = parentCombatGated;
@@ -5476,27 +5499,40 @@ function collectAtomTemplates(effects, parentCombatGated = false, ancestorRequir
       // Inside `convertPower`'s window, follow what the row fires, under this group's gate.
       // Blinding Beam's Radiance -Damage and Sonic Clap's Attune damage over time both live in a
       // fired power, the second behind a gated group the base walk never enters.
-      if (!_redirectJsonByName || (t.attribs || [])[0]?.toLowerCase() !== 'execute_power') continue;
-      for (const pName of t.params?.power_names || []) {
+      //
+      // A pseudo-pet's redirect (`pet`) follows further, as far as its `damage` view does: what it
+      // fires under any name (Trip Mine's Self_Destruct fires `Villain_Pets.Traps_Trip_Mine.
+      // Trip_Mine`) and the shell it places in turn (Meteor's shell places the one that runs
+      // MeteorHit). Stopping a hop short left both hits off the atoms the engine reads.
+      const attrib = (t.attribs || [])[0]?.toLowerCase();
+      let follows = null;
+      if (attrib === 'execute_power' && (_redirectJsonByName || pet)) {
+        follows = t.params?.power_names || [];
+      } else if (attrib === 'create_entity' && pet) {
+        follows = (t.params?.redirects || []).filter((r) => !/(resistall|\.avoid$|_info$)/i.test(r));
+      }
+      for (const pName of follows || []) {
         const isStandardRedirect = pName.toLowerCase().startsWith('redirects.');
         const auxPath = isStandardRedirect ? null : resolveAuxRedirectPath(pName);
-        if (!isStandardRedirect && !auxPath) continue;
+        const file = isStandardRedirect ? resolveRedirectPath(pName)
+          : auxPath || (pet ? resolveRedirectPath(pName) : null);
+        if (!file) continue;
         if (visited.has(pName)) continue;
         visited.add(pName);
-        const file = isStandardRedirect ? resolveRedirectPath(pName) : auxPath;
         if (!fs.existsSync(file)) continue;
         const fired = _loadSharedRedirect(pName, file);
         templates.push(..._stampOwnerScalars(collectAtomTemplates(
           fired.effects || [], combatGated, _childRequires(ancestorRequires, effect),
           _childArchetypes(ancestorArchetypes, effect),
-          _childDelay(ancestorDelay, effect) + (t.delay || 0), visited
+          _childDelay(ancestorDelay, effect) + (t.delay || 0), visited, pet
         ), fired));
       }
     }
     if (effect.child_effects && effect.child_effects.length > 0) {
       templates.push(...collectAtomTemplates(
         effect.child_effects, combatGated, _childRequires(ancestorRequires, effect),
-        _childArchetypes(ancestorArchetypes, effect), _childDelay(ancestorDelay, effect), visited
+        _childArchetypes(ancestorArchetypes, effect), _childDelay(ancestorDelay, effect), visited,
+        pet
       ));
     }
   }
