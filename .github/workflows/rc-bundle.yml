@@ -652,9 +652,13 @@ jobs:
           cat > notes.md <<NOTES
           Desktop builds of CoH Sidekick, built from ${GITHUB_SHA::9}.
 
-          - **Windows (x86_64):** unzip and run \`Sidekick.exe\`. Windows SmartScreen may warn, because the build is not code-signed: choose *More info*, then *Run anyway*.
-          - **macOS (Apple Silicon only):** unzip and move \`Sidekick.app\` to Applications. The app is not notarised, so the first time, right-click it and choose *Open*.
-          - **Linux (x86_64):** make the AppImage executable (\`chmod +x\`) and run it.
+          - **Windows (x86_64):** unzip and run \`Sidekick.exe\`. Windows SmartScreen will warn you, because the build is not code-signed: choose *More info*, then *Run anyway*.
+
+          - **macOS (Apple Silicon only):** unzip and move \`Sidekick.app\` to Applications. The first time only, copy this line into Terminal (it's in your Utilities folder) and press Enter:
+          \`xattr -dr com.apple.quarantine /Applications/Sidekick.app\`
+          This is needed because the app is not notarized, so macOS will otherwise refuse to open it.
+
+          - **Linux (x86_64):** move the AppImage wherever you want, then right-click it and choose *Run Executable*.
 
           \`SHA256SUMS\` lists each file's checksum, so you can confirm a download is the file this build produced.
           NOTES
