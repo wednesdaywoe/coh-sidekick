@@ -447,7 +447,9 @@ jobs:
     # reasoning for the job-local cargo home and target directory below. jpc's
     # `CARGO_BUILD_JOBS=20` cap went with jpc: it existed because that box's own
     # `~/.cargo/config.toml` capped jobs after an OOM, and a hosted runner has no such file.
-    runs-on: ubuntu-latest
+    # Pinned, not `-latest`: the AppImage carries the runner's libraries, so it needs the runner's
+    # glibc. `ubuntu-latest` went to 26.04 after rc2 and the rc3 AppImage wouldn't start on 24.04.
+    runs-on: ubuntu-24.04
     env:
       # linuxdeploy is itself an AppImage, and hosted Ubuntu ships no FUSE to mount one. This
       # makes it unpack itself and run instead, which is its documented fallback.
