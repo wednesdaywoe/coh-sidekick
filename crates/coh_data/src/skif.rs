@@ -655,6 +655,7 @@ pub fn hydrate(file: SkifFile, database: &PowerDatabase) -> Result<Decoded, Skif
     };
     build.primary = hydrate_powerset(slim.primary, &resolver, &mut unresolved);
     build.secondary = hydrate_powerset(slim.secondary, &resolver, &mut unresolved);
+    seat_base_sets(&mut build, database);
     build.pools = slim
         .pools
         .into_iter()
@@ -853,6 +854,48 @@ fn hydrate_powerset(
             unresolved,
             Resolve::Powerset,
         ),
+    }
+}
+
+/// Put a VEAT's base sets back in the primary and secondary seats where a file put a branch set.
+///
+/// Mids files a Fortunata under `Widow_Training.Fortunata_Training` and
+/// `Teamwork.Fortunata_Teamwork`, so an import seats the branch pair, and the app then never
+/// offers Widow Training or Teamwork at all. Every pick was already hydrated under the seat's
+/// old id, so it keeps the branch set as its own and only the seat moves.
+fn seat_base_sets(build: &mut CharacterState, database: &PowerDatabase) {
+    let Some(archetype) = build.archetype.id.as_deref() else {
+        return;
+    };
+    let Ok(catalog) = database.archetypes() else {
+        return;
+    };
+    let Some(at) = catalog.get(archetype) else {
+        return;
+    };
+    let seats = [
+        (&mut build.primary, &at.primary_sets, true),
+        (&mut build.secondary, &at.secondary_sets, false),
+    ];
+    for (selection, roster, primary) in seats {
+        let [base] = roster.as_slice() else {
+            continue;
+        };
+        let Some(id) = selection.id.as_deref() else {
+            continue;
+        };
+        let is_branch = at.branches.iter().any(|branch| {
+            let set = if primary {
+                &branch.primary_set
+            } else {
+                &branch.secondary_set
+            };
+            set.as_deref()
+                .is_some_and(|set| set.eq_ignore_ascii_case(id))
+        });
+        if is_branch {
+            selection.id = Some(base.clone());
+        }
     }
 }
 

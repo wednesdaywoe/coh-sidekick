@@ -470,6 +470,71 @@
       "id": "regen-recovery-per-second",
       "date": "2026-10-25",
       "preview": "Regeneration and Recovery now also show their per-second rate: HP/s for Regenera"
+    },
+    {
+      "id": "placed-attack-damage",
+      "date": "2026-10-28",
+      "preview": "Attacks that do their damage through something they place now show it: Meteor, T"
+    },
+    {
+      "id": "pet-damage-by-archetype",
+      "date": "2026-10-28",
+      "preview": "Powers whose placed effect hits differently for each archetype now show your arc"
+    },
+    {
+      "id": "carrion-creepers-vines",
+      "date": "2026-10-28",
+      "preview": "Carrion Creepers now counts the vines it grows: half the time, every 10 seconds,"
+    },
+    {
+      "id": "homecoming-data-2026-10-20",
+      "date": "2026-10-27",
+      "preview": "Homecoming data updated to the October 20 patch: Sonic Repulsion is now a hold a"
+    },
+    {
+      "id": "debuff-resistance-ceilings",
+      "date": "2026-10-27",
+      "preview": "Debuff resistance now stops at the game's own ceiling on every server, read from"
+    },
+    {
+      "id": "short-link-overwrite",
+      "date": "2026-10-26",
+      "preview": "Copy short link no longer changes a link you already sent. Copying a link for a "
+    },
+    {
+      "id": "picker-filter-to-piece",
+      "date": "2026-10-26",
+      "preview": "The enhancement picker has a new Filter to piece checkbox. Untick it to see ever"
+    },
+    {
+      "id": "powers-in-level-order",
+      "date": "2026-10-26",
+      "preview": "Your chosen powers now list in the order you took them, by level. A power added "
+    },
+    {
+      "id": "alpha-movement-boosts",
+      "date": "2026-10-26",
+      "preview": "Alpha incarnates that boost run, fly or jump speed (Agility, Musculature, Nerve "
+    },
+    {
+      "id": "cross-punch-boxing-kick",
+      "date": "2026-10-26",
+      "preview": "Cross Punch's +ToHit and +Recharge now count Boxing and Kick: 5% for each one yo"
+    },
+    {
+      "id": "what-if-kept",
+      "date": "2026-10-26",
+      "preview": "What-if team buffs are now kept on your device when you close the app. They stil"
+    },
+    {
+      "id": "desktop-window-remembered",
+      "date": "2026-10-26",
+      "preview": "The desktop app now reopens at the size you left it, and maximized if it was"
+    },
+    {
+      "id": "domination-counts",
+      "date": "2026-10-26",
+      "preview": "Domination now does something. With it on, each control power shows its longer D"
     }
   ]
 }
