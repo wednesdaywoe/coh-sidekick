@@ -331,10 +331,17 @@ impl CalculatedTotals {
     /// fail to reach the total, but they are ordinary game mechanics rather than a cap the build
     /// is paying for and getting nothing from ([`crate::movement`] says the same beside its own
     /// flag). Counting them here would make the alert fire on builds that have wasted nothing.
-    pub fn rule_of_five_rejections(&self) -> usize {
+    ///
+    /// `ignore_mez_resistance` leaves out the mez-resistance buckets, for a user who has said
+    /// they don't want warning about those. A tier also refused on another stat still counts.
+    pub fn rule_of_five_rejections(&self, ignore_mez_resistance: bool) -> usize {
         let set_bonuses: std::collections::BTreeSet<(&str, u8, &str, &str)> = self
             .set_bonus_tracking
             .iter()
+            .filter(|stat| {
+                !(ignore_mez_resistance
+                    && crate::set_bonuses::is_mez_resistance_key(&stat.stat_key))
+            })
             .flat_map(|stat| stat.buckets.values())
             .flat_map(|bucket| bucket.rejected_sources.iter())
             .map(|source| {
@@ -785,5 +792,64 @@ mod tests {
         let stats = project_ddr(None, 50, 138.4);
         assert_eq!(stats.debuff_resist_endurance, 138.4);
         assert_eq!(stats.debuff_resist_cap, DebuffResist::default());
+    }
+
+    /// One refused copy per bucket, from the tier `(set, power)` named.
+    fn refused_bucket(
+        stat_key: &str,
+        set: &str,
+        power: &str,
+    ) -> crate::set_bonuses::SetBonusStatTracking {
+        let source = crate::set_bonuses::BonusSourceRef {
+            power_internal_name: power.into(),
+            power_set: "Set".into(),
+            set_name: set.into(),
+            pieces: 3,
+        };
+        crate::set_bonuses::SetBonusStatTracking {
+            stat_key: stat_key.into(),
+            breakdown_keys: vec![stat_key.into()],
+            buckets: [(
+                "2.50".to_string(),
+                crate::set_bonuses::ValueBucket {
+                    value: 2.5,
+                    count: 5,
+                    capped: true,
+                    sources: Vec::new(),
+                    rejected_sources: vec![source],
+                },
+            )]
+            .into(),
+        }
+    }
+
+    /// The mez opt-out drops a tier refused only on mez resistance, and keeps one refused on
+    /// something else too.
+    #[test]
+    fn ignoring_mez_resistance_skips_only_mez_refusals() {
+        let totals = CalculatedTotals {
+            set_bonus_tracking: vec![
+                refused_bucket("mezResistHold", "Avalanche", "Spring Attack"),
+                refused_bucket("mezResistStun", "Avalanche", "Spring Attack"),
+                refused_bucket("mezResistHold", "Aegis", "Weave"),
+                refused_bucket("recharge", "Aegis", "Weave"),
+            ],
+            ..CalculatedTotals::default()
+        };
+        assert_eq!(totals.rule_of_five_rejections(false), 2);
+        assert_eq!(totals.rule_of_five_rejections(true), 1);
+    }
+
+    /// The mez and repel rows are covered by the opt-out; knockback resistance, which shares
+    /// the `mezResist` prefix in the accumulator, isn't.
+    #[test]
+    fn only_mez_and_repel_rows_count_as_mez_resistance() {
+        use crate::set_bonuses::is_mez_resistance_breakdown_key as is_mez;
+        assert!(is_mez("mezResistHold"));
+        assert!(is_mez("mezResistFear"));
+        assert!(!is_mez("mezResistKnockback"));
+        assert!(is_mez("mezResistRepel"));
+        assert!(!is_mez("recharge"));
+        assert!(!is_mez("notAStat"));
     }
 }

@@ -135,6 +135,7 @@ fn PreferenceEntries() -> Element {
         div { class: "options-group",
             span { class: "field-label", "Alerts" }
             RuleOfFiveAlertToggle {}
+            IgnoreMezResistanceToggle {}
             HitChanceAlertToggle {}
         }
         div { class: "options-group",
@@ -754,6 +755,24 @@ fn RuleOfFiveAlertToggle() -> Element {
                 onchange: move |evt| enabled.set(evt.checked()),
             }
             "Warn when a set bonus is over the Rule of 5"
+        }
+    }
+}
+
+/// Skip mez and repel resistance in the Rule-of-5 warnings. Builds pile it up past five while chasing
+/// other bonuses, and a warning that always fires gets ignored along with the ones that matter.
+#[component]
+fn IgnoreMezResistanceToggle() -> Element {
+    let alert = use_context::<RuleOfFiveAlert>();
+    let mut ignore = alert.ignore_mez_resistance;
+    rsx! {
+        label { class: "options-check",
+            input {
+                r#type: "checkbox",
+                checked: ignore(),
+                onchange: move |evt| ignore.set(evt.checked()),
+            }
+            "Don't warn about Mez or Repel Resistance"
         }
     }
 }

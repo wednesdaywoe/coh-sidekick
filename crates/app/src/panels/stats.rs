@@ -63,6 +63,7 @@ pub fn StatGroup(panel: DashboardId) -> Element {
     // Absent in a popped-out window, which has no host to draw the card; its rows keep the
     // native `title` text instead.
     let hover = try_use_context::<StatHover>();
+    let alert = try_use_context::<crate::shell::RuleOfFiveAlert>();
 
     // Both reads resolve to owned values before `rsx!`, so no borrow of the shared totals memo
     // or the config is held across the render (keep logic above `rsx!`).
@@ -73,7 +74,13 @@ pub fn StatGroup(panel: DashboardId) -> Element {
             .stats_in(panel)
             .iter()
             .filter_map(|id| stat_registry::by_id(id))
-            .map(|stat| (stat, stat.resolve(&totals), tracked.contains(stat.id)))
+            .map(|stat| {
+                (
+                    stat,
+                    resolve_cued(stat, &totals, alert),
+                    tracked.contains(stat.id),
+                )
+            })
             .collect()
     };
 
@@ -161,6 +168,20 @@ pub fn StatGroup(panel: DashboardId) -> Element {
             }
         }
     }
+}
+
+/// [`StatDef::resolve`], with the Rule-of-5 cue dropped where the user has opted that stat out
+/// of the warning. The number itself doesn't change.
+pub(crate) fn resolve_cued(
+    stat: &stat_registry::StatDef,
+    totals: &coh_math::CalculatedTotals,
+    alert: Option<crate::shell::RuleOfFiveAlert>,
+) -> stat_registry::ResolvedStat {
+    let mut resolved = stat.resolve(totals);
+    if alert.is_some_and(|alert| !alert.warns_for_stat(stat)) {
+        resolved.rule_of_five_capped = false;
+    }
+    resolved
 }
 
 /// What clicking a row does, named with the stat so a truncated label still reads in full.
@@ -267,10 +288,11 @@ pub fn StatTooltipHost(database: Option<Db>) -> Element {
     let Some(stat) = stat_registry::by_id(target.stat_id) else {
         return rsx! {};
     };
+    let alert = try_use_context::<crate::shell::RuleOfFiveAlert>();
     let (resolved, breakdowns) = {
         let totals = totals.read();
         (
-            stat.resolve(&totals),
+            resolve_cued(stat, &totals, alert),
             breakdowns_for_stat(&totals, database.as_ref(), stat),
         )
     };

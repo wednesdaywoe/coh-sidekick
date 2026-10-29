@@ -164,6 +164,7 @@ fn roll_stat(
 #[component]
 pub fn SetBonusTotals(database: Db) -> Element {
     let totals = use_context::<BuildTotals>().0;
+    let alert = try_use_context::<crate::shell::RuleOfFiveAlert>();
     // One read of the shared build memo, the dashboard's compute-once contract. Nothing here
     // recalculates; every number below is the engine's own, re-grouped.
     let totals = totals.read();
@@ -183,7 +184,8 @@ pub fn SetBonusTotals(database: Db) -> Element {
     // would have granted, so summing the marks would report a single wasted bonus as seven — and
     // the shell banner, which counts refused BONUSES, would sit above this contradicting it.
     // The marks answer "which stats", this answers "how many bonuses".
-    let refused = totals.rule_of_five_rejections();
+    let ignore_mez = alert.is_some_and(|alert| (alert.ignore_mez_resistance)());
+    let refused = totals.rule_of_five_rejections(ignore_mez);
     let sets = distinct_sets(&rolls);
 
     rsx! {
@@ -225,8 +227,14 @@ pub fn SetBonusTotals(database: Db) -> Element {
 #[component]
 fn StatRollRow(roll: StatRoll) -> Element {
     let mut expanded = use_signal(|| false);
+    let alert = try_use_context::<crate::shell::RuleOfFiveAlert>();
     let is_open = expanded();
-    let wasted = roll.wasted();
+    // The sources below stay crossed out either way; the opt-out only drops the warning mark.
+    let wasted = if alert.is_some_and(|alert| !alert.warns_for_stat(roll.stat)) {
+        0
+    } else {
+        roll.wasted()
+    };
 
     rsx! {
         div { class: "set-bonus-stat",

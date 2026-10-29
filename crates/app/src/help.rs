@@ -1297,7 +1297,9 @@ pub const TOPICS: &[Topic] = &[
         body: "The game grants at most five instances of any one set bonus, and a sixth is simply \
                ignored — slots spent for nothing. The planner warns when a build crosses that \
                line. The banner's close button hides it until reload; the toggle in the menu \
-               turns the warning off for good.",
+               turns the warning off for good. A second toggle skips Mez and Repel Resistance \
+               only, since builds often collect more than five while chasing other bonuses. \
+               The extra copies still don't count toward the totals.",
         keywords: &[
             "rule of 5",
             "rule of five",
@@ -1307,6 +1309,10 @@ pub const TOPICS: &[Topic] = &[
             "bonus",
             "warning",
             "alert",
+            "mez",
+            "mez resistance",
+            "repel",
+            "ignore",
         ],
     },
     Topic {

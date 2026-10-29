@@ -45,8 +45,8 @@ impl TrackedStats {
 }
 
 /// Provide [`TrackedStats`] at the shell root, restore it, persist it, and auto-track any
-/// dashboard row whose total the Rule of 5 just started shrinking. Call after [`BuildTotals`] and
-/// [`DashboardConfig`] are provided.
+/// dashboard row whose total the Rule of 5 just started shrinking. Call after [`BuildTotals`],
+/// [`DashboardConfig`] and [`RuleOfFiveAlert`](crate::shell::RuleOfFiveAlert) are provided.
 ///
 /// The beta auto-tracked a capped stat on EVERY recompute, so untracking one that was still
 /// capped undid itself on the next edit. Here a row is auto-tracked once, when it becomes capped;
@@ -75,6 +75,7 @@ pub fn use_tracked_stats_provider() -> TrackedStats {
 
     let totals = use_context::<crate::panels::stats::BuildTotals>().0;
     let dashboards = use_context::<crate::panels::dashboards::DashboardConfig>().0;
+    let alert = use_context::<crate::shell::RuleOfFiveAlert>();
     let mut was_capped = use_signal(Vec::<&'static str>::new);
     use_effect(move || {
         // Restore first, or a capped row tracked here would be overwritten by the saved list.
@@ -88,7 +89,10 @@ pub fn use_tracked_stats_provider() -> TrackedStats {
                 .ids()
                 .flat_map(|panel| dashboards.stats_in(panel).iter().copied())
                 .filter_map(stat_registry::by_id)
-                .filter(|stat| stat.resolve(&totals).rule_of_five_capped)
+                .filter(|stat| {
+                    crate::panels::stats::resolve_cued(stat, &totals, Some(alert))
+                        .rule_of_five_capped
+                })
                 .map(|stat| stat.id)
                 .collect()
         };

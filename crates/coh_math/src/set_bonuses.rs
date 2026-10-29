@@ -400,6 +400,23 @@ impl SetBonusStat {
         })
     }
 
+    /// The six types `mez_resistance_(all)` expands to, plus Repel — the bonuses builds most
+    /// often pile up past five of while chasing something else, so the Rule-of-5 warning can be
+    /// told to skip them.
+    pub fn is_mez_resistance(self) -> bool {
+        use SetBonusStat::*;
+        matches!(
+            self,
+            MezResistHold
+                | MezResistStun
+                | MezResistImmobilize
+                | MezResistSleep
+                | MezResistConfuse
+                | MezResistFear
+                | MezResistRepel
+        )
+    }
+
     /// The `GlobalBonuses` field (beta camelCase, an [`GlobalBonuses::add_by_camel_name`] key)
     /// this stat routes into, the beta `STAT_TO_GLOBAL`. TOTAL: every tracked stat has a target
     /// field, so there's no "routes nowhere" state to represent. The two stats whose routing is
@@ -694,6 +711,24 @@ pub fn stat_has_capped_bonus(tracking: &[SetBonusStatTracking], breakdown_key: &
         .filter(|stat| stat.breakdown_keys.iter().any(|key| key == breakdown_key))
         .flat_map(|stat| stat.buckets.values())
         .any(|bucket| bucket.capped)
+}
+
+/// Whether a tracking [`stat_key`](SetBonusStatTracking::stat_key) is one of the mez-resistance
+/// stats ([`SetBonusStat::is_mez_resistance`]).
+pub fn is_mez_resistance_key(stat_key: &str) -> bool {
+    SetBonusStat::from_beta_key(stat_key).is_some_and(SetBonusStat::is_mez_resistance)
+}
+
+/// Whether a dashboard breakdown key is fed only by mez-resistance set bonuses, so the
+/// Rule-of-5 warning's mez opt-out covers that row. Read off [`SetBonusStat::breakdown_keys`]
+/// rather than matched by name, so it stays in the dashboard's own vocabulary.
+pub fn is_mez_resistance_breakdown_key(breakdown_key: &str) -> bool {
+    let feeding: Vec<SetBonusStat> = SetBonusStat::ALL
+        .iter()
+        .copied()
+        .filter(|stat| stat.breakdown_keys().contains(&breakdown_key))
+        .collect();
+    !feeding.is_empty() && feeding.iter().all(|stat| stat.is_mez_resistance())
 }
 
 /// The tracked stat one `mez_types` entry names, the lowercase mez-type vocabulary shared with

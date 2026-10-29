@@ -282,7 +282,19 @@ pub fn Shell() -> Element {
     use_context_provider(|| panels::dashboards::DashboardConfig(stat_config));
     let stats_config_open = use_signal(|| Option::<panels::stats_config::OrganizerTarget>::None);
     use_context_provider(|| panels::stats_config::StatsConfigOpen(stats_config_open));
-    // The stats the user is chasing with set bonuses: click a dashboard row to track it.
+    // The Rule-of-5 alert: a persisted preference plus a per-load dismissal (see
+    // `RuleOfFiveAlert`). Defaults ON until `alert_store::load` says otherwise, which is the
+    // direction that cannot hide a wasted bonus.
+    let rule_of_five_enabled = use_signal(|| true);
+    let rule_of_five_dismissed = use_signal(|| false);
+    let rule_of_five_ignore_mez = use_signal(|| false);
+    use_context_provider(|| RuleOfFiveAlert {
+        enabled: rule_of_five_enabled,
+        dismissed: rule_of_five_dismissed,
+        ignore_mez_resistance: rule_of_five_ignore_mez,
+    });
+    // The stats the user is chasing with set bonuses: click a dashboard row to track it. After
+    // the alert above, whose mez opt-out the auto-tracking reads.
     crate::tracked_stats::use_tracked_stats_provider();
     // The detailed stat sheet, hosted below both layout roots for the same containment reason.
     let detailed_totals_open = use_signal(|| false);
@@ -295,15 +307,6 @@ pub fn Shell() -> Element {
     // the whole of its state.
     let set_bonus_finder_open = use_signal(|| false);
     use_context_provider(|| panels::set_bonus_finder::SetBonusFinderOpen(set_bonus_finder_open));
-    // The Rule-of-5 alert: a persisted preference plus a per-load dismissal (see
-    // `RuleOfFiveAlert`). Defaults ON until `alert_store::load` says otherwise, which is the
-    // direction that cannot hide a wasted bonus.
-    let rule_of_five_enabled = use_signal(|| true);
-    let rule_of_five_dismissed = use_signal(|| false);
-    use_context_provider(|| RuleOfFiveAlert {
-        enabled: rule_of_five_enabled,
-        dismissed: rule_of_five_dismissed,
-    });
     // UI scale: pure app chrome, same preference standing as the Rule-of-5 alert above —
     // defaults to unscaled until `ui_scale::load` says otherwise.
     let ui_scale_pct = use_signal(|| crate::ui_scale::DEFAULT_PCT);
@@ -814,17 +817,22 @@ pub fn Shell() -> Element {
     let mut alerts_restored = use_signal(|| false);
     use_future(move || async move {
         let mut enabled = rule_of_five_enabled;
+        let mut ignore_mez = rule_of_five_ignore_mez;
         if let Some(saved) = crate::alert_store::load().await {
-            enabled.set(saved);
+            enabled.set(saved.rule_of_five);
+            ignore_mez.set(saved.ignore_mez_resistance);
         }
         alerts_restored.set(true);
     });
     use_effect(move || {
-        let enabled = *rule_of_five_enabled.read();
+        let prefs = crate::alert_store::AlertPrefs {
+            rule_of_five: *rule_of_five_enabled.read(),
+            ignore_mez_resistance: *rule_of_five_ignore_mez.read(),
+        };
         if !*alerts_restored.read() {
             return;
         }
-        crate::alert_store::persist(enabled);
+        crate::alert_store::persist(prefs);
     });
 
     // Restore the UI-scale preference once on mount, then open its persist gate. Same
@@ -1607,6 +1615,26 @@ pub struct RuleOfFiveAlert {
     /// different bonus tomorrow should say so again. Turning the setting off is the way to mean
     /// it permanently, and the banner says which control does which.
     pub dismissed: Signal<bool>,
+    /// Persisted, default off: stop warning about mez- and repel-resistance bonuses past five,
+    /// which builds collect routinely while chasing other stats. Only the warnings go quiet — the
+    /// totals still leave out the refused copies, because the game does.
+    pub ignore_mez_resistance: Signal<bool>,
+}
+
+impl RuleOfFiveAlert {
+    /// Whether a refused bonus under this tracking `stat_key` should raise a warning.
+    pub fn warns_for_stat_key(&self, stat_key: &str) -> bool {
+        !((self.ignore_mez_resistance)() && coh_math::set_bonuses::is_mez_resistance_key(stat_key))
+    }
+
+    /// Whether a capped dashboard row should carry the warning cue.
+    pub fn warns_for_stat(&self, stat: &crate::panels::stat_registry::StatDef) -> bool {
+        !((self.ignore_mez_resistance)()
+            && stat
+                .breakdown_keys
+                .iter()
+                .all(|key| coh_math::set_bonuses::is_mez_resistance_breakdown_key(key)))
+    }
 }
 
 /// The build-wide Rule-of-5 alert (the beta `RuleOf5Banner`): how many slotted bonuses the cap
@@ -1623,7 +1651,9 @@ fn RuleOfFiveBanner() -> Element {
     let alert = use_context::<RuleOfFiveAlert>();
     let mut dismissed = alert.dismissed;
 
-    let refused = totals.read().rule_of_five_rejections();
+    let refused = totals
+        .read()
+        .rule_of_five_rejections((alert.ignore_mez_resistance)());
     if refused == 0 || !(alert.enabled)() || dismissed() {
         return rsx! {};
     }

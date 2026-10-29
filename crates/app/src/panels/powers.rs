@@ -479,6 +479,9 @@ pub(crate) struct BonusEffectRow {
     pub(crate) description: String,
     count: Option<u32>,
     capped: bool,
+    /// The tracking key the count was read under, so the warning colour can honour the
+    /// mez-resistance opt-out ([`crate::shell::RuleOfFiveAlert::warns_for_stat_key`]).
+    stat_key: Option<&'static str>,
     /// Whether THIS power's copy is the one the Rule of 5 refused — a different question from
     /// `capped`, which is true of every copy in a capped bucket (see
     /// [`coh_math::set_bonuses::bonus_instance_rejected`]). The tooltip wants the bucket's
@@ -598,6 +601,7 @@ fn bonus_effect_row(
             description,
             count: None,
             capped: false,
+            stat_key: None,
             refused: false,
             unknown: false,
             rows: rows.clone(),
@@ -612,6 +616,7 @@ fn bonus_effect_row(
                 // The beta hides the counter at zero (`totalCount > 0`).
                 count: (count > 0).then_some(count),
                 capped,
+                stat_key: Some(key),
                 refused: coh_math::set_bonuses::bonus_instance_rejected(
                     tracking,
                     key,
@@ -628,6 +633,7 @@ fn bonus_effect_row(
             description,
             count: None,
             capped: false,
+            stat_key: None,
             refused: false,
             unknown: false,
             rows: rows.clone(),
@@ -636,6 +642,7 @@ fn bonus_effect_row(
             description,
             count: None,
             capped: false,
+            stat_key: None,
             refused: false,
             unknown: true,
             rows: rows.clone(),
@@ -883,6 +890,15 @@ pub(crate) fn SetBonusTierList(tiers: Vec<BonusTierRow>) -> Element {
     let is_tracked = |effect: &BonusEffectRow| {
         tracked.is_some_and(|tracked| effect.rows.iter().any(|id| tracked.contains(id)))
     };
+    // The count still reads 6/5; only the warning colour follows the mez opt-out.
+    let alert = try_use_context::<crate::shell::RuleOfFiveAlert>();
+    let warns = |effect: &BonusEffectRow| {
+        effect.capped
+            && match (alert, effect.stat_key) {
+                (Some(alert), Some(key)) => alert.warns_for_stat_key(key),
+                _ => true,
+            }
+    };
     rsx! {
         for (tier_index , tier) in tiers.iter().enumerate() {
             div {
@@ -892,7 +908,7 @@ pub(crate) fn SetBonusTierList(tiers: Vec<BonusTierRow>) -> Element {
                 " "
                 for (i , effect) in tier.effects.iter().enumerate() {
                     span {
-                        class: if effect.capped { "slot-bonus-effect capped" } else { "slot-bonus-effect" },
+                        class: if warns(effect) { "slot-bonus-effect capped" } else { "slot-bonus-effect" },
                         class: if is_tracked(effect) { "is-tracked" },
                         if i > 0 { ", " }
                         "{effect.description}"
@@ -901,7 +917,7 @@ pub(crate) fn SetBonusTierList(tiers: Vec<BonusTierRow>) -> Element {
                         }
                         if let Some(count) = effect.count {
                             span {
-                                class: if effect.capped { "slot-bonus-count capped" } else { "slot-bonus-count" },
+                                class: if warns(effect) { "slot-bonus-count capped" } else { "slot-bonus-count" },
                                 " ({count}/5)"
                             }
                         }
