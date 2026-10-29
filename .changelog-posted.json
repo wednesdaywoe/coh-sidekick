@@ -540,6 +540,11 @@
       "id": "veat-base-sets-from-mids",
       "date": "2026-10-28",
       "preview": "Arachnos Widow and Soldier builds opened from Mids now offer the base Widow Trai"
+    },
+    {
+      "id": "rule-of-five-skip-mez",
+      "date": "2026-10-29",
+      "preview": "The Rule of 5 warning can now leave out Mez and Repel Resistance. \"Don't warn ab"
     }
   ]
 }

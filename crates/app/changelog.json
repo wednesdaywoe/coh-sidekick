@@ -1,5 +1,11 @@
 [
-    {
+  {
+  "date": "2026-10-29",
+  "items": [
+    { "id": "rule-of-five-skip-mez", "type": "feat", "message": "The Rule of 5 warning can now leave out Mez and Repel Resistance. \"Don't warn about Mez or Repel Resistance\" in Options." }
+  ]
+  },
+  {
     "date": "2026-10-28",
     "items": [
       { "id": "placed-attack-damage", "type": "fix", "message": "Attacks that do their damage through something they place now show it: Meteor, Trip Mine, Carrion Creepers, Bonfire from Fire Mastery and Sleet from the Dominator's Ice Mastery. The Dominator's Trip Mine counts as one explosion" },
