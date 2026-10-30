@@ -3988,6 +3988,22 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   color: var(--text-faint);
 }
 .picker-filter-label-inline { flex-basis: auto; margin-left: 10px; }
+/* The label is the fold toggle: same type as before, plus a caret, with no button chrome. */
+.picker-filter-fold {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  padding: 0; background: none; border: none; text-align: left; cursor: pointer;
+}
+.picker-filter-fold:hover { color: var(--text-dim); }
+.picker-filter-fold:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.picker-filter-caret { font-size: 10px; }
+.picker-filter-folded { gap: 4px 14px; }
+.picker-filter-fold-name {
+  font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.picker-filter-fold-choice { font-size: 11.5px; font-family: var(--font-chrome); color: var(--text-dim); }
+.picker-filter-fold-summary:hover .picker-filter-fold-choice { color: var(--text); }
+.picker-bonus-select { max-width: 100%; }
 .picker-filter-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 /* The same on-treatment as `.sb-chip`: state rides the accent channel, never a surface fill. */
 .picker-chip {
@@ -6837,6 +6853,9 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   .switch {
     min-height: var(--touch-seat);
   }
+  /* A picker filter row's fold label takes the header lane's 26px floor, not the full seat:
+     the fold exists to make those rows short, and a 44px label would undo it. */
+  .picker-filter-fold { min-height: 26px; align-items: center; }
   /* A switch is an inline-flex holding one 34×18 track; without this the track stretches to
      fill the taller box and stops being a switch. */
   .switch { align-items: center; }

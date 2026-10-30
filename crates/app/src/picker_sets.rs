@@ -8,6 +8,7 @@
 //! reason: a facet button states how many sets it would leave, and a button that lands on an empty
 //! list is worse than no button.
 
+use crate::panels::stat_registry::{self, StatDef};
 use coh_data::IoSet;
 
 /// How the offered sets are ordered.
@@ -36,6 +37,9 @@ pub struct SetFacets {
     /// Only sets with a bonus to one of these tracked stat rows. `None` = off; on with nothing
     /// tracked narrows nothing, since a filter that empties the list would read as "no set fits".
     pub tracked_only: Option<Vec<String>>,
+    /// Only sets with a bonus to this one stat row (a [`StatDef`] id) — the "which set here gives
+    /// me X" question, asked without tracking X.
+    pub bonus: Option<String>,
     pub sort: SetSort,
     /// Level-Up mode's ceiling: withhold sets the character could not craft yet. `None` = no
     /// gate. The set's own `min_level`, never a table.
@@ -91,6 +95,13 @@ impl SetFacets {
         if self.procs_only && !set.pieces.iter().any(|piece| piece.proc) {
             return false;
         }
+        if skip != Facet::Bonus {
+            if let Some(id) = &self.bonus {
+                if !crate::tracked_stats::has_tracked_bonus(set, std::slice::from_ref(id)) {
+                    return false;
+                }
+            }
+        }
         if skip != Facet::Tracked {
             if let Some(tracked) = &self.tracked_only {
                 if !tracked.is_empty() && !crate::tracked_stats::has_tracked_bonus(set, tracked) {
@@ -109,6 +120,7 @@ enum Facet {
     Rarity,
     Size,
     Tracked,
+    Bonus,
     None,
 }
 
@@ -185,6 +197,47 @@ pub fn tracked_count(
             .filter(|(_, set)| crate::tracked_stats::has_tracked_bonus(set, tracked))
             .count(),
     )
+}
+
+/// One bonus the offered sets grant, with how many of them grant it.
+pub struct BonusCount {
+    pub stat: &'static StatDef,
+    pub count: usize,
+}
+
+/// Every stat row some offered set has a bonus to, in the dashboard's own order, with the count
+/// each would leave. The chosen row is kept at zero if the other facets have filtered it out,
+/// so the dropdown can still show what is selected.
+pub fn bonus_counts(eligible: &[(&str, &IoSet)], facets: &SetFacets) -> Vec<BonusCount> {
+    let mut counts: std::collections::BTreeMap<&'static str, usize> =
+        std::collections::BTreeMap::new();
+    for (_, set) in eligible
+        .iter()
+        .filter(|(_, set)| facets.admits(set, Facet::Bonus))
+    {
+        let mut rows: Vec<&'static str> = set
+            .bonuses
+            .iter()
+            .flat_map(|tier| &tier.effects)
+            .flat_map(crate::tracked_stats::rows_for_effect)
+            .collect();
+        rows.sort_unstable();
+        rows.dedup();
+        for row in rows {
+            *counts.entry(row).or_default() += 1;
+        }
+    }
+    stat_registry::ALL
+        .iter()
+        .filter_map(|stat| {
+            let count = counts.get(stat.id).copied();
+            let chosen = facets.bonus.as_deref() == Some(stat.id);
+            (count.is_some() || chosen).then(|| BonusCount {
+                stat,
+                count: count.unwrap_or(0),
+            })
+        })
+        .collect()
 }
 
 /// How many sets survive every facet — what an "any" button reports.
@@ -273,6 +326,54 @@ mod tests {
                 .iter()
                 .all(|offer| crate::tracked_stats::has_tracked_bonus(offer.set, &tracked)));
         }
+    }
+
+    /// Every count in the bonus dropdown is what choosing that bonus leaves, with another facet on.
+    #[test]
+    fn each_bonus_count_is_what_choosing_it_leaves() {
+        let catalog = catalog();
+        let eligible: Vec<(&str, &IoSet)> = catalog
+            .sets
+            .iter()
+            .map(|(id, set)| (id.as_str(), set))
+            .collect();
+        let base = SetFacets {
+            rarity: Some("rare".to_string()),
+            ..SetFacets::default()
+        };
+        let counts = bonus_counts(&eligible, &base);
+        assert!(counts.iter().any(|c| c.stat.id == "res_negative"));
+        for row in &counts {
+            let chosen = SetFacets {
+                bonus: Some(row.stat.id.to_string()),
+                ..base.clone()
+            };
+            assert_eq!(
+                offered_sets(&eligible, &chosen, None).len(),
+                row.count,
+                "{}",
+                row.stat.id
+            );
+        }
+    }
+
+    /// A chosen bonus the other facets have filtered out stays in the list, at zero.
+    #[test]
+    fn a_chosen_bonus_stays_listed_at_zero() {
+        let catalog = catalog();
+        let eligible: Vec<(&str, &IoSet)> = catalog
+            .sets
+            .iter()
+            .map(|(id, set)| (id.as_str(), set))
+            .collect();
+        let facets = SetFacets {
+            bonus: Some("res_negative".to_string()),
+            size: Some(1),
+            ..SetFacets::default()
+        };
+        let counts = bonus_counts(&eligible, &facets);
+        let chosen = counts.iter().find(|c| c.stat.id == "res_negative");
+        assert_eq!(chosen.map(|c| c.count), Some(0));
     }
 
     /// Switched on with nothing tracked, the option narrows nothing and has no count.
