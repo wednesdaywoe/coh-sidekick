@@ -188,13 +188,14 @@ pub fn sent_visibility(
     }
 }
 
-/// Encode the working build the way it travels, and hand back the parsed envelope.
+/// Encode the working build the way it travels, and hand back the parsed envelope. A shared row
+/// is other people's to open, so the owner's shopping progress stays out of it.
 ///
 /// Parsed rather than passed as text because `build_json` is a JSON *value* in the payload, not a
 /// string containing JSON — a stringified build would store as a quoted blob and every reader of
 /// the column, this app's included, would fail to find `version` in it.
 pub fn build_envelope(build: &CharacterState, database: &Db) -> Result<serde_json::Value, String> {
-    let text = coh_data::skif::encode(build, database).map_err(|e| e.to_string())?;
+    let text = coh_data::skif::encode_shared(build, database).map_err(|e| e.to_string())?;
     serde_json::from_str(&text).map_err(|e| e.to_string())
 }
 

@@ -33,9 +33,13 @@
 //!
 //! # Ticking off
 //!
-//! Clicking a row marks one copy acquired; clicking a finished row clears it. The state is the
-//! modal's own and goes when it closes, because it is about a shopping trip rather than about
-//! the build — nothing here is written back, and the `.skif` gains no field.
+//! Clicking a row marks one copy acquired; clicking a finished row clears it. Buying a build
+//! takes more than one sitting, so the ticks live on the build
+//! ([`CharacterState::enhancement_acquired`]): each one is an undo step, the autosave keeps it,
+//! and a saved `.skif` carries it. A share does not.
+//!
+//! A tick is keyed by the piece as the file states it ([`purchase_key`]), not by its display
+//! name, because a build reopened from a file comes back with its display names empty.
 //!
 //! The clipboard carries what is on screen, remaining counts and all. A copy button that
 //! silently exports the full list while the surface shows a half-finished one is a small lie of
@@ -47,7 +51,7 @@ use crate::naming;
 use crate::shell::Db;
 use coh_data::{CharacterState, Enhancement, EnhancementKind, PowerDatabase};
 use dioxus::prelude::*;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 // ============================================================
 // The list.
@@ -67,8 +71,8 @@ enum SectionRank {
 /// One purchasable line: a piece, in one configuration, and how many of it the build wants.
 #[derive(Clone, PartialEq, Debug)]
 pub struct Item {
-    /// A key stable across rebuilds of the list, so a tick survives an edit to an unrelated
-    /// power. Derived from everything the grouping keys on, which is what makes it stable.
+    /// The piece's [`purchase_key`]: stable across rebuilds of the list, so a tick survives an
+    /// edit to an unrelated power, and across a save and reopen.
     pub key: String,
     /// The piece's own name. The set name is the section heading, not part of this.
     pub label: String,
@@ -131,6 +135,8 @@ struct GroupKey {
     level: Option<u8>,
     attuned: bool,
     boost: i8,
+    /// Last, so it only ever splits a row the display fields would have merged, never reorders.
+    purchase: String,
 }
 
 impl ShoppingList {
@@ -241,20 +247,19 @@ fn describe(enhancement: &Enhancement, database: &PowerDatabase) -> (GroupKey, I
 
     let catalysts_each = usize::from(enhancement.attuned && !inherently_attuned && !set_unresolved);
 
+    let purchase = purchase_key(enhancement);
     let key = GroupKey {
         rank,
-        heading: heading.clone(),
+        heading,
         piece_num,
         label: label.clone(),
         level: enhancement.level.map(|level| level.get()),
         attuned: enhancement.attuned,
         boost: enhancement.boost,
+        purchase: purchase.clone(),
     };
     let item = Item {
-        key: format!(
-            "{rank:?}\u{0}{heading}\u{0}{label}\u{0}{}",
-            qualifiers.join("\u{1}")
-        ),
+        key: purchase,
         label,
         qualifiers,
         count: 1,
@@ -263,6 +268,28 @@ fn describe(enhancement: &Enhancement, database: &PowerDatabase) -> (GroupKey, I
         set_unresolved,
     };
     (key, item)
+}
+
+/// One piece, in one configuration, spelled from the fields the `.skif` writes for it — so the
+/// key a tick was saved under is the key the reopened build produces.
+fn purchase_key(enhancement: &Enhancement) -> String {
+    let piece = match &enhancement.kind {
+        EnhancementKind::IoSet {
+            set_id, piece_num, ..
+        } => format!("set:{set_id}:{piece_num}"),
+        EnhancementKind::GenericIo { stat, .. } => format!("generic:{stat}"),
+        EnhancementKind::Special { .. } => format!("special:{}", enhancement.id),
+        EnhancementKind::Origin { tier, stat, .. } => format!("origin:{tier}:{stat}"),
+    };
+    let level = enhancement
+        .level
+        .map(|level| level.get().to_string())
+        .unwrap_or_default();
+    format!(
+        "{piece}|{level}|{}|{}",
+        u8::from(enhancement.attuned),
+        enhancement.boost
+    )
 }
 
 /// A special family's display label, from the catalog's own family list — the same labels the
@@ -286,8 +313,8 @@ fn special_family_label(category: &str, database: &PowerDatabase) -> String {
 // What is left to buy.
 // ============================================================
 
-/// How many of each row the user has ticked off, keyed by [`Item::key`].
-type Acquired = HashMap<String, usize>;
+/// How many of each row the user has ticked off, keyed by [`Item::key`] — the build's own map.
+type Acquired = BTreeMap<String, u32>;
 
 /// The three running totals under the header, over the rows still outstanding.
 #[derive(Clone, Copy, PartialEq, Debug, Default)]
@@ -339,13 +366,13 @@ impl ShoppingList {
     }
 }
 
-/// How many copies of a row are ticked off, never more than the row holds — a build edited
-/// while the modal is open can shrink a row under its own tick count.
+/// How many copies of a row are ticked off, never more than the row holds — an edit to the
+/// build can shrink a row under its own tick count, and the stored count is kept for when it
+/// grows back.
 fn acquired_count(acquired: &Acquired, item: &Item) -> usize {
     acquired
         .get(&item.key)
-        .copied()
-        .unwrap_or(0)
+        .map_or(0, |count| *count as usize)
         .min(item.count)
 }
 
@@ -380,7 +407,7 @@ pub fn EnhancementListHost(database: Option<Db>) -> Element {
 #[component]
 fn EnhancementListBody(database: Option<Db>) -> Element {
     let session = use_context::<BuildSession>();
-    let mut acquired = use_signal(Acquired::new);
+    let acquired = use_memo(move || session.build.read().enhancement_acquired.clone());
     let mut copied = use_signal(|| Option::<Result<(), String>>::None);
 
     // Every hook runs before either early return below. A `use_memo` reached only on some
@@ -434,7 +461,7 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
                         r#type: "button",
                         disabled: acquired.read().is_empty(),
                         onclick: move |_| {
-                            acquired.write().clear();
+                            session.commit(|build| build.enhancement_acquired.clear());
                             copied.set(None);
                         },
                         "Reset ticks"
@@ -452,7 +479,7 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
             }
 
             p { class: "enh-list__hint",
-                "Click a row to mark one off; click a finished row to put it back. These are not "
+                "Click a row to mark one off; click a finished row to put it back. Ticks are "
                 "saved with the build."
             }
 
@@ -479,13 +506,15 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
                                     item: item.clone(),
                                     acquired: acquired_count(&acquired.read(), item),
                                     on_tick: move |key: String| {
-                                        let mut ticks = acquired.write();
-                                        let entry = ticks.entry(key).or_insert(0);
-                                        *entry += 1;
+                                        session.commit(move |build| {
+                                            *build.enhancement_acquired.entry(key).or_insert(0) += 1;
+                                        });
                                         copied.set(None);
                                     },
                                     on_clear: move |key: String| {
-                                        acquired.write().remove(&key);
+                                        session.commit(move |build| {
+                                            build.enhancement_acquired.remove(&key);
+                                        });
                                         copied.set(None);
                                     },
                                 }
@@ -566,5 +595,73 @@ fn ItemRow(
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use coh_data::skif;
+    use std::path::PathBuf;
+
+    fn homecoming() -> PowerDatabase {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../contract/homecoming/bundle.json.gz");
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads")
+    }
+
+    /// One piece of every kind, as a file hands them over: display names blank.
+    const FILE: &str = r#"{
+      "version": 5,
+      "build": {
+        "dataset": "homecoming",
+        "archetype": "tanker",
+        "level": 50,
+        "primary": {
+          "id": "tanker/stone-armor",
+          "powers": [{
+            "internalName": "Granite_Armor",
+            "level": 26,
+            "slots": [
+              { "type": "io-set", "setId": "absolute_amazement", "pieceNum": 1, "level": 50, "booster": 2 },
+              { "type": "io-generic", "stat": "Defense", "level": 50 },
+              { "type": "special", "category": "hamidon", "id": "endoplasm" },
+              { "type": "origin", "stat": "Defense", "tier": "SO", "relativeLevel": 1 }
+            ]
+          }]
+        },
+        "secondary": { "id": "tanker/super-strength" }
+      }
+    }"#;
+
+    fn keys(build: &CharacterState, database: &PowerDatabase) -> Vec<String> {
+        ShoppingList::build(build, database)
+            .items()
+            .map(|item| item.key.clone())
+            .collect()
+    }
+
+    /// A tick saved on a build picked in this session has to find its row once the build is
+    /// reopened from a file, where every display name comes back blank.
+    #[test]
+    fn a_tick_finds_its_row_after_a_save_and_reopen() {
+        let database = homecoming();
+        let from_file = skif::decode(FILE, &database).expect("decodes").build;
+        let mut picked = from_file.clone();
+        for power in picked.primary.powers.iter_mut() {
+            for piece in power.slots.iter_mut().flatten() {
+                piece.name = format!("{} (picker name)", piece.id);
+                if let EnhancementKind::IoSet { set_name, .. } = &mut piece.kind {
+                    *set_name = "Absolute Amazement".to_string();
+                }
+            }
+        }
+        let before = keys(&picked, &database);
+        assert_eq!(before.len(), 4, "one row per kind: {before:?}");
+
+        let text = skif::encode(&picked, &database).expect("encodes");
+        let reopened = skif::decode(&text, &database).expect("decodes").build;
+        assert_eq!(keys(&reopened, &database), before);
     }
 }

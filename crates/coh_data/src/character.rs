@@ -153,7 +153,7 @@ pub struct CharacterState {
     /// craft tree's parent-qualified node key
     /// ([`crate::incarnate_crafting::CraftNode::key`]). Display-only planner
     /// bookkeeping like [`Self::attack_chains`] — nothing in the calc reads it,
-    /// but it persists with the build. Not (yet) carried by the `.skif` codec.
+    /// but it persists with the build, and a saved `.skif` carries it (not a share).
     #[serde(default)]
     pub crafting_obtained: BTreeSet<String>,
     /// Per-node salvage checkboxes in the crafting modal, keyed
@@ -165,6 +165,11 @@ pub struct CharacterState {
     /// survives the need shrinking and re-growing.
     #[serde(default)]
     pub shopping_acquired: BTreeMap<String, u32>,
+    /// Enhancement-list progress: purchase key → copies acquired so far. Same standing and
+    /// clamp-at-read rule as [`Self::shopping_acquired`]; buying a build's pieces takes more
+    /// than one sitting, so the ticks ride the build rather than the modal.
+    #[serde(default)]
+    pub enhancement_acquired: BTreeMap<String, u32>,
     /// The saved cloud build this one was loaded from or last saved as, so the save dialog can
     /// update that row instead of minting a duplicate (the beta's `vaultId`). Set only when the
     /// viewer owns the row. Planner bookkeeping, not build identity: the `.skif` codec never
@@ -213,6 +218,7 @@ impl CharacterState {
             crafting_obtained: BTreeSet::new(),
             crafting_salvage_checked: BTreeSet::new(),
             shopping_acquired: BTreeMap::new(),
+            enhancement_acquired: BTreeMap::new(),
             library_id: None,
         }
     }

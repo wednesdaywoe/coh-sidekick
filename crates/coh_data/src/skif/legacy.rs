@@ -24,7 +24,7 @@
 
 use super::{
     AuthoredAgainst, Decoded, SkifBuild, SkifEnhancement, SkifError, SkifFile, SkifIncarnate,
-    SkifPower, SkifSelection, SkifSlotOrder, Unresolved,
+    SkifPower, SkifProgress, SkifSelection, SkifSlotOrder, Unresolved,
 };
 use crate::character::{power_address, AttackChain, ProcOverride};
 use crate::database::PowerDatabase;
@@ -76,6 +76,12 @@ struct LegacyBuild {
     attack_chains: Vec<AttackChain>,
     proc_overrides: BTreeMap<String, ProcOverride>,
     active_modes: Vec<String>,
+    /// Incarnate shopping progress, salvage id without the export's `S_` prefix → count.
+    shopping_list_acquired: BTreeMap<String, u32>,
+    /// The beta's two crafting checklists. Keyed by its own hand-ported tree paths, which the
+    /// recipe-driven tree here does not share, so they are read only to say they were left.
+    crafting_checklist: BTreeMap<String, bool>,
+    incarnate_obtained: BTreeMap<String, bool>,
 }
 
 #[derive(Debug, Default, Deserialize)]
@@ -219,7 +225,7 @@ fn to_v5(
     let archetype = legacy.archetype.and_then(|a| a.id);
     let branch_sets = super::branch_powersets(archetype.as_deref(), database);
 
-    SkifBuild {
+    let build = SkifBuild {
         name: legacy.name,
         dataset,
         // The beta defaults an absent level to 50, and so does an empty build here.
@@ -261,8 +267,51 @@ fn to_v5(
         proc_overrides: legacy.proc_overrides,
         disabled_proc_categories: Default::default(),
         attack_chains: attack_chains(legacy.attack_chains, primary_id, secondary_id),
+        progress: SkifProgress {
+            incarnate_salvage: shopping(legacy.shopping_list_acquired, database, notes),
+            ..SkifProgress::default()
+        },
         what_if_buffs: None,
+    };
+    let crafted = legacy
+        .crafting_checklist
+        .values()
+        .chain(legacy.incarnate_obtained.values());
+    if crafted.into_iter().any(|checked| *checked) {
+        notes.push(Unresolved {
+            context: "incarnate crafting checklist".to_string(),
+            detail: "the beta's crafted-node ticks name its own tree, not the recipes this \
+                     planner reads, so they were left out; the shopping counts came across"
+                .to_string(),
+        });
     }
+    build
+}
+
+/// The beta's shopping counts, re-keyed onto the export's salvage ids. The beta spelled
+/// `DetailedReports` where the export has `S_DetailedReports`; the catalog says which is real.
+fn shopping(
+    acquired: BTreeMap<String, u32>,
+    database: &PowerDatabase,
+    notes: &mut Vec<Unresolved>,
+) -> BTreeMap<String, u32> {
+    let catalog = &database.incarnate_crafting;
+    let mut out = BTreeMap::new();
+    for (id, count) in acquired {
+        let found = catalog
+            .salvage(&format!("S_{id}"))
+            .or_else(|| catalog.salvage(&id));
+        match found {
+            Some(salvage) => {
+                out.insert(salvage.id.clone(), count);
+            }
+            None => notes.push(Unresolved {
+                context: format!("incarnate shopping list {id:?}"),
+                detail: "no such salvage in this dataset; its count was dropped".to_string(),
+            }),
+        }
+    }
+    out
 }
 
 /// An accolade id, from either spelling: v4 writes the whole object, older code wrote a bare id.

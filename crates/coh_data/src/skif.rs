@@ -181,6 +181,10 @@ pub struct SkifBuild {
     pub disabled_proc_categories: BTreeSet<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub attack_chains: Vec<AttackChain>,
+    /// What the owner has already bought or crafted toward the build. A saved file carries it;
+    /// a share does not ([`SkifBuild::without_progress`]).
+    #[serde(default, skip_serializing_if = "SkifProgress::is_empty")]
+    pub progress: SkifProgress,
     /// Declared so it can be REFUSED. A file carrying a what-if layer asserts capability the
     /// build does not have, so it is invalid rather than merely ignored — the one reading
     /// condition that fails a file instead of defaulting.
@@ -188,7 +192,37 @@ pub struct SkifBuild {
     pub what_if_buffs: Option<Value>,
 }
 
+/// The shopping and crafting checklists, as [`CharacterState`] holds them. Grouped so a share
+/// can drop them in one move: they describe the owner's inventory, not the build.
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SkifProgress {
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub enhancements: BTreeMap<String, u32>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub incarnate_salvage: BTreeMap<String, u32>,
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub crafted: BTreeSet<String>,
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub salvage_checked: BTreeSet<String>,
+}
+
+impl SkifProgress {
+    pub fn is_empty(&self) -> bool {
+        self.enhancements.is_empty()
+            && self.incarnate_salvage.is_empty()
+            && self.crafted.is_empty()
+            && self.salvage_checked.is_empty()
+    }
+}
+
 impl SkifBuild {
+    /// The build as someone else should receive it: the owner's shopping progress stays home.
+    pub fn without_progress(mut self) -> Self {
+        self.progress = SkifProgress::default();
+        self
+    }
+
     /// Every power the file holds, across all five buckets. The buckets differ in how they
     /// RESOLVE, not in what a power is, so anything asking a question about the picks
     /// themselves asks it here.
@@ -405,6 +439,22 @@ pub struct Decoded {
 
 /// Write a build as a `.skif` v5 file, stamped with what `database` is.
 pub fn encode(build: &CharacterState, database: &PowerDatabase) -> Result<String, SkifError> {
+    stamp(build, slim(build)?, database)
+}
+
+/// [`encode`] for a build going to someone else: the owner's shopping progress is left out.
+pub fn encode_shared(
+    build: &CharacterState,
+    database: &PowerDatabase,
+) -> Result<String, SkifError> {
+    stamp(build, slim(build)?.without_progress(), database)
+}
+
+fn stamp(
+    build: &CharacterState,
+    slim: SkifBuild,
+    database: &PowerDatabase,
+) -> Result<String, SkifError> {
     let file = SkifFile {
         version: VERSION,
         authored_against: Some(AuthoredAgainst {
@@ -419,7 +469,7 @@ pub fn encode(build: &CharacterState, database: &PowerDatabase) -> Result<String
                 .map(str::to_string),
         }),
         meta: None,
-        build: slim(build)?,
+        build: slim,
     };
     serde_json::to_string_pretty(&file).map_err(|e| SkifError::Malformed(e.to_string()))
 }
@@ -463,6 +513,12 @@ pub fn slim(build: &CharacterState) -> Result<SkifBuild, SkifError> {
         proc_overrides: build.proc_overrides.clone(),
         disabled_proc_categories: build.disabled_proc_categories.clone(),
         attack_chains: build.attack_chains.clone(),
+        progress: SkifProgress {
+            enhancements: build.enhancement_acquired.clone(),
+            incarnate_salvage: build.shopping_acquired.clone(),
+            crafted: build.crafting_obtained.clone(),
+            salvage_checked: build.crafting_salvage_checked.clone(),
+        },
         what_if_buffs: None,
     })
 }
@@ -719,6 +775,10 @@ pub fn hydrate(file: SkifFile, database: &PowerDatabase) -> Result<Decoded, Skif
     build.proc_overrides = slim.proc_overrides;
     build.disabled_proc_categories = slim.disabled_proc_categories;
     build.attack_chains = slim.attack_chains;
+    build.enhancement_acquired = slim.progress.enhancements;
+    build.shopping_acquired = slim.progress.incarnate_salvage;
+    build.crafting_obtained = slim.progress.crafted;
+    build.crafting_salvage_checked = slim.progress.salvage_checked;
     build.combat.global_conditionals = migrate_stances(slim.stances, database, &mut unresolved);
     build.combat.power_state = slim.power_state;
     build.combat.active_modes = slim

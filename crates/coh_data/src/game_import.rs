@@ -254,6 +254,7 @@ pub fn to_skif_build(
         power_state: Default::default(),
         proc_overrides: Default::default(),
         attack_chains: Default::default(),
+        progress: Default::default(),
         disabled_proc_categories: Default::default(),
         what_if_buffs: None,
     };
