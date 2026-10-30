@@ -1327,6 +1327,12 @@
 /* A finger needs a taller row than a pointer does. */
 @media (pointer: coarse) { .icon-select__option { padding: 8px 10px; } }
 .build .hint { color: var(--text-faint); font-size: 12px; line-height: 1.5; }
+/* The archetype conversion's way in: quiet, under the archetype menu it is an alternative to. */
+.build-convert {
+  align-self: flex-start; background: none; border: none; padding: 0;
+  color: var(--text-dim); font-size: 12px; text-decoration: underline; cursor: pointer;
+}
+.build-convert:hover { color: var(--action-hover); }
 
 /* ---- power card: inset capsule marker ----
    A detached, fully-rounded capsule (not a flush border) that can glow on all four sides.
@@ -2955,6 +2961,15 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .confirm { display: flex; flex-direction: column; gap: 12px; padding: 4px var(--pad-modal) 12px; }
 .confirm__message { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); }
 .confirm__actions { display: flex; justify-content: flex-end; gap: 6px; }
+/* Convert to another archetype: the choice, then the report of what the copy keeps. */
+.convert { display: flex; flex-direction: column; gap: 12px; padding: 4px var(--pad-modal) 12px; }
+.convert__note { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); margin: 0; }
+.convert__report { display: flex; flex-direction: column; gap: 10px; }
+.convert__section { display: flex; flex-direction: column; gap: 4px; }
+.convert__title { margin: 0; font-size: 12px; font-weight: 600; color: var(--text); }
+.convert__list { margin: 0; padding-left: 18px; font-size: 12.5px; line-height: 1.5; color: var(--text-dim); }
+.convert__reason { color: var(--text); }
+.convert__empty { color: var(--action-active); }
 
 /* ---- pool picker (inside the modal) ----
    Two panes: the pool list, and a preview of whichever power is under the pointer. The

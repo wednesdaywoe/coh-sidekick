@@ -1283,7 +1283,7 @@ pub fn powers_of_set(database: &Db, set_id: &str, origin: SetOrigin) -> Vec<coh_
 /// The level below which nothing in this set can be taken, whatever the individual powers'
 /// own unlock levels say. A powerset has none; the pools have one each, from the schedule
 /// (`schedules.bin`), overridden by an aggregate that declares its own.
-pub fn set_unlock_floor(database: &Db, set_id: &str, origin: SetOrigin) -> u8 {
+pub fn set_unlock_floor(database: &coh_data::PowerDatabase, set_id: &str, origin: SetOrigin) -> u8 {
     if origin == SetOrigin::Powerset {
         return 1;
     }

@@ -5,6 +5,8 @@ use dioxus::prelude::*;
 mod alert_store;
 mod app_actions;
 mod app_info;
+mod archetype_convert;
+mod archetype_convert_dialog;
 mod bonus_by_power;
 mod browser_store;
 mod build_bar;
