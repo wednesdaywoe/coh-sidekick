@@ -3275,15 +3275,6 @@ pub fn PickedPowerCard(
                     // went on working (the pointer is captured), but every signal a user reads to
                     // know that had moved somewhere else, which is indistinguishable from broken.
                     div { class: "slot-capsule__controls",
-                    if let Some(stage) = ed_stage() {
-                        crate::ed_view::EdMark {
-                            power: crate::shell::PowerRef {
-                                powerset_id: powerset_id.clone(),
-                                power: power_id.clone(),
-                            },
-                            stage,
-                        }
-                    }
                     // One stepper, not a `−`/`+` pair: the gesture is a single axis, so the
                     // control is a single ghost cell reading `‹›` and the direction of travel says
                     // which way. `pointerdown` arms a card-local drag and captures the pointer (so
@@ -3480,6 +3471,17 @@ pub fn PickedPowerCard(
                             }
                         },
                         "⌫"
+                    }
+                }
+                // Last in the row, outside the capsule like the clear: it reads the slots, it
+                // doesn't change them.
+                if let Some(stage) = ed_stage() {
+                    crate::ed_view::EdMark {
+                        power: crate::shell::PowerRef {
+                            powerset_id: powerset_id.clone(),
+                            power: power_id.clone(),
+                        },
+                        stage,
                     }
                 }
             }

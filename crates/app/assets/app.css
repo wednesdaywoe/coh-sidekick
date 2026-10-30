@@ -1682,17 +1682,21 @@
 }
 .slot-capsule__controls:empty { display: none; }
 
-/* The ED mark after a power's slots (`ed_view.rs`): how deep into Enhancement Diversification
-   its slotting is. Faint while there is room, heat on the steep part, ember past the last step,
-   where more slotting adds very little. Hovering it opens the breakdown card. */
+/* The ED info icon at the end of a power's slot row (`ed_view.rs`): how deep into Enhancement
+   Diversification its slotting is. Faint at full value, brighter ink once diminishing returns
+   apply. Neutral on purpose: sets routinely push an aspect past a threshold, and a warning colour
+   on most cards reads as a build full of mistakes. Sized like `.slot-clear-all`. */
 .ed-mark {
-  padding: 0 4px; border-radius: 3px;
-  border: 1px solid var(--seam-raised);
-  font-family: var(--font-chrome); font-size: 9px; letter-spacing: 0.04em; line-height: 1.6;
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--slot-control); height: var(--slot-control);
   color: var(--text-faint); cursor: default;
 }
-.ed-mark.is-steep { color: var(--action-hover); border-color: color-mix(in srgb, var(--action-hover) 55%, transparent); }
-.ed-mark.is-capped { color: var(--action-danger); border-color: color-mix(in srgb, var(--action-danger) 55%, transparent); }
+.ed-mark__icon {
+  width: 14px; height: 14px;
+  fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round;
+}
+.ed-mark.is-diminished { color: var(--text-dim); }
 /* A leftward drag re-points the live colour at danger. The capsule is the frame around the cells
    the drag is about to take, and a blue frame around red cells splits one gesture between two
    colours. Keyed on the count's own class, so the frame follows the sign the count is already
@@ -2691,9 +2695,8 @@ button.power-pick--empty {
 .power-tooltip__card.is-pinned { border-color: var(--action-active); }
 
 /* The ED breakdown, in the mark's card and in the Info panel: per aspect, slotted against what
-   counts, a bar with the three ED steps ticked, and what one more IO would add. */
+   counts, a bar with the three ED steps ticked, and how much ED takes. */
 .ed-breakdown { display: flex; flex-direction: column; gap: 8px; }
-.ed-breakdown__note { margin: 0; font-size: 10.5px; color: var(--text-faint); }
 .ed-row { display: flex; flex-direction: column; gap: 3px; }
 .ed-row__head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 8px; align-items: baseline; }
 .ed-row__name { font-weight: 600; color: var(--text); }
@@ -2708,7 +2711,6 @@ button.power-pick--empty {
 .ed-row.is-capped .ed-row__fill { background: var(--action-danger); }
 .ed-row__step { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--surface-panel); }
 .ed-row__foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 8px; font-size: 10.5px; color: var(--text-faint); }
-.ed-row__next { color: var(--text-dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .ed-row__alpha { font-size: 10.5px; color: var(--text-faint); }
 .power-tooltip__note {
   margin-top: 6px;

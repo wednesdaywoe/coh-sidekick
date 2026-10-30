@@ -37,7 +37,18 @@ pub fn deepest_stage(rows: &[AspectBreakdown]) -> Option<u8> {
     rows.iter().map(|row| row.stage).max()
 }
 
-fn stage_class(stage: u8) -> &'static str {
+/// The icon's colour: neutral, only full value or not. A warning colour on most cards would
+/// read as a build full of mistakes, since sets routinely pass a threshold.
+fn mark_class(stage: u8) -> &'static str {
+    if stage == 0 {
+        "is-room"
+    } else {
+        "is-diminished"
+    }
+}
+
+/// The card's bar keeps the heat: amber on the steep part, red past the last step.
+fn bar_class(stage: u8) -> &'static str {
     match stage {
         0 | 1 => "is-room",
         2 => "is-steep",
@@ -45,13 +56,13 @@ fn stage_class(stage: u8) -> &'static str {
     }
 }
 
-/// What a stage means to a player.
+/// What a stage means to a player. Kept plain: sets routinely push an aspect past a threshold,
+/// so it is a fact about the power, not a fault.
 fn stage_words(stage: u8) -> &'static str {
-    match stage {
-        0 => "counts in full",
-        1 => "past the first ED step, slight loss",
-        2 => "past the second ED step, more counts for less",
-        _ => "past the last ED step, more adds very little",
+    if stage == 0 {
+        "Full value"
+    } else {
+        "Diminishing returns in effect"
     }
 }
 
@@ -94,7 +105,7 @@ pub fn EdMark(power: PowerRef, stage: u8) -> Element {
     let mut hover = use_context::<EdHover>().0;
     rsx! {
         span {
-            class: "ed-mark {stage_class(stage)}",
+            class: "ed-mark {mark_class(stage)}",
             "aria-label": "Enhancement Diversification: {stage_words(stage)}",
             onmouseenter: {
                 let power = power.clone();
@@ -108,7 +119,13 @@ pub fn EdMark(power: PowerRef, stage: u8) -> Element {
                 }
             },
             onmouseleave: move |_| hover.set(None),
-            "ED"
+            svg {
+                class: "ed-mark__icon",
+                view_box: "0 0 16 16",
+                "aria-hidden": "true",
+                circle { cx: "8", cy: "8", r: "6.5" }
+                path { d: "M8 7v4.5M8 4.6v.1" }
+            }
         }
     }
 }
@@ -141,17 +158,14 @@ pub fn EdTipHost() -> Element {
     }
 }
 
-/// One line per aspect: a bar with the ED steps marked, slotted against what counts, and what
-/// one more common IO of that aspect would add.
+/// One line per aspect: a bar with the ED steps marked, slotted against what counts, and how
+/// much ED takes.
 #[component]
 pub fn EdBreakdown(rows: Vec<AspectBreakdown>) -> Element {
     rsx! {
         div { class: "ed-breakdown",
             for row in rows.iter() {
                 EdRow { key: "{row.aspect}", row: row.clone() }
-            }
-            p { class: "ed-breakdown__note",
-                "One more: what a level-50 common IO of that aspect would add."
             }
         }
     }
@@ -169,7 +183,7 @@ fn EdRow(row: AspectBreakdown) -> Element {
         (row.alpha > 0.0).then(|| format!(" (Alpha adds {} before ED)", percent(row.alpha)));
     rsx! {
         div {
-            class: "ed-row {stage_class(row.stage)}",
+            class: "ed-row {bar_class(row.stage)}",
             title: "{aspect_label(row.aspect)}: {stage_words(row.stage)}",
             div { class: "ed-row__head",
                 span { class: "ed-row__name", {aspect_label(row.aspect)} }
@@ -190,9 +204,11 @@ fn EdRow(row: AspectBreakdown) -> Element {
                 }
             }
             div { class: "ed-row__foot",
-                span { {stage_words(row.stage)} }
-                if let Some(next) = row.next {
-                    span { class: "ed-row__next", "one more +{percent(next)}" }
+                span {
+                    {stage_words(row.stage)}
+                    if row.lost > 0.0 {
+                        ", {percent(row.lost)} lost"
+                    }
                 }
             }
             if let Some(note) = alpha_note {

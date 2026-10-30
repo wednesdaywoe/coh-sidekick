@@ -118,8 +118,8 @@ fn what_counts_is_what_the_totals_use() {
     );
 }
 
-/// One damage IO counts in full; each further one reaches the same or a later stage; at six, a
-/// seventh would add almost nothing.
+/// One damage IO counts in full; each further one reaches the same or a later stage, and ED
+/// takes exactly the gap between what is slotted and what counts.
 #[test]
 fn damage_ios_walk_through_the_stages() {
     let db = load();
@@ -133,18 +133,15 @@ fn damage_ios_walk_through_the_stages() {
         one.counted, one.slotted,
         "below the first threshold everything counts"
     );
-    let full_gain = one.next.expect("a damage IO enhances damage");
+    assert_eq!(one.lost, 0.0, "nothing lost below the first threshold");
     // Two level-50 damage IOs (84.8%) already pass the first threshold (70%), so the second
     // counts for a little less than the first.
     let two = at(2);
     assert_eq!(two.stage, 1, "{two:?}");
+    let second = two.counted - one.counted;
     assert!(
-        (two.counted - one.counted - full_gain).abs() < 1e-9,
-        "one more is what the second adds"
-    );
-    assert!(
-        full_gain < one.slotted && full_gain > 0.9 * one.slotted,
-        "{one:?}"
+        second < one.counted && second > 0.9 * one.counted,
+        "{one:?} {two:?}"
     );
 
     let stages: Vec<u8> = (1..=6).map(|count| at(count).stage).collect();
@@ -155,15 +152,21 @@ fn damage_ios_walk_through_the_stages() {
     let six = at(6);
     assert_eq!(six.stage, 3, "{six:?}");
     assert!(six.counted < six.slotted);
-    let seventh = six.next.expect("a damage IO");
+    // A seventh adds almost nothing.
+    let seventh = at(7).counted - six.counted;
     assert!(
-        seventh < full_gain * 0.2,
-        "a seventh adds {seventh} against {full_gain} for the first"
+        seventh < one.counted * 0.2,
+        "a seventh adds {seventh} against {} for the first",
+        one.counted
     );
-
-    // "One more" is what the seventh IO really does to the power.
-    let seven = at(7);
-    assert!((seven.counted - six.counted - seventh).abs() < 1e-9);
+    // Without an Alpha, what ED takes is exactly the gap between slotted and what counts.
+    for count in 1..=6 {
+        let row = at(count);
+        assert!(
+            (row.lost - (row.slotted - row.counted)).abs() < 1e-9,
+            "{count}: {row:?}"
+        );
+    }
 }
 
 /// Nothing slotted, nothing to break down.

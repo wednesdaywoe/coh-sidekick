@@ -1,22 +1,18 @@
 //! How far into Enhancement Diversification each aspect of one power's slotting is: what is
-//! slotted, what counts, which stage of diminishing returns it has reached, and what one more
-//! enhancement would add.
+//! slotted, what counts, which stage of diminishing returns it has reached, and how much ED
+//! takes.
 //!
-//! Every number comes out of [`power_enhancement`], the per-power enhancement the totals and the
-//! power projection already use, Alpha's ED split included: "counts" is its answer, and "one
-//! more" is its answer again with a level-50 common IO added. So the breakdown can never
-//! disagree with the totals about a power.
+//! "Counts" is [`power_enhancement`]'s answer, the per-power enhancement the totals and the power
+//! projection already use, Alpha's ED split included. So the breakdown can never disagree with
+//! the totals about a power.
 
 use crate::apply::power_enhancement;
 use crate::enhancement::{
-    enhancement_type_of, filter_alpha_by_allowed_enhancements, raw_power_enhancement_bonuses,
+    apply_ed, filter_alpha_by_allowed_enhancements, raw_power_enhancement_bonuses,
     schedule_for_aspect,
 };
 use crate::incarnates::AlphaEnhancement;
 use coh_data::{CombatContext, Enhancement, Level, Power, PowerDatabase};
-
-/// The level "one more enhancement" is crafted at: a common IO at the level cap.
-const NEXT_IO_LEVEL: i64 = 50;
 
 /// One aspect of a power's enhancement, through Enhancement Diversification. Values are
 /// fractions (0.95 is +95%).
@@ -33,11 +29,11 @@ pub struct AspectBreakdown {
     /// The ED stage `slotted + alpha` reached: 0 counts in full, then 1, 2 and 3 for each
     /// threshold passed, where each further point counts for less.
     pub stage: u8,
+    /// What ED cuts from `slotted + alpha`: the diminishing returns, as a fraction. Zero at
+    /// stage 0.
+    pub lost: f64,
     /// The aspect's ED thresholds, so a surface can draw where the total sits.
     pub thresholds: [f64; 3],
-    /// What a level-50 common IO of this aspect would add to `counted`. `None` when no common
-    /// IO enhances it.
-    pub next: Option<f64>,
 }
 
 /// Each aspect the power's slotting enhances, in [`power_enhancement`]'s terms. Empty for a
@@ -79,13 +75,6 @@ pub fn power_enhancement_breakdown(
     } else {
         Default::default()
     };
-    let common_ios: Vec<&str> = db
-        .enhancements
-        .as_ref()
-        .map(|catalog| catalog.generic_ios_for_power(allowed))
-        .unwrap_or_default();
-    let next_io = Level::from_i64(NEXT_IO_LEVEL);
-
     raw.iter()
         .filter_map(|(aspect, slotted)| {
             let schedule = schedule_for_aspect(aspect, curves)?;
@@ -93,25 +82,15 @@ pub fn power_enhancement_breakdown(
             let alpha_share = alpha_total.get(aspect) - alpha_bypass.get(aspect);
             let total = slotted + alpha_share;
             let stage = thresholds.iter().filter(|&&at| total > at).count() as u8;
-            let now = counted.get(aspect);
-            let next = enhancement_type_of(aspect)
-                .filter(|enh_type| common_ios.contains(enh_type))
-                .and_then(|enh_type| {
-                    let mut more = slots.to_vec();
-                    more.push(Some(Enhancement::generic_io(enh_type, next_io, 0)));
-                    let after =
-                        power_enhancement(&more, power, alpha, level, combat, db, &mut Vec::new());
-                    let gain = after.get(aspect) - now;
-                    (gain > 0.0).then_some(gain)
-                });
+            let lost = (total - apply_ed(total, schedule, curves)).max(0.0);
             Some(AspectBreakdown {
                 aspect,
                 slotted,
                 alpha: alpha_share,
-                counted: now,
+                counted: counted.get(aspect),
                 stage,
+                lost,
                 thresholds,
-                next,
             })
         })
         .collect()
