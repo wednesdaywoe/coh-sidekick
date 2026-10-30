@@ -22,7 +22,9 @@ use crate::build_session::BuildSession;
 use crate::enhancement_tools::under_craft_level;
 use crate::modal::{Modal, ModalSize};
 use crate::panels::power_group::PowerGroup;
+use crate::panels::stat_registry::StatSection;
 use crate::picker_defaults::{CraftBand, PickerDefaults};
+use crate::picker_sets::BonusCount;
 use crate::shell::Db;
 use crate::view::power_view::resolve_power_def;
 use coh_data::slot_levels::{self, SlotCategory};
@@ -928,6 +930,87 @@ pub(crate) fn SetBonusTierList(tiers: Vec<BonusTierRow>) -> Element {
     }
 }
 
+/// A filter row's label, doubling as the button that folds the row to its current choice.
+#[component]
+fn FoldLabel(text: &'static str, ontoggle: EventHandler<()>) -> Element {
+    rsx! {
+        button {
+            r#type: "button",
+            class: "picker-filter-label picker-filter-fold",
+            aria_expanded: "true",
+            title: "Fold this row into the summary line",
+            onclick: move |_| ontoggle.call(()),
+            span { class: "picker-filter-caret", "▾" }
+            "{text}"
+        }
+    }
+}
+
+/// A stat's name as the bonus filter says it. "Energy" can be a defense or a resistance, so a
+/// label that another section also offers in the same list carries its section.
+pub(crate) fn bonus_label(
+    stat: &crate::panels::stat_registry::StatDef,
+    offered: &[crate::picker_sets::BonusCount],
+) -> String {
+    let shared = offered
+        .iter()
+        .any(|other| other.stat.label == stat.label && other.stat.section != stat.section);
+    if shared {
+        format!("{} {}", stat.label, stat.section.title().to_lowercase())
+    } else {
+        stat.label.to_string()
+    }
+}
+
+/// A bonus dropdown, grouped by dashboard section, each option with its count — the picker's
+/// Bonus filter and the set-bonus finder's By power view both choose bonuses with it.
+#[component]
+pub(crate) fn BonusSelect(
+    counts: Vec<BonusCount>,
+    selected: Option<String>,
+    placeholder: &'static str,
+    label: &'static str,
+    onchange: EventHandler<Option<String>>,
+) -> Element {
+    rsx! {
+        select {
+            class: "select-compact picker-bonus-select",
+            aria_label: "{label}",
+            value: selected.clone().unwrap_or_default(),
+            onchange: move |evt: Event<FormData>| {
+                let chosen = evt.value();
+                onchange.call((!chosen.is_empty()).then_some(chosen));
+            },
+            option { value: "", selected: selected.is_none(), "{placeholder}" }
+            for (section , rows) in bonus_groups(&counts) {
+                optgroup { key: "{section.title()}", label: "{section.title()}",
+                    for row in rows {
+                        option {
+                            key: "{row.stat.id}",
+                            value: "{row.stat.id}",
+                            selected: selected.as_deref() == Some(row.stat.id),
+                            "{bonus_label(row.stat, &counts)} ({row.count})"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// The bonus dropdown's options, split into runs by dashboard section. The registry is already
+/// in section order, so consecutive runs are the groups.
+fn bonus_groups(counts: &[BonusCount]) -> Vec<(StatSection, Vec<&BonusCount>)> {
+    let mut groups: Vec<(StatSection, Vec<&BonusCount>)> = Vec::new();
+    for count in counts {
+        match groups.last_mut() {
+            Some((section, rows)) if *section == count.stat.section => rows.push(count),
+            _ => groups.push((count.stat.section, vec![count])),
+        }
+    }
+    groups
+}
+
 /// How many tracked-stat chips a picker set row shows before folding the rest into "+N more"
 /// (the beta's `MAX_TRACKED_CHIPS`).
 const MAX_TRACKED_CHIPS: usize = 5;
@@ -1200,7 +1283,7 @@ pub fn powers_of_set(database: &Db, set_id: &str, origin: SetOrigin) -> Vec<coh_
 /// The level below which nothing in this set can be taken, whatever the individual powers'
 /// own unlock levels say. A powerset has none; the pools have one each, from the schedule
 /// (`schedules.bin`), overridden by an aggregate that declares its own.
-pub fn set_unlock_floor(database: &Db, set_id: &str, origin: SetOrigin) -> u8 {
+pub fn set_unlock_floor(database: &coh_data::PowerDatabase, set_id: &str, origin: SetOrigin) -> u8 {
     if origin == SetOrigin::Powerset {
         return 1;
     }
@@ -2871,6 +2954,21 @@ pub fn PickedPowerCard(
             )
         });
 
+    // How deep into ED the slotting is, for the mark after the slots. A memo of one number, so a
+    // build edit that leaves this power's stage alone does not redraw the card.
+    let ed_stage = {
+        let power_ref = crate::shell::PowerRef {
+            powerset_id: powerset_id.clone(),
+            power: power_id.clone(),
+        };
+        use_memo(use_reactive!(|power_ref| {
+            crate::ed_view::deepest_stage(&crate::ed_view::rows_for(
+                &build_totals.read(),
+                &power_ref,
+            ))
+        }))
+    };
+
     // Hit Chance Alert — the engine's own per-power hit chance against the combat panel's
     // target, shown only on a power that rolls to hit a foe (accuracy alone can't say: self
     // toggles carry one too) and only under the 95% cap. The totals are read only while the
@@ -3375,6 +3473,17 @@ pub fn PickedPowerCard(
                         "⌫"
                     }
                 }
+                // Last in the row, outside the capsule like the clear: it reads the slots, it
+                // doesn't change them.
+                if let Some(stage) = ed_stage() {
+                    crate::ed_view::EdMark {
+                        power: crate::shell::PowerRef {
+                            powerset_id: powerset_id.clone(),
+                            power: power_id.clone(),
+                        },
+                        stage,
+                    }
+                }
             }
 
             // The forms this power hands out (Swap Ammo's ammunition, Staff Mastery's forms, Bio
@@ -3729,6 +3838,11 @@ fn EnhancementPickerModal(
     let mut set_size = use_signal(|| None::<usize>);
     // Only sets carrying a proc piece.
     let mut procs_only = use_signal(|| false);
+    // Only sets with a bonus to a tracked stat.
+    let mut tracked_only = use_signal(|| false);
+    // Only sets with a bonus to this one stat row.
+    let mut set_bonus = use_signal(|| None::<String>);
+    let mut folded_filters = defaults.folded_filters;
     let mut set_sort = use_signal(crate::picker_sets::SetSort::default);
     // The set to scroll to on open — set only when this open is a CHANGE to a piece already in
     // the slot, where the thing being changed is the best guess at what the user is looking for.
@@ -4143,11 +4257,14 @@ fn EnhancementPickerModal(
                             Some(io_catalog) => {
                                 let eligible = io_catalog
                                     .sets_for_power(power_def.allowed_set_categories.as_deref().unwrap_or(&[]));
+                                let tracked_ids = tracked_stats.0.read().clone();
                                 let facets = crate::picker_sets::SetFacets {
                                     set_type: set_category(),
                                     rarity: set_rarity(),
                                     size: set_size(),
                                     procs_only: procs_only(),
+                                    tracked_only: tracked_only().then(|| tracked_ids.clone()),
+                                    bonus: set_bonus(),
                                     sort: set_sort(),
                                     // Level-up mode withholds sets the character couldn't craft
                                     // yet — the set's own `min_level`, not a table.
@@ -4160,6 +4277,54 @@ fn EnhancementPickerModal(
                                 let rarity_counts = crate::picker_sets::rarity_counts(&eligible, &facets);
                                 let size_counts = crate::picker_sets::size_counts(&eligible, &facets);
                                 let total = crate::picker_sets::total_offered(&eligible, &facets);
+                                let tracked_count =
+                                    crate::picker_sets::tracked_count(&eligible, &facets, &tracked_ids);
+                                let bonus_counts = crate::picker_sets::bonus_counts(&eligible, &facets);
+                                // The chosen bonus gets the same per-set tag a tracked stat does
+                                // (piece count, Rule-of-5 count), without having to track it.
+                                let mut chip_ids = tracked_ids.clone();
+                                if let Some(id) = set_bonus() {
+                                    if !chip_ids.contains(&id) {
+                                        chip_ids.push(id);
+                                    }
+                                }
+                                let folded = folded_filters.read().clone();
+                                let fold_category = folded.contains("category");
+                                let fold_rarity = folded.contains("rarity");
+                                let fold_size = folded.contains("size");
+                                let fold_bonus = folded.contains("bonus");
+                                let mut toggle_fold = move |key: &'static str| {
+                                    folded_filters.with_mut(|set| {
+                                        if !set.remove(key) {
+                                            set.insert(key);
+                                        }
+                                    });
+                                };
+                                let show_types = type_counts.len() > 1 || set_category().is_some();
+                                let show_rarities = rarity_counts.len() > 1 || set_rarity().is_some();
+                                let show_sizes = size_counts.len() > 1 || set_size().is_some();
+                                let any = || "Any".to_string();
+                                let folded_rows: Vec<(&'static str, &'static str, String)> = [
+                                    (fold_category && show_types).then(|| ("category", "Category", set_category().unwrap_or_else(any))),
+                                    (fold_rarity && show_rarities).then(|| (
+                                        "rarity",
+                                        "Rarity",
+                                        set_rarity().map(|r| crate::picker_sets::rarity_label(&r)).unwrap_or_else(any),
+                                    )),
+                                    (fold_size && show_sizes).then(|| ("size", "Size", set_size().map(|n| format!("{n} pieces")).unwrap_or_else(any))),
+                                    (fold_bonus && !bonus_counts.is_empty()).then(|| (
+                                        "bonus",
+                                        "Bonus",
+                                        set_bonus()
+                                            .as_deref()
+                                            .and_then(crate::panels::stat_registry::by_id)
+                                            .map(|stat| bonus_label(stat, &bonus_counts))
+                                            .unwrap_or_else(any),
+                                    )),
+                                ]
+                                .into_iter()
+                                .flatten()
+                                .collect();
                                 // The scope the build-wide single-copy rule is asked in. A Compare
                                 // row is one power's hypothetical, so it is graded against its own
                                 // slots alone (`coh_data::slotting_rules`).
@@ -4178,20 +4343,38 @@ fn EnhancementPickerModal(
                                 // already the whole list reads as a filter that does nothing —
                                 // unless it is the one switched on, which has to stay reachable
                                 // to be switched off.
-                                let show_types = type_counts.len() > 1 || set_category().is_some();
-                                let show_rarities = rarity_counts.len() > 1 || set_rarity().is_some();
-                                let show_sizes = size_counts.len() > 1 || set_size().is_some();
                                 let any_filter = set_category().is_some()
                                     || set_rarity().is_some()
                                     || set_size().is_some()
-                                    || procs_only();
+                                    || procs_only()
+                                    || tracked_only()
+                                    || set_bonus().is_some();
                                 rsx! {
                                     // Each chip is a toggle: pressing the lit one clears its row,
                                     // so no row needs an "any" chip of its own.
                                     div { class: "picker-filters",
-                                        if show_types {
+                                        // Folded rows share one line, each naming its current
+                                        // choice; tapping one unfolds it.
+                                        if !folded_rows.is_empty() {
+                                            div { class: "picker-filter-row picker-filter-folded",
+                                                for (key , label , choice) in folded_rows {
+                                                    button {
+                                                        key: "{key}",
+                                                        r#type: "button",
+                                                        class: "picker-filter-fold picker-filter-fold-summary",
+                                                        aria_expanded: "false",
+                                                        title: "Show every choice",
+                                                        onclick: move |_| toggle_fold(key),
+                                                        span { class: "picker-filter-caret", "▸" }
+                                                        span { class: "picker-filter-fold-name", "{label}" }
+                                                        span { class: "picker-filter-fold-choice", "{choice}" }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if show_types && !fold_category {
                                             div { class: "picker-filter-row",
-                                                span { class: "picker-filter-label", "Category" }
+                                                FoldLabel { text: "Category", ontoggle: move |_| toggle_fold("category") }
                                                 div { class: "picker-filter-chips",
                                                     for facet in type_counts {
                                                         {
@@ -4219,9 +4402,9 @@ fn EnhancementPickerModal(
                                         // the export's own `category` vocabulary, so a fork that
                                         // ships a seventh tier gets a chip for it rather than
                                         // having its sets fall out of the filters.
-                                        if show_rarities {
+                                        if show_rarities && !fold_rarity {
                                             div { class: "picker-filter-row",
-                                                span { class: "picker-filter-label", "Rarity" }
+                                                FoldLabel { text: "Rarity", ontoggle: move |_| toggle_fold("rarity") }
                                                 div { class: "picker-filter-chips",
                                                     for facet in rarity_counts {
                                                         {
@@ -4244,9 +4427,9 @@ fn EnhancementPickerModal(
                                                 }
                                             }
                                         }
-                                        if show_sizes {
+                                        if show_sizes && !fold_size {
                                             div { class: "picker-filter-row",
-                                                span { class: "picker-filter-label", "Size" }
+                                                FoldLabel { text: "Size", ontoggle: move |_| toggle_fold("size") }
                                                 div { class: "picker-filter-chips",
                                                     for (size, count) in size_counts.iter().copied() {
                                                         button {
@@ -4266,6 +4449,21 @@ fn EnhancementPickerModal(
                                                 }
                                             }
                                         }
+                                        // A dropdown rather than chips: a power's sets can grant
+                                        // dozens of different bonuses, grouped as the stats
+                                        // panels group them.
+                                        if !bonus_counts.is_empty() && !fold_bonus {
+                                            div { class: "picker-filter-row",
+                                                FoldLabel { text: "Bonus", ontoggle: move |_| toggle_fold("bonus") }
+                                                BonusSelect {
+                                                    counts: bonus_counts.clone(),
+                                                    selected: set_bonus(),
+                                                    placeholder: "Any bonus",
+                                                    label: "Only sets with a bonus to",
+                                                    onchange: move |chosen| set_bonus.set(chosen),
+                                                }
+                                            }
+                                        }
                                         div { class: "picker-filter-row",
                                             span { class: "picker-filter-label", "Show" }
                                             div { class: "picker-filter-chips",
@@ -4278,6 +4476,27 @@ fn EnhancementPickerModal(
                                                         procs_only.set(next);
                                                     },
                                                     "Procs only"
+                                                }
+                                                // With nothing tracked there is nothing to match,
+                                                // so the chip says so instead of emptying the list.
+                                                // Lit stays clickable, so it can be switched off.
+                                                button {
+                                                    class: if tracked_only() { "picker-chip is-on" } else { "picker-chip" },
+                                                    aria_pressed: "{tracked_only()}",
+                                                    disabled: tracked_count.is_none() && !tracked_only(),
+                                                    title: if tracked_count.is_some() {
+                                                        "Only sets with a bonus to a stat you track"
+                                                    } else {
+                                                        "Track a stat in a stats panel first; this then shows only the sets with a bonus to it"
+                                                    },
+                                                    onclick: move |_| {
+                                                        let next = !*tracked_only.peek();
+                                                        tracked_only.set(next);
+                                                    },
+                                                    "Tracked stats"
+                                                    if let Some(count) = tracked_count {
+                                                        span { class: "picker-chip-count", "{count}" }
+                                                    }
                                                 }
                                             }
                                             // Sort orders the list rather than narrowing it, so it
@@ -4306,6 +4525,8 @@ fn EnhancementPickerModal(
                                                         set_rarity.set(None);
                                                         set_size.set(None);
                                                         procs_only.set(false);
+                                                        tracked_only.set(false);
+                                                        set_bonus.set(None);
                                                     },
                                                     "Clear filters"
                                                 }
@@ -4334,7 +4555,7 @@ fn EnhancementPickerModal(
                                         }
                                         for (offer, tracked_bonuses) in visible.into_iter().map(|offer| {
                                             let bonuses = crate::tracked_stats::set_tracked_bonuses(
-                                                offer.set, &tracked_stats.0.read(),
+                                                offer.set, &chip_ids,
                                             );
                                             (offer, bonuses)
                                         }) {

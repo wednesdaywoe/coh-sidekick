@@ -1,6 +1,17 @@
 [
 
   {
+    "date": "2026-10-30",
+    "items": [
+      { "id": "picker-tracked-stats", "type": "feat", "message": "The enhancement picker has a new Tracked stats button. Press it to see only the sets with a bonus to a stat you are tracking" },
+      { "id": "picker-bonus-filter", "type": "feat", "message": "The enhancement picker can now filter sets with a specific bonus you pick." },
+      { "id": "picker-fold-filters", "type": "feat", "message": "The picker's filter rows can be folded: click Category, Rarity, Size or Bonus and it shrinks into one summary line." },
+      { "id": "finder-by-power", "type": "feat", "message": "The Set Bonus Finder has a new By power view. Choose the bonuses you want, or use your tracked stats, and it lists the powers in your build that could take a set with them, what each would cost in slots, and which would hit the Rule of 5" },
+      { "id": "archetype-conversion", "type": "feat", "message": "You can convert a build to another archetype: open Build Identity and choose Convert to another archetype. Shared powersets are transferred, powers move to a level the new archetype allows, and archetype sets (ATOs) turn into the new archetype's own sets, piece for piece." },
+      { "id": "ed-caps", "type": "feat", "message": "Power cards now have a new icon that shows your enhancement amounts for that power." }
+    ]
+  },
+  {
   "date": "2026-10-29",
   "items": [
     { "id": "shopping-list-persistance", "type": "fix", "message": "Your incarnate component and enhancement shopping list progress should now store with both your session and your build." },

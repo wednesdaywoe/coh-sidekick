@@ -1327,6 +1327,12 @@
 /* A finger needs a taller row than a pointer does. */
 @media (pointer: coarse) { .icon-select__option { padding: 8px 10px; } }
 .build .hint { color: var(--text-faint); font-size: 12px; line-height: 1.5; }
+/* The archetype conversion's way in: quiet, under the archetype menu it is an alternative to. */
+.build-convert {
+  align-self: flex-start; background: none; border: none; padding: 0;
+  color: var(--text-dim); font-size: 12px; text-decoration: underline; cursor: pointer;
+}
+.build-convert:hover { color: var(--action-hover); }
 
 /* ---- power card: inset capsule marker ----
    A detached, fully-rounded capsule (not a flush border) that can glow on all four sides.
@@ -1675,6 +1681,22 @@
   flex: 0 0 auto;
 }
 .slot-capsule__controls:empty { display: none; }
+
+/* The ED info icon at the end of a power's slot row (`ed_view.rs`): how deep into Enhancement
+   Diversification its slotting is. Faint at full value, brighter ink once diminishing returns
+   apply. Neutral on purpose: sets routinely push an aspect past a threshold, and a warning colour
+   on most cards reads as a build full of mistakes. Sized like `.slot-clear-all`. */
+.ed-mark {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--slot-control); height: var(--slot-control);
+  color: var(--text-faint); cursor: default;
+}
+.ed-mark__icon {
+  width: 14px; height: 14px;
+  fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round;
+}
+.ed-mark.is-diminished { color: var(--text-dim); }
 /* A leftward drag re-points the live colour at danger. The capsule is the frame around the cells
    the drag is about to take, and a blue frame around red cells splits one gesture between two
    colours. Keyed on the count's own class, so the frame follows the sign the count is already
@@ -2671,6 +2693,25 @@ button.power-pick--empty {
   line-height: 1.4;
 }
 .power-tooltip__card.is-pinned { border-color: var(--action-active); }
+
+/* The ED breakdown, in the mark's card and in the Info panel: per aspect, slotted against what
+   counts, a bar with the three ED steps ticked, and how much ED takes. */
+.ed-breakdown { display: flex; flex-direction: column; gap: 8px; }
+.ed-row { display: flex; flex-direction: column; gap: 3px; }
+.ed-row__head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 8px; align-items: baseline; }
+.ed-row__name { font-weight: 600; color: var(--text); }
+.ed-row__values { font-size: 11.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ed-row__counted { font-weight: 600; color: var(--text); }
+.ed-row__bar {
+  position: relative; height: 6px; border-radius: 3px;
+  background: var(--surface-warmed); overflow: hidden;
+}
+.ed-row__fill { position: absolute; inset: 0 auto 0 0; background: var(--text-faint); }
+.ed-row.is-steep .ed-row__fill { background: var(--action-hover); }
+.ed-row.is-capped .ed-row__fill { background: var(--action-danger); }
+.ed-row__step { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--surface-panel); }
+.ed-row__foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 8px; font-size: 10.5px; color: var(--text-faint); }
+.ed-row__alpha { font-size: 10.5px; color: var(--text-faint); }
 .power-tooltip__note {
   margin-top: 6px;
   color: var(--text-faint);
@@ -2955,6 +2996,15 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .confirm { display: flex; flex-direction: column; gap: 12px; padding: 4px var(--pad-modal) 12px; }
 .confirm__message { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); }
 .confirm__actions { display: flex; justify-content: flex-end; gap: 6px; }
+/* Convert to another archetype: the choice, then the report of what the copy keeps. */
+.convert { display: flex; flex-direction: column; gap: 12px; padding: 4px var(--pad-modal) 12px; }
+.convert__note { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); margin: 0; }
+.convert__report { display: flex; flex-direction: column; gap: 10px; }
+.convert__section { display: flex; flex-direction: column; gap: 4px; }
+.convert__title { margin: 0; font-size: 12px; font-weight: 600; color: var(--text); }
+.convert__list { margin: 0; padding-left: 18px; font-size: 12.5px; line-height: 1.5; color: var(--text-dim); }
+.convert__reason { color: var(--text); }
+.convert__empty { color: var(--action-active); }
 
 /* ---- pool picker (inside the modal) ----
    Two panes: the pool list, and a preview of whichever power is under the pointer. The
@@ -3988,6 +4038,22 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   color: var(--text-faint);
 }
 .picker-filter-label-inline { flex-basis: auto; margin-left: 10px; }
+/* The label is the fold toggle: same type as before, plus a caret, with no button chrome. */
+.picker-filter-fold {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  padding: 0; background: none; border: none; text-align: left; cursor: pointer;
+}
+.picker-filter-fold:hover { color: var(--text-dim); }
+.picker-filter-fold:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.picker-filter-caret { font-size: 10px; }
+.picker-filter-folded { gap: 4px 14px; }
+.picker-filter-fold-name {
+  font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.picker-filter-fold-choice { font-size: 11.5px; font-family: var(--font-chrome); color: var(--text-dim); }
+.picker-filter-fold-summary:hover .picker-filter-fold-choice { color: var(--text); }
+.picker-bonus-select { max-width: 100%; }
 .picker-filter-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 /* The same on-treatment as `.sb-chip`: state rides the accent channel, never a surface fill. */
 .picker-chip {
@@ -4011,6 +4077,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   box-shadow: 0 0 8px color-mix(in srgb, var(--focus-ring) 40%, transparent);
 }
 .picker-chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.picker-chip:disabled { opacity: 0.5; cursor: not-allowed; }
+.picker-chip:disabled:hover { border-color: var(--seam-raised); color: var(--text-dim); }
 .picker-chip-count { font-size: 10px; font-variant-numeric: tabular-nums; color: var(--text-faint); }
 .picker-chip.is-on .picker-chip-count { color: inherit; opacity: 0.75; }
 .picker-filter-total {
@@ -4832,7 +4900,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    mark that only carries a tooltip; locked it is a button, in the active colour, with a word —
    a panel that has stopped following the pointer must say so, or it reads as broken. */
 .info-lock {
-  position: sticky; top: 0; z-index: 1;
+  /* -10px: the finder's top padding, so the header meets the scroller's edge with no gap. */
+  position: sticky; top: -10px; z-index: 1;
   float: right; margin: 0 0 4px 8px;
   display: inline-flex; align-items: center; gap: 4px;
   padding: 2px 6px;
@@ -6298,6 +6367,93 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   padding: 10px var(--pad-modal) var(--pad-modal);
   gap: 10px;
 }
+/* The finder's two views share one window: the view switch, then whichever view is open. */
+.bonus-finder-shell { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.bonus-finder__views { flex: 0 0 auto; display: flex; padding: 10px var(--pad-modal) 0; }
+
+/* By power: the bonus picker and its options, then one line per chosen bonus with what the
+   build already holds of it, then the places a set could go. */
+.bonus-routes__choose { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.bonus-routes__choose .bonus-finder__restrict { grid-column: auto; }
+.bonus-routes__held { flex: 0 0 auto; display: flex; flex-direction: column; gap: 5px; }
+.bonus-routes__held-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.bonus-routes__copies { font-size: 11.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.bonus-routes {
+  flex: 0 0 auto;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--seam); border-radius: var(--r);
+  /* clip, not hidden: hidden would make this box the scroller and the header could not stick. */
+  overflow: clip;
+  container: bonus-routes / inline-size;
+}
+/* One template for the header and every row, so each chosen bonus's amounts line up under its
+   name. Every track is a share of the width rather than sized to its content, which is what
+   keeps separate rows aligned. */
+.bonus-route {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.25fr) minmax(0, 1.7fr) repeat(var(--bonus-cols, 1), minmax(0, 1fr)) minmax(0, 0.8fr);
+  align-items: baseline;
+  gap: 2px 12px;
+  padding: 6px var(--pad-row-x);
+  border-top: 1px solid var(--seam);
+  font-size: 12px; color: var(--text);
+}
+.bonus-route:first-of-type { border-top: none; }
+.bonus-route:not(.bonus-route--head):hover { background: var(--surface-warmed); }
+.bonus-route.is-spent { opacity: 0.45; }
+.bonus-route--head {
+  /* -10px: the finder's top padding, so the header meets the scroller's edge with no gap. */
+  position: sticky; top: -10px; z-index: 1;
+  padding-block: 5px;
+  background: var(--surface-raised);
+  font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint);
+}
+.bonus-route__power { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.bonus-route__power-name { font-weight: 600; }
+.bonus-route__power-meta { font-size: 10.5px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.bonus-route .bonus-finder__set { flex-wrap: wrap; min-width: 0; }
+.bonus-route__others { font-size: 10.5px; color: var(--text-faint); }
+.bonus-route__cost { justify-self: start; }
+/* What a swap would take out: the detail behind the badge, on its own dimmer line. */
+.bonus-route__out { grid-column: 2 / -1; font-size: 11px; color: var(--text-faint); }
+
+/* The cost at a glance. Fits is the one to look for, so it alone takes the ok colour. */
+.bonus-route__badge {
+  display: inline-block; padding: 0 6px; border-radius: 3px;
+  border: 1px solid var(--seam-raised);
+  font-size: 10.5px; line-height: 1.7; white-space: nowrap; color: var(--text-dim);
+}
+.bonus-route__badge.is-fits { color: var(--ok-signal); border-color: color-mix(in srgb, var(--ok-signal) 60%, transparent); }
+.bonus-route__badge.is-swap { color: var(--text); }
+.bonus-route__badge.is-slotted { color: var(--text-faint); border-style: dashed; }
+
+/* One bonus as one set grants it. The pips are the copies already held of that value; amber
+   marks the fifth and last copy that still counts, struck through is past it. */
+.bonus-cell { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 0 5px; font-variant-numeric: tabular-nums; }
+.bonus-cell.is-none { color: var(--text-faint); }
+.bonus-cell__label { display: none; color: var(--text-faint); font-size: 10.5px; }
+.bonus-cell__value { font-weight: 600; }
+.bonus-cell__pieces { font-size: 10.5px; color: var(--text-dim); }
+.bonus-cell__pips { font-size: 8px; letter-spacing: 1px; color: var(--text-faint); }
+.bonus-cell.is-last .bonus-cell__value,
+.bonus-cell.is-last .bonus-cell__pips { color: var(--action-hover); }
+.bonus-cell.is-spent .bonus-cell__value { color: var(--action-danger); text-decoration: line-through; }
+.bonus-cell.is-spent .bonus-cell__pips { color: var(--action-danger); }
+
+/* A narrow panel or a phone: no header, and each row folds to the power and its cost, then the
+   set, then each amount named by its bonus. */
+@container bonus-routes (max-width: 560px) {
+  .bonus-route--head { display: none; }
+  .bonus-route { grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; }
+  .bonus-route__power { grid-column: 1; grid-row: 1; }
+  .bonus-route__cost { grid-column: 2; grid-row: 1; justify-self: end; }
+  .bonus-route .bonus-finder__set { grid-column: 1 / -1; }
+  .bonus-cell { grid-column: 1 / -1; }
+  .bonus-cell__label { display: inline; }
+  .bonus-route__out { grid-column: 1 / -1; }
+}
+
 .bonus-finder__filters {
   flex: 0 0 auto;
   display: grid; gap: 8px;
@@ -6334,7 +6490,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   padding: 4px var(--pad-row-x);
 }
 .bonus-finder__head {
-  position: sticky; top: 0; z-index: 1;
+  /* -10px: the finder's top padding, so the header meets the scroller's edge with no gap. */
+  position: sticky; top: -10px; z-index: 1;
   background: var(--surface-raised);
   border-bottom: 1px solid var(--seam);
 }
@@ -6835,6 +6992,9 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   .switch {
     min-height: var(--touch-seat);
   }
+  /* A picker filter row's fold label takes the header lane's 26px floor, not the full seat:
+     the fold exists to make those rows short, and a 44px label would undo it. */
+  .picker-filter-fold { min-height: 26px; align-items: center; }
   /* A switch is an inline-flex holding one 34×18 track; without this the track stretches to
      fill the taller box and stops being a switch. */
   .switch { align-items: center; }

@@ -16,6 +16,7 @@ pub mod chain_build;
 pub mod chain_walk;
 pub mod damage;
 pub mod distance;
+pub mod ed_breakdown;
 pub mod effect_registry;
 pub mod effective;
 pub mod enhancement;

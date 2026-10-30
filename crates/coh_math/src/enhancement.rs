@@ -748,6 +748,36 @@ fn add_enhancement_bonus(raw: &mut BTreeMap<&'static str, f64>, aspect: &'static
     }
 }
 
+/// A power's slotted enhancement per aspect BEFORE Enhancement Diversification: the sum
+/// [`calculate_power_enhancement_bonuses`] applies ED to, read through the same accumulator,
+/// so the two can never disagree about a slot. For showing how far into ED a power is.
+pub fn raw_power_enhancement_bonuses(
+    slots: &[Option<Enhancement>],
+    global_io_level: Level,
+    io_sets: Option<&IoSetCatalog>,
+    exemplar_level: Option<Level>,
+    curves: &EnhancementCurves,
+    errors: &mut Vec<CalcError>,
+) -> EnhancementBonuses {
+    EnhancementBonuses(accumulate_raw_io_bonuses(
+        slots,
+        global_io_level,
+        io_sets,
+        exemplar_level,
+        curves,
+        errors,
+    ))
+}
+
+/// The enhancement category an aspect key belongs to (`"damage"` → `"Damage"`, `"absorb"` →
+/// `"Healing"`): the name a power lists in `allowed_enhancements` and a common IO carries.
+pub fn enhancement_type_of(aspect: &str) -> Option<&'static str> {
+    ASPECT_TO_ENH_TYPE
+        .iter()
+        .find(|(key, _)| *key == aspect)
+        .map(|(_, enh_type)| *enh_type)
+}
+
 /// Enhancement Diversification once per aspect (the sum-then-one-ED close of the beta
 /// aggregation). Fail-loud on an aggregated aspect with no ED schedule (Rule 1).
 fn apply_ed_per_aspect(

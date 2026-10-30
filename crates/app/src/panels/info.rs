@@ -231,7 +231,14 @@ pub fn PowerViewCard(
                         for section in &view.sections {
                             EffectTable { title: section.title, rows: section.rows.clone() }
                         }
-                        if !view.enhancement_bonuses.is_empty() {
+                        // Slotted aspects get the ED breakdown; what is left (an Alpha-only aspect,
+                        // a power with nothing slotted) keeps the plain after-ED list.
+                        if !view.enhancement_breakdown.is_empty() {
+                            div { class: "info-block",
+                                h4 { "Enhancement Diversification" }
+                                crate::ed_view::EdBreakdown { rows: view.enhancement_breakdown.clone() }
+                            }
+                        } else if !view.enhancement_bonuses.is_empty() {
                             div { class: "info-block",
                                 h4 { "Enhancement bonuses (after ED)" }
                                 dl { class: "info-pairs",

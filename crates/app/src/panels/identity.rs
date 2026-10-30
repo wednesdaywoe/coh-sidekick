@@ -32,6 +32,7 @@ const ORIGINS: [(&str, &str); 5] = [
 pub fn IdentityPanel(database: Db, dataset: Signal<DatasetId>) -> Element {
     let session = use_context::<BuildSession>();
     let build = session.build;
+    let mut convert_open = use_context::<crate::archetype_convert_dialog::ConvertOpen>().0;
 
     // The archetype catalog is UI-only and parsed on demand, so memoize the one parse per
     // dataset. `Err` surfaces as a visible node rather than a panic (Rule 1's UI edge).
@@ -162,6 +163,17 @@ pub fn IdentityPanel(database: Db, dataset: Signal<DatasetId>) -> Element {
                         class: "build-select".to_string(),
                         placeholder: "— choose secondary —".to_string(),
                     }
+                }
+            }
+
+            // Keeping the sets the two archetypes share, where the archetype menu above clears
+            // every pick. Only offered once there is a set to keep.
+            if has_archetype && (build.read().primary.id.is_some() || build.read().secondary.id.is_some()) {
+                button {
+                    class: "build-convert",
+                    r#type: "button",
+                    onclick: move |_| convert_open.set(true),
+                    "Convert to another archetype…"
                 }
             }
 

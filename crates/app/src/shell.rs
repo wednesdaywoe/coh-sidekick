@@ -391,6 +391,13 @@ pub fn Shell() -> Element {
     // it projects two powersets the build does not hold against synthetic characters.
     let powerset_compare_open = use_signal(|| false);
     use_context_provider(|| crate::powerset_compare::PowersetCompareOpen(powerset_compare_open));
+    // The archetype conversion's open flag. The identity panel's Convert button sets it; the
+    // copy lands through `BuildSession::commit`, so it is one undo step.
+    let convert_open = use_signal(|| false);
+    // The ED mark under the pointer; the power cards set it, the card host reads it.
+    let ed_hover = use_signal(|| Option::<crate::ed_view::EdHoverTarget>::None);
+    use_context_provider(|| crate::ed_view::EdHover(ed_hover));
+    use_context_provider(|| crate::archetype_convert_dialog::ConvertOpen(convert_open));
     // Compare Slotting: the open flag, the power under comparison, and the session-scoped
     // comparison rows. Deliberately unpersisted — see `compare_slotting::CompareSlottingState`.
     // Applying a row goes through `BuildSession::commit` like every other edit.
@@ -1354,6 +1361,14 @@ pub fn Shell() -> Element {
         // The one pool/epic picker, hosted OUTSIDE both layout roots for the same reason.
         if let Some(Ok(database)) = &*db.read() {
             panels::pool_picker::PoolPickerHost { database: Db(database.clone()) }
+        }
+
+        // The ED card, hosted OUTSIDE both layout roots for the same reason.
+        crate::ed_view::EdTipHost {}
+
+        // The archetype conversion, hosted OUTSIDE both layout roots for the same reason.
+        if let Some(Ok(database)) = &*db.read() {
+            crate::archetype_convert_dialog::ConvertHost { database: Db(database.clone()) }
         }
 
         // The one incarnate picker, hosted OUTSIDE both layout roots for the same reason.
