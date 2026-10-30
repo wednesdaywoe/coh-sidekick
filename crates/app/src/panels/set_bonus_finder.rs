@@ -706,12 +706,26 @@ fn ByPowerView(database: Option<Db>) -> Element {
                     "No power in this build can take a set with those bonuses."
                 }
             } else {
-                div { class: "bonus-routes",
+                // A table: one column per chosen bonus so amounts line up, and the cost as a
+                // badge in a fixed column. The column count rides in a custom property so the
+                // header and every row share one template and stay aligned.
+                div {
+                    class: "bonus-routes",
+                    style: "--bonus-cols: {chosen_now.len()}",
+                    div { class: "bonus-route bonus-route--head", "aria-hidden": "true",
+                        span { "Power" }
+                        span { "Set" }
+                        for id in chosen_now.iter() {
+                            span { key: "{id}", class: "bonus-route__col", {column_label(id)} }
+                        }
+                        span { class: "bonus-route__col", "Cost" }
+                    }
                     for (route , others) in shown.iter() {
                         RouteRow {
                             key: "{route.power_name}-{route.power_level}-{route.set_id}",
                             route: route.clone(),
                             others: *others,
+                            columns: chosen_now.clone(),
                         }
                     }
                 }
@@ -745,27 +759,44 @@ fn held_summary(row: &StatDef, tracking: &[set_bonuses::SetBonusStatTracking]) -
     format!("You hold {}", parts.join(" · "))
 }
 
-/// One place a set could go: the power, the set, what it grants, and what it would cost.
+/// A chosen bonus as a column heads it: the same words as its chip above.
+fn column_label(id: &str) -> String {
+    stat_registry::by_id(id).map_or_else(
+        || id.to_string(),
+        |row| format!("{} {}", row.label, row.section.title().to_lowercase()),
+    )
+}
+
+/// One place a set could go: the power, the set, one cell per chosen bonus, and a cost badge.
 #[component]
-fn RouteRow(route: crate::bonus_by_power::Route, others: usize) -> Element {
+fn RouteRow(route: crate::bonus_by_power::Route, others: usize, columns: Vec<String>) -> Element {
     use crate::bonus_by_power::Cost;
     let spent = route.all_spent();
-    let cost = match &route.cost {
-        Cost::Slotted => "Already slotted here".to_string(),
-        Cost::Fits => "Fits in its slots".to_string(),
-        Cost::Replaces(names) => format!("Replaces {}", names.join(", ")),
+    let (badge, badge_class) = match &route.cost {
+        Cost::Slotted => ("Slotted".to_string(), "is-slotted"),
+        Cost::Fits => ("Fits".to_string(), "is-fits"),
+        Cost::Replaces(names) => (format!("Swap {}", names.len()), "is-swap"),
+        Cost::NeedsSlots { more, .. } => (format!("+{more} slot{}", plural(*more)), "is-slots"),
+    };
+    let badge_title = match &route.cost {
+        Cost::Slotted => "This power already holds enough pieces of this set".to_string(),
+        Cost::Fits => "Fits in this power's empty slots".to_string(),
+        Cost::Replaces(names) => format!("Fits by taking out {}", names.join(", ")),
         Cost::NeedsSlots { more, replaces } if replaces.is_empty() => {
             format!("Needs {more} more slot{}", plural(*more))
         }
         Cost::NeedsSlots { more, replaces } => format!(
-            "Needs {more} more slot{} and replaces {}",
+            "Needs {more} more slot{} and takes out {}",
             plural(*more),
             replaces.join(", ")
         ),
     };
-    let cost_class = match route.cost {
-        Cost::Slotted | Cost::Fits => "bonus-route__cost is-free",
-        _ => "bonus-route__cost",
+    let taken_out: &[String] = match &route.cost {
+        Cost::Replaces(names)
+        | Cost::NeedsSlots {
+            replaces: names, ..
+        } => names,
+        _ => &[],
     };
     rsx! {
         div {
@@ -787,21 +818,72 @@ fn RouteRow(route: crate::bonus_by_power::Route, others: usize) -> Element {
                     span { class: "bonus-route__others", "+{others} other set{plural(others)}" }
                 }
             }
-            span { class: "bonus-route__grants",
-                for grant in route.grants.iter() {
-                    span {
-                        key: "{grant.row.id}",
-                        class: if grant.spent { "picker-tracked-chip is-capped" } else { "picker-tracked-chip" },
-                        title: if grant.spent { "Already five copies of this bonus; another grants nothing" } else { "" },
-                        "{grant.pieces}pc {grant.row.label} +{format_value(grant.value)} ({grant.held}/5)"
-                    }
+            for id in columns.iter() {
+                BonusCell {
+                    key: "{id}",
+                    label: column_label(id),
+                    grant: route.grants.iter().find(|grant| grant.row.id == id.as_str()).cloned(),
                 }
             }
-            span { class: "{cost_class}",
-                "{cost}"
-                if spent {
-                    span { class: "bonus-route__spent", " · past the Rule of 5" }
-                }
+            span { class: "bonus-route__cost",
+                span { class: "bonus-route__badge {badge_class}", title: "{badge_title}", "{badge}" }
+            }
+            if !taken_out.is_empty() {
+                span { class: "bonus-route__out", "Takes out {taken_out.join(\", \")}" }
+            }
+        }
+    }
+}
+
+/// One chosen bonus as one set grants it: the amount, the pieces it takes, and five pips for the
+/// copies the build already holds of that value. Plain while there is room, amber when this would
+/// be the fifth and last copy that counts, struck through past it. Empty when the set does not
+/// grant it.
+#[component]
+fn BonusCell(label: String, grant: Option<crate::bonus_by_power::Grant>) -> Element {
+    let Some(grant) = grant else {
+        return rsx! {
+            span { class: "bonus-cell is-none",
+                span { class: "bonus-cell__label", "{label}" }
+                "—"
+            }
+        };
+    };
+    let held = grant.held.min(5) as usize;
+    let (state, title) = if grant.spent {
+        (
+            "is-spent",
+            format!(
+                "You already hold {} copies of +{}; another grants nothing",
+                grant.held,
+                format_value(grant.value)
+            ),
+        )
+    } else if held == 4 {
+        (
+            "is-last",
+            format!(
+                "You hold 4 copies of +{}; this would be the last that counts",
+                format_value(grant.value)
+            ),
+        )
+    } else {
+        (
+            "",
+            format!(
+                "You hold {held} of 5 copies of +{}",
+                format_value(grant.value)
+            ),
+        )
+    };
+    rsx! {
+        span { class: "bonus-cell {state}", title: "{title}",
+            span { class: "bonus-cell__label", "{label}" }
+            span { class: "bonus-cell__value", "+{format_value(grant.value)}" }
+            span { class: "bonus-cell__pieces", "{grant.pieces}pc" }
+            span { class: "bonus-cell__pips", "aria-hidden": "true",
+                {"●".repeat(held)}
+                {"○".repeat(5 - held)}
             }
         }
     }

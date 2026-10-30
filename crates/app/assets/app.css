@@ -4865,7 +4865,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    mark that only carries a tooltip; locked it is a button, in the active colour, with a word —
    a panel that has stopped following the pointer must say so, or it reads as broken. */
 .info-lock {
-  position: sticky; top: 0; z-index: 1;
+  /* -10px: the finder's top padding, so the header meets the scroller's edge with no gap. */
+  position: sticky; top: -10px; z-index: 1;
   float: right; margin: 0 0 4px 8px;
   display: inline-flex; align-items: center; gap: 4px;
   padding: 2px 6px;
@@ -6346,28 +6347,77 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   flex: 0 0 auto;
   display: flex; flex-direction: column;
   border: 1px solid var(--seam); border-radius: var(--r);
-  overflow: hidden;
+  /* clip, not hidden: hidden would make this box the scroller and the header could not stick. */
+  overflow: clip;
+  container: bonus-routes / inline-size;
 }
-/* A row wraps rather than scrolling sideways: four facts, each with room to read on a phone. */
+/* One template for the header and every row, so each chosen bonus's amounts line up under its
+   name. Every track is a share of the width rather than sized to its content, which is what
+   keeps separate rows aligned. */
 .bonus-route {
-  display: flex; flex-wrap: wrap; align-items: baseline;
-  gap: 4px 12px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.25fr) minmax(0, 1.7fr) repeat(var(--bonus-cols, 1), minmax(0, 1fr)) minmax(0, 0.8fr);
+  align-items: baseline;
+  gap: 2px 12px;
   padding: 6px var(--pad-row-x);
   border-top: 1px solid var(--seam);
   font-size: 12px; color: var(--text);
 }
 .bonus-route:first-of-type { border-top: none; }
-.bonus-route:hover { background: var(--surface-warmed); }
+.bonus-route:not(.bonus-route--head):hover { background: var(--surface-warmed); }
 .bonus-route.is-spent { opacity: 0.45; }
-.bonus-route__power { flex: 1 1 130px; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.bonus-route--head {
+  /* -10px: the finder's top padding, so the header meets the scroller's edge with no gap. */
+  position: sticky; top: -10px; z-index: 1;
+  padding-block: 5px;
+  background: var(--surface-raised);
+  font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint);
+}
+.bonus-route__power { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .bonus-route__power-name { font-weight: 600; }
 .bonus-route__power-meta { font-size: 10.5px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
-.bonus-route .bonus-finder__set { flex: 1 1 170px; flex-wrap: wrap; }
+.bonus-route .bonus-finder__set { flex-wrap: wrap; min-width: 0; }
 .bonus-route__others { font-size: 10.5px; color: var(--text-faint); }
-.bonus-route__grants { flex: 1 1 170px; display: flex; flex-wrap: wrap; gap: 4px; }
-.bonus-route__cost { flex: 1 1 130px; font-size: 11.5px; color: var(--text-dim); }
-.bonus-route__cost.is-free { color: var(--text); }
-.bonus-route__spent { color: var(--text-faint); }
+.bonus-route__cost { justify-self: start; }
+/* What a swap would take out: the detail behind the badge, on its own dimmer line. */
+.bonus-route__out { grid-column: 2 / -1; font-size: 11px; color: var(--text-faint); }
+
+/* The cost at a glance. Fits is the one to look for, so it alone takes the ok colour. */
+.bonus-route__badge {
+  display: inline-block; padding: 0 6px; border-radius: 3px;
+  border: 1px solid var(--seam-raised);
+  font-size: 10.5px; line-height: 1.7; white-space: nowrap; color: var(--text-dim);
+}
+.bonus-route__badge.is-fits { color: var(--ok-signal); border-color: color-mix(in srgb, var(--ok-signal) 60%, transparent); }
+.bonus-route__badge.is-swap { color: var(--text); }
+.bonus-route__badge.is-slotted { color: var(--text-faint); border-style: dashed; }
+
+/* One bonus as one set grants it. The pips are the copies already held of that value; amber
+   marks the fifth and last copy that still counts, struck through is past it. */
+.bonus-cell { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 0 5px; font-variant-numeric: tabular-nums; }
+.bonus-cell.is-none { color: var(--text-faint); }
+.bonus-cell__label { display: none; color: var(--text-faint); font-size: 10.5px; }
+.bonus-cell__value { font-weight: 600; }
+.bonus-cell__pieces { font-size: 10.5px; color: var(--text-dim); }
+.bonus-cell__pips { font-size: 8px; letter-spacing: 1px; color: var(--text-faint); }
+.bonus-cell.is-last .bonus-cell__value,
+.bonus-cell.is-last .bonus-cell__pips { color: var(--action-hover); }
+.bonus-cell.is-spent .bonus-cell__value { color: var(--action-danger); text-decoration: line-through; }
+.bonus-cell.is-spent .bonus-cell__pips { color: var(--action-danger); }
+
+/* A narrow panel or a phone: no header, and each row folds to the power and its cost, then the
+   set, then each amount named by its bonus. */
+@container bonus-routes (max-width: 560px) {
+  .bonus-route--head { display: none; }
+  .bonus-route { grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; }
+  .bonus-route__power { grid-column: 1; grid-row: 1; }
+  .bonus-route__cost { grid-column: 2; grid-row: 1; justify-self: end; }
+  .bonus-route .bonus-finder__set { grid-column: 1 / -1; }
+  .bonus-cell { grid-column: 1 / -1; }
+  .bonus-cell__label { display: inline; }
+  .bonus-route__out { grid-column: 1 / -1; }
+}
 
 .bonus-finder__filters {
   flex: 0 0 auto;
@@ -6405,7 +6455,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   padding: 4px var(--pad-row-x);
 }
 .bonus-finder__head {
-  position: sticky; top: 0; z-index: 1;
+  /* -10px: the finder's top padding, so the header meets the scroller's edge with no gap. */
+  position: sticky; top: -10px; z-index: 1;
   background: var(--surface-raised);
   border-bottom: 1px solid var(--seam);
 }
