@@ -10,8 +10,8 @@
 
 use crate::panels::powers::{set_unlock_floor, SetOrigin};
 use coh_data::{
-    Archetype, CharacterState, Enhancement, EnhancementCatalog, EnhancementKind, IoSetCatalog,
-    Power, PowerDatabase, Powerset, PowersetSelection, SelectedPower,
+    Archetype, CharacterState, Enhancement, EnhancementCatalog, EnhancementKind, IoSet,
+    IoSetCatalog, Power, PowerDatabase, Powerset, PowersetSelection, SelectedPower,
 };
 
 /// Which of the archetype's two power sets a set sits in.
@@ -77,6 +77,23 @@ pub struct DroppedPiece {
     pub piece: String,
 }
 
+/// An archetype set whose pieces became the new archetype's set in the same position.
+#[derive(Clone, PartialEq, Debug)]
+pub struct ConvertedSet {
+    pub from: String,
+    pub to: String,
+    pub pieces: usize,
+}
+
+/// A converted piece that enhances a different mix than the one it replaced (a Blaster's
+/// Accuracy/Damage/Recharge becoming a Defender's Damage/Endurance/Recharge).
+#[derive(Clone, PartialEq, Debug)]
+pub struct ReshapedPiece {
+    pub power: String,
+    pub from: String,
+    pub to: String,
+}
+
 #[derive(Clone, PartialEq, Debug)]
 pub struct Conversion {
     pub build: CharacterState,
@@ -86,6 +103,8 @@ pub struct Conversion {
     pub moved: Vec<Moved>,
     pub dropped: Vec<Dropped>,
     pub pieces: Vec<DroppedPiece>,
+    pub converted: Vec<ConvertedSet>,
+    pub reshaped: Vec<ReshapedPiece>,
     /// The old archetype's own inherent, when the new archetype has a different one.
     pub inherent: Option<String>,
 }
@@ -188,7 +207,11 @@ pub fn convert_build(
     dropped.extend(drop_refused(&mut copy, build, database, target));
     let (moved, unplaced) = place_picks(&mut copy, database);
     dropped.extend(unplaced);
-    let pieces = drop_unfit_pieces(&mut copy, database);
+    let Refit {
+        dropped: pieces,
+        converted,
+        reshaped,
+    } = refit_pieces(&mut copy, database);
     readdress(&mut copy, build, &renamed);
 
     crate::inherents::sync(&mut copy, database);
@@ -204,6 +227,8 @@ pub fn convert_build(
         moved,
         dropped,
         pieces,
+        converted,
+        reshaped,
         inherent,
     })
 }
@@ -585,11 +610,24 @@ fn cheapest_assignment(cost: &[Vec<i64>]) -> Vec<usize> {
     assigned
 }
 
-/// Empty every slot whose enhancement the carried power's new definition cannot hold: an
-/// archetype's own sets, and any set or type the new copy of the power does not take. The slot
-/// itself stays.
-fn drop_unfit_pieces(build: &mut CharacterState, database: &PowerDatabase) -> Vec<DroppedPiece> {
-    let mut dropped = Vec::new();
+#[derive(Default)]
+struct Refit {
+    dropped: Vec<DroppedPiece>,
+    converted: Vec<ConvertedSet>,
+    reshaped: Vec<ReshapedPiece>,
+}
+
+/// Fit every carried primary or secondary power's slotting to its new definition. An archetype
+/// set piece becomes the same piece of the new archetype's set in the same position
+/// ([`counterpart`]); anything else the new power cannot hold, or an archetype set with no
+/// counterpart, is taken out and its slot stays, empty.
+///
+/// No uniqueness check is needed for the converted pieces: the original build was legal, and
+/// each old set maps to a different new one with the piece numbers unchanged, so no new piece can
+/// be held twice.
+fn refit_pieces(build: &mut CharacterState, database: &PowerDatabase) -> Refit {
+    let mut refit = Refit::default();
+    let sets = database.io_sets.as_ref();
     for pick in build
         .primary
         .powers
@@ -600,30 +638,153 @@ fn drop_unfit_pieces(build: &mut CharacterState, database: &PowerDatabase) -> Ve
             continue;
         };
         for held in pick.slots.iter_mut() {
-            let fits = held.as_ref().is_none_or(|piece| {
-                fits(
-                    piece,
-                    power,
-                    database.io_sets.as_ref(),
-                    database.enhancements.as_ref(),
-                )
-            });
-            if !fits {
-                if let Some(piece) = held.take() {
-                    let set = match &piece.kind {
-                        EnhancementKind::IoSet { set_name, .. } => Some(set_name.clone()),
-                        _ => None,
-                    };
-                    dropped.push(DroppedPiece {
+            let Some(piece) = held.as_ref() else {
+                continue;
+            };
+            if fits(piece, power, sets, database.enhancements.as_ref()) {
+                continue;
+            }
+            let piece = held.take().expect("checked above");
+            if let Some(converted) = sets.and_then(|sets| convert_piece(&piece, power, sets)) {
+                let (from_set, to_set) = match (&piece.kind, &converted.kind) {
+                    (
+                        EnhancementKind::IoSet { set_name: from, .. },
+                        EnhancementKind::IoSet { set_name: to, .. },
+                    ) => (from.clone(), to.clone()),
+                    _ => unreachable!("convert_piece maps set pieces to set pieces"),
+                };
+                match refit
+                    .converted
+                    .iter_mut()
+                    .find(|set| set.from == from_set && set.to == to_set)
+                {
+                    Some(set) => set.pieces += 1,
+                    None => refit.converted.push(ConvertedSet {
+                        from: from_set,
+                        to: to_set,
+                        pieces: 1,
+                    }),
+                }
+                if aspects(&piece) != aspects(&converted) {
+                    refit.reshaped.push(ReshapedPiece {
                         power: power.name.clone(),
-                        set,
-                        piece: crate::naming::enhancement_name(&piece).to_string(),
+                        from: crate::naming::enhancement_name(&piece).to_string(),
+                        to: crate::naming::enhancement_name(&converted).to_string(),
                     });
                 }
+                *held = Some(converted);
+                continue;
             }
+            let set = match &piece.kind {
+                EnhancementKind::IoSet { set_name, .. } => Some(set_name.clone()),
+                _ => None,
+            };
+            refit.dropped.push(DroppedPiece {
+                power: power.name.clone(),
+                set,
+                piece: crate::naming::enhancement_name(&piece).to_string(),
+            });
         }
     }
-    dropped
+    refit
+}
+
+/// What a piece enhances, order aside.
+fn aspects(piece: &Enhancement) -> Vec<String> {
+    let mut aspects = match &piece.kind {
+        EnhancementKind::IoSet { aspects, .. } => aspects.clone(),
+        _ => Vec::new(),
+    };
+    aspects.sort();
+    aspects
+}
+
+/// `piece`, an archetype set piece, as the same piece of `power`'s archetype set in the same
+/// position, keeping its attunement, craft level and booster. `None` when it is not an archetype
+/// set piece or has no counterpart.
+fn convert_piece(piece: &Enhancement, power: &Power, sets: &IoSetCatalog) -> Option<Enhancement> {
+    let EnhancementKind::IoSet {
+        set_id, piece_num, ..
+    } = &piece.kind
+    else {
+        return None;
+    };
+    let (to_id, to) = counterpart(sets, set_id, power)?;
+    let (index, to_piece) = to
+        .pieces
+        .iter()
+        .enumerate()
+        .find(|(_, candidate)| candidate.num == *piece_num)?;
+    let slotting = coh_data::IoSlotting {
+        attuned: piece.attuned,
+        io_level: piece.level.map_or(0, u8::from),
+        boost: u8::try_from(piece.boost).unwrap_or(0),
+    };
+    Some(Enhancement::io_set(
+        to_id,
+        &to.name,
+        index,
+        to_piece,
+        to.min_level,
+        to.max_level,
+        to.attuned_only,
+        slotting,
+    ))
+}
+
+/// The archetype set `power` takes in the same position as `set_id` holds among its own
+/// archetype's sets: first for first, second for second, by the game's own order
+/// ([`IoSet::bin_order`]), within the same tier (regular or Superior, which the rarity
+/// separates). `None` for a set that is not an archetype set, when any set involved has no
+/// recorded order, or when the new archetype has no set in that position.
+fn counterpart<'a>(
+    sets: &'a IoSetCatalog,
+    set_id: &str,
+    power: &Power,
+) -> Option<(&'a str, &'a IoSet)> {
+    const ARCHETYPE_SET: &str = "ato";
+    let from = sets.sets.get(set_id)?;
+    if from.category != ARCHETYPE_SET {
+        return None;
+    }
+    let peers = |set_type: &str| -> Option<Vec<(&'a str, &'a IoSet)>> {
+        let mut peers: Vec<(&str, &IoSet)> = sets
+            .sets
+            .iter()
+            .filter(|(_, set)| {
+                set.category == ARCHETYPE_SET
+                    && set.rarity == from.rarity
+                    && set.set_type == set_type
+            })
+            .map(|(id, set)| (id.as_str(), set))
+            .collect();
+        if peers.iter().any(|(_, set)| set.bin_order.is_none()) {
+            return None;
+        }
+        peers.sort_by_key(|(_, set)| set.bin_order);
+        Some(peers)
+    };
+    let position = peers(&from.set_type)?
+        .iter()
+        .position(|(id, _)| *id == set_id)?;
+    // The new power's own archetype sets: an archetype category it takes, other than the old one.
+    let mut types: Vec<&str> = power
+        .allowed_set_categories
+        .as_deref()?
+        .iter()
+        .map(String::as_str)
+        .filter(|set_type| *set_type != from.set_type)
+        .filter(|set_type| {
+            sets.sets
+                .values()
+                .any(|set| set.category == ARCHETYPE_SET && set.set_type == *set_type)
+        })
+        .collect();
+    types.dedup();
+    let [set_type] = types.as_slice() else {
+        return None;
+    };
+    peers(set_type)?.get(position).copied()
 }
 
 fn fits(
@@ -1079,13 +1240,11 @@ mod tests {
             .slots = wrath;
         let conversion = convert(&database, &build, "defender");
 
-        let wrath: Vec<&DroppedPiece> = conversion
-            .pieces
-            .iter()
-            .filter(|piece| piece.set.as_deref() == Some("Superior Blaster's Wrath"))
-            .collect();
-        assert_eq!(wrath.len(), 6, "{:?}", conversion.pieces);
-        assert!(wrath.iter().all(|piece| piece.power == "Category Five"));
+        assert!(
+            conversion.pieces.is_empty(),
+            "every archetype set piece converts: {:?}",
+            conversion.pieces
+        );
         let nuke = conversion
             .build
             .secondary
@@ -1093,8 +1252,10 @@ mod tests {
             .iter()
             .find(|pick| pick.internal_name == "Category_Five")
             .expect("carried");
-        assert_eq!(nuke.slots.len(), 6, "the slots stay, empty");
-        assert!(nuke.slots.iter().all(Option::is_none));
+        assert_eq!(
+            set_pieces(&nuke.slots),
+            set_pieces_of(&build, "Category_Five", "superior_defenders_bastion")
+        );
 
         let epic: Vec<&str> = conversion
             .dropped
@@ -1122,5 +1283,153 @@ mod tests {
         );
         assert_eq!(conversion.build.pools.len(), build.pools.len());
         assert_eq!(conversion.build.incarnates, build.incarnates);
+    }
+
+    /// `(set id, piece number)` of every set piece in these slots, in slot order.
+    fn set_pieces(slots: &[Option<Enhancement>]) -> Vec<(String, u8)> {
+        slots
+            .iter()
+            .flatten()
+            .filter_map(|piece| match &piece.kind {
+                EnhancementKind::IoSet {
+                    set_id, piece_num, ..
+                } => Some((set_id.clone(), *piece_num)),
+                _ => None,
+            })
+            .collect()
+    }
+
+    /// The original's set pieces on `ident`, renamed to `to`: what a converted power should hold.
+    fn set_pieces_of(build: &CharacterState, ident: &str, to: &str) -> Vec<(String, u8)> {
+        let pick = build
+            .all_selected()
+            .find(|pick| pick.internal_name == ident)
+            .expect("in the original");
+        set_pieces(&pick.slots)
+            .into_iter()
+            .map(|(_, num)| (to.to_string(), num))
+            .collect()
+    }
+
+    /// The Tanker's two Superior archetype sets become the Brute's, first for first and second
+    /// for second in the game's own order, at the same piece numbers in the same powers.
+    #[test]
+    fn tanker_archetype_sets_become_the_brutes() {
+        let database = database();
+        let build = fixture(&database, "charnel");
+        let conversion = convert(&database, &build, "brute");
+        let copy = &conversion.build;
+        let held = |ident: &str| {
+            let pick = copy
+                .all_selected()
+                .find(|pick| pick.internal_name == ident)
+                .expect("carried");
+            set_pieces(&pick.slots)
+        };
+        assert_eq!(
+            held("Death_Shroud"),
+            set_pieces_of(&build, "Death_Shroud", "superior_brutes_fury"),
+            "Might of the Tanker is the Tanker's first set, Brute's Fury the Brute's"
+        );
+        assert_eq!(
+            held("Midnight_Grasp"),
+            set_pieces_of(&build, "Midnight_Grasp", "superior_unrelenting_fury")
+        );
+        assert_eq!(held("Death_Shroud").len(), 6);
+        assert!(conversion.pieces.is_empty(), "{:?}", conversion.pieces);
+        let pairs: Vec<(&str, &str, usize)> = conversion
+            .converted
+            .iter()
+            .map(|set| (set.from.as_str(), set.to.as_str(), set.pieces))
+            .collect();
+        assert!(
+            pairs.contains(&("Superior Might of the Tanker", "Superior Brute's Fury", 6)),
+            "{pairs:?}"
+        );
+        assert!(
+            pairs.contains(&("Superior Gauntleted Fist", "Superior Unrelenting Fury", 6)),
+            "{pairs:?}"
+        );
+        assert!(conversion.reshaped.is_empty(), "{:?}", conversion.reshaped);
+        // Attunement carries: the Superior sets are attuned-only, and so are their pieces.
+        let shroud = copy
+            .all_selected()
+            .find(|pick| pick.internal_name == "Death_Shroud")
+            .expect("carried");
+        assert!(shroud.slots.iter().flatten().all(|piece| piece.attuned));
+    }
+
+    /// A Blaster's sets become the Defender's, and a piece that enhances a different mix in its
+    /// new set is named.
+    #[test]
+    fn blaster_archetype_sets_become_the_defenders() {
+        let database = database();
+        let build = fixture(&database, "sisterachlys");
+        let conversion = convert(&database, &build, "defender");
+        let hailstones = conversion
+            .build
+            .secondary
+            .powers
+            .iter()
+            .find(|pick| pick.internal_name == "Hailstones")
+            .expect("carried");
+        assert_eq!(
+            set_pieces(&hailstones.slots),
+            set_pieces_of(&build, "Hailstones", "superior_vigilant_assault"),
+            "Defiant Barrage is the Blaster's second set, Vigilant Assault the Defender's"
+        );
+        let reshaped: Vec<(&str, &str)> = conversion
+            .reshaped
+            .iter()
+            .map(|piece| (piece.from.as_str(), piece.to.as_str()))
+            .collect();
+        assert!(
+            !reshaped.is_empty()
+                && conversion
+                    .reshaped
+                    .iter()
+                    .all(|piece| piece.power == "Hailstones"),
+            "{reshaped:?}"
+        );
+        assert!(
+            reshaped.contains(&(
+                "Accuracy/Damage/Recharge (Blaster)",
+                "Damage/Endurance/Recharge (Defender)"
+            )),
+            "{reshaped:?}"
+        );
+    }
+
+    /// Without the game's order for every set involved, an archetype set piece is taken out and
+    /// listed, as before. One Brute set missing its place leaves neither with a known position.
+    #[test]
+    fn an_archetype_set_with_no_recorded_order_is_taken_out() {
+        let mut database = database();
+        let build = fixture(&database, "charnel");
+        database
+            .io_sets
+            .as_mut()
+            .expect("catalog")
+            .sets
+            .get_mut("superior_unrelenting_fury")
+            .expect("set")
+            .bin_order = None;
+        let conversion = convert(&database, &build, "brute");
+        assert!(
+            conversion.converted.is_empty(),
+            "{:?}",
+            conversion.converted
+        );
+        let mut out: Vec<&str> = conversion
+            .pieces
+            .iter()
+            .filter_map(|piece| piece.set.as_deref())
+            .collect();
+        out.dedup();
+        assert_eq!(
+            out,
+            ["Superior Gauntleted Fist", "Superior Might of the Tanker"]
+        );
+        assert_eq!(conversion.pieces.len(), 12);
     }
 }

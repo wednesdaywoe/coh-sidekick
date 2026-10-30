@@ -1,6 +1,7 @@
 {
  "absolute_amazement": {
   "attunedOnly": false,
+  "binOrder": 100,
   "bonuses": [
    {
     "effects": [
@@ -148,6 +149,7 @@
  },
  "achilles_heel": {
   "attunedOnly": false,
+  "binOrder": 155,
   "bonuses": [
    {
     "effects": [
@@ -213,6 +215,7 @@
  },
  "adjusted_targeting": {
   "attunedOnly": false,
+  "binOrder": 148,
   "bonuses": [
    {
     "effects": [
@@ -362,6 +365,7 @@
  },
  "adrenal_adjustment": {
   "attunedOnly": false,
+  "binOrder": 142,
   "bonuses": [
    {
     "effects": [
@@ -426,6 +430,7 @@
  },
  "aegis": {
   "attunedOnly": false,
+  "binOrder": 73,
   "bonuses": [
    {
     "effects": [
@@ -583,6 +588,7 @@
  },
  "air_burst": {
   "attunedOnly": false,
+  "binOrder": 28,
   "bonuses": [
    {
     "effects": [
@@ -680,6 +686,7 @@
  },
  "analyze_weakness": {
   "attunedOnly": false,
+  "binOrder": 159,
   "bonuses": [
    {
     "effects": [
@@ -828,6 +835,7 @@
  },
  "annihilation": {
   "attunedOnly": false,
+  "binOrder": 31,
   "bonuses": [
    {
     "effects": [
@@ -971,6 +979,7 @@
  },
  "annoyance": {
   "attunedOnly": false,
+  "binOrder": 134,
   "bonuses": [
    {
     "effects": [
@@ -1040,6 +1049,7 @@
  },
  "apocalypse": {
   "attunedOnly": false,
+  "binOrder": 24,
   "bonuses": [
    {
     "effects": [
@@ -1161,6 +1171,7 @@
  },
  "armageddon": {
   "attunedOnly": false,
+  "binOrder": 40,
   "bonuses": [
    {
     "effects": [
@@ -1308,6 +1319,7 @@
  },
  "artillery": {
   "attunedOnly": false,
+  "binOrder": 220,
   "bonuses": [
    {
     "effects": [
@@ -1445,6 +1457,7 @@
  },
  "ascendency_of_the_dominator": {
   "attunedOnly": true,
+  "binOrder": 194,
   "bonuses": [
    {
     "effects": [
@@ -1602,6 +1615,7 @@
  },
  "assassins_mark": {
   "attunedOnly": true,
+  "binOrder": 204,
   "bonuses": [
    {
     "effects": [
@@ -1735,6 +1749,7 @@
  },
  "avalanche": {
   "attunedOnly": true,
+  "binOrder": 44,
   "bonuses": [
    {
     "effects": [
@@ -1886,6 +1901,7 @@
  },
  "basilisks_gaze": {
   "attunedOnly": false,
+  "binOrder": 91,
   "bonuses": [
    {
     "effects": [
@@ -2028,6 +2044,7 @@
  },
  "befuddling_aura": {
   "attunedOnly": false,
+  "binOrder": 119,
   "bonuses": [
    {
     "effects": [
@@ -2146,6 +2163,7 @@
  },
  "blasters_wrath": {
   "attunedOnly": true,
+  "binOrder": 162,
   "bonuses": [
    {
     "effects": [
@@ -2279,6 +2297,7 @@
  },
  "blessing_of_the_zephyr": {
   "attunedOnly": false,
+  "binOrder": 132,
   "bonuses": [
    {
     "effects": [
@@ -2349,6 +2368,7 @@
  },
  "blistering_cold": {
   "attunedOnly": true,
+  "binOrder": 12,
   "bonuses": [
    {
     "effects": [
@@ -2500,6 +2520,7 @@
  },
  "blood_mandate": {
   "attunedOnly": false,
+  "binOrder": 55,
   "bonuses": [
    {
     "effects": [
@@ -2651,6 +2672,7 @@
  },
  "bombardment": {
   "attunedOnly": false,
+  "binOrder": 32,
   "bonuses": [
    {
     "effects": [
@@ -2801,6 +2823,7 @@
  },
  "bonesnap": {
   "attunedOnly": false,
+  "binOrder": 0,
   "bonuses": [
    {
     "effects": [
@@ -2878,6 +2901,7 @@
  },
  "brilliant_leadership": {
   "attunedOnly": false,
+  "binOrder": 53,
   "bonuses": [
    {
     "effects": [
@@ -3027,6 +3051,7 @@
  },
  "bruising_blow": {
   "attunedOnly": false,
+  "binOrder": 2,
   "bonuses": [
    {
     "effects": [
@@ -3091,6 +3116,7 @@
  },
  "brutes_fury": {
   "attunedOnly": true,
+  "binOrder": 186,
   "bonuses": [
    {
     "effects": [
@@ -3237,6 +3263,7 @@
  },
  "cacophany": {
   "attunedOnly": false,
+  "binOrder": 120,
   "bonuses": [
    {
     "effects": [
@@ -3382,6 +3409,7 @@
  },
  "calibrated_accuracy": {
   "attunedOnly": false,
+  "binOrder": 47,
   "bonuses": [
    {
     "effects": [
@@ -3517,6 +3545,7 @@
  },
  "call_of_the_sandman": {
   "attunedOnly": false,
+  "binOrder": 113,
   "bonuses": [
    {
     "effects": [
@@ -3652,6 +3681,7 @@
  },
  "call_to_arms": {
   "attunedOnly": false,
+  "binOrder": 58,
   "bonuses": [
    {
     "effects": [
@@ -3793,6 +3823,7 @@
  },
  "celerity": {
   "attunedOnly": false,
+  "binOrder": 129,
   "bonuses": [
    {
     "effects": [
@@ -3865,6 +3896,7 @@
  },
  "cleaving_blow": {
   "attunedOnly": false,
+  "binOrder": 37,
   "bonuses": [
    {
     "effects": [
@@ -3954,6 +3986,7 @@
  },
  "cloud_senses": {
   "attunedOnly": false,
+  "binOrder": 160,
   "bonuses": [
    {
     "effects": [
@@ -4094,6 +4127,7 @@
  },
  "coercive_persuasion": {
   "attunedOnly": false,
+  "binOrder": 123,
   "bonuses": [
    {
     "effects": [
@@ -4220,6 +4254,7 @@
  },
  "command_of_the_mastermind": {
   "attunedOnly": true,
+  "binOrder": 198,
   "bonuses": [
    {
     "effects": [
@@ -4374,6 +4409,7 @@
  },
  "commanding_presence": {
   "attunedOnly": false,
+  "binOrder": 52,
   "bonuses": [
    {
     "effects": [
@@ -4481,6 +4517,7 @@
  },
  "critical_strikes": {
   "attunedOnly": true,
+  "binOrder": 176,
   "bonuses": [
    {
     "effects": [
@@ -4614,6 +4651,7 @@
  },
  "crushing_impact": {
   "attunedOnly": false,
+  "binOrder": 8,
   "bonuses": [
    {
     "effects": [
@@ -4767,6 +4805,7 @@
  },
  "cupids_crush": {
   "attunedOnly": true,
+  "binOrder": 226,
   "bonuses": [
    {
     "effects": [
@@ -4912,6 +4951,7 @@
  },
  "curtail_speed": {
   "attunedOnly": false,
+  "binOrder": 106,
   "bonuses": [
    {
     "effects": [
@@ -5035,6 +5075,7 @@
  },
  "dampened_spirits": {
   "attunedOnly": false,
+  "binOrder": 152,
   "bonuses": [
    {
     "effects": [
@@ -5184,6 +5225,7 @@
  },
  "dark_watchers_despair": {
   "attunedOnly": false,
+  "binOrder": 153,
   "bonuses": [
    {
     "effects": [
@@ -5318,6 +5360,7 @@
  },
  "debiliative_action": {
   "attunedOnly": false,
+  "binOrder": 102,
   "bonuses": [
    {
     "effects": [
@@ -5471,6 +5514,7 @@
  },
  "decimation": {
   "attunedOnly": false,
+  "binOrder": 21,
   "bonuses": [
    {
     "effects": [
@@ -5620,6 +5664,7 @@
  },
  "defenders_bastion": {
   "attunedOnly": true,
+  "binOrder": 170,
   "bonuses": [
    {
     "effects": [
@@ -5753,6 +5798,7 @@
  },
  "defiant_barrage": {
   "attunedOnly": true,
+  "binOrder": 164,
   "bonuses": [
    {
     "effects": [
@@ -5886,6 +5932,7 @@
  },
  "deflated_ego": {
   "attunedOnly": false,
+  "binOrder": 151,
   "bonuses": [
    {
     "effects": [
@@ -5946,6 +5993,7 @@
  },
  "detonation": {
   "attunedOnly": false,
+  "binOrder": 29,
   "bonuses": [
    {
     "effects": [
@@ -6116,6 +6164,7 @@
  },
  "devastation": {
   "attunedOnly": false,
+  "binOrder": 23,
   "bonuses": [
    {
     "effects": [
@@ -6253,6 +6302,7 @@
  },
  "discouraging_words": {
   "attunedOnly": false,
+  "binOrder": 150,
   "bonuses": [
    {
     "effects": [
@@ -6335,6 +6385,7 @@
  },
  "doctored_wounds": {
   "attunedOnly": false,
+  "binOrder": 80,
   "bonuses": [
    {
     "effects": [
@@ -6501,6 +6552,7 @@
  },
  "dominating_grasp": {
   "attunedOnly": true,
+  "binOrder": 196,
   "bonuses": [
    {
     "effects": [
@@ -6671,6 +6723,7 @@
  },
  "dominion_of_arachnos": {
   "attunedOnly": true,
+  "binOrder": 206,
   "bonuses": [
    {
     "effects": [
@@ -6812,6 +6865,7 @@
  },
  "edict_of_the_master": {
   "attunedOnly": false,
+  "binOrder": 54,
   "bonuses": [
    {
     "effects": [
@@ -6972,6 +7026,7 @@
  },
  "efficacy_adaptor": {
   "attunedOnly": false,
+  "binOrder": 144,
   "bonuses": [
    {
     "effects": [
@@ -7096,6 +7151,7 @@
  },
  "encouraged_accuracy": {
   "attunedOnly": false,
+  "binOrder": 146,
   "bonuses": [
    {
     "effects": [
@@ -7160,6 +7216,7 @@
  },
  "energy_manipulator": {
   "attunedOnly": false,
+  "binOrder": 143,
   "bonuses": [
    {
     "effects": [
@@ -7220,6 +7277,7 @@
  },
  "enfeebled_operation": {
   "attunedOnly": false,
+  "binOrder": 103,
   "bonuses": [
    {
     "effects": [
@@ -7368,6 +7426,7 @@
  },
  "entomb": {
   "attunedOnly": true,
+  "binOrder": 94,
   "bonuses": [
    {
     "effects": [
@@ -7518,6 +7577,7 @@
  },
  "entropic_chaos": {
   "attunedOnly": false,
+  "binOrder": 19,
   "bonuses": [
    {
     "effects": [
@@ -7633,6 +7693,7 @@
  },
  "eradication": {
   "attunedOnly": false,
+  "binOrder": 41,
   "bonuses": [
    {
     "effects": [
@@ -7766,6 +7827,7 @@
  },
  "essence_of_curare": {
   "attunedOnly": false,
+  "binOrder": 88,
   "bonuses": [
    {
     "effects": [
@@ -7935,6 +7997,7 @@
  },
  "essence_transfer": {
   "attunedOnly": true,
+  "binOrder": 184,
   "bonuses": [
    {
     "effects": [
@@ -8073,6 +8136,7 @@
  },
  "executioners_contract": {
   "attunedOnly": false,
+  "binOrder": 48,
   "bonuses": [
    {
     "effects": [
@@ -8225,6 +8289,7 @@
  },
  "expedient_reinforcement": {
   "attunedOnly": false,
+  "binOrder": 59,
   "bonuses": [
    {
     "effects": [
@@ -8366,6 +8431,7 @@
  },
  "experienced_marksman": {
   "attunedOnly": false,
+  "binOrder": 216,
   "bonuses": [
    {
     "effects": [
@@ -8543,6 +8609,7 @@
  },
  "exploit_weakness": {
   "attunedOnly": false,
+  "binOrder": 46,
   "bonuses": [
    {
     "effects": [
@@ -8632,6 +8699,7 @@
  },
  "exploited_vulnerability": {
   "attunedOnly": false,
+  "binOrder": 154,
   "bonuses": [
    {
     "effects": [
@@ -8701,6 +8769,7 @@
  },
  "explosive_strike": {
   "attunedOnly": false,
+  "binOrder": 139,
   "bonuses": [
    {
     "effects": [
@@ -8767,6 +8836,7 @@
  },
  "extreme_measures": {
   "attunedOnly": false,
+  "binOrder": 49,
   "bonuses": [
    {
     "effects": [
@@ -8905,6 +8975,7 @@
  },
  "far_strike": {
   "attunedOnly": false,
+  "binOrder": 14,
   "bonuses": [
    {
     "effects": [
@@ -8982,6 +9053,7 @@
  },
  "focused_smite": {
   "attunedOnly": false,
+  "binOrder": 6,
   "bonuses": [
    {
     "effects": [
@@ -9114,6 +9186,7 @@
  },
  "force_feedback": {
   "attunedOnly": false,
+  "binOrder": 141,
   "bonuses": [
    {
     "effects": [
@@ -9254,6 +9327,7 @@
  },
  "fortunata_hypnosis": {
   "attunedOnly": false,
+  "binOrder": 114,
   "bonuses": [
    {
     "effects": [
@@ -9401,6 +9475,7 @@
  },
  "freebird": {
   "attunedOnly": false,
+  "binOrder": 125,
   "bonuses": [
    {
     "effects": [
@@ -9460,6 +9535,7 @@
  },
  "frozen_blast": {
   "attunedOnly": true,
+  "binOrder": 35,
   "bonuses": [
    {
     "effects": [
@@ -9611,6 +9687,7 @@
  },
  "fury_of_the_gladiator": {
   "attunedOnly": false,
+  "binOrder": 43,
   "bonuses": [
    {
     "effects": [
@@ -9798,6 +9875,7 @@
  },
  "gauntleted_fist": {
   "attunedOnly": true,
+  "binOrder": 180,
   "bonuses": [
    {
     "effects": [
@@ -9962,6 +10040,7 @@
  },
  "gaussians_synchronized_firecontrol": {
   "attunedOnly": false,
+  "binOrder": 149,
   "bonuses": [
    {
     "effects": [
@@ -10108,6 +10187,7 @@
  },
  "ghost_widows_embrace": {
   "attunedOnly": false,
+  "binOrder": 89,
   "bonuses": [
    {
     "effects": [
@@ -10243,6 +10323,7 @@
  },
  "gift_of_the_ancients": {
   "attunedOnly": false,
+  "binOrder": 63,
   "bonuses": [
    {
     "effects": [
@@ -10406,6 +10487,7 @@
  },
  "gladiators_armor": {
   "attunedOnly": false,
+  "binOrder": 75,
   "bonuses": [
    {
     "effects": [
@@ -10589,6 +10671,7 @@
  },
  "gladiators_javelin": {
   "attunedOnly": false,
+  "binOrder": 25,
   "bonuses": [
    {
     "effects": [
@@ -10778,6 +10861,7 @@
  },
  "gladiators_net": {
   "attunedOnly": false,
+  "binOrder": 93,
   "bonuses": [
    {
     "effects": [
@@ -10951,6 +11035,7 @@
  },
  "gladiators_strike": {
   "attunedOnly": false,
+  "binOrder": 11,
   "bonuses": [
    {
     "effects": [
@@ -11139,6 +11224,7 @@
  },
  "glimpse_of_the_abyss": {
   "attunedOnly": false,
+  "binOrder": 118,
   "bonuses": [
    {
     "effects": [
@@ -11274,6 +11360,7 @@
  },
  "gravitational_anchor": {
   "attunedOnly": false,
+  "binOrder": 105,
   "bonuses": [
    {
     "effects": [
@@ -11421,6 +11508,7 @@
  },
  "harmonized_healing": {
   "attunedOnly": false,
+  "binOrder": 78,
   "bonuses": [
    {
     "effects": [
@@ -11579,6 +11667,7 @@
  },
  "hecatomb": {
   "attunedOnly": false,
+  "binOrder": 10,
   "bonuses": [
    {
     "effects": [
@@ -11726,6 +11815,7 @@
  },
  "hibernation": {
   "attunedOnly": false,
+  "binOrder": 110,
   "bonuses": [
    {
     "effects": [
@@ -11844,6 +11934,7 @@
  },
  "horror": {
   "attunedOnly": false,
+  "binOrder": 115,
   "bonuses": [
    {
     "effects": [
@@ -11962,6 +12053,7 @@
  },
  "hypersonic": {
   "attunedOnly": false,
+  "binOrder": 222,
   "bonuses": [
    {
     "effects": [
@@ -12058,6 +12150,7 @@
  },
  "ice_mistrals_torment": {
   "attunedOnly": false,
+  "binOrder": 221,
   "bonuses": [
    {
     "effects": [
@@ -12187,6 +12280,7 @@
  },
  "impeded_swiftness": {
   "attunedOnly": false,
+  "binOrder": 107,
   "bonuses": [
    {
     "effects": [
@@ -12353,6 +12447,7 @@
  },
  "impervious_skin": {
   "attunedOnly": false,
+  "binOrder": 69,
   "bonuses": [
    {
     "effects": [
@@ -12468,6 +12563,7 @@
  },
  "impervium_armor": {
   "attunedOnly": false,
+  "binOrder": 71,
   "bonuses": [
    {
     "effects": [
@@ -12615,6 +12711,7 @@
  },
  "induced_coma": {
   "attunedOnly": false,
+  "binOrder": 111,
   "bonuses": [
    {
     "effects": [
@@ -12742,6 +12839,7 @@
  },
  "jaunt": {
   "attunedOnly": false,
+  "binOrder": 130,
   "bonuses": [
    {
     "effects": [
@@ -12804,6 +12902,7 @@
  },
  "javelin_volley": {
   "attunedOnly": false,
+  "binOrder": 34,
   "bonuses": [
    {
     "effects": [
@@ -12993,6 +13092,7 @@
  },
  "karma": {
   "attunedOnly": false,
+  "binOrder": 60,
   "bonuses": [
    {
     "effects": [
@@ -13054,6 +13154,7 @@
  },
  "kheldians_grace": {
   "attunedOnly": true,
+  "binOrder": 182,
   "bonuses": [
    {
     "effects": [
@@ -13208,6 +13309,7 @@
  },
  "kinetic_combat": {
   "attunedOnly": false,
+  "binOrder": 5,
   "bonuses": [
    {
     "effects": [
@@ -13328,6 +13430,7 @@
  },
  "kinetic_crash": {
   "attunedOnly": false,
+  "binOrder": 140,
   "bonuses": [
    {
     "effects": [
@@ -13467,6 +13570,7 @@
  },
  "kismet": {
   "attunedOnly": false,
+  "binOrder": 61,
   "bonuses": [
    {
     "effects": [
@@ -13582,6 +13686,7 @@
  },
  "launch": {
   "attunedOnly": false,
+  "binOrder": 223,
   "bonuses": [
    {
     "effects": [
@@ -13677,6 +13782,7 @@
  },
  "lethargic_repose": {
   "attunedOnly": false,
+  "binOrder": 112,
   "bonuses": [
    {
     "effects": [
@@ -13830,6 +13936,7 @@
  },
  "lockdown": {
   "attunedOnly": false,
+  "binOrder": 92,
   "bonuses": [
    {
     "effects": [
@@ -13977,6 +14084,7 @@
  },
  "luck_of_the_gambler": {
   "attunedOnly": false,
+  "binOrder": 65,
   "bonuses": [
    {
     "effects": [
@@ -14127,6 +14235,7 @@
  },
  "maelstroms_fury": {
   "attunedOnly": false,
+  "binOrder": 18,
   "bonuses": [
    {
     "effects": [
@@ -14230,6 +14339,7 @@
  },
  "makos_bite": {
   "attunedOnly": false,
+  "binOrder": 9,
   "bonuses": [
    {
     "effects": [
@@ -14385,6 +14495,7 @@
  },
  "malaises_illusions": {
   "attunedOnly": false,
+  "binOrder": 122,
   "bonuses": [
    {
     "effects": [
@@ -14512,6 +14623,7 @@
  },
  "malice_of_the_corruptor": {
   "attunedOnly": true,
+  "binOrder": 190,
   "bonuses": [
    {
     "effects": [
@@ -14645,6 +14757,7 @@
  },
  "mark_of_supremacy": {
   "attunedOnly": true,
+  "binOrder": 200,
   "bonuses": [
    {
     "effects": [
@@ -14797,6 +14910,7 @@
  },
  "might_of_the_tanker": {
   "attunedOnly": true,
+  "binOrder": 178,
   "bonuses": [
    {
     "effects": [
@@ -14951,6 +15065,7 @@
  },
  "miracle": {
   "attunedOnly": false,
+  "binOrder": 79,
   "bonuses": [
    {
     "effects": [
@@ -15081,6 +15196,7 @@
  },
  "mocking_beratement": {
   "attunedOnly": false,
+  "binOrder": 136,
   "bonuses": [
    {
     "effects": [
@@ -15227,6 +15343,7 @@
  },
  "multi_strike": {
   "attunedOnly": false,
+  "binOrder": 38,
   "bonuses": [
    {
     "effects": [
@@ -15402,6 +15519,7 @@
  },
  "neuronic_shutdown": {
   "attunedOnly": false,
+  "binOrder": 87,
   "bonuses": [
    {
     "effects": [
@@ -15542,6 +15660,7 @@
  },
  "nightmare": {
   "attunedOnly": false,
+  "binOrder": 117,
   "bonuses": [
    {
     "effects": [
@@ -15698,6 +15817,7 @@
  },
  "numinas_convalesence": {
   "attunedOnly": false,
+  "binOrder": 81,
   "bonuses": [
    {
     "effects": [
@@ -15841,6 +15961,7 @@
  },
  "obliteration": {
   "attunedOnly": false,
+  "binOrder": 42,
   "bonuses": [
    {
     "effects": [
@@ -15982,6 +16103,7 @@
  },
  "opportunity_strikes": {
   "attunedOnly": true,
+  "binOrder": 212,
   "bonuses": [
    {
     "effects": [
@@ -16115,6 +16237,7 @@
  },
  "overpowering_presence": {
   "attunedOnly": true,
+  "binOrder": 168,
   "bonuses": [
    {
     "effects": [
@@ -16285,6 +16408,7 @@
  },
  "overwhelming_force": {
   "attunedOnly": true,
+  "binOrder": 214,
   "bonuses": [
    {
     "effects": [
@@ -16418,6 +16542,7 @@
  },
  "pacing_of_the_turtle": {
   "attunedOnly": false,
+  "binOrder": 109,
   "bonuses": [
    {
     "effects": [
@@ -16571,6 +16696,7 @@
  },
  "panacea": {
   "attunedOnly": false,
+  "binOrder": 83,
   "bonuses": [
    {
     "effects": [
@@ -16760,6 +16886,7 @@
  },
  "paralytic": {
   "attunedOnly": false,
+  "binOrder": 86,
   "bonuses": [
    {
     "effects": [
@@ -16878,6 +17005,7 @@
  },
  "perfect_zinger": {
   "attunedOnly": false,
+  "binOrder": 137,
   "bonuses": [
    {
     "effects": [
@@ -17017,6 +17145,7 @@
  },
  "performance_shifter": {
   "attunedOnly": false,
+  "binOrder": 145,
   "bonuses": [
    {
     "effects": [
@@ -17143,6 +17272,7 @@
  },
  "perplex": {
   "attunedOnly": false,
+  "binOrder": 121,
   "bonuses": [
    {
     "effects": [
@@ -17286,6 +17416,7 @@
  },
  "positrons_blast": {
   "attunedOnly": false,
+  "binOrder": 30,
   "bonuses": [
    {
     "effects": [
@@ -17434,6 +17565,7 @@
  },
  "pounding_slugfest": {
   "attunedOnly": false,
+  "binOrder": 3,
   "bonuses": [
    {
     "effects": [
@@ -17520,6 +17652,7 @@
  },
  "power_transfer": {
   "attunedOnly": false,
+  "binOrder": 218,
   "bonuses": [
    {
     "effects": [
@@ -17643,6 +17776,7 @@
  },
  "preemptive_optimization": {
   "attunedOnly": false,
+  "binOrder": 219,
   "bonuses": [
    {
     "effects": [
@@ -17788,6 +17922,7 @@
  },
  "preventive_medicine": {
   "attunedOnly": false,
+  "binOrder": 82,
   "bonuses": [
    {
     "effects": [
@@ -17939,6 +18074,7 @@
  },
  "pulverizing_fisticuffs": {
   "attunedOnly": false,
+  "binOrder": 1,
   "bonuses": [
    {
     "effects": [
@@ -18024,6 +18160,7 @@
  },
  "quickfoot": {
   "attunedOnly": false,
+  "binOrder": 128,
   "bonuses": [
    {
     "effects": [
@@ -18099,6 +18236,7 @@
  },
  "ragnarok": {
   "attunedOnly": false,
+  "binOrder": 33,
   "bonuses": [
    {
     "effects": [
@@ -18246,6 +18384,7 @@
  },
  "razzle_dazzle": {
   "attunedOnly": false,
+  "binOrder": 97,
   "bonuses": [
    {
     "effects": [
@@ -18378,6 +18517,7 @@
  },
  "reactive_armor": {
   "attunedOnly": false,
+  "binOrder": 70,
   "bonuses": [
    {
     "effects": [
@@ -18542,6 +18682,7 @@
  },
  "reactive_defenses": {
   "attunedOnly": false,
+  "binOrder": 66,
   "bonuses": [
    {
     "effects": [
@@ -18690,6 +18831,7 @@
  },
  "rectified_reticle": {
   "attunedOnly": false,
+  "binOrder": 147,
   "bonuses": [
    {
     "effects": [
@@ -18755,6 +18897,7 @@
  },
  "red_fortune": {
   "attunedOnly": false,
+  "binOrder": 64,
   "bonuses": [
    {
     "effects": [
@@ -18909,6 +19052,7 @@
  },
  "regenerative_tissue": {
   "attunedOnly": false,
+  "binOrder": 77,
   "bonuses": [
    {
     "effects": [
@@ -19014,6 +19158,7 @@
  },
  "rooting_grasp": {
   "attunedOnly": false,
+  "binOrder": 101,
   "bonuses": [
    {
     "effects": [
@@ -19119,6 +19264,7 @@
  },
  "rope_a_dope": {
   "attunedOnly": false,
+  "binOrder": 98,
   "bonuses": [
    {
     "effects": [
@@ -19270,6 +19416,7 @@
  },
  "ruin": {
   "attunedOnly": false,
+  "binOrder": 20,
   "bonuses": [
    {
     "effects": [
@@ -19394,6 +19541,7 @@
  },
  "salvo": {
   "attunedOnly": false,
+  "binOrder": 15,
   "bonuses": [
    {
     "effects": [
@@ -19487,6 +19635,7 @@
  },
  "sciroccos_dervish": {
   "attunedOnly": false,
+  "binOrder": 39,
   "bonuses": [
    {
     "effects": [
@@ -19627,6 +19776,7 @@
  },
  "scourging_blast": {
   "attunedOnly": true,
+  "binOrder": 192,
   "bonuses": [
    {
     "effects": [
@@ -19760,6 +19910,7 @@
  },
  "scrappers_strike": {
   "attunedOnly": true,
+  "binOrder": 174,
   "bonuses": [
    {
     "effects": [
@@ -19906,6 +20057,7 @@
  },
  "sentinels_ward": {
   "attunedOnly": true,
+  "binOrder": 210,
   "bonuses": [
    {
     "effects": [
@@ -20039,6 +20191,7 @@
  },
  "serendipity": {
   "attunedOnly": false,
+  "binOrder": 62,
   "bonuses": [
    {
     "effects": [
@@ -20180,6 +20333,7 @@
  },
  "shield_breaker": {
   "attunedOnly": false,
+  "binOrder": 158,
   "bonuses": [
    {
     "effects": [
@@ -20325,6 +20479,7 @@
  },
  "shield_wall": {
   "attunedOnly": false,
+  "binOrder": 67,
   "bonuses": [
    {
     "effects": [
@@ -20516,6 +20671,7 @@
  },
  "siphon_insight": {
   "attunedOnly": false,
+  "binOrder": 161,
   "bonuses": [
    {
     "effects": [
@@ -20648,6 +20804,7 @@
  },
  "smashing_haymaker": {
   "attunedOnly": false,
+  "binOrder": 4,
   "bonuses": [
    {
     "effects": [
@@ -20751,6 +20908,7 @@
  },
  "soaring": {
   "attunedOnly": false,
+  "binOrder": 124,
   "bonuses": [
    {
     "effects": [
@@ -20813,6 +20971,7 @@
  },
  "soulbound_allegiance": {
   "attunedOnly": false,
+  "binOrder": 57,
   "bonuses": [
    {
     "effects": [
@@ -20947,6 +21106,7 @@
  },
  "sovereign_right": {
   "attunedOnly": false,
+  "binOrder": 56,
   "bonuses": [
    {
     "effects": [
@@ -21099,6 +21259,7 @@
  },
  "spiders_bite": {
   "attunedOnly": true,
+  "binOrder": 208,
   "bonuses": [
    {
     "effects": [
@@ -21232,6 +21393,7 @@
  },
  "springfoot": {
   "attunedOnly": false,
+  "binOrder": 126,
   "bonuses": [
    {
     "effects": [
@@ -21294,6 +21456,7 @@
  },
  "stagger": {
   "attunedOnly": false,
+  "binOrder": 96,
   "bonuses": [
    {
     "effects": [
@@ -21404,6 +21567,7 @@
  },
  "stalkers_guile": {
   "attunedOnly": true,
+  "binOrder": 202,
   "bonuses": [
    {
     "effects": [
@@ -21550,6 +21714,7 @@
  },
  "steadfast_protection": {
   "attunedOnly": false,
+  "binOrder": 68,
   "bonuses": [
    {
     "effects": [
@@ -21611,6 +21776,7 @@
  },
  "sting_of_the_manticore": {
   "attunedOnly": false,
+  "binOrder": 50,
   "bonuses": [
    {
     "effects": [
@@ -21753,6 +21919,7 @@
  },
  "stupefy": {
   "attunedOnly": false,
+  "binOrder": 99,
   "bonuses": [
    {
     "effects": [
@@ -21880,6 +22047,7 @@
  },
  "sudden_acceleration": {
   "attunedOnly": false,
+  "binOrder": 215,
   "bonuses": [
    {
     "effects": [
@@ -22006,6 +22174,7 @@
  },
  "superior_ascendency_of_the_dominator": {
   "attunedOnly": true,
+  "binOrder": 195,
   "bonuses": [
    {
     "effects": [
@@ -22163,6 +22332,7 @@
  },
  "superior_assassins_mark": {
   "attunedOnly": true,
+  "binOrder": 205,
   "bonuses": [
    {
     "effects": [
@@ -22296,6 +22466,7 @@
  },
  "superior_avalanche": {
   "attunedOnly": true,
+  "binOrder": 45,
   "bonuses": [
    {
     "effects": [
@@ -22447,6 +22618,7 @@
  },
  "superior_blasters_wrath": {
   "attunedOnly": true,
+  "binOrder": 163,
   "bonuses": [
    {
     "effects": [
@@ -22580,6 +22752,7 @@
  },
  "superior_blistering_cold": {
   "attunedOnly": true,
+  "binOrder": 13,
   "bonuses": [
    {
     "effects": [
@@ -22731,6 +22904,7 @@
  },
  "superior_brutes_fury": {
   "attunedOnly": true,
+  "binOrder": 187,
   "bonuses": [
    {
     "effects": [
@@ -22877,6 +23051,7 @@
  },
  "superior_command_of_the_mastermind": {
   "attunedOnly": true,
+  "binOrder": 199,
   "bonuses": [
    {
     "effects": [
@@ -23031,6 +23206,7 @@
  },
  "superior_critical_strikes": {
   "attunedOnly": true,
+  "binOrder": 177,
   "bonuses": [
    {
     "effects": [
@@ -23164,6 +23340,7 @@
  },
  "superior_defenders_bastion": {
   "attunedOnly": true,
+  "binOrder": 171,
   "bonuses": [
    {
     "effects": [
@@ -23297,6 +23474,7 @@
  },
  "superior_defiant_barrage": {
   "attunedOnly": true,
+  "binOrder": 165,
   "bonuses": [
    {
     "effects": [
@@ -23430,6 +23608,7 @@
  },
  "superior_dominating_grasp": {
   "attunedOnly": true,
+  "binOrder": 197,
   "bonuses": [
    {
     "effects": [
@@ -23600,6 +23779,7 @@
  },
  "superior_dominion_of_arachnos": {
   "attunedOnly": true,
+  "binOrder": 207,
   "bonuses": [
    {
     "effects": [
@@ -23741,6 +23921,7 @@
  },
  "superior_entomb": {
   "attunedOnly": true,
+  "binOrder": 95,
   "bonuses": [
    {
     "effects": [
@@ -23891,6 +24072,7 @@
  },
  "superior_essence_transfer": {
   "attunedOnly": true,
+  "binOrder": 185,
   "bonuses": [
    {
     "effects": [
@@ -24029,6 +24211,7 @@
  },
  "superior_frozen_blast": {
   "attunedOnly": true,
+  "binOrder": 36,
   "bonuses": [
    {
     "effects": [
@@ -24180,6 +24363,7 @@
  },
  "superior_gauntleted_fist": {
   "attunedOnly": true,
+  "binOrder": 181,
   "bonuses": [
    {
     "effects": [
@@ -24344,6 +24528,7 @@
  },
  "superior_kheldians_grace": {
   "attunedOnly": true,
+  "binOrder": 183,
   "bonuses": [
    {
     "effects": [
@@ -24498,6 +24683,7 @@
  },
  "superior_malice_of_the_corruptor": {
   "attunedOnly": true,
+  "binOrder": 191,
   "bonuses": [
    {
     "effects": [
@@ -24631,6 +24817,7 @@
  },
  "superior_mark_of_supremacy": {
   "attunedOnly": true,
+  "binOrder": 201,
   "bonuses": [
    {
     "effects": [
@@ -24783,6 +24970,7 @@
  },
  "superior_might_of_the_tanker": {
   "attunedOnly": true,
+  "binOrder": 179,
   "bonuses": [
    {
     "effects": [
@@ -24937,6 +25125,7 @@
  },
  "superior_opportunity_strikes": {
   "attunedOnly": true,
+  "binOrder": 213,
   "bonuses": [
    {
     "effects": [
@@ -25070,6 +25259,7 @@
  },
  "superior_overpowering_presence": {
   "attunedOnly": true,
+  "binOrder": 169,
   "bonuses": [
    {
     "effects": [
@@ -25240,6 +25430,7 @@
  },
  "superior_scourging_blast": {
   "attunedOnly": true,
+  "binOrder": 193,
   "bonuses": [
    {
     "effects": [
@@ -25373,6 +25564,7 @@
  },
  "superior_scrappers_strike": {
   "attunedOnly": true,
+  "binOrder": 175,
   "bonuses": [
    {
     "effects": [
@@ -25519,6 +25711,7 @@
  },
  "superior_sentinels_ward": {
   "attunedOnly": true,
+  "binOrder": 211,
   "bonuses": [
    {
     "effects": [
@@ -25652,6 +25845,7 @@
  },
  "superior_spiders_bite": {
   "attunedOnly": true,
+  "binOrder": 209,
   "bonuses": [
    {
     "effects": [
@@ -25785,6 +25979,7 @@
  },
  "superior_stalkers_guile": {
   "attunedOnly": true,
+  "binOrder": 203,
   "bonuses": [
    {
     "effects": [
@@ -25931,6 +26126,7 @@
  },
  "superior_unrelenting_fury": {
   "attunedOnly": true,
+  "binOrder": 189,
   "bonuses": [
    {
     "effects": [
@@ -26087,6 +26283,7 @@
  },
  "superior_vigilant_assault": {
   "attunedOnly": true,
+  "binOrder": 173,
   "bonuses": [
    {
     "effects": [
@@ -26220,6 +26417,7 @@
  },
  "superior_will_of_the_controller": {
   "attunedOnly": true,
+  "binOrder": 167,
   "bonuses": [
    {
     "effects": [
@@ -26377,6 +26575,7 @@
  },
  "superior_winters_bite": {
   "attunedOnly": true,
+  "binOrder": 27,
   "bonuses": [
    {
     "effects": [
@@ -26528,6 +26727,7 @@
  },
  "synapses_shock": {
   "attunedOnly": false,
+  "binOrder": 217,
   "bonuses": [
    {
     "effects": [
@@ -26666,6 +26866,7 @@
  },
  "tempered_readiness": {
   "attunedOnly": false,
+  "binOrder": 108,
   "bonuses": [
    {
     "effects": [
@@ -26797,6 +26998,7 @@
  },
  "tempest": {
   "attunedOnly": false,
+  "binOrder": 17,
   "bonuses": [
    {
     "effects": [
@@ -26904,6 +27106,7 @@
  },
  "theft_of_essence": {
   "attunedOnly": false,
+  "binOrder": 84,
   "bonuses": [
    {
     "effects": [
@@ -27043,6 +27246,7 @@
  },
  "thrust": {
   "attunedOnly": false,
+  "binOrder": 224,
   "bonuses": [
    {
     "effects": [
@@ -27138,6 +27342,7 @@
  },
  "thunderstrike": {
   "attunedOnly": false,
+  "binOrder": 22,
   "bonuses": [
    {
     "effects": [
@@ -27275,6 +27480,7 @@
  },
  "timespace_manipulation": {
   "attunedOnly": false,
+  "binOrder": 131,
   "bonuses": [
    {
     "effects": [
@@ -27334,6 +27540,7 @@
  },
  "titanium_coating": {
   "attunedOnly": false,
+  "binOrder": 72,
   "bonuses": [
    {
     "effects": [
@@ -27488,6 +27695,7 @@
  },
  "touch_of_death": {
   "attunedOnly": false,
+  "binOrder": 7,
   "bonuses": [
    {
     "effects": [
@@ -27642,6 +27850,7 @@
  },
  "touch_of_lady_grey": {
   "attunedOnly": false,
+  "binOrder": 157,
   "bonuses": [
    {
     "effects": [
@@ -27763,6 +27972,7 @@
  },
  "touch_of_the_nictus": {
   "attunedOnly": false,
+  "binOrder": 85,
   "bonuses": [
    {
     "effects": [
@@ -27902,6 +28112,7 @@
  },
  "trap_of_the_hunter": {
   "attunedOnly": false,
+  "binOrder": 104,
   "bonuses": [
    {
     "effects": [
@@ -28042,6 +28253,7 @@
  },
  "triage": {
   "attunedOnly": false,
+  "binOrder": 76,
   "bonuses": [
    {
     "effects": [
@@ -28130,6 +28342,7 @@
  },
  "triumphant_insult": {
   "attunedOnly": false,
+  "binOrder": 135,
   "bonuses": [
    {
     "effects": [
@@ -28195,6 +28408,7 @@
  },
  "unbounded_leap": {
   "attunedOnly": false,
+  "binOrder": 127,
   "bonuses": [
    {
     "effects": [
@@ -28254,6 +28468,7 @@
  },
  "unbreakable_constraint": {
   "attunedOnly": false,
+  "binOrder": 90,
   "bonuses": [
    {
     "effects": [
@@ -28401,6 +28616,7 @@
  },
  "unbreakable_guard": {
   "attunedOnly": false,
+  "binOrder": 74,
   "bonuses": [
    {
     "effects": [
@@ -28566,6 +28782,7 @@
  },
  "undermined_defenses": {
   "attunedOnly": false,
+  "binOrder": 156,
   "bonuses": [
    {
     "effects": [
@@ -28694,6 +28911,7 @@
  },
  "unquestioning_loyalty": {
   "attunedOnly": false,
+  "binOrder": 51,
   "bonuses": [
    {
     "effects": [
@@ -28792,6 +29010,7 @@
  },
  "unrelenting_fury": {
   "attunedOnly": true,
+  "binOrder": 188,
   "bonuses": [
    {
     "effects": [
@@ -28948,6 +29167,7 @@
  },
  "unspeakable_terror": {
   "attunedOnly": false,
+  "binOrder": 116,
   "bonuses": [
    {
     "effects": [
@@ -29096,6 +29316,7 @@
  },
  "vigilant_assault": {
   "attunedOnly": true,
+  "binOrder": 172,
   "bonuses": [
    {
     "effects": [
@@ -29229,6 +29450,7 @@
  },
  "volley_fire": {
   "attunedOnly": false,
+  "binOrder": 16,
   "bonuses": [
    {
     "effects": [
@@ -29293,6 +29515,7 @@
  },
  "volley_of_velocity": {
   "attunedOnly": false,
+  "binOrder": 138,
   "bonuses": [
    {
     "effects": [
@@ -29357,6 +29580,7 @@
  },
  "warp": {
   "attunedOnly": false,
+  "binOrder": 225,
   "bonuses": [
    {
     "effects": [
@@ -29452,6 +29676,7 @@
  },
  "will_of_the_controller": {
   "attunedOnly": true,
+  "binOrder": 166,
   "bonuses": [
    {
     "effects": [
@@ -29609,6 +29834,7 @@
  },
  "winters_bite": {
   "attunedOnly": true,
+  "binOrder": 26,
   "bonuses": [
    {
     "effects": [
@@ -29760,6 +29986,7 @@
  },
  "winters_gift": {
   "attunedOnly": false,
+  "binOrder": 133,
   "bonuses": [
    {
     "effects": [

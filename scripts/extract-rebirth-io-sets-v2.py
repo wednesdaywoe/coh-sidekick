@@ -1665,6 +1665,18 @@ def _resolve_icon(set_id: str, inherited: str | None) -> str:
     return icon
 
 
+def _stamp_bin_order(out_sets: dict[str, dict], sets: list[BoostSetRecord]) -> None:
+    """`binOrder`: each set's position in boostsets.bin. Run after every override pass,
+    since several replace whole entries. It is the only record of the game's order once
+    the section is keyed by id, and it is what tells an archetype's first set from its
+    second (Might of the Tanker before Gauntleted Fist). A set the bin does not list
+    gets none, rather than a made-up place."""
+    for index, record in enumerate(sets):
+        set_id = record.name.lower().replace('-', '').replace('__', '_')
+        if set_id in out_sets:
+            out_sets[set_id]['binOrder'] = index
+
+
 def _reuse_hand_entry(out_sets: dict[str, dict], set_id: str, hc_entry: dict) -> None:
     """Borrow Homecoming's hand entry for a set this fork also ships.
 
@@ -2179,6 +2191,7 @@ DATASET_CONFIG = {
 #   minLevel    int
 #   maxLevel    int
 #   attunedOnly bool   the game ships this set only attuned - no `Crafted_*` piece exists
+#   binOrder?   int    position in boostsets.bin; absent for a set the bin does not list
 #   icon        str
 #   pieces      list of {num: int, name: str, aspects: [str], proc: bool, unique: bool,
 #                        totalAspects?: int}
@@ -2262,6 +2275,7 @@ def main(dataset: str | None = None) -> int:
     out_sets, skipped = build_sets(sets, power_index, hc_sets)
     ctx = {'sets': sets, 'power_index': power_index}
     stats = cfg['apply_overrides'](out_sets, hc_sets, ctx)
+    _stamp_bin_order(out_sets, sets)
 
     print(f'\n[{dataset}] Extracted {len(out_sets)} sets ({len(skipped)} skipped)')
     for k, v in stats.items():

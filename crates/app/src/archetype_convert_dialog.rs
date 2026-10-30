@@ -184,7 +184,10 @@ fn Report(conversion: Conversion, to: String, new_inherent: String) -> Element {
             }
             if !groups.is_empty() || conversion.inherent.is_some() {
                 Section {
-                    title: format!("Left behind ({})", conversion.dropped.len()),
+                    title: match conversion.dropped.len() {
+                        0 => "Left behind".to_string(),
+                        count => format!("Left behind ({count})"),
+                    },
                     for (reason, powers) in groups {
                         li {
                             span { class: "convert__reason", "{reason}: " }
@@ -195,6 +198,22 @@ fn Report(conversion: Conversion, to: String, new_inherent: String) -> Element {
                         li {
                             span { class: "convert__reason", "Inherent: " }
                             "{inherent} becomes {new_inherent}"
+                        }
+                    }
+                }
+            }
+            if !conversion.converted.is_empty() {
+                Section { title: format!("Archetype sets converted to {to}'s"),
+                    for set in conversion.converted.iter() {
+                        li {
+                            span { class: "convert__reason", "{set.from}" }
+                            " becomes {set.to} ({set.pieces} pieces, same slots)"
+                        }
+                    }
+                    for piece in conversion.reshaped.iter() {
+                        li {
+                            span { class: "convert__reason", "{piece.power}: " }
+                            "{piece.from} is now {piece.to}"
                         }
                     }
                 }

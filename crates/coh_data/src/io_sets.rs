@@ -134,6 +134,11 @@ pub struct IoSet {
     /// since that is the layer that can tell a missing field from a false one.
     #[serde(default)]
     pub attuned_only: bool,
+    /// The set's position in the game's `boostsets.bin`, the only record of the game's own
+    /// order once the section is keyed by id. It is what tells an archetype's first set from
+    /// its second. `None` on a bundle emitted before the field, or a set the bin does not list.
+    #[serde(default)]
+    pub bin_order: Option<u32>,
     pub pieces: Vec<IoSetPiece>,
     /// The set-bonus tiers granted at increasing piece counts. Read by
     /// `coh_math::set_bonuses`; absent on some hand-built test catalogs (default
