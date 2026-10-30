@@ -97,7 +97,7 @@ window.addEventListener('blur', () => dioxus.send('up'));";
 /// ([`crate::panels::powers`]' `KEEP_SLOT_TOOLTIP_ON_SCREEN`): beside the cursor, flipped to
 /// the other side when it would run off the right or bottom edge, and pinned inside an 8px
 /// margin when neither side fits. Placed in window pixels and divided by the UI scale's `zoom`.
-const KEEP_POWER_TOOLTIP_ON_SCREEN: &str = "\
+pub(crate) const KEEP_POWER_TOOLTIP_ON_SCREEN: &str = "\
 document.querySelectorAll('.power-tooltip').forEach(function (tip) {\
   var z = parseFloat(getComputedStyle(document.documentElement).zoom) || 1;\
   var rect = tip.getBoundingClientRect();\

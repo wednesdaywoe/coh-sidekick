@@ -244,6 +244,10 @@ pub struct PowerProjection {
     /// power hypothetically needs the same fractions to drive rows the projection does not
     /// itself resolve, and recomputing them beside the engine is how the two drift.
     pub enhancement_bonuses: BTreeMap<&'static str, f64>,
+    /// How far into Enhancement Diversification each slotted aspect is, from the same per-power
+    /// enhancement as [`Self::enhancement_bonuses`], so the two agree. Empty when nothing is
+    /// slotted.
+    pub enhancement_breakdown: Vec<crate::ed_breakdown::AspectBreakdown>,
     /// The damage this power's own atoms deal against the build's chosen target (RB5), each
     /// component resolved separately and the certain ones totalled. Empty of components AND of
     /// unresolved rows for a power that deals none; components present but unresolved rows too
@@ -478,6 +482,14 @@ fn project_one(
         ..gate.clone()
     };
     let enhancement = power_enhancement(slots, power, alpha, level, &state.combat, db, errors);
+    let mut enhancement_breakdown = crate::ed_breakdown::power_enhancement_breakdown(
+        slots,
+        power,
+        alpha,
+        level,
+        &state.combat,
+        db,
+    );
 
     // Every value below describes the power the surface is SHOWING, not the one the build holds:
     // a snipe fired in combat, an opener cast from cover rather than from Hide, a power whose
@@ -492,6 +504,9 @@ fn project_one(
     let recharge_locked = crate::perma::disallows_recharge(shown, "strengthsDisallowed");
     let global_recharge_locked =
         recharge_locked || crate::perma::disallows_recharge(shown, "globalStrengthsDisallowed");
+    if recharge_locked {
+        enhancement_breakdown.retain(|row| row.aspect != RECHARGE_ASPECT);
+    }
     let enhancement = if recharge_locked {
         EnhancementBonuses::from_aspect_values(
             enhancement
@@ -647,6 +662,7 @@ fn project_one(
         perma_eligible,
         granted_magnitudes,
         enhancement_bonuses: enhancement.iter().collect(),
+        enhancement_breakdown,
         damage,
         distance_bands,
     })

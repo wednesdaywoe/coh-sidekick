@@ -23,6 +23,7 @@ mod crash;
 mod damage_metric_store;
 mod data_source;
 mod desktop_signin;
+mod ed_view;
 mod enhancement_list;
 mod enhancement_tools;
 mod export_font;

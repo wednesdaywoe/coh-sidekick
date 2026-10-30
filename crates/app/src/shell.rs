@@ -394,6 +394,9 @@ pub fn Shell() -> Element {
     // The archetype conversion's open flag. The identity panel's Convert button sets it; the
     // copy lands through `BuildSession::commit`, so it is one undo step.
     let convert_open = use_signal(|| false);
+    // The ED mark under the pointer; the power cards set it, the card host reads it.
+    let ed_hover = use_signal(|| Option::<crate::ed_view::EdHoverTarget>::None);
+    use_context_provider(|| crate::ed_view::EdHover(ed_hover));
     use_context_provider(|| crate::archetype_convert_dialog::ConvertOpen(convert_open));
     // Compare Slotting: the open flag, the power under comparison, and the session-scoped
     // comparison rows. Deliberately unpersisted — see `compare_slotting::CompareSlottingState`.
@@ -1359,6 +1362,9 @@ pub fn Shell() -> Element {
         if let Some(Ok(database)) = &*db.read() {
             panels::pool_picker::PoolPickerHost { database: Db(database.clone()) }
         }
+
+        // The ED card, hosted OUTSIDE both layout roots for the same reason.
+        crate::ed_view::EdTipHost {}
 
         // The archetype conversion, hosted OUTSIDE both layout roots for the same reason.
         if let Some(Ok(database)) = &*db.read() {

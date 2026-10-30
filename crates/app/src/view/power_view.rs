@@ -442,6 +442,9 @@ pub struct PowerView {
     pub perma: Option<PermaInfo>,
     /// This power's post-ED slotted bonuses, aspect label → percent string.
     pub enhancement_bonuses: Vec<(String, String)>,
+    /// How far into Enhancement Diversification each slotted aspect is. Empty when nothing is
+    /// slotted, or for a power the build does not hold.
+    pub enhancement_breakdown: Vec<coh_math::ed_breakdown::AspectBreakdown>,
     pub allowed_enhancements: Vec<String>,
     /// Set when the engine could not project this power though the dataset carries its
     /// definition — the two resolvers disagreeing is a defect, so it shows rather than
@@ -532,6 +535,9 @@ impl PowerView {
             headline_rows,
             perma,
             enhancement_bonuses,
+            enhancement_breakdown: projection
+                .map(|projection| projection.enhancement_breakdown.clone())
+                .unwrap_or_default(),
             allowed_enhancements: power.allowed_enhancements.clone().unwrap_or_default(),
             fault: projection
                 .is_none()

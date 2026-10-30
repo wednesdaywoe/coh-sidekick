@@ -2954,6 +2954,21 @@ pub fn PickedPowerCard(
             )
         });
 
+    // How deep into ED the slotting is, for the mark after the slots. A memo of one number, so a
+    // build edit that leaves this power's stage alone does not redraw the card.
+    let ed_stage = {
+        let power_ref = crate::shell::PowerRef {
+            powerset_id: powerset_id.clone(),
+            power: power_id.clone(),
+        };
+        use_memo(use_reactive!(|power_ref| {
+            crate::ed_view::deepest_stage(&crate::ed_view::rows_for(
+                &build_totals.read(),
+                &power_ref,
+            ))
+        }))
+    };
+
     // Hit Chance Alert — the engine's own per-power hit chance against the combat panel's
     // target, shown only on a power that rolls to hit a foe (accuracy alone can't say: self
     // toggles carry one too) and only under the 95% cap. The totals are read only while the
@@ -3260,6 +3275,15 @@ pub fn PickedPowerCard(
                     // went on working (the pointer is captured), but every signal a user reads to
                     // know that had moved somewhere else, which is indistinguishable from broken.
                     div { class: "slot-capsule__controls",
+                    if let Some(stage) = ed_stage() {
+                        crate::ed_view::EdMark {
+                            power: crate::shell::PowerRef {
+                                powerset_id: powerset_id.clone(),
+                                power: power_id.clone(),
+                            },
+                            stage,
+                        }
+                    }
                     // One stepper, not a `−`/`+` pair: the gesture is a single axis, so the
                     // control is a single ghost cell reading `‹›` and the direction of travel says
                     // which way. `pointerdown` arms a card-local drag and captures the pointer (so
