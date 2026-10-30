@@ -307,8 +307,55 @@ pub fn SetBonusFinderHost(database: Option<Db>) -> Element {
     }
 }
 
+/// The finder's two questions: which sets grant a bonus, and where in this build one could go.
+#[derive(Clone, Copy, PartialEq)]
+enum FinderView {
+    BySet,
+    ByPower,
+}
+
 #[component]
 fn SetBonusFinderBody(database: Option<Db>) -> Element {
+    let mut view = use_signal(|| FinderView::BySet);
+    let option_class = move |option: FinderView| {
+        if view() == option {
+            "powers-layout-option is-active"
+        } else {
+            "powers-layout-option"
+        }
+    };
+    rsx! {
+        div { class: "bonus-finder-shell",
+            div { class: "bonus-finder__views",
+                div { class: "powers-layout", role: "radiogroup", "aria-label": "Finder view",
+                    button {
+                        class: option_class(FinderView::BySet),
+                        role: "radio",
+                        "aria-checked": view() == FinderView::BySet,
+                        title: "Every set bonus in the dataset, searched by what it grants",
+                        onclick: move |_| view.set(FinderView::BySet),
+                        "By set"
+                    }
+                    button {
+                        class: option_class(FinderView::ByPower),
+                        role: "radio",
+                        "aria-checked": view() == FinderView::ByPower,
+                        title: "Where in this build a set with these bonuses could go",
+                        onclick: move |_| view.set(FinderView::ByPower),
+                        "By power"
+                    }
+                }
+            }
+            match view() {
+                FinderView::BySet => rsx! { BySetView { database } },
+                FinderView::ByPower => rsx! { ByPowerView { database } },
+            }
+        }
+    }
+}
+
+#[component]
+fn BySetView(database: Option<Db>) -> Element {
     let Some(database) = database else {
         return rsx! {
             div { class: "load-state", "Loading the dataset…" }
@@ -518,6 +565,242 @@ fn SetBonusFinderBody(database: Option<Db>) -> Element {
                 div { class: "bonus-finder__footer",
                     span { "{results.len()} result{plural(results.len())}" }
                     span { class: "bonus-finder__legend", "⚔ applies in PvP zones only" }
+                }
+            }
+        }
+    }
+}
+
+/// The By power view: pick the bonuses being chased, and see each power in the build that could
+/// carry a set granting them, with what it would cost ([`crate::bonus_by_power`]).
+#[component]
+fn ByPowerView(database: Option<Db>) -> Element {
+    let Some(database) = database else {
+        return rsx! {
+            div { class: "load-state", "Loading the dataset…" }
+        };
+    };
+    let Some(catalog) = database.0.io_sets.as_ref() else {
+        return rsx! {
+            div { class: "load-state error", "This dataset ships no IO-set catalog." }
+        };
+    };
+    let session = use_context::<BuildSession>();
+    let totals = use_context::<crate::panels::stats::BuildTotals>().0;
+    let tracked = use_context::<crate::tracked_stats::TrackedStats>();
+    let mut chosen = use_signal(Vec::<String>::new);
+    let mut every_set = use_signal(|| false);
+
+    // The add menu counts the sets this build's powers can take, so a number reads as "places
+    // to look", not as the whole catalog.
+    let offered = {
+        let slottable = slottable_categories(&session.build.read(), &database.0);
+        let sets: Vec<(&str, &coh_data::IoSet)> = catalog
+            .sets
+            .iter()
+            .filter(|(_, set)| slottable.is_empty() || slottable.contains(&set.set_type))
+            .map(|(id, set)| (id.as_str(), set))
+            .collect();
+        crate::picker_sets::bonus_counts(&sets, &crate::picker_sets::SetFacets::default())
+            .into_iter()
+            .filter(|count| !chosen.read().iter().any(|id| id == count.stat.id))
+            .collect::<Vec<_>>()
+    };
+    let chosen_now = chosen();
+    let tracking = totals.read().set_bonus_tracking.clone();
+    let found = crate::bonus_by_power::routes(
+        &session.build.read(),
+        &database.0,
+        catalog,
+        &chosen_now,
+        &tracking,
+    );
+    let places = found.len();
+    let shown: Vec<(crate::bonus_by_power::Route, usize)> = if every_set() {
+        found.into_iter().map(|route| (route, 0)).collect()
+    } else {
+        crate::bonus_by_power::best_per_power(found)
+    };
+    let tracked_ids = tracked.0.read().clone();
+    let tracked_new = tracked_ids.iter().any(|id| !chosen_now.contains(id));
+
+    rsx! {
+        div { class: "bonus-finder",
+            div { class: "bonus-routes__choose",
+                crate::panels::powers::BonusSelect {
+                    counts: offered,
+                    selected: None,
+                    placeholder: "Add a bonus…",
+                    label: "Add a bonus to look for",
+                    onchange: move |picked: Option<String>| {
+                        if let Some(id) = picked {
+                            chosen.with_mut(|list| {
+                                if !list.contains(&id) {
+                                    list.push(id);
+                                }
+                            });
+                        }
+                    },
+                }
+                button {
+                    class: "picker-chip",
+                    r#type: "button",
+                    disabled: !tracked_new,
+                    title: if tracked_ids.is_empty() {
+                        "Track a stat in a stats panel first"
+                    } else {
+                        "Look for every stat you track"
+                    },
+                    onclick: move |_| {
+                        let ids = tracked.0.read().clone();
+                        chosen.with_mut(|list| {
+                            for id in ids {
+                                if !list.contains(&id) {
+                                    list.push(id);
+                                }
+                            }
+                        });
+                    },
+                    "Use tracked stats"
+                }
+                label { class: "bonus-finder__restrict",
+                    input {
+                        r#type: "checkbox",
+                        checked: every_set(),
+                        onchange: move |evt| every_set.set(evt.checked()),
+                    }
+                    "Every set, not just the best one per power"
+                }
+            }
+            if !chosen_now.is_empty() {
+                // What the build already holds of each chosen bonus, value by value: the Rule of
+                // 5 counts each value separately, so a stat can be full at +3% and open at +1.5%.
+                div { class: "bonus-routes__held",
+                    for id in chosen_now.iter() {
+                        if let Some(row) = stat_registry::by_id(id) {
+                            div { class: "bonus-routes__held-row", key: "{id}",
+                                button {
+                                    class: "picker-chip is-on",
+                                    r#type: "button",
+                                    title: "Stop looking for this bonus",
+                                    onclick: {
+                                        let id = id.clone();
+                                        move |_| chosen.with_mut(|list| list.retain(|kept| kept != &id))
+                                    },
+                                    "{row.label} {row.section.title().to_lowercase()} ✕"
+                                }
+                                span { class: "bonus-routes__copies",
+                                    {held_summary(row, &tracking)}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if chosen_now.is_empty() {
+                div { class: "bonus-finder__empty",
+                    "Choose a bonus, or use the stats you track, to see where in this build a set granting it could go."
+                }
+            } else if shown.is_empty() {
+                div { class: "bonus-finder__empty",
+                    "No power in this build can take a set with those bonuses."
+                }
+            } else {
+                div { class: "bonus-routes",
+                    for (route , others) in shown.iter() {
+                        RouteRow {
+                            key: "{route.power_name}-{route.power_level}-{route.set_id}",
+                            route: route.clone(),
+                            others: *others,
+                        }
+                    }
+                }
+                div { class: "bonus-finder__footer",
+                    span {
+                        if every_set() {
+                            "{places} place{plural(places)}"
+                        } else {
+                            "{shown.len()} power{plural(shown.len())}, {places} place{plural(places)} in all"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// "+3% × 4 of 5 · +1.5% × 5 of 5, full" for one chosen bonus, or a plain "none yet".
+fn held_summary(row: &StatDef, tracking: &[set_bonuses::SetBonusStatTracking]) -> String {
+    let copies = crate::bonus_by_power::held_copies(row, tracking);
+    if copies.is_empty() {
+        return "You hold none yet".to_string();
+    }
+    let parts: Vec<String> = copies
+        .iter()
+        .map(|(value, held, capped)| {
+            let full = if *capped || *held >= 5 { ", full" } else { "" };
+            format!("+{} × {} of 5{full}", format_value(*value), held.min(&5))
+        })
+        .collect();
+    format!("You hold {}", parts.join(" · "))
+}
+
+/// One place a set could go: the power, the set, what it grants, and what it would cost.
+#[component]
+fn RouteRow(route: crate::bonus_by_power::Route, others: usize) -> Element {
+    use crate::bonus_by_power::Cost;
+    let spent = route.all_spent();
+    let cost = match &route.cost {
+        Cost::Slotted => "Already slotted here".to_string(),
+        Cost::Fits => "Fits in its slots".to_string(),
+        Cost::Replaces(names) => format!("Replaces {}", names.join(", ")),
+        Cost::NeedsSlots { more, replaces } if replaces.is_empty() => {
+            format!("Needs {more} more slot{}", plural(*more))
+        }
+        Cost::NeedsSlots { more, replaces } => format!(
+            "Needs {more} more slot{} and replaces {}",
+            plural(*more),
+            replaces.join(", ")
+        ),
+    };
+    let cost_class = match route.cost {
+        Cost::Slotted | Cost::Fits => "bonus-route__cost is-free",
+        _ => "bonus-route__cost",
+    };
+    rsx! {
+        div {
+            class: if spent { "bonus-route is-spent" } else { "bonus-route" },
+            title: if spent { "Every bonus here would be past the Rule of 5 cap and grant nothing" } else { "" },
+            span { class: "bonus-route__power",
+                span { class: "bonus-route__power-name", "{route.power_name}" }
+                span { class: "bonus-route__power-meta",
+                    if route.power_level > 0 {
+                        "L{route.power_level} · "
+                    }
+                    "{route.slots} slot{plural(route.slots)}"
+                }
+            }
+            span { class: "bonus-finder__set",
+                span { class: "bonus-finder__rarity", "{route.set_category}" }
+                span { class: "bonus-finder__set-name", "{route.set_name}" }
+                if others > 0 {
+                    span { class: "bonus-route__others", "+{others} other set{plural(others)}" }
+                }
+            }
+            span { class: "bonus-route__grants",
+                for grant in route.grants.iter() {
+                    span {
+                        key: "{grant.row.id}",
+                        class: if grant.spent { "picker-tracked-chip is-capped" } else { "picker-tracked-chip" },
+                        title: if grant.spent { "Already five copies of this bonus; another grants nothing" } else { "" },
+                        "{grant.pieces}pc {grant.row.label} +{format_value(grant.value)} ({grant.held}/5)"
+                    }
+                }
+            }
+            span { class: "{cost_class}",
+                "{cost}"
+                if spent {
+                    span { class: "bonus-route__spent", " · past the Rule of 5" }
                 }
             }
         }

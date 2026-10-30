@@ -6316,6 +6316,44 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   padding: 10px var(--pad-modal) var(--pad-modal);
   gap: 10px;
 }
+/* The finder's two views share one window: the view switch, then whichever view is open. */
+.bonus-finder-shell { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.bonus-finder__views { flex: 0 0 auto; display: flex; padding: 10px var(--pad-modal) 0; }
+
+/* By power: the bonus picker and its options, then one line per chosen bonus with what the
+   build already holds of it, then the places a set could go. */
+.bonus-routes__choose { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.bonus-routes__choose .bonus-finder__restrict { grid-column: auto; }
+.bonus-routes__held { flex: 0 0 auto; display: flex; flex-direction: column; gap: 5px; }
+.bonus-routes__held-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.bonus-routes__copies { font-size: 11.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.bonus-routes {
+  flex: 0 0 auto;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--seam); border-radius: var(--r);
+  overflow: hidden;
+}
+/* A row wraps rather than scrolling sideways: four facts, each with room to read on a phone. */
+.bonus-route {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: 4px 12px;
+  padding: 6px var(--pad-row-x);
+  border-top: 1px solid var(--seam);
+  font-size: 12px; color: var(--text);
+}
+.bonus-route:first-of-type { border-top: none; }
+.bonus-route:hover { background: var(--surface-warmed); }
+.bonus-route.is-spent { opacity: 0.45; }
+.bonus-route__power { flex: 1 1 130px; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.bonus-route__power-name { font-weight: 600; }
+.bonus-route__power-meta { font-size: 10.5px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.bonus-route .bonus-finder__set { flex: 1 1 170px; flex-wrap: wrap; }
+.bonus-route__others { font-size: 10.5px; color: var(--text-faint); }
+.bonus-route__grants { flex: 1 1 170px; display: flex; flex-wrap: wrap; gap: 4px; }
+.bonus-route__cost { flex: 1 1 130px; font-size: 11.5px; color: var(--text-dim); }
+.bonus-route__cost.is-free { color: var(--text); }
+.bonus-route__spent { color: var(--text-faint); }
+
 .bonus-finder__filters {
   flex: 0 0 auto;
   display: grid; gap: 8px;

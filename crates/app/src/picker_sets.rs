@@ -200,9 +200,17 @@ pub fn tracked_count(
 }
 
 /// One bonus the offered sets grant, with how many of them grant it.
+#[derive(Clone)]
 pub struct BonusCount {
     pub stat: &'static StatDef,
     pub count: usize,
+}
+
+// By id: the registry's rows are statics, so the id is the row.
+impl PartialEq for BonusCount {
+    fn eq(&self, other: &Self) -> bool {
+        self.stat.id == other.stat.id && self.count == other.count
+    }
 }
 
 /// Every stat row some offered set has a bonus to, in the dashboard's own order, with the count

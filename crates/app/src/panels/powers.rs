@@ -948,7 +948,7 @@ fn FoldLabel(text: &'static str, ontoggle: EventHandler<()>) -> Element {
 
 /// A stat's name as the bonus filter says it. "Energy" can be a defense or a resistance, so a
 /// label that another section also offers in the same list carries its section.
-fn bonus_label(
+pub(crate) fn bonus_label(
     stat: &crate::panels::stat_registry::StatDef,
     offered: &[crate::picker_sets::BonusCount],
 ) -> String {
@@ -959,6 +959,42 @@ fn bonus_label(
         format!("{} {}", stat.label, stat.section.title().to_lowercase())
     } else {
         stat.label.to_string()
+    }
+}
+
+/// A bonus dropdown, grouped by dashboard section, each option with its count — the picker's
+/// Bonus filter and the set-bonus finder's By power view both choose bonuses with it.
+#[component]
+pub(crate) fn BonusSelect(
+    counts: Vec<BonusCount>,
+    selected: Option<String>,
+    placeholder: &'static str,
+    label: &'static str,
+    onchange: EventHandler<Option<String>>,
+) -> Element {
+    rsx! {
+        select {
+            class: "select-compact picker-bonus-select",
+            aria_label: "{label}",
+            value: selected.clone().unwrap_or_default(),
+            onchange: move |evt: Event<FormData>| {
+                let chosen = evt.value();
+                onchange.call((!chosen.is_empty()).then_some(chosen));
+            },
+            option { value: "", selected: selected.is_none(), "{placeholder}" }
+            for (section , rows) in bonus_groups(&counts) {
+                optgroup { key: "{section.title()}", label: "{section.title()}",
+                    for row in rows {
+                        option {
+                            key: "{row.stat.id}",
+                            value: "{row.stat.id}",
+                            selected: selected.as_deref() == Some(row.stat.id),
+                            "{bonus_label(row.stat, &counts)} ({row.count})"
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -4393,27 +4429,12 @@ fn EnhancementPickerModal(
                                         if !bonus_counts.is_empty() && !fold_bonus {
                                             div { class: "picker-filter-row",
                                                 FoldLabel { text: "Bonus", ontoggle: move |_| toggle_fold("bonus") }
-                                                select {
-                                                    class: "select-compact picker-bonus-select",
-                                                    aria_label: "Only sets with a bonus to",
-                                                    value: set_bonus().unwrap_or_default(),
-                                                    onchange: move |evt: Event<FormData>| {
-                                                        let chosen = evt.value();
-                                                        set_bonus.set((!chosen.is_empty()).then_some(chosen));
-                                                    },
-                                                    option { value: "", selected: set_bonus().is_none(), "Any bonus" }
-                                                    for (section , rows) in bonus_groups(&bonus_counts) {
-                                                        optgroup { key: "{section.title()}", label: "{section.title()}",
-                                                            for row in rows {
-                                                                option {
-                                                                    key: "{row.stat.id}",
-                                                                    value: "{row.stat.id}",
-                                                                    selected: set_bonus().as_deref() == Some(row.stat.id),
-                                                                    "{bonus_label(row.stat, &bonus_counts)} ({row.count})"
-                                                                }
-                                                            }
-                                                        }
-                                                    }
+                                                BonusSelect {
+                                                    counts: bonus_counts.clone(),
+                                                    selected: set_bonus(),
+                                                    placeholder: "Any bonus",
+                                                    label: "Only sets with a bonus to",
+                                                    onchange: move |chosen| set_bonus.set(chosen),
                                                 }
                                             }
                                         }
