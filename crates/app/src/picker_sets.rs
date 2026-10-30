@@ -33,6 +33,9 @@ pub struct SetFacets {
     /// Only sets carrying at least one proc piece. The picker also hides those sets' non-proc
     /// pieces; this list only decides which sets appear.
     pub procs_only: bool,
+    /// Only sets with a bonus to one of these tracked stat rows. `None` = off; on with nothing
+    /// tracked narrows nothing, since a filter that empties the list would read as "no set fits".
+    pub tracked_only: Option<Vec<String>>,
     pub sort: SetSort,
     /// Level-Up mode's ceiling: withhold sets the character could not craft yet. `None` = no
     /// gate. The set's own `min_level`, never a table.
@@ -88,6 +91,13 @@ impl SetFacets {
         if self.procs_only && !set.pieces.iter().any(|piece| piece.proc) {
             return false;
         }
+        if skip != Facet::Tracked {
+            if let Some(tracked) = &self.tracked_only {
+                if !tracked.is_empty() && !crate::tracked_stats::has_tracked_bonus(set, tracked) {
+                    return false;
+                }
+            }
+        }
         true
     }
 }
@@ -98,6 +108,7 @@ enum Facet {
     SetType,
     Rarity,
     Size,
+    Tracked,
     None,
 }
 
@@ -157,6 +168,25 @@ pub fn size_counts(eligible: &[(&str, &IoSet)], facets: &SetFacets) -> Vec<(usiz
     counts
 }
 
+/// How many sets the tracked-stats option would leave, given the other facets. `None` when
+/// nothing is tracked, so the button has no count to show rather than a misleading one.
+pub fn tracked_count(
+    eligible: &[(&str, &IoSet)],
+    facets: &SetFacets,
+    tracked: &[String],
+) -> Option<usize> {
+    if tracked.is_empty() {
+        return None;
+    }
+    Some(
+        eligible
+            .iter()
+            .filter(|(_, set)| facets.admits(set, Facet::Tracked))
+            .filter(|(_, set)| crate::tracked_stats::has_tracked_bonus(set, tracked))
+            .count(),
+    )
+}
+
 /// How many sets survive every facet — what an "any" button reports.
 pub fn total_offered(eligible: &[(&str, &IoSet)], facets: &SetFacets) -> usize {
     eligible
@@ -197,5 +227,68 @@ pub fn rarity_label(category: &str) -> String {
                 None => String::new(),
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use coh_data::{IoSetCatalog, PowerDatabase};
+    use std::path::PathBuf;
+
+    fn catalog() -> IoSetCatalog {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../contract/homecoming/bundle.json.gz");
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        PowerDatabase::from_gz_bytes(&bytes)
+            .expect("bundle loads")
+            .io_sets
+            .expect("catalog present")
+    }
+
+    /// The chip's count is what pressing it leaves, including alongside another facet.
+    #[test]
+    fn the_tracked_chip_counts_what_it_leaves() {
+        let catalog = catalog();
+        let eligible: Vec<(&str, &IoSet)> = catalog
+            .sets
+            .iter()
+            .map(|(id, set)| (id.as_str(), set))
+            .collect();
+        let tracked = vec!["res_energy".to_string(), "res_negative".to_string()];
+        for rarity in [None, Some("rare".to_string())] {
+            let off = SetFacets {
+                rarity: rarity.clone(),
+                ..SetFacets::default()
+            };
+            let on = SetFacets {
+                tracked_only: Some(tracked.clone()),
+                ..off.clone()
+            };
+            let count = tracked_count(&eligible, &off, &tracked).expect("something tracked");
+            let left = offered_sets(&eligible, &on, None);
+            assert_eq!(count, left.len(), "rarity {rarity:?}");
+            assert!(count > 0 && count < total_offered(&eligible, &off));
+            assert!(left
+                .iter()
+                .all(|offer| crate::tracked_stats::has_tracked_bonus(offer.set, &tracked)));
+        }
+    }
+
+    /// Switched on with nothing tracked, the option narrows nothing and has no count.
+    #[test]
+    fn the_tracked_chip_with_nothing_tracked_keeps_every_set() {
+        let catalog = catalog();
+        let eligible: Vec<(&str, &IoSet)> = catalog
+            .sets
+            .iter()
+            .map(|(id, set)| (id.as_str(), set))
+            .collect();
+        let on = SetFacets {
+            tracked_only: Some(Vec::new()),
+            ..SetFacets::default()
+        };
+        assert_eq!(total_offered(&eligible, &on), eligible.len());
+        assert_eq!(tracked_count(&eligible, &on, &[]), None);
     }
 }

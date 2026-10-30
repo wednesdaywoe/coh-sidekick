@@ -4011,6 +4011,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   box-shadow: 0 0 8px color-mix(in srgb, var(--focus-ring) 40%, transparent);
 }
 .picker-chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.picker-chip:disabled { opacity: 0.5; cursor: not-allowed; }
+.picker-chip:disabled:hover { border-color: var(--seam-raised); color: var(--text-dim); }
 .picker-chip-count { font-size: 10px; font-variant-numeric: tabular-nums; color: var(--text-faint); }
 .picker-chip.is-on .picker-chip-count { color: inherit; opacity: 0.75; }
 .picker-filter-total {

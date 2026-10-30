@@ -179,6 +179,17 @@ pub fn set_tracked_bonuses(set: &coh_data::IoSet, tracked: &[String]) -> Vec<Tra
     found.into_iter().map(|(_, _, bonus)| bonus).collect()
 }
 
+/// Whether any tier of `set` feeds a tracked row — [`set_tracked_bonuses`] without the list.
+pub fn has_tracked_bonus(set: &coh_data::IoSet, tracked: &[String]) -> bool {
+    set.bonuses.iter().any(|tier| {
+        tier.effects.iter().any(|effect| {
+            rows_for_effect(effect)
+                .iter()
+                .any(|row| tracked.iter().any(|id| id == row))
+        })
+    })
+}
+
 fn persist(tracked: &[String]) {
     let Ok(json) = serde_json::to_string(tracked) else {
         return;

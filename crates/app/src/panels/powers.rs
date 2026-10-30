@@ -3729,6 +3729,8 @@ fn EnhancementPickerModal(
     let mut set_size = use_signal(|| None::<usize>);
     // Only sets carrying a proc piece.
     let mut procs_only = use_signal(|| false);
+    // Only sets with a bonus to a tracked stat.
+    let mut tracked_only = use_signal(|| false);
     let mut set_sort = use_signal(crate::picker_sets::SetSort::default);
     // The set to scroll to on open — set only when this open is a CHANGE to a piece already in
     // the slot, where the thing being changed is the best guess at what the user is looking for.
@@ -4143,11 +4145,13 @@ fn EnhancementPickerModal(
                             Some(io_catalog) => {
                                 let eligible = io_catalog
                                     .sets_for_power(power_def.allowed_set_categories.as_deref().unwrap_or(&[]));
+                                let tracked_ids = tracked_stats.0.read().clone();
                                 let facets = crate::picker_sets::SetFacets {
                                     set_type: set_category(),
                                     rarity: set_rarity(),
                                     size: set_size(),
                                     procs_only: procs_only(),
+                                    tracked_only: tracked_only().then(|| tracked_ids.clone()),
                                     sort: set_sort(),
                                     // Level-up mode withholds sets the character couldn't craft
                                     // yet — the set's own `min_level`, not a table.
@@ -4160,6 +4164,8 @@ fn EnhancementPickerModal(
                                 let rarity_counts = crate::picker_sets::rarity_counts(&eligible, &facets);
                                 let size_counts = crate::picker_sets::size_counts(&eligible, &facets);
                                 let total = crate::picker_sets::total_offered(&eligible, &facets);
+                                let tracked_count =
+                                    crate::picker_sets::tracked_count(&eligible, &facets, &tracked_ids);
                                 // The scope the build-wide single-copy rule is asked in. A Compare
                                 // row is one power's hypothetical, so it is graded against its own
                                 // slots alone (`coh_data::slotting_rules`).
@@ -4184,7 +4190,8 @@ fn EnhancementPickerModal(
                                 let any_filter = set_category().is_some()
                                     || set_rarity().is_some()
                                     || set_size().is_some()
-                                    || procs_only();
+                                    || procs_only()
+                                    || tracked_only();
                                 rsx! {
                                     // Each chip is a toggle: pressing the lit one clears its row,
                                     // so no row needs an "any" chip of its own.
@@ -4279,6 +4286,27 @@ fn EnhancementPickerModal(
                                                     },
                                                     "Procs only"
                                                 }
+                                                // With nothing tracked there is nothing to match,
+                                                // so the chip says so instead of emptying the list.
+                                                // Lit stays clickable, so it can be switched off.
+                                                button {
+                                                    class: if tracked_only() { "picker-chip is-on" } else { "picker-chip" },
+                                                    aria_pressed: "{tracked_only()}",
+                                                    disabled: tracked_count.is_none() && !tracked_only(),
+                                                    title: if tracked_count.is_some() {
+                                                        "Only sets with a bonus to a stat you track"
+                                                    } else {
+                                                        "Track a stat in a stats panel first; this then shows only the sets with a bonus to it"
+                                                    },
+                                                    onclick: move |_| {
+                                                        let next = !*tracked_only.peek();
+                                                        tracked_only.set(next);
+                                                    },
+                                                    "Tracked stats"
+                                                    if let Some(count) = tracked_count {
+                                                        span { class: "picker-chip-count", "{count}" }
+                                                    }
+                                                }
                                             }
                                             // Sort orders the list rather than narrowing it, so it
                                             // is one choice of two and never off.
@@ -4306,6 +4334,7 @@ fn EnhancementPickerModal(
                                                         set_rarity.set(None);
                                                         set_size.set(None);
                                                         procs_only.set(false);
+                                                        tracked_only.set(false);
                                                     },
                                                     "Clear filters"
                                                 }
