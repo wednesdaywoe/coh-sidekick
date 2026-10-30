@@ -545,6 +545,11 @@
       "id": "rule-of-five-skip-mez",
       "date": "2026-10-29",
       "preview": "The Rule of 5 warning can now leave out Mez and Repel Resistance. \"Don't warn ab"
+    },
+    {
+      "id": "shopping-list-persistance",
+      "date": "2026-10-29",
+      "preview": "Your incarnate component and enhancement shopping list progress should now store"
     }
   ]
 }

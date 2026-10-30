@@ -1,8 +1,10 @@
 [
+
   {
   "date": "2026-10-29",
   "items": [
-    { "id": "rule-of-five-skip-mez", "type": "feat", "message": "The Rule of 5 warning can now leave out Mez and Repel Resistance. \"Don't warn about Mez or Repel Resistance\" in Options." }
+    { "id": "shopping-list-persistance", "type": "fix", "message": "Your incarnate component and enhancement shopping list progress should now store with both your session and your build." },
+    { "id": "rule-of-five-skip-mez", "type": "fix", "message": "The Rule of 5 warning can now leave out Mez and Repel Resistance. \"Don't warn about Mez or Repel Resistance\" in Options." }
   ]
   },
   {
