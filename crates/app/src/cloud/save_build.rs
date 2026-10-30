@@ -188,15 +188,30 @@ pub fn sent_visibility(
     }
 }
 
-/// Encode the working build the way it travels, and hand back the parsed envelope. A shared row
-/// is other people's to open, so the owner's shopping progress stays out of it.
+/// Encode the working build the way it travels, and hand back the parsed envelope. The owner's
+/// shopping progress goes only on a row only they can read ([`keeps_progress`]); the server
+/// strips it from any row that is or becomes readable by others, so a stale guess here is safe.
 ///
 /// Parsed rather than passed as text because `build_json` is a JSON *value* in the payload, not a
 /// string containing JSON — a stringified build would store as a quoted blob and every reader of
 /// the column, this app's included, would fail to find `version` in it.
-pub fn build_envelope(build: &CharacterState, database: &Db) -> Result<serde_json::Value, String> {
-    let text = coh_data::skif::encode_shared(build, database).map_err(|e| e.to_string())?;
+pub fn build_envelope(
+    build: &CharacterState,
+    database: &Db,
+    keep_progress: bool,
+) -> Result<serde_json::Value, String> {
+    let text = match keep_progress {
+        true => coh_data::skif::encode(build, database),
+        false => coh_data::skif::encode_shared(build, database),
+    }
+    .map_err(|e| e.to_string())?;
     serde_json::from_str(&text).map_err(|e| e.to_string())
+}
+
+/// Whether a save chosen at this visibility carries the owner's shopping progress: only a
+/// private row, which nobody else can open.
+pub fn keeps_progress(chosen: BuildVisibility) -> bool {
+    chosen == BuildVisibility::Private
 }
 
 /// Assemble the save, given everything already resolved.
@@ -406,7 +421,8 @@ pub async fn quick_share(
             body: String::new(),
         }));
     }
-    let envelope = build_envelope(build, database).map_err(|reason| {
+    // A short link is unlisted: anyone holding it can open the build.
+    let envelope = build_envelope(build, database, false).map_err(|reason| {
         ShareError::Cloud(super::CloudError::Refused {
             status: 0,
             message: format!("this build could not be encoded: {reason}"),
@@ -673,7 +689,8 @@ fn SaveBuildBody(database: Option<Db>) -> Element {
                 refusal.set(None);
                 let build = session.build.peek().clone();
                 let computed = totals.peek().clone();
-                let envelope = match build_envelope(&build, &database) {
+                let envelope = match build_envelope(&build, &database, keeps_progress(visibility()))
+                {
                     Ok(envelope) => envelope,
                     Err(reason) => {
                         refusal.set(Some(format!("This build could not be encoded: {reason}")));
@@ -947,5 +964,34 @@ mod tests {
         assert_eq!(chips, ["DPS", "Complete"]);
         assert_eq!(typed, "my farm");
         assert_eq!(combine_tags(&chips, &typed).len(), saved.len());
+    }
+
+    // Only a private row is the owner's alone, so only it carries what they have bought.
+    #[test]
+    fn only_a_private_save_carries_the_shopping_progress() {
+        let path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../contract/homecoming/bundle.json.gz");
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        let database = Db(std::sync::Arc::new(
+            coh_data::PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads"),
+        ));
+        let mut build = CharacterState::empty(coh_data::DatasetId::Homecoming);
+        build
+            .shopping_acquired
+            .insert("S_DetailedReports".into(), 2);
+
+        for visibility in [
+            BuildVisibility::Private,
+            BuildVisibility::Unlisted,
+            BuildVisibility::Public,
+        ] {
+            let envelope =
+                build_envelope(&build, &database, keeps_progress(visibility)).expect("encodes");
+            assert_eq!(
+                envelope["build"].get("progress").is_some(),
+                visibility == BuildVisibility::Private,
+                "{visibility:?}"
+            );
+        }
     }
 }
