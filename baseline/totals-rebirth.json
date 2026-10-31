@@ -3,8 +3,8 @@
   "dataset": "rebirth",
   "inputs": {
     "bundle": "contract/rebirth/bundle.json.gz",
-    "bundleFnv1a64": "0af9e0e0d4d81e8a",
-    "bundleBytes": 1692181,
+    "bundleFnv1a64": "5809f67f3150bd77",
+    "bundleBytes": 1699403,
     "builds": "fixtures/totals/rebirth/synthetic.jsonl",
     "buildsFnv1a64": "b26fb958417481c4",
     "buildsBytes": 124525

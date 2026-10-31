@@ -4,8113 +4,9465 @@
    "",
    "Acc",
    "Magic_Accuracy",
-   "origin"
+   "origin",
+   "Accuracy"
   ],
   [
    "",
    "IntRdx",
    "Magic_Interrupt",
-   "origin"
+   "origin",
+   "Interrupt Reduction"
   ],
   [
    "",
    "Conf",
    "Magic_Confuse",
-   "origin"
+   "origin",
+   "Confuse Duration"
   ],
   [
    "",
    "Dmg",
    "Magic_Damage",
-   "origin"
+   "origin",
+   "Damage Increase"
   ],
   [
    "",
    "DefBuff",
    "Magic_Defense_Buff",
-   "origin"
+   "origin",
+   "Defense Buff"
   ],
   [
    "",
    "DefDeb",
    "Magic_Defense_DeBuff",
-   "origin"
+   "origin",
+   "Defense Debuff"
   ],
   [
    "",
    "EndMod",
    "Magic_Recovery",
-   "origin"
+   "origin",
+   "Endurance Modification"
   ],
   [
    "",
    "EndRdx",
    "Magic_Endurance_Discount",
-   "origin"
+   "origin",
+   "Endurance Reduction"
   ],
   [
    "",
    "Fear",
    "Magic_Fear",
-   "origin"
+   "origin",
+   "Fear Duration"
   ],
   [
    "",
    "Flight",
    "Magic_Fly",
-   "origin"
+   "origin",
+   "Flight Speed"
   ],
   [
    "",
    "Heal",
    "Magic_Heal",
-   "origin"
+   "origin",
+   "Healing"
   ],
   [
    "",
    "Hold",
    "Magic_Hold",
-   "origin"
+   "origin",
+   "Hold Duration"
   ],
   [
    "",
    "Immob",
    "Magic_Immobilize",
-   "origin"
+   "origin",
+   "Immobilisation Duration"
   ],
   [
    "",
    "Intan",
    "Magic_Intangible",
-   "origin"
+   "origin",
+   "Intangibility Duration"
   ],
   [
    "",
    "Jump",
    "Magic_Jump",
-   "origin"
+   "origin",
+   "Jumping"
   ],
   [
    "",
    "KBDist",
    "Magic_Knockback",
-   "origin"
+   "origin",
+   "Knockback Distance"
   ],
   [
    "",
    "Range",
    "Magic_Range",
-   "origin"
+   "origin",
+   "Range"
   ],
   [
    "",
    "RechRdx",
    "Magic_Recharge",
-   "origin"
+   "origin",
+   "Recharge Reduction"
   ],
   [
    "",
    "ResDam",
    "Magic_Res_Damage",
-   "origin"
+   "origin",
+   "Resist Damage"
   ],
   [
    "",
    "Run",
    "Magic_Run",
-   "origin"
+   "origin",
+   "Run Speed"
   ],
   [
    "",
    "Sleep",
    "Magic_Sleep",
-   "origin"
+   "origin",
+   "Sleep Duration"
   ],
   [
    "",
    "Slow",
    "Magic_Snare",
-   "origin"
+   "origin",
+   "Slow"
   ],
   [
    "",
    "Dsrnt",
    "Magic_Stun",
-   "origin"
+   "origin",
+   "Disorient Duration"
   ],
   [
    "",
    "Taunt",
    "Magic_Taunt",
-   "origin"
+   "origin",
+   "Taunt Duration"
   ],
   [
    "",
    "ToHit",
    "Magic_ToHit_Buff",
-   "origin"
+   "origin",
+   "To Hit Buff"
   ],
   [
    "",
    "ToHitDeb",
    "Magic_ToHit_DeBuff",
-   "origin"
+   "origin",
+   "To Hit Debuff"
   ],
   [
    "",
    "Acc",
    "Crafted_Accuracy",
-   "generic"
+   "generic",
+   "Invention: Accuracy"
   ],
   [
    "",
    "IntRdx",
    "Crafted_Interrupt",
-   "generic"
+   "generic",
+   "Invention: Interrupt Reduction"
   ],
   [
    "",
    "Conf",
    "Crafted_Confuse",
-   "generic"
+   "generic",
+   "Invention: Confuse Duration"
   ],
   [
    "",
    "Dmg",
    "Crafted_Damage",
-   "generic"
+   "generic",
+   "Invention: Damage Increase"
   ],
   [
    "",
    "DefBuff",
    "Crafted_Defense_Buff",
-   "generic"
+   "generic",
+   "Invention: Defense Buff"
   ],
   [
    "",
    "DefDeb",
    "Crafted_Defense_DeBuff",
-   "generic"
+   "generic",
+   "Invention: Defense Debuff"
   ],
   [
    "",
    "EndMod",
    "Crafted_Recovery",
-   "generic"
+   "generic",
+   "Invention: Endurance Modification"
   ],
   [
    "",
    "EndRdx",
    "Crafted_Endurance_Discount",
-   "generic"
+   "generic",
+   "Invention: Endurance Reduction"
   ],
   [
    "",
    "Fear",
    "Crafted_Fear",
-   "generic"
+   "generic",
+   "Invention: Fear Duration"
   ],
   [
    "",
    "Flight",
    "Crafted_Fly",
-   "generic"
+   "generic",
+   "Invention: Flight Speed"
   ],
   [
    "",
    "Heal",
    "Crafted_Heal",
-   "generic"
+   "generic",
+   "Invention: Healing"
   ],
   [
    "",
    "Hold",
    "Crafted_Hold",
-   "generic"
+   "generic",
+   "Invention: Hold Duration"
   ],
   [
    "",
    "Immob",
    "Crafted_Immobilize",
-   "generic"
+   "generic",
+   "Invention: Immobilisation Duration"
   ],
   [
    "",
    "Intan",
    "Crafted_Intangible",
-   "generic"
+   "generic",
+   "Invention: Intangibility Duration"
   ],
   [
    "",
    "Jump",
    "Crafted_Jump",
-   "generic"
+   "generic",
+   "Invention: Jumping"
   ],
   [
    "",
    "KBDist",
    "Crafted_Knockback",
-   "generic"
+   "generic",
+   "Invention: Knockback Distance"
   ],
   [
    "",
    "Range",
    "Crafted_Range",
-   "generic"
+   "generic",
+   "Invention: Range"
   ],
   [
    "",
    "RechRdx",
    "Crafted_Recharge",
-   "generic"
+   "generic",
+   "Invention: Recharge Reduction"
   ],
   [
    "",
    "ResDam",
    "Crafted_Res_Damage",
-   "generic"
+   "generic",
+   "Invention: Resist Damage"
   ],
   [
    "",
    "Run",
    "Crafted_Run",
-   "generic"
+   "generic",
+   "Invention: Run Speed"
   ],
   [
    "",
    "Sleep",
    "Crafted_Sleep",
-   "generic"
+   "generic",
+   "Invention: Sleep Duration"
   ],
   [
    "",
    "Slow",
    "Crafted_Snare",
-   "generic"
+   "generic",
+   "Invention: Slow"
   ],
   [
    "",
    "Dsrnt",
    "Crafted_Stun",
-   "generic"
+   "generic",
+   "Invention: Disorient Duration"
   ],
   [
    "",
    "Taunt",
    "Crafted_Taunt",
-   "generic"
+   "generic",
+   "Invention: Taunt Duration"
   ],
   [
    "",
    "ToHit",
    "Crafted_ToHit_Buff",
-   "generic"
+   "generic",
+   "Invention: To Hit Buff"
   ],
   [
    "",
    "ToHitDeb",
    "Crafted_ToHit_DeBuff",
-   "generic"
+   "generic",
+   "Invention: To Hit Debuff"
   ],
   [
    "",
    "Centri",
    "Hamidon_Damage_Range",
-   "special"
+   "special",
+   "Centriole Exposure"
   ],
   [
    "",
    "Cyto",
    "Hamidon_Buff_Endurance_Discount",
-   "special"
+   "special",
+   "Cytoskeleton Exposure"
   ],
   [
    "",
    "Endo",
    "Hamidon_Accuracy_Mez",
-   "special"
+   "special",
+   "Endoplasm Exposure"
   ],
   [
    "",
    "Enzym",
    "Hamidon_DeBuff_Endurance_Discount",
-   "special"
+   "special",
+   "Enzyme Exposure"
   ],
   [
    "",
    "Golgi",
    "Hamidon_Heal_Endurance_Discount",
-   "special"
+   "special",
+   "Golgi Exposure"
   ],
   [
    "",
    "Lyso",
    "Hamidon_DeBuff_Accuracy",
-   "special"
+   "special",
+   "Lysosome Exposure"
   ],
   [
    "",
    "Membr",
    "Hamidon_Buff_Recharge",
-   "special"
+   "special",
+   "Membrane Exposure"
   ],
   [
    "",
    "Micro",
    "Hamidon_Travel_Endurance_Discount",
-   "special"
+   "special",
+   "Microfilament Exposure"
   ],
   [
    "",
    "Nucle",
    "Hamidon_Damage_Accuracy",
-   "special"
+   "special",
+   "Nucleolus Exposure"
   ],
   [
    "",
    "Perox",
    "Hamidon_Damage_Mez",
-   "special"
+   "special",
+   "Peroxisome Exposure"
   ],
   [
    "",
    "Ribo",
    "Hamidon_Res_Damage_Endurance_Discount",
-   "special"
+   "special",
+   "Ribosome Exposure"
   ],
   [
    "Bns",
    "Acc/Dmg",
    "Crafted_Bonesnap_A",
-   "set"
+   "set",
+   "Bonesnap: Accuracy/Damage"
   ],
   [
    "Bns",
    "Dmg/EndRdx",
    "Crafted_Bonesnap_B",
-   "set"
+   "set",
+   "Bonesnap: Damage/Endurance"
   ],
   [
    "Bns",
    "Acc/Rchg",
    "Crafted_Bonesnap_C",
-   "set"
+   "set",
+   "Bonesnap: Accuracy/Recharge"
   ],
   [
    "PlvFst",
    "Acc/Dmg",
    "Crafted_Pulverizing_Fisticuffs_A",
-   "set"
+   "set",
+   "Pulverizing Fisticuffs: Accuracy/Damage"
   ],
   [
    "PlvFst",
    "Acc/Dmg/Rchg",
    "Crafted_Pulverizing_Fisticuffs_B",
-   "set"
+   "set",
+   "Pulverizing Fisticuffs: Accuracy/Damage/Recharge"
   ],
   [
    "PlvFst",
    "Acc/Dmg/EndRdx/Rchg",
    "Crafted_Pulverizing_Fisticuffs_C",
-   "set"
+   "set",
+   "Pulverizing Fisticuffs: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "BrsBlo",
    "Acc/Dmg",
    "Crafted_Bruising_Blow_A",
-   "set"
+   "set",
+   "Bruising Blow: Accuracy/Damage"
   ],
   [
    "BrsBlo",
    "Dmg/EndRdx",
    "Crafted_Bruising_Blow_B",
-   "set"
+   "set",
+   "Bruising Blow: Damage/Endurance"
   ],
   [
    "BrsBlo",
    "Dmg/Rchg",
    "Crafted_Bruising_Blow_C",
-   "set"
+   "set",
+   "Bruising Blow: Damage/Recharge"
   ],
   [
    "PndSlg",
    "Acc/Dmg",
    "Crafted_Pounding_Slugfest_A",
-   "set"
+   "set",
+   "Pounding Slugfest: Accuracy/Damage"
   ],
   [
    "PndSlg",
    "Dmg/EndRdx",
    "Crafted_Pounding_Slugfest_B",
-   "set"
+   "set",
+   "Pounding Slugfest: Damage/Endurance"
   ],
   [
    "PndSlg",
    "Dmg/Rchg",
    "Crafted_Pounding_Slugfest_C",
-   "set"
+   "set",
+   "Pounding Slugfest: Damage/Recharge"
   ],
   [
    "PndSlg",
    "Stun%",
    "Crafted_Pounding_Slugfest_D",
-   "set"
+   "set",
+   "Pounding Slugfest: Disorient Bonus"
   ],
   [
    "SmsHym",
    "Acc/Dmg",
    "Crafted_Smashing_Haymaker_A",
-   "set"
+   "set",
+   "Smashing Haymaker: Accuracy/Damage"
   ],
   [
    "SmsHym",
    "Dmg/EndRdx",
    "Crafted_Smashing_Haymaker_B",
-   "set"
+   "set",
+   "Smashing Haymaker: Damage/Endurance"
   ],
   [
    "SmsHym",
    "Dmg/Rchg",
    "Crafted_Smashing_Haymaker_C",
-   "set"
+   "set",
+   "Smashing Haymaker: Damage/Recharge"
   ],
   [
    "SmsHym",
    "Dmg/EndRdx/Rchg",
    "Crafted_Smashing_Haymaker_D",
-   "set"
+   "set",
+   "Smashing Haymaker: Damage/Endurance/Recharge"
   ],
   [
    "KntCmb",
    "Acc/Dmg",
    "Crafted_Kinetic_Combat_A",
-   "set"
+   "set",
+   "Kinetic Combat: Accuracy/Damage"
   ],
   [
    "KntCmb",
    "Dmg/EndRdx",
    "Crafted_Kinetic_Combat_B",
-   "set"
+   "set",
+   "Kinetic Combat: Damage/Endurance"
   ],
   [
    "KntCmb",
    "Dmg/Rchg",
    "Crafted_Kinetic_Combat_C",
-   "set"
+   "set",
+   "Kinetic Combat: Damage/Recharge"
   ],
   [
    "KntCmb",
    "Dmg/EndRdx/Rchg",
    "Crafted_Kinetic_Combat_D",
-   "set"
+   "set",
+   "Kinetic Combat: Damage/Endurance/Recharge"
   ],
   [
    "KntCmb",
    "Knock%",
    "Crafted_Kinetic_Combat_E",
-   "set"
+   "set",
+   "Kinetic Combat: Knockdown Bonus"
   ],
   [
    "FcsSmt",
    "Acc/Dmg",
    "Crafted_Focused_Smite_A",
-   "set"
+   "set",
+   "Focused Smite: Accuracy/Damage"
   ],
   [
    "FcsSmt",
    "Dmg/EndRdx",
    "Crafted_Focused_Smite_B",
-   "set"
+   "set",
+   "Focused Smite: Damage/Endurance"
   ],
   [
    "FcsSmt",
    "Dmg/Rchg",
    "Crafted_Focused_Smite_C",
-   "set"
+   "set",
+   "Focused Smite: Damage/Recharge"
   ],
   [
    "FcsSmt",
    "Acc/EndRdx/Rchg",
    "Crafted_Focused_Smite_D",
-   "set"
+   "set",
+   "Focused Smite: Accuracy/Endurance/Recharge"
   ],
   [
    "FcsSmt",
    "Acc/Dmg/Rchg",
    "Crafted_Focused_Smite_E",
-   "set"
+   "set",
+   "Focused Smite: Accuracy/Damage/Recharge"
   ],
   [
    "TchofDth",
    "Acc/Dmg",
    "Crafted_Touch_of_Death_A",
-   "set"
+   "set",
+   "Touch of Death: Accuracy/Damage"
   ],
   [
    "TchofDth",
    "Dmg/EndRdx",
    "Crafted_Touch_of_Death_B",
-   "set"
+   "set",
+   "Touch of Death: Damage/Endurance"
   ],
   [
    "TchofDth",
    "Dmg/Rchg",
    "Crafted_Touch_of_Death_C",
-   "set"
+   "set",
+   "Touch of Death: Damage/Recharge"
   ],
   [
    "TchofDth",
    "Acc/Dmg/EndRdx",
    "Crafted_Touch_of_Death_D",
-   "set"
+   "set",
+   "Touch of Death: Accuracy/Damage/Endurance"
   ],
   [
    "TchofDth",
    "Dmg/EndRdx/Rchg",
    "Crafted_Touch_of_Death_E",
-   "set"
+   "set",
+   "Touch of Death: Damage/Endurance/Recharge"
   ],
   [
    "TchofDth",
    "Dam%",
    "Crafted_Touch_of_Death_F",
-   "set"
+   "set",
+   "Touch of Death: Chance of Damage(Negative)"
   ],
   [
    "CrsImp",
    "Acc/Dmg",
    "Crafted_Crushing_Impact_A",
-   "set"
+   "set",
+   "Crushing Impact: Accuracy/Damage"
   ],
   [
    "CrsImp",
    "Dmg/EndRdx",
    "Crafted_Crushing_Impact_B",
-   "set"
+   "set",
+   "Crushing Impact: Damage/Endurance"
   ],
   [
    "CrsImp",
    "Dmg/Rchg",
    "Crafted_Crushing_Impact_C",
-   "set"
+   "set",
+   "Crushing Impact: Damage/Recharge"
   ],
   [
    "CrsImp",
    "Acc/Dmg/Rchg",
    "Crafted_Crushing_Impact_D",
-   "set"
+   "set",
+   "Crushing Impact: Accuracy/Damage/Recharge"
   ],
   [
    "CrsImp",
    "Acc/Dmg/EndRdx",
    "Crafted_Crushing_Impact_E",
-   "set"
+   "set",
+   "Crushing Impact: Accuracy/Damage/Endurance"
   ],
   [
    "CrsImp",
    "Dmg/EndRdx/Rchg",
    "Crafted_Crushing_Impact_F",
-   "set"
+   "set",
+   "Crushing Impact: Damage/Endurance/Recharge"
   ],
   [
    "Mk'Bit",
    "Acc/Dmg",
    "Crafted_Makos_Bite_A",
-   "set"
+   "set",
+   "Mako's Bite: Accuracy/Damage"
   ],
   [
    "Mk'Bit",
    "Dmg/EndRdx",
    "Crafted_Makos_Bite_B",
-   "set"
+   "set",
+   "Mako's Bite: Damage/Endurance"
   ],
   [
    "Mk'Bit",
    "Dmg/Rchg",
    "Crafted_Makos_Bite_C",
-   "set"
+   "set",
+   "Mako's Bite: Damage/Recharge"
   ],
   [
    "Mk'Bit",
    "Acc/EndRdx/Rchg",
    "Crafted_Makos_Bite_D",
-   "set"
+   "set",
+   "Mako's Bite: Accuracy/Endurance/Recharge"
   ],
   [
    "Mk'Bit",
    "Acc/Dmg/EndRdx/Rchg",
    "Crafted_Makos_Bite_E",
-   "set"
+   "set",
+   "Mako's Bite: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "Mk'Bit",
    "Dam%",
    "Crafted_Makos_Bite_F",
-   "set"
+   "set",
+   "Mako's Bite: Chance of Damage(Lethal)"
   ],
   [
    "ClvBlo",
    "Acc/Dmg",
    "Crafted_Cleaving_Blow_A",
-   "set"
+   "set",
+   "Cleaving Blow: Accuracy/Damage"
   ],
   [
    "ClvBlo",
    "Dmg/EndRdx",
    "Crafted_Cleaving_Blow_B",
-   "set"
+   "set",
+   "Cleaving Blow: Damage/Endurance"
   ],
   [
    "ClvBlo",
    "Dmg/Rchg",
    "Crafted_Cleaving_Blow_C",
-   "set"
+   "set",
+   "Cleaving Blow: Damage/Recharge"
   ],
   [
    "ClvBlo",
    "Acc/Rchg",
    "Crafted_Cleaving_Blow_D",
-   "set"
+   "set",
+   "Cleaving Blow: Accuracy/Recharge"
   ],
   [
    "Mlt",
    "Acc/Dmg",
    "Crafted_Multi_Strike_A",
-   "set"
+   "set",
+   "Multi-Strike: Accuracy/Damage"
   ],
   [
    "Mlt",
    "Dmg/EndRdx",
    "Crafted_Multi_Strike_B",
-   "set"
+   "set",
+   "Multi-Strike: Damage/Endurance"
   ],
   [
    "Mlt",
    "Dmg/Rchg",
    "Crafted_Multi_Strike_C",
-   "set"
+   "set",
+   "Multi-Strike: Damage/Recharge"
   ],
   [
    "Mlt",
    "Acc/EndRdx",
    "Crafted_Multi_Strike_D",
-   "set"
+   "set",
+   "Multi-Strike: Accuracy/Endurance"
   ],
   [
    "Mlt",
    "Acc/Dmg/EndRdx",
    "Crafted_Multi_Strike_E",
-   "set"
+   "set",
+   "Multi-Strike: Accuracy/Damage/Endurance"
   ],
   [
    "Mlt",
    "Dmg/EndRdx/Rchg",
    "Crafted_Multi_Strike_F",
-   "set"
+   "set",
+   "Multi-Strike: Damage/Endurance/Recharge"
   ],
   [
    "ScrDrv",
    "Acc/Dmg",
    "Crafted_Sciroccos_Dervish_A",
-   "set"
+   "set",
+   "Scirocco's Dervish: Accuracy/Damage"
   ],
   [
    "ScrDrv",
    "Dmg/EndRdx",
    "Crafted_Sciroccos_Dervish_B",
-   "set"
+   "set",
+   "Scirocco's Dervish: Damage/Endurance"
   ],
   [
    "ScrDrv",
    "Dmg/Rchg",
    "Crafted_Sciroccos_Dervish_C",
-   "set"
+   "set",
+   "Scirocco's Dervish: Damage/Recharge"
   ],
   [
    "ScrDrv",
    "Acc/Rchg",
    "Crafted_Sciroccos_Dervish_D",
-   "set"
+   "set",
+   "Scirocco's Dervish: Accuracy/Recharge"
   ],
   [
    "ScrDrv",
    "Acc/Dmg/EndRdx",
    "Crafted_Sciroccos_Dervish_E",
-   "set"
+   "set",
+   "Scirocco's Dervish: Accuracy/Damage/Endurance"
   ],
   [
    "ScrDrv",
    "Dam%",
    "Crafted_Sciroccos_Dervish_F",
-   "set"
+   "set",
+   "Scirocco's Dervish: Chance of Damage(Lethal)"
   ],
   [
    "FarStr",
    "Dmg/Rng",
    "Crafted_Far_Strike_A",
-   "set"
+   "set",
+   "Far Strike: Damage/Range"
   ],
   [
    "FarStr",
    "Dmg/Rchg",
    "Crafted_Far_Strike_B",
-   "set"
+   "set",
+   "Far Strike: Damage/Recharge"
   ],
   [
    "FarStr",
    "Acc/EndRdx",
    "Crafted_Far_Strike_C",
-   "set"
+   "set",
+   "Far Strike: Accuracy/Endurance"
   ],
   [
    "Slv",
    "Acc/Dmg",
    "Crafted_Salvo_A",
-   "set"
+   "set",
+   "Salvo: Accuracy/Damage"
   ],
   [
    "Slv",
    "Dmg/EndRdx/Rchg",
    "Crafted_Salvo_B",
-   "set"
+   "set",
+   "Salvo: Damage/Endurance/Recharge"
   ],
   [
    "Slv",
    "Acc/Dmg/EndRdx/Rng",
    "Crafted_Salvo_C",
-   "set"
+   "set",
+   "Salvo: Accuracy/Damage/Endurance/Range"
   ],
   [
    "VllFir",
    "Acc/Dmg",
    "Crafted_Volley_Fire_A",
-   "set"
+   "set",
+   "Volley Fire: Accuracy/Damage"
   ],
   [
    "VllFir",
    "Dmg/EndRdx",
    "Crafted_Volley_Fire_B",
-   "set"
+   "set",
+   "Volley Fire: Damage/Endurance"
   ],
   [
    "VllFir",
    "Dmg/Rchg",
    "Crafted_Volley_Fire_C",
-   "set"
+   "set",
+   "Volley Fire: Damage/Recharge"
   ],
   [
    "Tmp",
    "Acc/Dmg",
    "Crafted_Tempest_A",
-   "set"
+   "set",
+   "Tempest: Accuracy/Damage"
   ],
   [
    "Tmp",
    "Dmg/EndRdx",
    "Crafted_Tempest_B",
-   "set"
+   "set",
+   "Tempest: Damage/Endurance"
   ],
   [
    "Tmp",
    "Dmg/Rchg",
    "Crafted_Tempest_C",
-   "set"
+   "set",
+   "Tempest: Damage/Recharge"
   ],
   [
    "Tmp",
    "EndDrn%",
    "Crafted_Tempest_D",
-   "set"
+   "set",
+   "Tempest: Chance of End Drain"
   ],
   [
    "MlsFur",
    "Acc/Dmg",
    "Crafted_Maelstroms_Fury_A",
-   "set"
+   "set",
+   "Maelstrom's Fury: Accuracy/Damage"
   ],
   [
    "MlsFur",
    "Dmg/EndRdx",
    "Crafted_Maelstroms_Fury_B",
-   "set"
+   "set",
+   "Maelstrom's Fury: Damage/Endurance"
   ],
   [
    "MlsFur",
    "Dmg/Rchg",
    "Crafted_Maelstroms_Fury_C",
-   "set"
+   "set",
+   "Maelstrom's Fury: Damage/Recharge"
   ],
   [
    "MlsFur",
    "Dmg/EndRdx/Rchg",
    "Crafted_Maelstroms_Fury_D",
-   "set"
+   "set",
+   "Maelstrom's Fury: Damage/Endurance/Recharge"
   ],
   [
    "EntChs",
    "Acc/Dmg",
    "Crafted_Entropic_Chaos_A",
-   "set"
+   "set",
+   "Entropic Chaos: Accuracy/Damage"
   ],
   [
    "EntChs",
    "Dmg/EndRdx",
    "Crafted_Entropic_Chaos_B",
-   "set"
+   "set",
+   "Entropic Chaos: Damage/Endurance"
   ],
   [
    "EntChs",
    "Dmg/Rchg",
    "Crafted_Entropic_Chaos_C",
-   "set"
+   "set",
+   "Entropic Chaos: Damage/Recharge"
   ],
   [
    "EntChs",
    "Dmg/EndRdx/Rchg",
    "Crafted_Entropic_Chaos_D",
-   "set"
+   "set",
+   "Entropic Chaos: Damage/Endurance/Recharge"
   ],
   [
    "EntChs",
    "Heal%",
    "Crafted_Entropic_Chaos_E",
-   "set"
+   "set",
+   "Entropic Chaos: Chance of Heal Self"
   ],
   [
    "Rui",
    "Acc/Dmg",
    "Crafted_Ruin_A",
-   "set"
+   "set",
+   "Ruin: Accuracy/Damage"
   ],
   [
    "Rui",
    "Dmg/EndRdx",
    "Crafted_Ruin_B",
-   "set"
+   "set",
+   "Ruin: Damage/Endurance"
   ],
   [
    "Rui",
    "Dmg/Rchg",
    "Crafted_Ruin_C",
-   "set"
+   "set",
+   "Ruin: Damage/Recharge"
   ],
   [
    "Rui",
    "Acc/EndRdx/Rchg",
    "Crafted_Ruin_D",
-   "set"
+   "set",
+   "Ruin: Accuracy/Endurance/Recharge"
   ],
   [
    "Rui",
    "Acc/Dmg/Rchg",
    "Crafted_Ruin_E",
-   "set"
+   "set",
+   "Ruin: Accuracy/Damage/Recharge"
   ],
   [
    "Dcm",
    "Acc/Dmg",
    "Crafted_Decimation_A",
-   "set"
+   "set",
+   "Decimation: Accuracy/Damage"
   ],
   [
    "Dcm",
    "Dmg/EndRdx",
    "Crafted_Decimation_B",
-   "set"
+   "set",
+   "Decimation: Damage/Endurance"
   ],
   [
    "Dcm",
    "Dmg/Rchg",
    "Crafted_Decimation_C",
-   "set"
+   "set",
+   "Decimation: Damage/Recharge"
   ],
   [
    "Dcm",
    "Acc/EndRdx/Rchg",
    "Crafted_Decimation_D",
-   "set"
+   "set",
+   "Decimation: Accuracy/Endurance/Recharge"
   ],
   [
    "Dcm",
    "Acc/Dmg/Rchg",
    "Crafted_Decimation_E",
-   "set"
+   "set",
+   "Decimation: Accuracy/Damage/Recharge"
   ],
   [
    "Dcm",
    "Build%",
    "Crafted_Decimation_F",
-   "set"
+   "set",
+   "Decimation: Chance of Build Up"
   ],
   [
    "Thn",
    "Acc/Dmg",
    "Crafted_Thunderstrike_A",
-   "set"
+   "set",
+   "Thunderstrike: Accuracy/Damage"
   ],
   [
    "Thn",
    "Dmg/EndRdx",
    "Crafted_Thunderstrike_B",
-   "set"
+   "set",
+   "Thunderstrike: Damage/Endurance"
   ],
   [
    "Thn",
    "Dmg/Rchg",
    "Crafted_Thunderstrike_C",
-   "set"
+   "set",
+   "Thunderstrike: Damage/Recharge"
   ],
   [
    "Thn",
    "Acc/Dmg/Rchg",
    "Crafted_Thunderstrike_D",
-   "set"
+   "set",
+   "Thunderstrike: Accuracy/Damage/Recharge"
   ],
   [
    "Thn",
    "Acc/Dmg/EndRdx",
    "Crafted_Thunderstrike_E",
-   "set"
+   "set",
+   "Thunderstrike: Accuracy/Damage/Endurance"
   ],
   [
    "Thn",
    "Dmg/EndRdx/Rchg",
    "Crafted_Thunderstrike_F",
-   "set"
+   "set",
+   "Thunderstrike: Damage/Endurance/Recharge"
   ],
   [
    "Dvs",
    "Acc/Dmg",
    "Crafted_Devastation_A",
-   "set"
+   "set",
+   "Devastation: Accuracy/Damage"
   ],
   [
    "Dvs",
    "Dmg/EndRdx",
    "Crafted_Devastation_B",
-   "set"
+   "set",
+   "Devastation: Damage/Endurance"
   ],
   [
    "Dvs",
    "Dmg/Rchg",
    "Crafted_Devastation_C",
-   "set"
+   "set",
+   "Devastation: Damage/Recharge"
   ],
   [
    "Dvs",
    "Acc/Dmg/Rchg",
    "Crafted_Devastation_D",
-   "set"
+   "set",
+   "Devastation: Accuracy/Damage/Recharge"
   ],
   [
    "Dvs",
    "Acc/Dmg/EndRdx/Rchg",
    "Crafted_Devastation_E",
-   "set"
+   "set",
+   "Devastation: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "Dvs",
    "Hold%",
    "Crafted_Devastation_F",
-   "set"
+   "set",
+   "Devastation: Chance of Hold"
   ],
   [
    "AirBrs",
    "Acc/Dmg",
    "Crafted_Air_Burst_A",
-   "set"
+   "set",
+   "Air Burst: Accuracy/Damage"
   ],
   [
    "AirBrs",
    "Dmg/EndRdx",
    "Crafted_Air_Burst_B",
-   "set"
+   "set",
+   "Air Burst: Damage/Endurance"
   ],
   [
    "AirBrs",
    "Dmg/Rchg",
    "Crafted_Air_Burst_C",
-   "set"
+   "set",
+   "Air Burst: Damage/Recharge"
   ],
   [
    "AirBrs",
    "Dmg/Rng",
    "Crafted_Air_Burst_D",
-   "set"
+   "set",
+   "Air Burst: Damage/Range"
   ],
   [
    "Dtn",
    "Acc/Dmg",
    "Crafted_Detonation_A",
-   "set"
+   "set",
+   "Detonation: Accuracy/Damage"
   ],
   [
    "Dtn",
    "Dmg/EndRdx",
    "Crafted_Detonation_B",
-   "set"
+   "set",
+   "Detonation: Damage/Endurance"
   ],
   [
    "Dtn",
    "Dmg/Rchg",
    "Crafted_Detonation_C",
-   "set"
+   "set",
+   "Detonation: Damage/Recharge"
   ],
   [
    "Dtn",
    "Dmg/Rng",
    "Crafted_Detonation_D",
-   "set"
+   "set",
+   "Detonation: Damage/Range"
   ],
   [
    "Dtn",
    "Acc/Dmg/EndRdx",
    "Crafted_Detonation_E",
-   "set"
+   "set",
+   "Detonation: Accuracy/Damage/Endurance"
   ],
   [
    "Dtn",
    "Dmg/EndRdx/Rng",
    "Crafted_Detonation_F",
-   "set"
+   "set",
+   "Detonation: Damage/Endurance/Range"
   ],
   [
    "PstBls",
    "Acc/Dmg",
    "Crafted_Positrons_Blast_A",
-   "set"
+   "set",
+   "Positron's Blast: Accuracy/Damage"
   ],
   [
    "PstBls",
    "Dmg/EndRdx",
    "Crafted_Positrons_Blast_B",
-   "set"
+   "set",
+   "Positron's Blast: Damage/Endurance"
   ],
   [
    "PstBls",
    "Dmg/Rchg",
    "Crafted_Positrons_Blast_C",
-   "set"
+   "set",
+   "Positron's Blast: Damage/Recharge"
   ],
   [
    "PstBls",
    "Dmg/Rng",
    "Crafted_Positrons_Blast_D",
-   "set"
+   "set",
+   "Positron's Blast: Damage/Range"
   ],
   [
    "PstBls",
    "Acc/Dmg/EndRdx",
    "Crafted_Positrons_Blast_E",
-   "set"
+   "set",
+   "Positron's Blast: Accuracy/Damage/Endurance"
   ],
   [
    "PstBls",
    "Dam%",
    "Crafted_Positrons_Blast_F",
-   "set"
+   "set",
+   "Positron's Blast: Chance of Damage(Energy)"
   ],
   [
    "ExpWkn",
    "Acc/Dmg",
    "Crafted_Exploit_Weakness_A",
-   "set"
+   "set",
+   "Exploit Weakness: Accuracy/Damage"
   ],
   [
    "ExpWkn",
    "Dmg/EndRdx",
    "Crafted_Exploit_Weakness_B",
-   "set"
+   "set",
+   "Exploit Weakness: Damage/Endurance"
   ],
   [
    "ExpWkn",
    "Dmg/Rng",
    "Crafted_Exploit_Weakness_c",
-   "set"
+   "set",
+   "Exploit Weakness: Damage/Range"
   ],
   [
    "ExpWkn",
    "Dmg/Rchg",
    "Crafted_Exploit_Weakness_D",
-   "set"
+   "set",
+   "Exploit Weakness: Damage/Recharge"
   ],
   [
    "ClbAcc",
    "Acc/Dmg",
    "Crafted_Calibrated_Accuracy_A",
-   "set"
+   "set",
+   "Calibrated Accuracy: Accuracy/Damage"
   ],
   [
    "ClbAcc",
    "Acc/EndRdx",
    "Crafted_Calibrated_Accuracy_B",
-   "set"
+   "set",
+   "Calibrated Accuracy: Accuracy/Endurance"
   ],
   [
    "ClbAcc",
    "Acc/ActRdx",
    "Crafted_Calibrated_Accuracy_C",
-   "set"
+   "set",
+   "Calibrated Accuracy: Accuracy/Interrupt"
   ],
   [
    "ClbAcc",
    "Acc/Rng",
    "Crafted_Calibrated_Accuracy_D",
-   "set"
+   "set",
+   "Calibrated Accuracy: Accuracy/Range"
   ],
   [
    "ClbAcc",
    "Acc/Rchg",
    "Crafted_Calibrated_Accuracy_E",
-   "set"
+   "set",
+   "Calibrated Accuracy: Accuracy/Recharge"
   ],
   [
    "ClbAcc",
    "Acc/Dmg/Rchg",
    "Crafted_Calibrated_Accuracy_F",
-   "set"
+   "set",
+   "Calibrated Accuracy: Accuracy/Damage/Recharge"
   ],
   [
    "ExcCnt",
    "Acc/Dmg",
    "Crafted_Executioners_Contract_A",
-   "set"
+   "set",
+   "Executioner's Contract: Accuracy/Damage"
   ],
   [
    "ExcCnt",
    "Dmg/EndRdx",
    "Crafted_Executioners_Contract_B",
-   "set"
+   "set",
+   "Executioner's Contract: Damage/Endurance"
   ],
   [
    "ExcCnt",
    "Dmg/ActRdx",
    "Crafted_Executioners_Contract_C",
-   "set"
+   "set",
+   "Executioner's Contract: Damage/Interrupt"
   ],
   [
    "ExcCnt",
    "Dmg/Rng",
    "Crafted_Executioners_Contract_D",
-   "set"
+   "set",
+   "Executioner's Contract: Damage/Range"
   ],
   [
    "ExcCnt",
    "Dmg/Rchg",
    "Crafted_Executioners_Contract_E",
-   "set"
+   "set",
+   "Executioner's Contract: Damage/Recharge"
   ],
   [
    "ExcCnt",
    "Stun%",
    "Crafted_Executioners_Contract_F",
-   "set"
+   "set",
+   "Executioner's Contract: Disorient Bonus"
   ],
   [
    "ExtMsr",
    "Acc/Dmg",
    "Crafted_Extreme_Measures_A",
-   "set"
+   "set",
+   "Extreme Measures: Accuracy/Damage"
   ],
   [
    "ExtMsr",
    "Dmg/EndRdx",
    "Crafted_Extreme_Measures_B",
-   "set"
+   "set",
+   "Extreme Measures: Damage/Endurance"
   ],
   [
    "ExtMsr",
    "Acc/ActRdx/Rng",
    "Crafted_Extreme_Measures_C",
-   "set"
+   "set",
+   "Extreme Measures: Accuracy/Interrupt/Range"
   ],
   [
    "ExtMsr",
    "Dmg/ActRdx/Rchg",
    "Crafted_Extreme_Measures_D",
-   "set"
+   "set",
+   "Extreme Measures: Damage/Interrupt/Recharge"
   ],
   [
    "ExtMsr",
    "Dmg/EndRdx/Rchg",
    "Crafted_Extreme_Measures_E",
-   "set"
+   "set",
+   "Extreme Measures: Damage/Endurance/Recharge"
   ],
   [
    "ExtMsr",
    "Acc/Rng/Rchg",
    "Crafted_Extreme_Measures_F",
-   "set"
+   "set",
+   "Extreme Measures: Accuracy/Range/Recharge"
   ],
   [
    "StnoftheM",
    "Acc/Dmg",
    "Crafted_Sting_of_the_Manticore_A",
-   "set"
+   "set",
+   "Sting of the Manticore: Accuracy/Damage"
   ],
   [
    "StnoftheM",
    "Dmg/EndRdx",
    "Crafted_Sting_of_the_Manticore_B",
-   "set"
+   "set",
+   "Sting of the Manticore: Damage/Endurance"
   ],
   [
    "StnoftheM",
    "Acc/ActRdx/Rng",
    "Crafted_Sting_of_the_Manticore_C",
-   "set"
+   "set",
+   "Sting of the Manticore: Accuracy/Interrupt/Range"
   ],
   [
    "StnoftheM",
    "Dmg/ActRdx/Rchg",
    "Crafted_Sting_of_the_Manticore_D",
-   "set"
+   "set",
+   "Sting of the Manticore: Damage/Interrupt/Recharge"
   ],
   [
    "StnoftheM",
    "Dmg/EndRdx/Rchg",
    "Crafted_Sting_of_the_Manticore_E",
-   "set"
+   "set",
+   "Sting of the Manticore: Damage/Endurance/Recharge"
   ],
   [
    "StnoftheM",
    "Dam%",
    "Crafted_Sting_of_the_Manticore_F",
-   "set"
+   "set",
+   "Sting of the Manticore: Chance of Damage(Toxic)"
   ],
   [
    "UnqLyl",
    "Acc/Dmg",
    "Crafted_Unquestioning_Loyalty_A",
-   "set"
+   "set",
+   "Unquestioning Loyalty: Accuracy/Damage"
   ],
   [
    "UnqLyl",
    "Dmg/EndRdx",
    "Crafted_Unquestioning_Loyalty_B",
-   "set"
+   "set",
+   "Unquestioning Loyalty: Damage/Endurance"
   ],
   [
    "UnqLyl",
    "Acc/EndRdx",
    "Crafted_Unquestioning_Loyalty_C",
-   "set"
+   "set",
+   "Unquestioning Loyalty: Accuracy/Endurance"
   ],
   [
    "UnqLyl",
    "Acc/Dmg/EndRdx",
    "Crafted_Unquestioning_Loyalty_D",
-   "set"
+   "set",
+   "Unquestioning Loyalty: Accuracy/Damage/Endurance"
   ],
   [
    "CmmPrs",
    "Acc/Dmg",
    "Crafted_Commanding_Presence_A",
-   "set"
+   "set",
+   "Commanding Presence: Accuracy/Damage"
   ],
   [
    "CmmPrs",
    "Dmg/EndRdx",
    "Crafted_Commanding_Presence_B",
-   "set"
+   "set",
+   "Commanding Presence: Damage/Endurance"
   ],
   [
    "CmmPrs",
    "Acc/EndRdx",
    "Crafted_Commanding_Presence_C",
-   "set"
+   "set",
+   "Commanding Presence: Accuracy/Endurance"
   ],
   [
    "CmmPrs",
    "Acc/Dmg/EndRdx",
    "Crafted_Commanding_Presence_D",
-   "set"
+   "set",
+   "Commanding Presence: Accuracy/Damage/Endurance"
   ],
   [
    "CmmPrs",
    "PetRes",
    "Crafted_Commanding_Presence_E",
-   "set"
+   "set",
+   "Commanding Presence: Taunt/Placate Resist"
   ],
   [
    "BrlLdr",
    "Acc/Dmg",
    "Crafted_Brilliant_Leadership_A",
-   "set"
+   "set",
+   "Brilliant Leadership: Accuracy/Damage"
   ],
   [
    "BrlLdr",
    "Dmg/EndRdx",
    "Crafted_Brilliant_Leadership_B",
-   "set"
+   "set",
+   "Brilliant Leadership: Damage/Endurance"
   ],
   [
    "BrlLdr",
    "Acc/EndRdx",
    "Crafted_Brilliant_Leadership_C",
-   "set"
+   "set",
+   "Brilliant Leadership: Accuracy/Endurance"
   ],
   [
    "BrlLdr",
    "Acc/Dmg/EndRdx",
    "Crafted_Brilliant_Leadership_D",
-   "set"
+   "set",
+   "Brilliant Leadership: Accuracy/Damage/Endurance"
   ],
   [
    "BrlLdr",
    "Acc",
    "Crafted_Brilliant_Leadership_E",
-   "set"
+   "set",
+   "Brilliant Leadership: Accuracy"
   ],
   [
    "BrlLdr",
    "Dmg",
    "Crafted_Brilliant_Leadership_F",
-   "set"
+   "set",
+   "Brilliant Leadership: Damage"
   ],
   [
    "EdcoftheM",
    "Acc/Dmg",
    "Crafted_Edict_of_the_Master_A",
-   "set"
+   "set",
+   "Edict of the Master: Accuracy/Damage"
   ],
   [
    "EdcoftheM",
    "Dmg/EndRdx",
    "Crafted_Edict_of_the_Master_B",
-   "set"
+   "set",
+   "Edict of the Master: Damage/Endurance"
   ],
   [
    "EdcoftheM",
    "Acc/EndRdx",
    "Crafted_Edict_of_the_Master_C",
-   "set"
+   "set",
+   "Edict of the Master: Accuracy/Endurance"
   ],
   [
    "EdcoftheM",
    "Acc/Dmg/EndRdx",
    "Crafted_Edict_of_the_Master_D",
-   "set"
+   "set",
+   "Edict of the Master: Accuracy/Damage/Endurance"
   ],
   [
    "EdcoftheM",
    "Dmg",
    "Crafted_Edict_of_the_Master_E",
-   "set"
+   "set",
+   "Edict of the Master: Damage"
   ],
   [
    "EdcoftheM",
    "PetDef",
    "Crafted_Edict_of_the_Master_F",
-   "set"
+   "set",
+   "Edict of the Master: Defense Bonus"
   ],
   [
    "BldMnd",
    "Acc/Dmg",
    "Crafted_Blood_Mandate_A",
-   "set"
+   "set",
+   "Blood Mandate: Accuracy/Damage"
   ],
   [
    "BldMnd",
    "Dmg/EndRdx",
    "Crafted_Blood_Mandate_B",
-   "set"
+   "set",
+   "Blood Mandate: Damage/Endurance"
   ],
   [
    "BldMnd",
    "Acc/EndRdx",
    "Crafted_Blood_Mandate_C",
-   "set"
+   "set",
+   "Blood Mandate: Accuracy/Endurance"
   ],
   [
    "BldMnd",
    "Acc/Dmg/EndRdx",
    "Crafted_Blood_Mandate_D",
-   "set"
+   "set",
+   "Blood Mandate: Accuracy/Damage/Endurance"
   ],
   [
    "BldMnd",
    "Acc",
    "Crafted_Blood_Mandate_E",
-   "set"
+   "set",
+   "Blood Mandate: Accuracy"
   ],
   [
    "BldMnd",
    "Dmg",
    "Crafted_Blood_Mandate_F",
-   "set"
+   "set",
+   "Blood Mandate: Damage"
   ],
   [
    "SvrRgh",
    "Acc/Dmg",
    "Crafted_Sovereign_Right_A",
-   "set"
+   "set",
+   "Sovereign Right: Accuracy/Damage"
   ],
   [
    "SvrRgh",
    "Dmg/EndRdx",
    "Crafted_Sovereign_Right_B",
-   "set"
+   "set",
+   "Sovereign Right: Damage/Endurance"
   ],
   [
    "SvrRgh",
    "Acc/EndRdx",
    "Crafted_Sovereign_Right_C",
-   "set"
+   "set",
+   "Sovereign Right: Accuracy/Endurance"
   ],
   [
    "SvrRgh",
    "Acc/Dmg/EndRdx",
    "Crafted_Sovereign_Right_D",
-   "set"
+   "set",
+   "Sovereign Right: Accuracy/Damage/Endurance"
   ],
   [
    "SvrRgh",
    "Acc",
    "Crafted_Sovereign_Right_E",
-   "set"
+   "set",
+   "Sovereign Right: Accuracy"
   ],
   [
    "SvrRgh",
    "PetResDam",
    "Crafted_Sovereign_Right_F",
-   "set"
+   "set",
+   "Sovereign Right: Resistance Bonus"
   ],
   [
    "Krm",
    "Def/EndRdx",
    "Crafted_Karma_A",
-   "set"
+   "set",
+   "Karma: Defense/Endurance"
   ],
   [
    "Krm",
    "Def/Rchg",
    "Crafted_Karma_B",
-   "set"
+   "set",
+   "Karma: Defense/Recharge"
   ],
   [
    "Krm",
    "ResKB",
    "Crafted_Karma_C",
-   "set"
+   "set",
+   "Karma: Knockback Protection"
   ],
   [
    "Ksm",
    "Def/EndRdx",
    "Crafted_Kismet_A",
-   "set"
+   "set",
+   "Kismet: Defense/Endurance"
   ],
   [
    "Ksm",
    "Def/Rchg",
    "Crafted_Kismet_B",
-   "set"
+   "set",
+   "Kismet: Defense/Recharge"
   ],
   [
    "Ksm",
    "EndRdx/Rchg",
    "Crafted_Kismet_C",
-   "set"
+   "set",
+   "Kismet: Endurance/Recharge"
   ],
   [
    "Ksm",
    "Def/EndRdx/Rchg",
    "Crafted_Kismet_D",
-   "set"
+   "set",
+   "Kismet: Defense/Endurance/Recharge"
   ],
   [
    "Ksm",
    "ToHit+",
    "Crafted_Kismet_E",
-   "set"
+   "set",
+   "Kismet: Accuracy +6%"
   ],
   [
    "Srn",
    "Def/EndRdx",
    "Crafted_Serendipity_A",
-   "set"
+   "set",
+   "Serendipity: Defense/Endurance"
   ],
   [
    "Srn",
    "Def/Rchg",
    "Crafted_Serendipity_B",
-   "set"
+   "set",
+   "Serendipity: Defense/Recharge"
   ],
   [
    "Srn",
    "EndRdx/Rchg",
    "Crafted_Serendipity_C",
-   "set"
+   "set",
+   "Serendipity: Endurance/Recharge"
   ],
   [
    "Srn",
    "Def/EndRdx/Rchg",
    "Crafted_Serendipity_D",
-   "set"
+   "set",
+   "Serendipity: Defense/Endurance/Recharge"
   ],
   [
    "Srn",
    "Def",
    "Crafted_Serendipity_E",
-   "set"
+   "set",
+   "Serendipity: Defense"
   ],
   [
    "Srn",
    "EndRdx",
    "Crafted_Serendipity_F",
-   "set"
+   "set",
+   "Serendipity: Endurance"
   ],
   [
    "GifoftheA",
    "Def/EndRdx",
    "Crafted_Gift_of_the_Ancients_A",
-   "set"
+   "set",
+   "Gift of the Ancients: Defense/Endurance"
   ],
   [
    "GifoftheA",
    "Def/Rchg",
    "Crafted_Gift_of_the_Ancients_B",
-   "set"
+   "set",
+   "Gift of the Ancients: Defense/Recharge"
   ],
   [
    "GifoftheA",
    "EndRdx/Rchg",
    "Crafted_Gift_of_the_Ancients_C",
-   "set"
+   "set",
+   "Gift of the Ancients: Endurance/Recharge"
   ],
   [
    "GifoftheA",
    "Def/EndRdx/Rchg",
    "Crafted_Gift_of_the_Ancients_D",
-   "set"
+   "set",
+   "Gift of the Ancients: Defense/Endurance/Recharge"
   ],
   [
    "GifoftheA",
    "Def",
    "Crafted_Gift_of_the_Ancients_E",
-   "set"
+   "set",
+   "Gift of the Ancients: Defense"
   ],
   [
    "GifoftheA",
    "Run+",
    "Crafted_Gift_of_the_Ancients_F",
-   "set"
+   "set",
+   "Gift of the Ancients: Run Speed, Fly Speed, Jump Speed +10.5%"
   ],
   [
    "RedFrt",
    "Def/EndRdx",
    "Crafted_Red_Fortune_A",
-   "set"
+   "set",
+   "Red Fortune: Defense/Endurance"
   ],
   [
    "RedFrt",
    "Def/Rchg",
    "Crafted_Red_Fortune_B",
-   "set"
+   "set",
+   "Red Fortune: Defense/Recharge"
   ],
   [
    "RedFrt",
    "EndRdx/Rchg",
    "Crafted_Red_Fortune_C",
-   "set"
+   "set",
+   "Red Fortune: Endurance/Recharge"
   ],
   [
    "RedFrt",
    "Def/EndRdx/Rchg",
    "Crafted_Red_Fortune_D",
-   "set"
+   "set",
+   "Red Fortune: Defense/Endurance/Recharge"
   ],
   [
    "RedFrt",
    "Def",
    "Crafted_Red_Fortune_E",
-   "set"
+   "set",
+   "Red Fortune: Defense"
   ],
   [
    "RedFrt",
    "EndRdx",
    "Crafted_Red_Fortune_F",
-   "set"
+   "set",
+   "Red Fortune: Endurance"
   ],
   [
    "LucoftheG",
    "Def/EndRdx",
    "Crafted_Luck_of_the_Gambler_A",
-   "set"
+   "set",
+   "Luck of the Gambler: Defense/Endurance"
   ],
   [
    "LucoftheG",
    "Def/Rchg",
    "Crafted_Luck_of_the_Gambler_B",
-   "set"
+   "set",
+   "Luck of the Gambler: Defense/Recharge"
   ],
   [
    "LucoftheG",
    "EndRdx/Rchg",
    "Crafted_Luck_of_the_Gambler_C",
-   "set"
+   "set",
+   "Luck of the Gambler: Endurance/Recharge"
   ],
   [
    "LucoftheG",
    "Def/EndRdx/Rchg",
    "Crafted_Luck_of_the_Gambler_D",
-   "set"
+   "set",
+   "Luck of the Gambler: Defense/Endurance/Recharge"
   ],
   [
    "LucoftheG",
    "Def",
    "Crafted_Luck_of_the_Gambler_E",
-   "set"
+   "set",
+   "Luck of the Gambler: Defense"
   ],
   [
    "LucoftheG",
    "Def/Rchg+",
    "Crafted_Luck_of_the_Gambler_F",
-   "set"
+   "set",
+   "Luck of the Gambler: Defense/Increased Global Recharge Speed"
   ],
   [
    "StdPrt",
    "ResDam/EndRdx",
    "Crafted_Steadfast_Protection_A",
-   "set"
+   "set",
+   "Steadfast Protection: Resistance/Endurance"
   ],
   [
    "StdPrt",
    "ResDam/Def+",
    "Crafted_Steadfast_Protection_B",
-   "set"
+   "set",
+   "Steadfast Protection: Resistance/+Def 3%"
   ],
   [
    "StdPrt",
    "ResKB",
    "Crafted_Steadfast_Protection_C",
-   "set"
+   "set",
+   "Steadfast Protection: Knockback Protection"
   ],
   [
    "ImpSki",
    "ResDam/EndRdx",
    "Crafted_Impervious_Skin_A",
-   "set"
+   "set",
+   "Impervious Skin: Resistance/Endurance"
   ],
   [
    "ImpSki",
    "ResDam/Rchg",
    "Crafted_Impervious_Skin_B",
-   "set"
+   "set",
+   "Impervious Skin: Resistance/Recharge"
   ],
   [
    "ImpSki",
    "EndRdx/Rchg",
    "Crafted_Impervious_Skin_C",
-   "set"
+   "set",
+   "Impervious Skin: Endurance/Recharge"
   ],
   [
    "ImpSki",
    "ResDam/EndRdx/Rchg",
    "Crafted_Impervious_Skin_D",
-   "set"
+   "set",
+   "Impervious Skin: Resistance/Endurance/Recharge"
   ],
   [
    "ImpSki",
    "Status",
    "Crafted_Impervious_Skin_E",
-   "set"
+   "set",
+   "Impervious Skin: Status Resistance"
   ],
   [
    "RctArm",
    "ResDam/EndRdx",
    "Crafted_Reactive_Armor_A",
-   "set"
+   "set",
+   "Reactive Armor: Resistance/Endurance"
   ],
   [
    "RctArm",
    "ResDam/Rchg",
    "Crafted_Reactive_Armor_B",
-   "set"
+   "set",
+   "Reactive Armor: Resistance/Recharge"
   ],
   [
    "RctArm",
    "EndRdx/Rchg",
    "Crafted_Reactive_Armor_C",
-   "set"
+   "set",
+   "Reactive Armor: Endurance/Recharge"
   ],
   [
    "RctArm",
    "ResDam/EndRdx/Rchg",
    "Crafted_Reactive_Armor_D",
-   "set"
+   "set",
+   "Reactive Armor: Resistance/Endurance/Recharge"
   ],
   [
    "RctArm",
    "ResDam",
    "Crafted_Reactive_Armor_E",
-   "set"
+   "set",
+   "Reactive Armor: Resistance"
   ],
   [
    "RctArm",
    "EndRdx",
    "Crafted_Reactive_Armor_F",
-   "set"
+   "set",
+   "Reactive Armor: Endurance"
   ],
   [
    "ImpArm",
    "ResDam/EndRdx",
    "Crafted_Impervium_Armor_A",
-   "set"
+   "set",
+   "Impervium Armor: Resistance/Endurance"
   ],
   [
    "ImpArm",
    "ResDam/Rchg",
    "Crafted_Impervium_Armor_B",
-   "set"
+   "set",
+   "Impervium Armor: Resistance/Recharge"
   ],
   [
    "ImpArm",
    "EndRdx/Rchg",
    "Crafted_Impervium_Armor_C",
-   "set"
+   "set",
+   "Impervium Armor: Endurance/Recharge"
   ],
   [
    "ImpArm",
    "ResDam/EndRdx/Rchg",
    "Crafted_Impervium_Armor_D",
-   "set"
+   "set",
+   "Impervium Armor: Resistance/Endurance/Recharge"
   ],
   [
    "ImpArm",
    "ResDam",
    "Crafted_Impervium_Armor_E",
-   "set"
+   "set",
+   "Impervium Armor: Resistance"
   ],
   [
    "ImpArm",
    "ResPsi",
    "Crafted_Impervium_Armor_F",
-   "set"
+   "set",
+   "Impervium Armor: Psionic Resistance"
   ],
   [
    "TtnCtn",
    "ResDam/EndRdx",
    "Crafted_Titanium_Coating_A",
-   "set"
+   "set",
+   "Titanium Coating: Resistance/Endurance"
   ],
   [
    "TtnCtn",
    "ResDam/Rchg",
    "Crafted_Titanium_Coating_B",
-   "set"
+   "set",
+   "Titanium Coating: Resistance/Recharge"
   ],
   [
    "TtnCtn",
    "EndRdx/Rchg",
    "Crafted_Titanium_Coating_C",
-   "set"
+   "set",
+   "Titanium Coating: Endurance/Recharge"
   ],
   [
    "TtnCtn",
    "ResDam/EndRdx/Rchg",
    "Crafted_Titanium_Coating_D",
-   "set"
+   "set",
+   "Titanium Coating: Resistance/Endurance/Recharge"
   ],
   [
    "TtnCtn",
    "ResDam",
    "Crafted_Titanium_Coating_E",
-   "set"
+   "set",
+   "Titanium Coating: Resistance"
   ],
   [
    "TtnCtn",
    "EndRdx",
    "Crafted_Titanium_Coating_F",
-   "set"
+   "set",
+   "Titanium Coating: Endurance"
   ],
   [
    "Ags",
    "ResDam/EndRdx",
    "Crafted_Aegis_A",
-   "set"
+   "set",
+   "Aegis: Resistance/Endurance"
   ],
   [
    "Ags",
    "ResDam/Rchg",
    "Crafted_Aegis_B",
-   "set"
+   "set",
+   "Aegis: Resistance/Recharge"
   ],
   [
    "Ags",
    "EndRdx/Rchg",
    "Crafted_Aegis_C",
-   "set"
+   "set",
+   "Aegis: Endurance/Recharge"
   ],
   [
    "Ags",
    "ResDam/EndRdx/Rchg",
    "Crafted_Aegis_D",
-   "set"
+   "set",
+   "Aegis: Resistance/Endurance/Recharge"
   ],
   [
    "Ags",
    "ResDam",
    "Crafted_Aegis_E",
-   "set"
+   "set",
+   "Aegis: Resistance"
   ],
   [
    "Ags",
    "Psi/Status",
    "Crafted_Aegis_F",
-   "set"
+   "set",
+   "Aegis: Psionic/Status Resistance"
   ],
   [
    "Trg",
    "Heal/EndRdx",
    "Crafted_Triage_A",
-   "set"
+   "set",
+   "Triage: Heal/Endurance"
   ],
   [
    "Trg",
    "EndRdx/Rchg",
    "Crafted_Triage_B",
-   "set"
+   "set",
+   "Triage: Endurance/Recharge"
   ],
   [
    "Trg",
    "Heal/Rchg",
    "Crafted_Triage_C",
-   "set"
+   "set",
+   "Triage: Heal/Recharge"
   ],
   [
    "Trg",
    "Heal/EndRdx/Rchg",
    "Crafted_Triage_D",
-   "set"
+   "set",
+   "Triage: Heal/Endurance/Recharge"
   ],
   [
    "RgnTss",
    "Heal/EndRdx",
    "Crafted_Regenerative_Tissue_A",
-   "set"
+   "set",
+   "Regenerative Tissue: Heal/Endurance"
   ],
   [
    "RgnTss",
    "EndRdx/Rchg",
    "Crafted_Regenerative_Tissue_B",
-   "set"
+   "set",
+   "Regenerative Tissue: Endurance/Recharge"
   ],
   [
    "RgnTss",
    "Heal/Rchg",
    "Crafted_Regenerative_Tissue_C",
-   "set"
+   "set",
+   "Regenerative Tissue: Heal/Recharge"
   ],
   [
    "RgnTss",
    "Heal/EndRdx/Rchg",
    "Crafted_Regenerative_Tissue_D",
-   "set"
+   "set",
+   "Regenerative Tissue: Heal/Endurance/Recharge"
   ],
   [
    "RgnTss",
    "Regen+",
    "Crafted_Regenerative_Tissue_E",
-   "set"
+   "set",
+   "Regenerative Tissue: +Regeneration"
   ],
   [
    "HrmHln",
    "Heal/EndRdx",
    "Crafted_Harmonized_Healing_A",
-   "set"
+   "set",
+   "Harmonized Healing: Heal/Endurance"
   ],
   [
    "HrmHln",
    "EndRdx/Rchg",
    "Crafted_Harmonized_Healing_B",
-   "set"
+   "set",
+   "Harmonized Healing: Endurance/Recharge"
   ],
   [
    "HrmHln",
    "Heal/Rchg",
    "Crafted_Harmonized_Healing_C",
-   "set"
+   "set",
+   "Harmonized Healing: Heal/Recharge"
   ],
   [
    "HrmHln",
    "Heal/EndRdx/Rchg",
    "Crafted_Harmonized_Healing_D",
-   "set"
+   "set",
+   "Harmonized Healing: Heal/Endurance/Recharge"
   ],
   [
    "HrmHln",
    "Heal",
    "Crafted_Harmonized_Healing_E",
-   "set"
+   "set",
+   "Harmonized Healing: Heal"
   ],
   [
    "HrmHln",
    "EndRdx",
    "Crafted_Harmonized_Healing_F",
-   "set"
+   "set",
+   "Harmonized Healing: Endurance"
   ],
   [
    "Mrc",
    "Heal/EndRdx",
    "Crafted_Miracle_A",
-   "set"
+   "set",
+   "Miracle: Heal/Endurance"
   ],
   [
    "Mrc",
    "EndRdx/Rchg",
    "Crafted_Miracle_B",
-   "set"
+   "set",
+   "Miracle: Endurance/Recharge"
   ],
   [
    "Mrc",
    "Heal/Rchg",
    "Crafted_Miracle_C",
-   "set"
+   "set",
+   "Miracle: Heal/Recharge"
   ],
   [
    "Mrc",
    "Heal/EndRdx/Rchg",
    "Crafted_Miracle_D",
-   "set"
+   "set",
+   "Miracle: Heal/Endurance/Recharge"
   ],
   [
    "Mrc",
    "Heal",
    "Crafted_Miracle_E",
-   "set"
+   "set",
+   "Miracle: Heal"
   ],
   [
    "Mrc",
    "Rcvry+",
    "Crafted_Miracle_F",
-   "set"
+   "set",
+   "Miracle: +Recovery"
   ],
   [
    "DctWnd",
    "Heal/EndRdx",
    "Crafted_Doctored_Wounds_A",
-   "set"
+   "set",
+   "Doctored Wounds: Heal/Endurance"
   ],
   [
    "DctWnd",
    "EndRdx/Rchg",
    "Crafted_Doctored_Wounds_B",
-   "set"
+   "set",
+   "Doctored Wounds: Endurance/Recharge"
   ],
   [
    "DctWnd",
    "Heal/Rchg",
    "Crafted_Doctored_Wounds_C",
-   "set"
+   "set",
+   "Doctored Wounds: Heal/Recharge"
   ],
   [
    "DctWnd",
    "Heal/EndRdx/Rchg",
    "Crafted_Doctored_Wounds_D",
-   "set"
+   "set",
+   "Doctored Wounds: Heal/Endurance/Recharge"
   ],
   [
    "DctWnd",
    "Heal",
    "Crafted_Doctored_Wounds_E",
-   "set"
+   "set",
+   "Doctored Wounds: Heal"
   ],
   [
    "DctWnd",
    "Rchg",
    "Crafted_Doctored_Wounds_F",
-   "set"
+   "set",
+   "Doctored Wounds: Recharge"
   ],
   [
    "NmnCnv",
    "Heal/EndRdx",
    "Crafted_Numinas_Convalesence_A",
-   "set"
+   "set",
+   "Numina's Convalesence: Heal/Endurance"
   ],
   [
    "NmnCnv",
    "EndRdx/Rchg",
    "Crafted_Numinas_Convalesence_B",
-   "set"
+   "set",
+   "Numina's Convalesence: Endurance/Recharge"
   ],
   [
    "NmnCnv",
    "Heal/Rchg",
    "Crafted_Numinas_Convalesence_C",
-   "set"
+   "set",
+   "Numina's Convalesence: Heal/Recharge"
   ],
   [
    "NmnCnv",
    "Heal/EndRdx/Rchg",
    "Crafted_Numinas_Convalesence_D",
-   "set"
+   "set",
+   "Numina's Convalesence: Heal/Endurance/Recharge"
   ],
   [
    "NmnCnv",
    "Heal",
    "Crafted_Numinas_Convalesence_E",
-   "set"
+   "set",
+   "Numina's Convalesence: Heal"
   ],
   [
    "NmnCnv",
    "Regen/Rcvry+",
    "Crafted_Numinas_Convalesence_F",
-   "set"
+   "set",
+   "Numina's Convalesence: +Regeneration/+Recovery"
   ],
   [
    "Prl",
    "Acc/Rchg",
    "Crafted_Paralytic_A",
-   "set"
+   "set",
+   "Paralytic: Accuracy/Recharge"
   ],
   [
    "Prl",
    "EndRdx/Hold",
    "Crafted_Paralytic_B",
-   "set"
+   "set",
+   "Paralytic: Endurance/Hold"
   ],
   [
    "Prl",
    "Acc/EndRdx",
    "Crafted_Paralytic_C",
-   "set"
+   "set",
+   "Paralytic: Accuracy/Endurance"
   ],
   [
    "Prl",
    "Hold/Rng",
    "Crafted_Paralytic_D",
-   "set"
+   "set",
+   "Paralytic: Hold/Range"
   ],
   [
    "Prl",
    "Acc/Hold/Rchg",
    "Crafted_Paralytic_E",
-   "set"
+   "set",
+   "Paralytic: Accuracy/Hold/Recharge"
   ],
   [
    "NrnSht",
    "Acc/Rchg",
    "Crafted_Neuronic_Shutdown_A",
-   "set"
+   "set",
+   "Neuronic Shutdown: Accuracy/Recharge"
   ],
   [
    "NrnSht",
    "EndRdx/Hold",
    "Crafted_Neuronic_Shutdown_B",
-   "set"
+   "set",
+   "Neuronic Shutdown: Endurance/Hold"
   ],
   [
    "NrnSht",
    "Acc/EndRdx",
    "Crafted_Neuronic_Shutdown_C",
-   "set"
+   "set",
+   "Neuronic Shutdown: Accuracy/Endurance"
   ],
   [
    "NrnSht",
    "Hold/Rng",
    "Crafted_Neuronic_Shutdown_D",
-   "set"
+   "set",
+   "Neuronic Shutdown: Hold/Range"
   ],
   [
    "NrnSht",
    "Acc/Hold/Rchg",
    "Crafted_Neuronic_Shutdown_E",
-   "set"
+   "set",
+   "Neuronic Shutdown: Accuracy/Hold/Recharge"
   ],
   [
    "NrnSht",
    "Dam%",
    "Crafted_Neuronic_Shutdown_F",
-   "set"
+   "set",
+   "Neuronic Shutdown: Chance of Damage(Psionic)"
   ],
   [
    "EssofCrr",
    "Acc/Rchg",
    "Crafted_Essence_of_Curare_A",
-   "set"
+   "set",
+   "Essence of Curare: Accuracy/Recharge"
   ],
   [
    "EssofCrr",
    "EndRdx/Hold",
    "Crafted_Essence_of_Curare_B",
-   "set"
+   "set",
+   "Essence of Curare: Endurance/Hold"
   ],
   [
    "EssofCrr",
    "Acc/EndRdx",
    "Crafted_Essence_of_Curare_C",
-   "set"
+   "set",
+   "Essence of Curare: Accuracy/Endurance"
   ],
   [
    "EssofCrr",
    "Hold/Rng",
    "Crafted_Essence_of_Curare_D",
-   "set"
+   "set",
+   "Essence of Curare: Hold/Range"
   ],
   [
    "EssofCrr",
    "Acc/Hold",
    "Crafted_Essence_of_Curare_E",
-   "set"
+   "set",
+   "Essence of Curare: Accuracy/Hold"
   ],
   [
    "EssofCrr",
    "Acc/Hold/Rchg",
    "Crafted_Essence_of_Curare_F",
-   "set"
+   "set",
+   "Essence of Curare: Accuracy/Hold/Recharge"
   ],
   [
    "GhsWdwEmb",
    "Acc/Rchg",
    "Crafted_Ghost_Widows_Embrace_A",
-   "set"
+   "set",
+   "Ghost Widow's Embrace: Accuracy/Recharge"
   ],
   [
    "GhsWdwEmb",
    "EndRdx/Hold",
    "Crafted_Ghost_Widows_Embrace_B",
-   "set"
+   "set",
+   "Ghost Widow's Embrace: Endurance/Hold"
   ],
   [
    "GhsWdwEmb",
    "Acc/EndRdx",
    "Crafted_Ghost_Widows_Embrace_C",
-   "set"
+   "set",
+   "Ghost Widow's Embrace: Accuracy/Endurance"
   ],
   [
    "GhsWdwEmb",
    "Hold/Rng",
    "Crafted_Ghost_Widows_Embrace_D",
-   "set"
+   "set",
+   "Ghost Widow's Embrace: Hold/Range"
   ],
   [
    "GhsWdwEmb",
    "Acc/Hold/Rchg",
    "Crafted_Ghost_Widows_Embrace_E",
-   "set"
+   "set",
+   "Ghost Widow's Embrace: Accuracy/Hold/Recharge"
   ],
   [
    "GhsWdwEmb",
    "Dam%",
    "Crafted_Ghost_Widows_Embrace_F",
-   "set"
+   "set",
+   "Ghost Widow's Embrace: Chance of Damage(Psionic)"
   ],
   [
    "Stg",
    "Acc/Rchg",
    "Crafted_Stagger_A",
-   "set"
+   "set",
+   "Stagger: Accuracy/Recharge"
   ],
   [
    "Stg",
    "EndRdx/Stun",
    "Crafted_Stagger_B",
-   "set"
+   "set",
+   "Stagger: Endurance/Stun"
   ],
   [
    "Stg",
    "Acc/EndRdx",
    "Crafted_Stagger_C",
-   "set"
+   "set",
+   "Stagger: Accuracy/Endurance"
   ],
   [
    "Stg",
    "Stun/Rng",
    "Crafted_Stagger_D",
-   "set"
+   "set",
+   "Stagger: Stun/Range"
   ],
   [
    "Stg",
    "Acc/Stun/Rchg",
    "Crafted_Stagger_E",
-   "set"
+   "set",
+   "Stagger: Accuracy/Stun/Recharge"
   ],
   [
    "RzzDzz",
    "Acc/Rchg",
    "Crafted_Razzle_Dazzle_A",
-   "set"
+   "set",
+   "Razzle Dazzle: Accuracy/Recharge"
   ],
   [
    "RzzDzz",
    "EndRdx/Stun",
    "Crafted_Razzle_Dazzle_B",
-   "set"
+   "set",
+   "Razzle Dazzle: Endurance/Stun"
   ],
   [
    "RzzDzz",
    "Acc/EndRdx",
    "Crafted_Razzle_Dazzle_C",
-   "set"
+   "set",
+   "Razzle Dazzle: Accuracy/Endurance"
   ],
   [
    "RzzDzz",
    "Stun/Rng",
    "Crafted_Razzle_Dazzle_D",
-   "set"
+   "set",
+   "Razzle Dazzle: Stun/Range"
   ],
   [
    "RzzDzz",
    "Acc/Stun/Rchg",
    "Crafted_Razzle_Dazzle_E",
-   "set"
+   "set",
+   "Razzle Dazzle: Accuracy/Stun/Recharge"
   ],
   [
    "RzzDzz",
    "Immob%",
    "Crafted_Razzle_Dazzle_F",
-   "set"
+   "set",
+   "Razzle Dazzle: Chance of Immobilize"
   ],
   [
    "RopADop",
    "Acc/Rchg",
    "Crafted_Rope_A_Dope_A",
-   "set"
+   "set",
+   "Rope A Dope: Accuracy/Recharge"
   ],
   [
    "RopADop",
    "EndRdx/Stun",
    "Crafted_Rope_A_Dope_B",
-   "set"
+   "set",
+   "Rope A Dope: Endurance/Stun"
   ],
   [
    "RopADop",
    "Acc/EndRdx",
    "Crafted_Rope_A_Dope_C",
-   "set"
+   "set",
+   "Rope A Dope: Accuracy/Endurance"
   ],
   [
    "RopADop",
    "Stun/Rng",
    "Crafted_Rope_A_Dope_D",
-   "set"
+   "set",
+   "Rope A Dope: Stun/Range"
   ],
   [
    "RopADop",
    "Acc/Stun/Rchg",
    "Crafted_Rope_A_Dope_E",
-   "set"
+   "set",
+   "Rope A Dope: Accuracy/Stun/Recharge"
   ],
   [
    "RopADop",
    "Acc/Stun",
    "Crafted_Rope_A_Dope_F",
-   "set"
+   "set",
+   "Rope A Dope: Accuracy/Stun"
   ],
   [
    "Stp",
    "Acc/Rchg",
    "Crafted_Stupefy_A",
-   "set"
+   "set",
+   "Stupefy: Accuracy/Recharge"
   ],
   [
    "Stp",
    "EndRdx/Stun",
    "Crafted_Stupefy_B",
-   "set"
+   "set",
+   "Stupefy: Endurance/Stun"
   ],
   [
    "Stp",
    "Acc/EndRdx",
    "Crafted_Stupefy_C",
-   "set"
+   "set",
+   "Stupefy: Accuracy/Endurance"
   ],
   [
    "Stp",
    "Stun/Rng",
    "Crafted_Stupefy_D",
-   "set"
+   "set",
+   "Stupefy: Stun/Range"
   ],
   [
    "Stp",
    "Acc/Stun/Rchg",
    "Crafted_Stupefy_E",
-   "set"
+   "set",
+   "Stupefy: Accuracy/Stun/Recharge"
   ],
   [
    "Stp",
    "KB%",
    "Crafted_Stupefy_F",
-   "set"
+   "set",
+   "Stupefy: Chance of Knockback"
   ],
   [
    "RtnGrs",
    "Acc/Rchg",
    "Crafted_Rooting_Grasp_A",
-   "set"
+   "set",
+   "Rooting Grasp: Accuracy/Recharge"
   ],
   [
    "RtnGrs",
    "EndRdx/Immob",
    "Crafted_Rooting_Grasp_B",
-   "set"
+   "set",
+   "Rooting Grasp: Endurance/Immobilize"
   ],
   [
    "RtnGrs",
    "Acc/EndRdx",
    "Crafted_Rooting_Grasp_C",
-   "set"
+   "set",
+   "Rooting Grasp: Accuracy/Endurance"
   ],
   [
    "RtnGrs",
    "Immob/Rng",
    "Crafted_Rooting_Grasp_D",
-   "set"
+   "set",
+   "Rooting Grasp: Immobilize/Range"
   ],
   [
    "RtnGrs",
    "Acc/Immob/Rchg",
    "Crafted_Rooting_Grasp_E",
-   "set"
+   "set",
+   "Rooting Grasp: Accuracy/Immobilize/Recharge"
   ],
   [
    "DblAct",
    "Acc/Rchg",
    "Crafted_Debiliative_Action_A",
-   "set"
+   "set",
+   "Debilitative Action: Accuracy/Recharge"
   ],
   [
    "DblAct",
    "Rchg/Immob",
    "Crafted_Debiliative_Action_B",
-   "set"
+   "set",
+   "Debilitative Action: Recharge/Immobilize"
   ],
   [
    "DblAct",
    "Acc/EndRdx",
    "Crafted_Debiliative_Action_C",
-   "set"
+   "set",
+   "Debilitative Action: Accuracy/Endurance"
   ],
   [
    "DblAct",
    "Immob/Rng",
    "Crafted_Debiliative_Action_D",
-   "set"
+   "set",
+   "Debilitative Action: Immobilize/Range"
   ],
   [
    "DblAct",
    "Acc/Immob/Rchg",
    "Crafted_Debiliative_Action_E",
-   "set"
+   "set",
+   "Debilitative Action: Accuracy/Immobilize/Recharge"
   ],
   [
    "DblAct",
    "Stun%",
    "Crafted_Debiliative_Action_F",
-   "set"
+   "set",
+   "Debilitative Action: Disorient Bonus"
   ],
   [
    "EnfOpr",
    "Acc/Rchg",
    "Crafted_Enfeebled_Operation_A",
-   "set"
+   "set",
+   "Enfeebled Operation: Accuracy/Recharge"
   ],
   [
    "EnfOpr",
    "EndRdx/Immob",
    "Crafted_Enfeebled_Operation_B",
-   "set"
+   "set",
+   "Enfeebled Operation: Endurance/Immobilize"
   ],
   [
    "EnfOpr",
    "Acc/EndRdx",
    "Crafted_Enfeebled_Operation_C",
-   "set"
+   "set",
+   "Enfeebled Operation: Accuracy/Endurance"
   ],
   [
    "EnfOpr",
    "Immob/Rng",
    "Crafted_Enfeebled_Operation_D",
-   "set"
+   "set",
+   "Enfeebled Operation: Immobilize/Range"
   ],
   [
    "EnfOpr",
    "Acc/Immob/Rchg",
    "Crafted_Enfeebled_Operation_E",
-   "set"
+   "set",
+   "Enfeebled Operation: Accuracy/Immobilize/Recharge"
   ],
   [
    "EnfOpr",
    "Acc/Immob",
    "Crafted_Enfeebled_Operation_F",
-   "set"
+   "set",
+   "Enfeebled Operation: Accuracy/Immobilize"
   ],
   [
    "TraoftheH",
    "Acc/Rchg",
    "Crafted_Trap_of_the_Hunter_A",
-   "set"
+   "set",
+   "Trap of the Hunter: Accuracy/Recharge"
   ],
   [
    "TraoftheH",
    "EndRdx/Immob",
    "Crafted_Trap_of_the_Hunter_B",
-   "set"
+   "set",
+   "Trap of the Hunter: Endurance/Immobilize"
   ],
   [
    "TraoftheH",
    "Acc/EndRdx",
    "Crafted_Trap_of_the_Hunter_C",
-   "set"
+   "set",
+   "Trap of the Hunter: Accuracy/Endurance"
   ],
   [
    "TraoftheH",
    "Immob/Acc",
    "Crafted_Trap_of_the_Hunter_D",
-   "set"
+   "set",
+   "Trap of the Hunter: Immobilize/Accuracy"
   ],
   [
    "TraoftheH",
    "Acc/Immob/Rchg",
    "Crafted_Trap_of_the_Hunter_E",
-   "set"
+   "set",
+   "Trap of the Hunter: Accuracy/Immobilize/Recharge"
   ],
   [
    "TraoftheH",
    "Dam%",
    "Crafted_Trap_of_the_Hunter_F",
-   "set"
+   "set",
+   "Trap of the Hunter: Chance of Damage(Lethal)"
   ],
   [
    "CrtSpd",
    "Acc/Slow",
    "Crafted_Curtail_Speed_A",
-   "set"
+   "set",
+   "Curtail Speed: Accuracy/Slow"
   ],
   [
    "CrtSpd",
    "Dmg/Slow",
    "Crafted_Curtail_Speed_B",
-   "set"
+   "set",
+   "Curtail Speed: Damage/Slow"
   ],
   [
    "CrtSpd",
    "Acc/EndRdx",
    "Crafted_Curtail_Speed_C",
-   "set"
+   "set",
+   "Curtail Speed: Accuracy/Endurance"
   ],
   [
    "CrtSpd",
    "Rng/Slow",
    "Crafted_Curtail_Speed_D",
-   "set"
+   "set",
+   "Curtail Speed: Range/Slow"
   ],
   [
    "CrtSpd",
    "EndRdx/Rchg/Slow",
    "Crafted_Curtail_Speed_E",
-   "set"
+   "set",
+   "Curtail Speed: Endurance/Recharge/Slow"
   ],
   [
    "ImpSwf",
    "Acc/Slow",
    "Crafted_Impeded_Swiftness_A",
-   "set"
+   "set",
+   "Impeded Swiftness: Accuracy/Slow"
   ],
   [
    "ImpSwf",
    "Dmg/Slow",
    "Crafted_Impeded_Swiftness_B",
-   "set"
+   "set",
+   "Impeded Swiftness: Damage/Slow"
   ],
   [
    "ImpSwf",
    "Acc/EndRdx",
    "Crafted_Impeded_Swiftness_C",
-   "set"
+   "set",
+   "Impeded Swiftness: Accuracy/Endurance"
   ],
   [
    "ImpSwf",
    "Rng/Slow",
    "Crafted_Impeded_Swiftness_D",
-   "set"
+   "set",
+   "Impeded Swiftness: Range/Slow"
   ],
   [
    "ImpSwf",
    "EndRdx/Rchg/Slow",
    "Crafted_Impeded_Swiftness_E",
-   "set"
+   "set",
+   "Impeded Swiftness: Endurance/Recharge/Slow"
   ],
   [
    "ImpSwf",
    "Dam%",
    "Crafted_Impeded_Swiftness_F",
-   "set"
+   "set",
+   "Impeded Swiftness: Chance of Damage(Smashing)"
   ],
   [
    "TmpRdn",
    "Acc/Slow",
    "Crafted_Tempered_Readiness_A",
-   "set"
+   "set",
+   "Tempered Readiness: Accuracy/Slow"
   ],
   [
    "TmpRdn",
    "Dmg/Slow",
    "Crafted_Tempered_Readiness_B",
-   "set"
+   "set",
+   "Tempered Readiness: Damage/Slow"
   ],
   [
    "TmpRdn",
    "Acc/EndRdx",
    "Crafted_Tempered_Readiness_C",
-   "set"
+   "set",
+   "Tempered Readiness: Accuracy/Endurance"
   ],
   [
    "TmpRdn",
    "Rng/Slow",
    "Crafted_Tempered_Readiness_D",
-   "set"
+   "set",
+   "Tempered Readiness: Range/Slow"
   ],
   [
    "TmpRdn",
    "EndRdx/Rchg/Slow",
    "Crafted_Tempered_Readiness_E",
-   "set"
+   "set",
+   "Tempered Readiness: Endurance/Recharge/Slow"
   ],
   [
    "TmpRdn",
    "Acc/Dmg/Slow",
    "Crafted_Tempered_Readiness_F",
-   "set"
+   "set",
+   "Tempered Readiness: Accuracy/Damage/Slow"
   ],
   [
    "PcnoftheT",
    "Acc/Slow",
    "Crafted_Pacing_of_the_Turtle_A",
-   "set"
+   "set",
+   "Pacing of the Turtle: Accuracy/Slow"
   ],
   [
    "PcnoftheT",
    "Dmg/Slow",
    "Crafted_Pacing_of_the_Turtle_B",
-   "set"
+   "set",
+   "Pacing of the Turtle: Damage/Slow"
   ],
   [
    "PcnoftheT",
    "Acc/EndRdx",
    "Crafted_Pacing_of_the_Turtle_C",
-   "set"
+   "set",
+   "Pacing of the Turtle: Accuracy/Endurance"
   ],
   [
    "PcnoftheT",
    "Rng/Slow",
    "Crafted_Pacing_of_the_Turtle_D",
-   "set"
+   "set",
+   "Pacing of the Turtle: Range/Slow"
   ],
   [
    "PcnoftheT",
    "EndRdx/Rchg/Slow",
    "Crafted_Pacing_of_the_Turtle_E",
-   "set"
+   "set",
+   "Pacing of the Turtle: Endurance/Recharge/Slow"
   ],
   [
    "PcnoftheT",
    "-Rchg%",
    "Crafted_Pacing_of_the_Turtle_F",
-   "set"
+   "set",
+   "Pacing of the Turtle: Chance of -Recharge"
   ],
   [
    "Hbr",
    "Acc/Rchg",
    "Crafted_Hibernation_A",
-   "set"
+   "set",
+   "Hibernation: Accuracy/Recharge"
   ],
   [
    "Hbr",
    "EndRdx/Sleep",
    "Crafted_Hibernation_B",
-   "set"
+   "set",
+   "Hibernation: Endurance/Sleep"
   ],
   [
    "Hbr",
    "Acc/EndRdx",
    "Crafted_Hibernation_C",
-   "set"
+   "set",
+   "Hibernation: Accuracy/Endurance"
   ],
   [
    "Hbr",
    "Sleep/Rng",
    "Crafted_Hibernation_D",
-   "set"
+   "set",
+   "Hibernation: Sleep/Range"
   ],
   [
    "Hbr",
    "Acc/Sleep/Rchg",
    "Crafted_Hibernation_E",
-   "set"
+   "set",
+   "Hibernation: Accuracy/Sleep/Recharge"
   ],
   [
    "IndCom",
    "Acc/Rchg",
    "Crafted_Induced_Coma_A",
-   "set"
+   "set",
+   "Induced Coma: Accuracy/Recharge"
   ],
   [
    "IndCom",
    "EndRdx/Sleep",
    "Crafted_Induced_Coma_B",
-   "set"
+   "set",
+   "Induced Coma: Endurance/Sleep"
   ],
   [
    "IndCom",
    "Acc/EndRdx",
    "Crafted_Induced_Coma_C",
-   "set"
+   "set",
+   "Induced Coma: Accuracy/Endurance"
   ],
   [
    "IndCom",
    "Sleep/Rng",
    "Crafted_Induced_Coma_D",
-   "set"
+   "set",
+   "Induced Coma: Sleep/Range"
   ],
   [
    "IndCom",
    "Acc/Sleep/Rchg",
    "Crafted_Induced_Coma_E",
-   "set"
+   "set",
+   "Induced Coma: Accuracy/Sleep/Recharge"
   ],
   [
    "IndCom",
    "-Rchg%",
    "Crafted_Induced_Coma_F",
-   "set"
+   "set",
+   "Induced Coma: Chance of -Recharge"
   ],
   [
    "LthRps",
    "Acc/Rchg",
    "Crafted_Lethargic_Repose_A",
-   "set"
+   "set",
+   "Lethargic Repose: Accuracy/Recharge"
   ],
   [
    "LthRps",
    "EndRdx/Sleep",
    "Crafted_Lethargic_Repose_B",
-   "set"
+   "set",
+   "Lethargic Repose: Endurance/Sleep"
   ],
   [
    "LthRps",
    "Acc/EndRdx",
    "Crafted_Lethargic_Repose_C",
-   "set"
+   "set",
+   "Lethargic Repose: Accuracy/Endurance"
   ],
   [
    "LthRps",
    "Sleep/Rng",
    "Crafted_Lethargic_Repose_D",
-   "set"
+   "set",
+   "Lethargic Repose: Sleep/Range"
   ],
   [
    "LthRps",
    "Acc/Sleep/Rchg",
    "Crafted_Lethargic_Repose_E",
-   "set"
+   "set",
+   "Lethargic Repose: Accuracy/Sleep/Recharge"
   ],
   [
    "LthRps",
    "Acc/Sleep",
    "Crafted_Lethargic_Repose_F",
-   "set"
+   "set",
+   "Lethargic Repose: Accuracy/Sleep"
   ],
   [
    "CaloftheS",
    "Acc/Rchg",
    "Crafted_Call_of_the_Sandman_A",
-   "set"
+   "set",
+   "Call of the Sandman: Accuracy/Recharge"
   ],
   [
    "CaloftheS",
    "EndRdx/Sleep",
    "Crafted_Call_of_the_Sandman_B",
-   "set"
+   "set",
+   "Call of the Sandman: Endurance/Sleep"
   ],
   [
    "CaloftheS",
    "Acc/EndRdx",
    "Crafted_Call_of_the_Sandman_C",
-   "set"
+   "set",
+   "Call of the Sandman: Accuracy/Endurance"
   ],
   [
    "CaloftheS",
    "Sleep/Rng",
    "Crafted_Call_of_the_Sandman_D",
-   "set"
+   "set",
+   "Call of the Sandman: Sleep/Range"
   ],
   [
    "CaloftheS",
    "Acc/Sleep/Rchg",
    "Crafted_Call_of_the_Sandman_E",
-   "set"
+   "set",
+   "Call of the Sandman: Accuracy/Sleep/Recharge"
   ],
   [
    "CaloftheS",
    "Heal%",
    "Crafted_Call_of_the_Sandman_F",
-   "set"
+   "set",
+   "Call of the Sandman: Chance of Heal Self"
   ],
   [
    "Hrr",
    "Acc/Rchg",
    "Crafted_Horror_A",
-   "set"
+   "set",
+   "Horror: Accuracy/Recharge"
   ],
   [
    "Hrr",
    "EndRdx/Fear",
    "Crafted_Horror_B",
-   "set"
+   "set",
+   "Horror: Endurance/Fear"
   ],
   [
    "Hrr",
    "Acc/EndRdx",
    "Crafted_Horror_C",
-   "set"
+   "set",
+   "Horror: Accuracy/Endurance"
   ],
   [
    "Hrr",
    "Fear/Rng",
    "Crafted_Horror_D",
-   "set"
+   "set",
+   "Horror: Fear/Range"
   ],
   [
    "Hrr",
    "Acc/Fear/Rchg",
    "Crafted_Horror_E",
-   "set"
+   "set",
+   "Horror: Accuracy/Fear/Recharge"
   ],
   [
    "UnsTrr",
    "Acc/Rchg",
    "Crafted_Unspeakable_Terror_A",
-   "set"
+   "set",
+   "Unspeakable Terror: Accuracy/Recharge"
   ],
   [
    "UnsTrr",
    "EndRdx/Fear",
    "Crafted_Unspeakable_Terror_B",
-   "set"
+   "set",
+   "Unspeakable Terror: Endurance/Fear"
   ],
   [
    "UnsTrr",
    "Acc/EndRdx",
    "Crafted_Unspeakable_Terror_C",
-   "set"
+   "set",
+   "Unspeakable Terror: Accuracy/Endurance"
   ],
   [
    "UnsTrr",
    "Fear/Rng",
    "Crafted_Unspeakable_Terror_D",
-   "set"
+   "set",
+   "Unspeakable Terror: Fear/Range"
   ],
   [
    "UnsTrr",
    "Acc/Fear/Rchg",
    "Crafted_Unspeakable_Terror_E",
-   "set"
+   "set",
+   "Unspeakable Terror: Accuracy/Fear/Recharge"
   ],
   [
    "UnsTrr",
    "Stun%",
    "Crafted_Unspeakable_Terror_F",
-   "set"
+   "set",
+   "Unspeakable Terror: Disorient Bonus"
   ],
   [
    "Ngh",
    "Acc/Rchg",
    "Crafted_Nightmare_A",
-   "set"
+   "set",
+   "Nightmare: Accuracy/Recharge"
   ],
   [
    "Ngh",
    "EndRdx/Fear",
    "Crafted_Nightmare_B",
-   "set"
+   "set",
+   "Nightmare: Endurance/Fear"
   ],
   [
    "Ngh",
    "Acc/EndRdx",
    "Crafted_Nightmare_C",
-   "set"
+   "set",
+   "Nightmare: Accuracy/Endurance"
   ],
   [
    "Ngh",
    "Fear/Rng",
    "Crafted_Nightmare_D",
-   "set"
+   "set",
+   "Nightmare: Fear/Range"
   ],
   [
    "Ngh",
    "Acc/Fear/Rchg",
    "Crafted_Nightmare_E",
-   "set"
+   "set",
+   "Nightmare: Accuracy/Fear/Recharge"
   ],
   [
    "Ngh",
    "Acc/Fear",
    "Crafted_Nightmare_F",
-   "set"
+   "set",
+   "Nightmare: Accuracy/Fear"
   ],
   [
    "GlmoftheA",
    "Acc/Rchg",
    "Crafted_Glimpse_of_the_Abyss_A",
-   "set"
+   "set",
+   "Glimpse of the Abyss: Accuracy/Recharge"
   ],
   [
    "GlmoftheA",
    "EndRdx/Fear",
    "Crafted_Glimpse_of_the_Abyss_B",
-   "set"
+   "set",
+   "Glimpse of the Abyss: Endurance/Fear"
   ],
   [
    "GlmoftheA",
    "Acc/EndRdx",
    "Crafted_Glimpse_of_the_Abyss_C",
-   "set"
+   "set",
+   "Glimpse of the Abyss: Accuracy/Endurance"
   ],
   [
    "GlmoftheA",
    "Fear/Rng",
    "Crafted_Glimpse_of_the_Abyss_D",
-   "set"
+   "set",
+   "Glimpse of the Abyss: Fear/Range"
   ],
   [
    "GlmoftheA",
    "Acc/Fear/Rchg",
    "Crafted_Glimpse_of_the_Abyss_E",
-   "set"
+   "set",
+   "Glimpse of the Abyss: Accuracy/Fear/Recharge"
   ],
   [
    "GlmoftheA",
    "Dam%",
    "Crafted_Glimpse_of_the_Abyss_F",
-   "set"
+   "set",
+   "Glimpse of the Abyss: Chance of Damage(Psionic)"
   ],
   [
    "BfdAur",
    "Acc/Rchg",
    "Crafted_Befuddling_Aura_A",
-   "set"
+   "set",
+   "Befuddling Aura: Accuracy/Recharge"
   ],
   [
    "BfdAur",
    "EndRdx/Conf",
    "Crafted_Befuddling_Aura_B",
-   "set"
+   "set",
+   "Befuddling Aura: Endurance/Confused"
   ],
   [
    "BfdAur",
    "Acc/EndRdx",
    "Crafted_Befuddling_Aura_C",
-   "set"
+   "set",
+   "Befuddling Aura: Accuracy/Endurance"
   ],
   [
    "BfdAur",
    "Conf/Rng",
    "Crafted_Befuddling_Aura_D",
-   "set"
+   "set",
+   "Befuddling Aura: Confused/Range"
   ],
   [
    "BfdAur",
    "Acc/Conf/Rchg",
    "Crafted_Befuddling_Aura_E",
-   "set"
+   "set",
+   "Befuddling Aura: Accuracy/Confused/Recharge"
   ],
   [
    "Ccp",
    "Acc/Rchg",
    "Crafted_Cacophany_A",
-   "set"
+   "set",
+   "Cacophany: Accuracy/Recharge"
   ],
   [
    "Ccp",
    "EndRdx/Conf",
    "Crafted_Cacophany_B",
-   "set"
+   "set",
+   "Cacophany: Endurance/Confused"
   ],
   [
    "Ccp",
    "Acc/EndRdx",
    "Crafted_Cacophany_C",
-   "set"
+   "set",
+   "Cacophany: Accuracy/Endurance"
   ],
   [
    "Ccp",
    "Conf/Rng",
    "Crafted_Cacophany_D",
-   "set"
+   "set",
+   "Cacophany: Confused/Range"
   ],
   [
    "Ccp",
    "Acc/Conf/Rchg",
    "Crafted_Cacophany_E",
-   "set"
+   "set",
+   "Cacophany: Accuracy/Confused/Recharge"
   ],
   [
    "Ccp",
    "Dam%",
    "Crafted_Cacophany_F",
-   "set"
+   "set",
+   "Cacophany: Chance of Damage(Energy)"
   ],
   [
    "Prp",
    "Acc/Rchg",
    "Crafted_Perplex_A",
-   "set"
+   "set",
+   "Perplex: Accuracy/Recharge"
   ],
   [
    "Prp",
    "EndRdx/Conf",
    "Crafted_Perplex_B",
-   "set"
+   "set",
+   "Perplex: Endurance/Confused"
   ],
   [
    "Prp",
    "Acc/EndRdx",
    "Crafted_Perplex_C",
-   "set"
+   "set",
+   "Perplex: Accuracy/Endurance"
   ],
   [
    "Prp",
    "Conf/Rng",
    "Crafted_Perplex_D",
-   "set"
+   "set",
+   "Perplex: Confused/Range"
   ],
   [
    "Prp",
    "Acc/Conf/Rchg",
    "Crafted_Perplex_E",
-   "set"
+   "set",
+   "Perplex: Accuracy/Confused/Recharge"
   ],
   [
    "Prp",
    "Rchg/Conf",
    "Crafted_Perplex_F",
-   "set"
+   "set",
+   "Perplex: Recharge/Confused"
   ],
   [
    "MlsIll",
    "Acc/Rchg",
    "Crafted_Malaises_Illusions_A",
-   "set"
+   "set",
+   "Malaise's Illusions: Accuracy/Recharge"
   ],
   [
    "MlsIll",
    "EndRdx/Conf",
    "Crafted_Malaises_Illusions_B",
-   "set"
+   "set",
+   "Malaise's Illusions: Endurance/Confused"
   ],
   [
    "MlsIll",
    "Acc/EndRdx",
    "Crafted_Malaises_Illusions_C",
-   "set"
+   "set",
+   "Malaise's Illusions: Accuracy/Endurance"
   ],
   [
    "MlsIll",
    "Conf/Rng",
    "Crafted_Malaises_Illusions_D",
-   "set"
+   "set",
+   "Malaise's Illusions: Confused/Range"
   ],
   [
    "MlsIll",
    "Acc/Conf/Rchg",
    "Crafted_Malaises_Illusions_E",
-   "set"
+   "set",
+   "Malaise's Illusions: Accuracy/Confused/Recharge"
   ],
   [
    "MlsIll",
    "Dam%",
    "Crafted_Malaises_Illusions_F",
-   "set"
+   "set",
+   "Malaise's Illusions: Chance of Damage(Psionic)"
   ],
   [
    "Srn",
    "Fly",
    "Crafted_Soaring_A",
-   "set"
+   "set",
+   "Soaring: FlySpeed"
   ],
   [
    "Srn",
    "EndRdx",
    "Crafted_Soaring_B",
-   "set"
+   "set",
+   "Soaring: Endurance"
   ],
   [
    "Srn",
    "EndRdx/Fly",
    "Crafted_Soaring_C",
-   "set"
+   "set",
+   "Soaring: Endurance/FlySpeed"
   ],
   [
    "Frb",
    "EndRdx",
    "Crafted_Freebird_A",
-   "set"
+   "set",
+   "Freebird: Endurance"
   ],
   [
    "Frb",
    "Fly",
    "Crafted_Freebird_B",
-   "set"
+   "set",
+   "Freebird: FlySpeed"
   ],
   [
    "Frb",
    "Stlth",
    "Crafted_Freebird_C",
-   "set"
+   "set",
+   "Freebird: +Stealth"
   ],
   [
    "Spr",
    "Jump",
    "Crafted_Springfoot_A",
-   "set"
+   "set",
+   "Springfoot: Jumping"
   ],
   [
    "Spr",
    "EndRdx",
    "Crafted_Springfoot_B",
-   "set"
+   "set",
+   "Springfoot: Endurance"
   ],
   [
    "Spr",
    "EndRdx/Jump",
    "Crafted_Springfoot_C",
-   "set"
+   "set",
+   "Springfoot: Endurance/Jumping"
   ],
   [
    "UnbLea",
    "EndRdx",
    "Crafted_Unbounded_Leap_A",
-   "set"
+   "set",
+   "Unbounded Leap: Endurance"
   ],
   [
    "UnbLea",
    "Jump",
    "Crafted_Unbounded_Leap_B",
-   "set"
+   "set",
+   "Unbounded Leap: Jumping"
   ],
   [
    "UnbLea",
    "Stlth",
    "Crafted_Unbounded_Leap_C",
-   "set"
+   "set",
+   "Unbounded Leap: +Stealth"
   ],
   [
    "Qck",
    "RunSpd",
    "Crafted_Quickfoot_A",
-   "set"
+   "set",
+   "Quickfoot: RunSpeed"
   ],
   [
    "Qck",
    "EndRdx",
    "Crafted_Quickfoot_B",
-   "set"
+   "set",
+   "Quickfoot: Endurance"
   ],
   [
    "Qck",
    "EndRdx/RunSpd",
    "Crafted_Quickfoot_C",
-   "set"
+   "set",
+   "Quickfoot: Endurance/RunSpeed"
   ],
   [
    "Clr",
    "EndRdx",
    "Crafted_Celerity_A",
-   "set"
+   "set",
+   "Celerity: Endurance"
   ],
   [
    "Clr",
    "RunSpd",
    "Crafted_Celerity_B",
-   "set"
+   "set",
+   "Celerity: RunSpeed"
   ],
   [
    "Clr",
    "Stlth",
    "Crafted_Celerity_C",
-   "set"
+   "set",
+   "Celerity: +Stealth"
   ],
   [
    "Jnt",
    "Rng",
    "Crafted_Jaunt_A",
-   "set"
+   "set",
+   "Jaunt: Range"
   ],
   [
    "Jnt",
    "EndRdx",
    "Crafted_Jaunt_B",
-   "set"
+   "set",
+   "Jaunt: Endurance"
   ],
   [
    "Jnt",
    "EndRdx/Rng",
    "Crafted_Jaunt_C",
-   "set"
+   "set",
+   "Jaunt: Endurance/Range"
   ],
   [
    "Tim&SpcMn",
    "EndRdx",
    "Crafted_TimeSpace_Manipulation_A",
-   "set"
+   "set",
+   "Time & Space Manipulation: Endurance"
   ],
   [
    "Tim&SpcMn",
    "Rng",
    "Crafted_TimeSpace_Manipulation_B",
-   "set"
+   "set",
+   "Time & Space Manipulation: Range"
   ],
   [
    "Tim&SpcMn",
    "Stlth",
    "Crafted_TimeSpace_Manipulation_C",
-   "set"
+   "set",
+   "Time & Space Manipulation: +Stealth"
   ],
   [
    "",
    "AntiP",
    "Hydra_DeBuff_Endurance_Discount",
-   "special"
+   "special",
+   "Anti-Protons"
   ],
   [
    "",
    "DeltaP",
    "Hydra_DeBuff_Accuracy",
-   "special"
+   "special",
+   "Delta Particles"
   ],
   [
    "",
    "ElectP",
    "Hydra_Res_Damage_Endurance_Discount",
-   "special"
+   "special",
+   "Electron Particles"
   ],
   [
    "",
    "GluonP",
    "Hydra_Damage_Mez",
-   "special"
+   "special",
+   "Gluon Particles"
   ],
   [
    "",
    "GravP",
    "Hydra_Accuracy_Mez",
-   "special"
+   "special",
+   "Graviton Particles"
   ],
   [
    "",
    "NeutP",
    "Hydra_Damage_Accuracy",
-   "special"
+   "special",
+   "Neutrino Particles"
   ],
   [
    "",
    "NeutronP",
    "Hydra_Damage_Range",
-   "special"
+   "special",
+   "Neutron Particles"
   ],
   [
    "",
    "PosiP",
    "Hydra_Heal_Endurance_Discount",
-   "special"
+   "special",
+   "Positron Particles"
   ],
   [
    "",
    "ProtP",
    "Hydra_Buff_Endurance_Discount",
-   "special"
+   "special",
+   "Proton Particles"
   ],
   [
    "",
    "QuarkP",
    "Hydra_Buff_Recharge",
-   "special"
+   "special",
+   "Quark Partciles"
   ],
   [
    "",
    "ThetaP",
    "Hydra_Travel_Endurance_Discount",
-   "special"
+   "special",
+   "Theta Particles"
   ],
   [
    "",
    "AmeShard",
    "Titan_Damage_Mez",
-   "special"
+   "special",
+   "Amethyst Shard"
   ],
   [
    "",
    "CalShard",
    "Titan_Accuracy_Mez",
-   "special"
+   "special",
+   "Calcite Shard"
   ],
   [
    "",
    "CitShard",
    "Titan_Buff_Recharge",
-   "special"
+   "special",
+   "Citrine Shard"
   ],
   [
    "",
    "DiaShard",
    "Titan_Damage_Accuracy",
-   "special"
+   "special",
+   "Diamond Shard"
   ],
   [
    "",
    "GypShard",
    "Titan_DeBuff_Accuracy",
-   "special"
+   "special",
+   "Gypsum Shard"
   ],
   [
    "",
    "KyaShard",
    "Titan_Heal_Endurance_Discount",
-   "special"
+   "special",
+   "Kyanite SHard"
   ],
   [
    "",
    "PerShard",
    "Titan_Res_Damage_Endurance_Discount",
-   "special"
+   "special",
+   "Peridont Shard"
   ],
   [
    "",
    "QuaShard",
    "Titan_Damage_Range",
-   "special"
+   "special",
+   "Quartz Shard"
   ],
   [
    "",
    "SelShard",
    "Titan_Travel_Endurance_Discount",
-   "special"
+   "special",
+   "Selenite Shard"
   ],
   [
    "",
    "TanShard",
    "Titan_Buff_Endurance_Discount",
-   "special"
+   "special",
+   "Tanzenite Shard"
   ],
   [
    "",
    "ZeoShard",
    "Titan_DeBuff_Endurance_Discount",
-   "special"
+   "special",
+   "Zeolite Shard"
   ],
   [
    "Hct",
    "Dmg",
    "Crafted_Hecatomb_A",
-   "set"
+   "set",
+   "Hecatomb: Damage"
   ],
   [
    "Hct",
    "Dmg/Rchg",
    "Crafted_Hecatomb_B",
-   "set"
+   "set",
+   "Hecatomb: Damage/Recharge"
   ],
   [
    "Hct",
    "Acc/Dmg/Rchg",
    "Crafted_Hecatomb_C",
-   "set"
+   "set",
+   "Hecatomb: Accuracy/Damage/Recharge"
   ],
   [
    "Hct",
    "Acc/Rchg",
    "Crafted_Hecatomb_D",
-   "set"
+   "set",
+   "Hecatomb: Accuracy/Recharge"
   ],
   [
    "Hct",
    "Dmg/EndRdx",
    "Crafted_Hecatomb_E",
-   "set"
+   "set",
+   "Hecatomb: Damage/Endurance"
   ],
   [
    "Hct",
    "Dam%",
    "Crafted_Hecatomb_F",
-   "set"
+   "set",
+   "Hecatomb: Chance of Damage(Negative)"
   ],
   [
    "Apc",
    "Dmg",
    "Crafted_Apocalypse_A",
-   "set"
+   "set",
+   "Apocalypse: Damage"
   ],
   [
    "Apc",
    "Dmg/Rchg",
    "Crafted_Apocalypse_B",
-   "set"
+   "set",
+   "Apocalypse: Damage/Recharge"
   ],
   [
    "Apc",
    "Acc/Dmg/Rchg",
    "Crafted_Apocalypse_C",
-   "set"
+   "set",
+   "Apocalypse: Accuracy/Damage/Recharge"
   ],
   [
    "Apc",
    "Acc/Rchg",
    "Crafted_Apocalypse_D",
-   "set"
+   "set",
+   "Apocalypse: Accuracy/Recharge"
   ],
   [
    "Apc",
    "Dmg/EndRdx",
    "Crafted_Apocalypse_E",
-   "set"
+   "set",
+   "Apocalypse: Damage/Endurance"
   ],
   [
    "Apc",
    "Dam%",
    "Crafted_Apocalypse_F",
-   "set"
+   "set",
+   "Apocalypse: Chance of Damage(Negative)"
   ],
   [
    "Rgn",
    "Dmg",
    "Crafted_Ragnarok_A",
-   "set"
+   "set",
+   "Ragnarok: Damage"
   ],
   [
    "Rgn",
    "Dmg/Rchg",
    "Crafted_Ragnarok_B",
-   "set"
+   "set",
+   "Ragnarok: Damage/Recharge"
   ],
   [
    "Rgn",
    "Acc/Dmg/Rchg",
    "Crafted_Ragnarok_C",
-   "set"
+   "set",
+   "Ragnarok: Accuracy/Damage/Recharge"
   ],
   [
    "Rgn",
    "Acc/Rchg",
    "Crafted_Ragnarok_D",
-   "set"
+   "set",
+   "Ragnarok: Accuracy/Recharge"
   ],
   [
    "Rgn",
    "Dmg/EndRdx",
    "Crafted_Ragnarok_E",
-   "set"
+   "set",
+   "Ragnarok: Damage/Endurance"
   ],
   [
    "Rgn",
    "Knock%",
    "Crafted_Ragnarok_F",
-   "set"
+   "set",
+   "Ragnarok: Chance for Knockdown"
   ],
   [
    "Arm",
    "Dmg",
    "Crafted_Armageddon_A",
-   "set"
+   "set",
+   "Armageddon: Damage"
   ],
   [
    "Arm",
    "Dmg/Rchg",
    "Crafted_Armageddon_B",
-   "set"
+   "set",
+   "Armageddon: Damage/Recharge"
   ],
   [
    "Arm",
    "Acc/Dmg/Rchg",
    "Crafted_Armageddon_C",
-   "set"
+   "set",
+   "Armageddon: Accuracy/Damage/Recharge"
   ],
   [
    "Arm",
    "Acc/Rchg",
    "Crafted_Armageddon_D",
-   "set"
+   "set",
+   "Armageddon: Accuracy/Recharge"
   ],
   [
    "Arm",
    "Dmg/EndRdx",
    "Crafted_Armageddon_E",
-   "set"
+   "set",
+   "Armageddon: Damage/Endurance"
   ],
   [
    "Arm",
    "Dam%",
    "Crafted_Armageddon_F",
-   "set"
+   "set",
+   "Armageddon: Chance for Fire Damage"
   ],
   [
    "SlbAll",
    "Dmg",
    "Crafted_Soulbound_Allegiance_A",
-   "set"
+   "set",
+   "Soulbound Allegiance: Damage"
   ],
   [
    "SlbAll",
    "Dmg/Rchg",
    "Crafted_Soulbound_Allegiance_B",
-   "set"
+   "set",
+   "Soulbound Allegiance: Damage/Recharge"
   ],
   [
    "SlbAll",
    "Acc/Dmg/Rchg",
    "Crafted_Soulbound_Allegiance_C",
-   "set"
+   "set",
+   "Soulbound Allegiance: Accuracy/Damage/Recharge"
   ],
   [
    "SlbAll",
    "Acc/Rchg",
    "Crafted_Soulbound_Allegiance_D",
-   "set"
+   "set",
+   "Soulbound Allegiance: Accuracy/Recharge"
   ],
   [
    "SlbAll",
    "Dmg/EndRdx",
    "Crafted_Soulbound_Allegiance_E",
-   "set"
+   "set",
+   "Soulbound Allegiance: Damage/Endurance"
   ],
   [
    "SlbAll",
    "Build%",
    "Crafted_Soulbound_Allegiance_F",
-   "set"
+   "set",
+   "Soulbound Allegiance: Chance for Build Up"
   ],
   [
    "UnbCns",
    "Hold",
    "Crafted_Unbreakable_Constraint_A",
-   "set"
+   "set",
+   "Unbreakable Constraint: Hold"
   ],
   [
    "UnbCns",
    "Hold/Rchg",
    "Crafted_Unbreakable_Constraint_B",
-   "set"
+   "set",
+   "Unbreakable Constraint: Hold/Recharge"
   ],
   [
    "UnbCns",
    "Acc/Hold/Rchg",
    "Crafted_Unbreakable_Constraint_C",
-   "set"
+   "set",
+   "Unbreakable Constraint: Accuracy/Hold/Recharge"
   ],
   [
    "UnbCns",
    "Acc/Rchg",
    "Crafted_Unbreakable_Constraint_D",
-   "set"
+   "set",
+   "Unbreakable Constraint: Accuracy/Recharge"
   ],
   [
    "UnbCns",
    "EndRdx/Hold",
    "Crafted_Unbreakable_Constraint_E",
-   "set"
+   "set",
+   "Unbreakable Constraint: Endurance/Hold"
   ],
   [
    "UnbCns",
    "Dam%",
    "Crafted_Unbreakable_Constraint_F",
-   "set"
+   "set",
+   "Unbreakable Constraint: Chance for Smashing Damage"
   ],
   [
    "AbsAmz",
    "Stun",
    "Crafted_Absolute_Amazement_A",
-   "set"
+   "set",
+   "Absolute Amazement: Stun"
   ],
   [
    "AbsAmz",
    "Stun/Rchg",
    "Crafted_Absolute_Amazement_B",
-   "set"
+   "set",
+   "Absolute Amazement: Stun/Recharge"
   ],
   [
    "AbsAmz",
    "Acc/Stun/Rchg",
    "Crafted_Absolute_Amazement_C",
-   "set"
+   "set",
+   "Absolute Amazement: Accuracy/Stun/Recharge"
   ],
   [
    "AbsAmz",
    "Acc/Rchg",
    "Crafted_Absolute_Amazement_D",
-   "set"
+   "set",
+   "Absolute Amazement: Accuracy/Recharge"
   ],
   [
    "AbsAmz",
    "EndRdx/Stun",
    "Crafted_Absolute_Amazement_E",
-   "set"
+   "set",
+   "Absolute Amazement: Endurance/Stun"
   ],
   [
    "AbsAmz",
    "ToHitDeb%",
    "Crafted_Absolute_Amazement_F",
-   "set"
+   "set",
+   "Absolute Amazement: Chance for ToHit Debuff"
   ],
   [
    "GrvAnc",
    "Immob",
    "Crafted_Gravitational_Anchor_A",
-   "set"
+   "set",
+   "Gravitational Anchor: Immobilize"
   ],
   [
    "GrvAnc",
    "Immob/Rchg",
    "Crafted_Gravitational_Anchor_B",
-   "set"
+   "set",
+   "Gravitational Anchor: Immobilize/Recharge"
   ],
   [
    "GrvAnc",
    "Acc/Immob/Rchg",
    "Crafted_Gravitational_Anchor_C",
-   "set"
+   "set",
+   "Gravitational Anchor: Accuracy/Immobilize/Recharge"
   ],
   [
    "GrvAnc",
    "Acc/Rchg",
    "Crafted_Gravitational_Anchor_D",
-   "set"
+   "set",
+   "Gravitational Anchor: Accuracy/Recharge"
   ],
   [
    "GrvAnc",
    "Immob/EndRdx",
    "Crafted_Gravitational_Anchor_E",
-   "set"
+   "set",
+   "Gravitational Anchor: Immobilize/Endurance"
   ],
   [
    "GrvAnc",
    "Hold%",
    "Crafted_Gravitational_Anchor_F",
-   "set"
+   "set",
+   "Gravitational Anchor: Chance for Hold"
   ],
   [
    "FrtHyp",
    "Sleep",
    "Crafted_Fortunata_Hypnosis_A",
-   "set"
+   "set",
+   "Fortunata Hypnosis: Sleep"
   ],
   [
    "FrtHyp",
    "Sleep/Rchg",
    "Crafted_Fortunata_Hypnosis_B",
-   "set"
+   "set",
+   "Fortunata Hypnosis: Sleep/Recharge"
   ],
   [
    "FrtHyp",
    "Acc/Sleep/Rchg",
    "Crafted_Fortunata_Hypnosis_C",
-   "set"
+   "set",
+   "Fortunata Hypnosis: Accuracy/Sleep/Recharge"
   ],
   [
    "FrtHyp",
    "Acc/Rchg",
    "Crafted_Fortunata_Hypnosis_D",
-   "set"
+   "set",
+   "Fortunata Hypnosis: Accuracy/Recharge"
   ],
   [
    "FrtHyp",
    "Sleep/EndRdx",
    "Crafted_Fortunata_Hypnosis_E",
-   "set"
+   "set",
+   "Fortunata Hypnosis: Sleep/Endurance"
   ],
   [
    "FrtHyp",
    "Plct%",
    "Crafted_Fortunata_Hypnosis_F",
-   "set"
+   "set",
+   "Fortunata Hypnosis: Chance for Placate"
   ],
   [
    "CrcPrs",
    "Conf",
    "Crafted_Coercive_Persuasion_A",
-   "set"
+   "set",
+   "Coercive Persuasion : Confused"
   ],
   [
    "CrcPrs",
    "Conf/Rchg",
    "Crafted_Coercive_Persuasion_B",
-   "set"
+   "set",
+   "Coercive Persuasion : Confused/Recharge"
   ],
   [
    "CrcPrs",
    "Acc/Conf/Rchg",
    "Crafted_Coercive_Persuasion_C",
-   "set"
+   "set",
+   "Coercive Persuasion : Accuracy/Confused/Recharge"
   ],
   [
    "CrcPrs",
    "Acc/Rchg",
    "Crafted_Coercive_Persuasion_D",
-   "set"
+   "set",
+   "Coercive Persuasion : Accuracy/Recharge"
   ],
   [
    "CrcPrs",
    "Conf/EndRdx",
    "Crafted_Coercive_Persuasion_E",
-   "set"
+   "set",
+   "Coercive Persuasion : Confused/Endurance"
   ],
   [
    "CrcPrs",
    "Conf%",
    "Crafted_Coercive_Persuasion_F",
-   "set"
+   "set",
+   "Coercive Persuasion : Contagious Confusion"
   ],
   [
    "Ann",
    "Taunt",
    "Crafted_Annoyance_A",
-   "set"
+   "set",
+   "Annoyance: Taunt"
   ],
   [
    "Ann",
    "Taunt/Rchg",
    "Crafted_Annoyance_B",
-   "set"
+   "set",
+   "Annoyance: Taunt/Recharge"
   ],
   [
    "Ann",
    "Taunt/Rchg/Rng",
    "Crafted_Annoyance_C",
-   "set"
+   "set",
+   "Annoyance: Taunt/Recharge/Range"
   ],
   [
    "TrmIns",
    "Taunt",
    "Crafted_Triumphant_Insult_A",
-   "set"
+   "set",
+   "Triumphant Insult: Taunt"
   ],
   [
    "TrmIns",
    "Taunt/Rchg",
    "Crafted_Triumphant_Insult_B",
-   "set"
+   "set",
+   "Triumphant Insult: Taunt/Recharge"
   ],
   [
    "TrmIns",
    "Stun%",
    "Crafted_Triumphant_Insult_C",
-   "set"
+   "set",
+   "Triumphant Insult: Chance to Disorient"
   ],
   [
    "MckBrt",
    "Taunt",
    "Crafted_Mocking_Beratement_A",
-   "set"
+   "set",
+   "Mocking Beratement: Taunt"
   ],
   [
    "MckBrt",
    "Taunt/Rchg",
    "Crafted_Mocking_Beratement_B",
-   "set"
+   "set",
+   "Mocking Beratement: Taunt/Recharge"
   ],
   [
    "MckBrt",
    "Taunt/Rchg/Rng",
    "Crafted_Mocking_Beratement_C",
-   "set"
+   "set",
+   "Mocking Beratement: Taunt/Recharge/Range"
   ],
   [
    "MckBrt",
    "Acc/Rchg",
    "Crafted_Mocking_Beratement_D",
-   "set"
+   "set",
+   "Mocking Beratement: Accuracy/Recharge"
   ],
   [
    "MckBrt",
    "Taunt/Rng",
    "Crafted_Mocking_Beratement_E",
-   "set"
+   "set",
+   "Mocking Beratement: Taunt/Range"
   ],
   [
    "MckBrt",
    "Rchg",
    "Crafted_Mocking_Beratement_F",
-   "set"
+   "set",
+   "Mocking Beratement: Recharge"
   ],
   [
    "PrfZng",
    "Taunt",
    "Crafted_Perfect_Zinger_A",
-   "set"
+   "set",
+   "Perfect Zinger: Taunt"
   ],
   [
    "PrfZng",
    "Taunt/Rchg",
    "Crafted_Perfect_Zinger_B",
-   "set"
+   "set",
+   "Perfect Zinger: Taunt/Recharge"
   ],
   [
    "PrfZng",
    "Taunt/Rchg/Rng",
    "Crafted_Perfect_Zinger_C",
-   "set"
+   "set",
+   "Perfect Zinger: Taunt/Recharge/Range"
   ],
   [
    "PrfZng",
    "Acc/Rchg",
    "Crafted_Perfect_Zinger_D",
-   "set"
+   "set",
+   "Perfect Zinger: Accuracy/Recharge"
   ],
   [
    "PrfZng",
    "Taunt/Rng",
    "Crafted_Perfect_Zinger_E",
-   "set"
+   "set",
+   "Perfect Zinger: Taunt/Range"
   ],
   [
    "PrfZng",
    "Dam%",
    "Crafted_Perfect_Zinger_F",
-   "set"
+   "set",
+   "Perfect Zinger: Chance for Psi Damage"
   ],
   [
    "VllofVlc",
    "Dmg/KB",
    "Crafted_Volley_of_Velocity_A",
-   "set"
+   "set",
+   "Volley of Velocity: Damage/Knockback"
   ],
   [
    "VllofVlc",
    "Acc/KB",
    "Crafted_Volley_of_Velocity_B",
-   "set"
+   "set",
+   "Volley of Velocity: Accuracy/Knockback"
   ],
   [
    "VllofVlc",
    "Rchg/KB",
    "Crafted_Volley_of_Velocity_C",
-   "set"
+   "set",
+   "Volley of Velocity: Recharge/Knockback"
   ],
   [
    "ExpStr",
    "Dmg/KB",
    "Crafted_Explosive_Strike_A",
-   "set"
+   "set",
+   "Explosive Strike: Damage/Knockback"
   ],
   [
    "ExpStr",
    "Acc/KB",
    "Crafted_Explosive_Strike_B",
-   "set"
+   "set",
+   "Explosive Strike: Accuracy/Knockback"
   ],
   [
    "ExpStr",
    "Dam%",
    "Crafted_Explosive_Strike_C",
-   "set"
+   "set",
+   "Explosive Strike: Chance for Smashing Damage"
   ],
   [
    "KntCrs",
    "Dmg/KB",
    "Crafted_Kinetic_Crash_A",
-   "set"
+   "set",
+   "Kinetic Crash: Damage/Knockback"
   ],
   [
    "KntCrs",
    "Acc/KB",
    "Crafted_Kinetic_Crash_B",
-   "set"
+   "set",
+   "Kinetic Crash: Accuracy/Knockback"
   ],
   [
    "KntCrs",
    "Rchg/KB",
    "Crafted_Kinetic_Crash_C",
-   "set"
+   "set",
+   "Kinetic Crash: Recharge/Knockback"
   ],
   [
    "KntCrs",
    "Rechg/EndRdx",
    "Crafted_Kinetic_Crash_D",
-   "set"
+   "set",
+   "Kinetic Crash: Recharge/Endurance"
   ],
   [
    "KntCrs",
    "Dmg/EndRdx/KB",
    "Crafted_Kinetic_Crash_E",
-   "set"
+   "set",
+   "Kinetic Crash: Damage/Endurance/Knockback"
   ],
   [
    "KntCrs",
    "Acc/Dmg/KB",
    "Crafted_Kinetic_Crash_F",
-   "set"
+   "set",
+   "Kinetic Crash: Accuracy/Damage/Knockback"
   ],
   [
    "FrcFdb",
    "Dmg/KB",
    "Crafted_Force_Feedback_A",
-   "set"
+   "set",
+   "Force Feedback: Damage/Knockback"
   ],
   [
    "FrcFdb",
    "Acc/KB",
    "Crafted_Force_Feedback_B",
-   "set"
+   "set",
+   "Force Feedback: Accuracy/Knockback"
   ],
   [
    "FrcFdb",
    "Rchg/KB",
    "Crafted_Force_Feedback_C",
-   "set"
+   "set",
+   "Force Feedback: Recharge/Knockback"
   ],
   [
    "FrcFdb",
    "Rchg/EndRdx",
    "Crafted_Force_Feedback_D",
-   "set"
+   "set",
+   "Force Feedback: Recharge/Endurance"
   ],
   [
    "FrcFdb",
    "Dmg/EndRdx/KB",
    "Crafted_Force_Feedback_E",
-   "set"
+   "set",
+   "Force Feedback: Damage/Endurance/Knockback"
   ],
   [
    "FrcFdb",
    "Rechg%",
    "Crafted_Force_Feedback_F",
-   "set"
+   "set",
+   "Force Feedback: Chance for +Recharge"
   ],
   [
    "AdrAdj",
    "EndMod",
    "Crafted_Adrenal_Adjustment_A",
-   "set"
+   "set",
+   "Adrenal Adjustment: EndMod"
   ],
   [
    "AdrAdj",
    "EndMod/Rchg",
    "Crafted_Adrenal_Adjustment_B",
-   "set"
+   "set",
+   "Adrenal Adjustment: EndMod/Recharge"
   ],
   [
    "AdrAdj",
    "EndMod/Acc/Rchg",
    "Crafted_Adrenal_Adjustment_C",
-   "set"
+   "set",
+   "Adrenal Adjustment: EndMod/Accuracy/Recharge"
   ],
   [
    "EnrMnp",
    "EndMod",
    "Crafted_Energy_Manipulator_A",
-   "set"
+   "set",
+   "Energy Manipulator: EndMod"
   ],
   [
    "EnrMnp",
    "EndMod/Rchg",
    "Crafted_Energy_Manipulator_B",
-   "set"
+   "set",
+   "Energy Manipulator: EndMod/Recharge"
   ],
   [
    "EnrMnp",
    "Stun%",
    "Crafted_Energy_Manipulator_C",
-   "set"
+   "set",
+   "Energy Manipulator: Chance to Stun"
   ],
   [
    "EffAdp",
    "EndMod",
    "Crafted_Efficacy_Adaptor_A",
-   "set"
+   "set",
+   "Efficacy Adaptor: EndMod"
   ],
   [
    "EffAdp",
    "EndMod/Rchg",
    "Crafted_Efficacy_Adaptor_B",
-   "set"
+   "set",
+   "Efficacy Adaptor: EndMod/Recharge"
   ],
   [
    "EffAdp",
    "EndMod/Acc/Rchg",
    "Crafted_Efficacy_Adaptor_C",
-   "set"
+   "set",
+   "Efficacy Adaptor: EndMod/Accuracy/Recharge"
   ],
   [
    "EffAdp",
    "Acc/Rchg",
    "Crafted_Efficacy_Adaptor_D",
-   "set"
+   "set",
+   "Efficacy Adaptor: Accuracy/Recharge"
   ],
   [
    "EffAdp",
    "EndMod/Acc",
    "Crafted_Efficacy_Adaptor_E",
-   "set"
+   "set",
+   "Efficacy Adaptor: EndMod/Accuracy"
   ],
   [
    "EffAdp",
    "EndMod/EndRdx",
    "Crafted_Efficacy_Adaptor_F",
-   "set"
+   "set",
+   "Efficacy Adaptor: EndMod/Endurance"
   ],
   [
    "PrfShf",
    "EndMod",
    "Crafted_Performance_Shifter_A",
-   "set"
+   "set",
+   "Performance Shifter: EndMod"
   ],
   [
    "PrfShf",
    "EndMod/Rchg",
    "Crafted_Performance_Shifter_B",
-   "set"
+   "set",
+   "Performance Shifter: EndMod/Recharge"
   ],
   [
    "PrfShf",
    "EndMod/Acc/Rchg",
    "Crafted_Performance_Shifter_C",
-   "set"
+   "set",
+   "Performance Shifter: EndMod/Accuracy/Recharge"
   ],
   [
    "PrfShf",
    "Acc/Rchg",
    "Crafted_Performance_Shifter_D",
-   "set"
+   "set",
+   "Performance Shifter: Accuracy/Recharge"
   ],
   [
    "PrfShf",
    "EndMod/Acc",
    "Crafted_Performance_Shifter_E",
-   "set"
+   "set",
+   "Performance Shifter: EndMod/Accuracy"
   ],
   [
    "PrfShf",
    "End%",
    "Crafted_Performance_Shifter_F",
-   "set"
+   "set",
+   "Performance Shifter: Chance for +End"
   ],
   [
    "EncAcc",
    "ToHit",
    "Crafted_Encouraged_Accuracy_A",
-   "set"
+   "set",
+   "Encouraged Accuracy: To Hit Buff"
   ],
   [
    "EncAcc",
    "ToHit/Rchg",
    "Crafted_Encouraged_Accuracy_B",
-   "set"
+   "set",
+   "Encouraged Accuracy: To Hit Buff/Recharge"
   ],
   [
    "EncAcc",
    "ToHit/Rchg/EndRdx",
    "Crafted_Encouraged_Accuracy_C",
-   "set"
+   "set",
+   "Encouraged Accuracy: To Hit Buff/Recharge/Endurance"
   ],
   [
    "RctRtc",
    "ToHit",
    "Crafted_Rectified_Reticle_A",
-   "set"
+   "set",
+   "Rectified Reticle: To Hit Buff"
   ],
   [
    "RctRtc",
    "ToHit/Rchg",
    "Crafted_Rectified_Reticle_B",
-   "set"
+   "set",
+   "Rectified Reticle: To Hit Buff/Recharge"
   ],
   [
    "RctRtc",
    "Pcptn",
    "Crafted_Rectified_Reticle_C",
-   "set"
+   "set",
+   "Rectified Reticle: Increased Perception"
   ],
   [
    "AdjTrg",
    "ToHit",
    "Crafted_Adjusted_Targeting_A",
-   "set"
+   "set",
+   "Adjusted Targeting: To Hit Buff"
   ],
   [
    "AdjTrg",
    "ToHit/Rchg",
    "Crafted_Adjusted_Targeting_B",
-   "set"
+   "set",
+   "Adjusted Targeting: To Hit Buff/Recharge"
   ],
   [
    "AdjTrg",
    "ToHit/EndRdx/Rchg",
    "Crafted_Adjusted_Targeting_C",
-   "set"
+   "set",
+   "Adjusted Targeting: To Hit Buff/Endurance/Recharge"
   ],
   [
    "AdjTrg",
    "EndRdx/Rchg",
    "Crafted_Adjusted_Targeting_D",
-   "set"
+   "set",
+   "Adjusted Targeting: Endurance/Recharge"
   ],
   [
    "AdjTrg",
    "ToHit/EndRdx",
    "Crafted_Adjusted_Targeting_E",
-   "set"
+   "set",
+   "Adjusted Targeting: To Hit Buff/Endurance"
   ],
   [
    "AdjTrg",
    "Rchg",
    "Crafted_Adjusted_Targeting_F",
-   "set"
+   "set",
+   "Adjusted Targeting: Recharge"
   ],
   [
    "GssSynFr-",
    "ToHit",
    "Crafted_Gaussians_Synchronized_FireControl_A",
-   "set"
+   "set",
+   "Gaussian's Synchronized Fire-Control: To Hit Buff"
   ],
   [
    "GssSynFr-",
    "ToHit/Rchg",
    "Crafted_Gaussians_Synchronized_FireControl_B",
-   "set"
+   "set",
+   "Gaussian's Synchronized Fire-Control: To Hit Buff/Recharge"
   ],
   [
    "GssSynFr-",
    "ToHit/Rchg/EndRdx",
    "Crafted_Gaussians_Synchronized_FireControl_C",
-   "set"
+   "set",
+   "Gaussian's Synchronized Fire-Control: To Hit Buff/Recharge/Endurance"
   ],
   [
    "GssSynFr-",
    "Rchg/EndRdx",
    "Crafted_Gaussians_Synchronized_FireControl_D",
-   "set"
+   "set",
+   "Gaussian's Synchronized Fire-Control: Recharge/Endurance"
   ],
   [
    "GssSynFr-",
    "ToHit/EndRdx",
    "Crafted_Gaussians_Synchronized_FireControl_E",
-   "set"
+   "set",
+   "Gaussian's Synchronized Fire-Control: To Hit Buff/Endurance"
   ],
   [
    "GssSynFr-",
    "Build%",
    "Crafted_Gaussians_Synchronized_FireControl_F",
-   "set"
+   "set",
+   "Gaussian's Synchronized Fire-Control: Chance for Build Up"
   ],
   [
    "DscWrd",
    "ToHitDeb",
    "Crafted_Discouraging_Words_A",
-   "set"
+   "set",
+   "Discouraging Words: To Hit Debuff"
   ],
   [
    "DscWrd",
    "ToHitDeb/Rchg",
    "Crafted_Discouraging_Words_B",
-   "set"
+   "set",
+   "Discouraging Words: To Hit Debuff/Recharge"
   ],
   [
    "DscWrd",
    "ToHitDeb/Rchg/EndRdx",
    "Crafted_Discouraging_Words_C",
-   "set"
+   "set",
+   "Discouraging Words: To Hit Debuff/Recharge/Endurance"
   ],
   [
    "DflEgo",
    "ToHitDeb",
    "Crafted_Deflated_Ego_A",
-   "set"
+   "set",
+   "Deflated Ego: To Hit Debuff"
   ],
   [
    "DflEgo",
    "ToHitDeb/Rchg",
    "Crafted_Deflated_Ego_B",
-   "set"
+   "set",
+   "Deflated Ego: To Hit Debuff/Recharge"
   ],
   [
    "DflEgo",
    "RecDeb%",
    "Crafted_Deflated_Ego_C",
-   "set"
+   "set",
+   "Deflated Ego: Chance for Recovery Debuff"
   ],
   [
    "DmpSpr",
    "ToHitDeb",
    "Crafted_Dampened_Spirits_A",
-   "set"
+   "set",
+   "Dampened Spirits: To Hit Debuff"
   ],
   [
    "DmpSpr",
    "ToHitDeb/Rchg",
    "Crafted_Dampened_Spirits_B",
-   "set"
+   "set",
+   "Dampened Spirits: To Hit Debuff/Recharge"
   ],
   [
    "DmpSpr",
    "ToHitDeb/Rchg/EndRdx",
    "Crafted_Dampened_Spirits_C",
-   "set"
+   "set",
+   "Dampened Spirits: To Hit Debuff/Recharge/Endurance"
   ],
   [
    "DmpSpr",
    "Rchg/EndRdx",
    "Crafted_Dampened_Spirits_D",
-   "set"
+   "set",
+   "Dampened Spirits: Recharge/Endurance"
   ],
   [
    "DmpSpr",
    "ToHitDeb/EndRdx",
    "Crafted_Dampened_Spirits_E",
-   "set"
+   "set",
+   "Dampened Spirits: To Hit Debuff/Endurance"
   ],
   [
    "DmpSpr",
    "Rchg",
    "Crafted_Dampened_Spirits_F",
-   "set"
+   "set",
+   "Dampened Spirits: Recharge"
   ],
   [
    "DarWtcDsp",
    "ToHitDeb",
    "Crafted_Dark_Watchers_Despair_A",
-   "set"
+   "set",
+   "Dark Watcher's Despair: To Hit Debuff"
   ],
   [
    "DarWtcDsp",
    "ToHitDeb/Rchg",
    "Crafted_Dark_Watchers_Despair_B",
-   "set"
+   "set",
+   "Dark Watcher's Despair: To Hit Debuff/Recharge"
   ],
   [
    "DarWtcDsp",
    "ToHitdeb/Rchg/EndRdx",
    "Crafted_Dark_Watchers_Despair_C",
-   "set"
+   "set",
+   "Dark Watcher's Despair: To Hit Debuff/Recharge/Endurance"
   ],
   [
    "DarWtcDsp",
    "Rchg/EndRdx",
    "Crafted_Dark_Watchers_Despair_D",
-   "set"
+   "set",
+   "Dark Watcher's Despair: Recharge/Endurance"
   ],
   [
    "DarWtcDsp",
    "ToHitDeb/EndRdx",
    "Crafted_Dark_Watchers_Despair_E",
-   "set"
+   "set",
+   "Dark Watcher's Despair: To Hit Debuff/Endurance"
   ],
   [
    "DarWtcDsp",
    "Slow%",
    "Crafted_Dark_Watchers_Despair_F",
-   "set"
+   "set",
+   "Dark Watcher's Despair: Chance for Recharge Slow"
   ],
   [
    "ExpVln",
    "DefDeb",
    "Crafted_Exploited_Vulnerability_A",
-   "set"
+   "set",
+   "Exploited Vulnerability: Defense Debuff"
   ],
   [
    "ExpVln",
    "DefDeb/Rchg",
    "Crafted_Exploited_Vulnerability_B",
-   "set"
+   "set",
+   "Exploited Vulnerability: Defense Debuff/Recharge"
   ],
   [
    "ExpVln",
    "DefDeb/Rchg/EndRdx",
    "Crafted_Exploited_Vulnerability_C",
-   "set"
+   "set",
+   "Exploited Vulnerability: Defense Debuff/Recharge/Endurance"
   ],
   [
    "AchHee",
    "DefDeb",
    "Crafted_Achilles_Heel_A",
-   "set"
+   "set",
+   "Achilles' Heel: Defense Debuff"
   ],
   [
    "AchHee",
    "DefDeb/Rchg",
    "Crafted_Achilles_Heel_B",
-   "set"
+   "set",
+   "Achilles' Heel: Defense Debuff/Recharge"
   ],
   [
    "AchHee",
    "ResDeb%",
    "Crafted_Achilles_Heel_C",
-   "set"
+   "set",
+   "Achilles' Heel: Chance for Res Debuff"
   ],
   [
    "UndDfn",
    "DefDeb",
    "Crafted_Undermined_Defenses_A",
-   "set"
+   "set",
+   "Undermined Defenses: Defense Debuff"
   ],
   [
    "UndDfn",
    "DefDeb/Rchg",
    "Crafted_Undermined_Defenses_B",
-   "set"
+   "set",
+   "Undermined Defenses: Defense Debuff/Recharge"
   ],
   [
    "UndDfn",
    "DefDeb/Rchg/EndRdx",
    "Crafted_Undermined_Defenses_C",
-   "set"
+   "set",
+   "Undermined Defenses: Defense Debuff/Recharge/Endurance"
   ],
   [
    "UndDfn",
    "Rchg/EndRdx",
    "Crafted_Undermined_Defenses_D",
-   "set"
+   "set",
+   "Undermined Defenses: Recharge/Endurance"
   ],
   [
    "UndDfn",
    "DefDeb/EndRdx",
    "Crafted_Undermined_Defenses_E",
-   "set"
+   "set",
+   "Undermined Defenses: Defense Debuff/Endurance"
   ],
   [
    "UndDfn",
    "Rchg",
    "Crafted_Undermined_Defenses_F",
-   "set"
+   "set",
+   "Undermined Defenses: Recharge"
   ],
   [
    "TchofLadG",
    "DefDeb",
    "Crafted_Touch_of_Lady_Grey_A",
-   "set"
+   "set",
+   "Touch of Lady Grey: Defense Debuff"
   ],
   [
    "TchofLadG",
    "DefDeb/Rchg",
    "Crafted_Touch_of_Lady_Grey_B",
-   "set"
+   "set",
+   "Touch of Lady Grey: Defense Debuff/Recharge"
   ],
   [
    "TchofLadG",
    "DefDeb/Rchg/EndRdx",
    "Crafted_Touch_of_Lady_Grey_C",
-   "set"
+   "set",
+   "Touch of Lady Grey: Defense Debuff/Recharge/Endurance"
   ],
   [
    "TchofLadG",
    "Rchg/EndRdx",
    "Crafted_Touch_of_Lady_Grey_D",
-   "set"
+   "set",
+   "Touch of Lady Grey: Recharge/Endurance"
   ],
   [
    "TchofLadG",
    "DefDeb/EndRdx",
    "Crafted_Touch_of_Lady_Grey_E",
-   "set"
+   "set",
+   "Touch of Lady Grey: Defense Debuff/Endurance"
   ],
   [
    "TchofLadG",
    "%Dam",
    "Crafted_Touch_of_Lady_Grey_F",
-   "set"
+   "set",
+   "Touch of Lady Grey: Chance for Negative Damage"
   ],
   [
    "AnlWkn",
    "DefDeb",
    "Crafted_Analyze_Weakness_A",
-   "set"
+   "set",
+   "Analyze Weakness: Defense Debuff"
   ],
   [
    "AnlWkn",
    "Acc/DefDeb",
    "Crafted_Analyze_Weakness_B",
-   "set"
+   "set",
+   "Analyze Weakness: Accuracy/Defense Debuff"
   ],
   [
    "AnlWkn",
    "Acc/Rchg",
    "Crafted_Analyze_Weakness_C",
-   "set"
+   "set",
+   "Analyze Weakness: Accuracy/Recharge"
   ],
   [
    "AnlWkn",
    "DefDeb/EndRdx/Rchg",
    "Crafted_Analyze_Weakness_D",
-   "set"
+   "set",
+   "Analyze Weakness: Defense Debuff/Endurance/Recharge"
   ],
   [
    "AnlWkn",
    "Acc/Rchg/EndRdx",
    "Crafted_Analyze_Weakness_E",
-   "set"
+   "set",
+   "Analyze Weakness: Accuracy/Endurance/Recharge"
   ],
   [
    "AnlWkn",
    "%ToHit",
    "Crafted_Analyze_Weakness_F",
-   "set"
+   "set",
+   "Analyze Weakness: Chance for +ToHit"
   ],
   [
    "BslGaz",
    "Acc/Hold",
    "Crafted_Basilisks_Gaze_A",
-   "set"
+   "set",
+   "Basilisk's Gaze: Accuracy/Hold"
   ],
   [
    "BslGaz",
    "Acc/Rchg",
    "Crafted_Basilisks_Gaze_B",
-   "set"
+   "set",
+   "Basilisk's Gaze: Accuracy/Recharge"
   ],
   [
    "BslGaz",
    "Rchg/Hold",
    "Crafted_Basilisks_Gaze_C",
-   "set"
+   "set",
+   "Basilisk's Gaze: Recharge/Hold"
   ],
   [
    "BslGaz",
    "EndRdx/Rchg/Hold",
    "Crafted_Basilisks_Gaze_D",
-   "set"
+   "set",
+   "Basilisk's Gaze: Endurance/Recharge/Hold"
   ],
   [
    "BslGaz",
    "Acc/EndRdx/Rchg/Hold",
    "Crafted_Basilisks_Gaze_E",
-   "set"
+   "set",
+   "Basilisk's Gaze: Accuracy/Endurance/Recharge/Hold"
   ],
   [
    "BslGaz",
    "Slow%",
    "Crafted_Basilisks_Gaze_F",
-   "set"
+   "set",
+   "Basilisk's Gaze: Chance for Recharge Slow"
   ],
   [
    "BlsoftheZ",
    "Travel",
    "Crafted_Blessing_of_the_Zephyr_A",
-   "set"
+   "set",
+   "Blessing of the Zephyr: Run Speed, Jump, Flight Speed, Range"
   ],
   [
    "BlsoftheZ",
    "Travel/EndRdx",
    "Crafted_Blessing_of_the_Zephyr_B",
-   "set"
+   "set",
+   "Blessing of the Zephyr: Run Speed, Jump, Flight Speed, Range/Endurance"
   ],
   [
    "BlsoftheZ",
    "ResKB",
    "Crafted_Blessing_of_the_Zephyr_C",
-   "set"
+   "set",
+   "Blessing of the Zephyr: Knockback Reduction (4 points)"
   ],
   [
    "CaltoArm",
    "Acc/Rchg",
    "Crafted_Call_to_Arms_A",
-   "set"
+   "set",
+   "Call to Arms: Accuracy/Recharge"
   ],
   [
    "CaltoArm",
    "Acc/Dmg",
    "Crafted_Call_to_Arms_B",
-   "set"
+   "set",
+   "Call to Arms: Accuracy/Damage"
   ],
   [
    "CaltoArm",
    "Dmg/EndRdx",
    "Crafted_Call_to_Arms_C",
-   "set"
+   "set",
+   "Call to Arms: Damage/Endurance"
   ],
   [
    "CaltoArm",
    "Acc/Dmg/Rchg",
    "Crafted_Call_to_Arms_D",
-   "set"
+   "set",
+   "Call to Arms: Accuracy/Damage/Recharge"
   ],
   [
    "CaltoArm",
    "EndRdx/Dmg/Rchg",
    "Crafted_Call_to_Arms_E",
-   "set"
+   "set",
+   "Call to Arms: Endurance/Damage/Recharge"
   ],
   [
    "CaltoArm",
    "+Def(Pets)",
    "Crafted_Call_to_Arms_F",
-   "set"
+   "set",
+   "Call to Arms: Defense Bonus Aura for Pets"
   ],
   [
    "CldSns",
    "ToHitDeb",
    "Crafted_Cloud_Senses_A",
-   "set"
+   "set",
+   "Cloud Senses: ToHit Debuff"
   ],
   [
    "CldSns",
    "Acc/ToHitDeb",
    "Crafted_Cloud_Senses_B",
-   "set"
+   "set",
+   "Cloud Senses: Accuracy/ToHitDebuff"
   ],
   [
    "CldSns",
    "Acc/Rchg",
    "Crafted_Cloud_Senses_C",
-   "set"
+   "set",
+   "Cloud Senses: Accuracy/Recharge"
   ],
   [
    "CldSns",
    "ToHitDeb/EndRdx/Rchg",
    "Crafted_Cloud_Senses_D",
-   "set"
+   "set",
+   "Cloud Senses: ToHit Debuff/Endurance/Recharge"
   ],
   [
    "CldSns",
    "Acc/EndRdx/Rchg",
    "Crafted_Cloud_Senses_E",
-   "set"
+   "set",
+   "Cloud Senses: Accuracy/Endurance/Recharge"
   ],
   [
    "CldSns",
    "%Dam",
    "Crafted_Cloud_Senses_F",
-   "set"
+   "set",
+   "Cloud Senses: Chance for Negative Energy Damage"
   ],
   [
    "Erd",
    "Dmg",
    "Crafted_Eradication_A",
-   "set"
+   "set",
+   "Eradication: Damage"
   ],
   [
    "Erd",
    "Acc/Rchg",
    "Crafted_Eradication_B",
-   "set"
+   "set",
+   "Eradication: Accuracy/Recharge"
   ],
   [
    "Erd",
    "Dmg/Rchg",
    "Crafted_Eradication_C",
-   "set"
+   "set",
+   "Eradication: Damage/Recharge"
   ],
   [
    "Erd",
    "Acc/Dmg/Rchg",
    "Crafted_Eradication_D",
-   "set"
+   "set",
+   "Eradication: Accuracy/Damage/Recharge"
   ],
   [
    "Erd",
    "Acc/Dmg/EndRdx/Rchg",
    "Crafted_Eradication_E",
-   "set"
+   "set",
+   "Eradication: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "Erd",
    "%Dam",
    "Crafted_Eradication_F",
-   "set"
+   "set",
+   "Eradication: Chance for Energy Damage"
   ],
   [
    "ExpRnf",
    "Acc/Rchg",
    "Crafted_Expedient_Reinforcement_A",
-   "set"
+   "set",
+   "Expedient Reinforcement: Accuracy/Recharge"
   ],
   [
    "ExpRnf",
    "Acc/Dmg",
    "Crafted_Expedient_Reinforcement_B",
-   "set"
+   "set",
+   "Expedient Reinforcement: Accuracy/Damage"
   ],
   [
    "ExpRnf",
    "Dmg/EndRdx",
    "Crafted_Expedient_Reinforcement_C",
-   "set"
+   "set",
+   "Expedient Reinforcement: Damage/Endurance"
   ],
   [
    "ExpRnf",
    "Acc/Dmg/Rchg",
    "Crafted_Expedient_Reinforcement_D",
-   "set"
+   "set",
+   "Expedient Reinforcement: Accuracy/Damage/Recharge"
   ],
   [
    "ExpRnf",
    "EndRdx/Dmg/Rchg",
    "Crafted_Expedient_Reinforcement_E",
-   "set"
+   "set",
+   "Expedient Reinforcement: Endurance/Damage/Recharge"
   ],
   [
    "ExpRnf",
    "+Res(Pets)",
    "Crafted_Expedient_Reinforcement_F",
-   "set"
+   "set",
+   "Expedient Reinforcement: Resist Bonus Aura for Pets"
   ],
   [
    "Lck",
    "Acc/Hold",
    "Crafted_Lockdown_A",
-   "set"
+   "set",
+   "Lockdown: Accuracy/Hold"
   ],
   [
    "Lck",
    "Acc/Rchg",
    "Crafted_Lockdown_B",
-   "set"
+   "set",
+   "Lockdown: Accuracy/Recharge"
   ],
   [
    "Lck",
    "Rchg/Hold",
    "Crafted_Lockdown_C",
-   "set"
+   "set",
+   "Lockdown: Recharge/Hold"
   ],
   [
    "Lck",
    "EndRdx/Rchg/Hold",
    "Crafted_Lockdown_D",
-   "set"
+   "set",
+   "Lockdown: Endurance/Recharge/Hold"
   ],
   [
    "Lck",
    "Acc/EndRdx/Rchg/Hold",
    "Crafted_Lockdown_E",
-   "set"
+   "set",
+   "Lockdown: Accuracy/Endurance/Recharge/Hold"
   ],
   [
    "Lck",
    "%Hold",
    "Crafted_Lockdown_F",
-   "set"
+   "set",
+   "Lockdown: Chance for +2 Mag Hold"
   ],
   [
    "Obl",
    "Dmg",
    "Crafted_Obliteration_A",
-   "set"
+   "set",
+   "Obliteration: Damage"
   ],
   [
    "Obl",
    "Acc/Rchg",
    "Crafted_Obliteration_B",
-   "set"
+   "set",
+   "Obliteration: Accuracy/Recharge"
   ],
   [
    "Obl",
    "Dmg/Rchg",
    "Crafted_Obliteration_C",
-   "set"
+   "set",
+   "Obliteration: Damage/Recharge"
   ],
   [
    "Obl",
    "Acc/Dmg/Rchg",
    "Crafted_Obliteration_D",
-   "set"
+   "set",
+   "Obliteration: Accuracy/Damage/Recharge"
   ],
   [
    "Obl",
    "Acc/Dmg/EndRdx/Rchg",
    "Crafted_Obliteration_E",
-   "set"
+   "set",
+   "Obliteration: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "Obl",
    "%Dam",
    "Crafted_Obliteration_F",
-   "set"
+   "set",
+   "Obliteration: Chance for Smashing Damage"
   ],
   [
    "ShlBrk",
    "DefDeb",
    "Crafted_Shield_Breaker_A",
-   "set"
+   "set",
+   "Shield Breaker: Defense Debuff"
   ],
   [
    "ShlBrk",
    "Acc/DefDeb",
    "Crafted_Shield_Breaker_B",
-   "set"
+   "set",
+   "Shield Breaker: Accuracy/Defense Debuff"
   ],
   [
    "ShlBrk",
    "Acc/Rchg",
    "Crafted_Shield_Breaker_C",
-   "set"
+   "set",
+   "Shield Breaker: Accuracy/Recharge"
   ],
   [
    "ShlBrk",
    "DefDeb/EndRdx/Rchg",
    "Crafted_Shield_Breaker_D",
-   "set"
+   "set",
+   "Shield Breaker: Defense Debuff/Endurance/Recharge"
   ],
   [
    "ShlBrk",
    "Acc/EndRdx/Rchg",
    "Crafted_Shield_Breaker_E",
-   "set"
+   "set",
+   "Shield Breaker: Accuracy/Endurance/Recharge"
   ],
   [
    "ShlBrk",
    "%Dam",
    "Crafted_Shield_Breaker_F",
-   "set"
+   "set",
+   "Shield Breaker: Chance for Lethal Damage"
   ],
   [
    "SphIns",
    "ToHitDeb",
    "Crafted_Siphon_Insight_A",
-   "set"
+   "set",
+   "Siphon Insight: ToHit Debuff"
   ],
   [
    "SphIns",
    "Acc/ToHitDeb",
    "Crafted_Siphon_Insight_B",
-   "set"
+   "set",
+   "Siphon Insight: Accuracy/ToHit Debuff"
   ],
   [
    "SphIns",
    "Acc/Rchg",
    "Crafted_Siphon_Insight_C",
-   "set"
+   "set",
+   "Siphon Insight: Accuracy/Recharge"
   ],
   [
    "SphIns",
    "ToHitDeb/EndRdx/Rchg",
    "Crafted_Siphon_Insight_D",
-   "set"
+   "set",
+   "Siphon Insight: ToHit Debuff/Endurance/Recharge"
   ],
   [
    "SphIns",
    "Acc/EndRdx/Rchg",
    "Crafted_Siphon_Insight_E",
-   "set"
+   "set",
+   "Siphon Insight: Accuracy/Endurance/Recharge"
   ],
   [
    "SphIns",
    "%ToHit",
    "Crafted_Siphon_Insight_F",
-   "set"
+   "set",
+   "Siphon Insight: Chance for +ToHit"
   ],
   [
    "ThfofEss",
    "Heal",
    "Crafted_Theft_of_Essence_A",
-   "set"
+   "set",
+   "Theft of Essence: Healing"
   ],
   [
    "ThfofEss",
    "Heal/Rchg",
    "Crafted_Theft_of_Essence_B",
-   "set"
+   "set",
+   "Theft of Essence: Healing/Recharge"
   ],
   [
    "ThfofEss",
    "Acc/Heal",
    "Crafted_Theft_of_Essence_C",
-   "set"
+   "set",
+   "Theft of Essence: Accuracy/Healing"
   ],
   [
    "ThfofEss",
    "Acc/EndRdx/Heal",
    "Crafted_Theft_of_Essence_D",
-   "set"
+   "set",
+   "Theft of Essence: Accuracy/Endurance/Healing"
   ],
   [
    "ThfofEss",
    "Acc/EndRdx/Rchg",
    "Crafted_Theft_of_Essence_E",
-   "set"
+   "set",
+   "Theft of Essence: Accuracy/Endurance/Recharge"
   ],
   [
    "ThfofEss",
    "+End%",
    "Crafted_Theft_of_Essence_F",
-   "set"
+   "set",
+   "Theft of Essence: Chance for +Endurance"
   ],
   [
    "TchoftheN",
    "Heal",
    "Crafted_Touch_of_the_Nictus_A",
-   "set"
+   "set",
+   "Touch of the Nictus: Healing/Absorb"
   ],
   [
    "TchoftheN",
    "Heal/HP/Regen/Rchg",
    "Crafted_Touch_of_the_Nictus_B",
-   "set"
+   "set",
+   "Touch of the Nictus: Healing/Absorb/Recharge"
   ],
   [
    "TchoftheN",
    "Acc/Heal",
    "Crafted_Touch_of_the_Nictus_C",
-   "set"
+   "set",
+   "Touch of the Nictus: Accuracy/Healing/Absorb"
   ],
   [
    "TchoftheN",
    "Acc/EndRdx/Heal/HP/Regen",
    "Crafted_Touch_of_the_Nictus_D",
-   "set"
+   "set",
+   "Touch of the Nictus: Accuracy/Endurance/Healing/Absorb"
   ],
   [
    "TchoftheN",
    "Acc/EndRdx/Rchg",
    "Crafted_Touch_of_the_Nictus_E",
-   "set"
+   "set",
+   "Touch of the Nictus: Accuracy/Endurance/Recharge"
   ],
   [
    "TchoftheN",
    "%Dam",
    "Crafted_Touch_of_the_Nictus_F",
-   "set"
+   "set",
+   "Touch of the Nictus: Chance for Negative Energy Damage"
   ],
   [
    "WntGif",
    "RunSpd/Jump/Fly/Rng",
    "Crafted_Winters_Gift_A",
-   "set"
+   "set",
+   "Winter's Gift: Run Speed, Jump, Flight Speed, Range"
   ],
   [
    "WntGif",
    "RunSpd/Jump/Fly/Rng/EndRdx",
    "Crafted_Winters_Gift_B",
-   "set"
+   "set",
+   "Winter's Gift: Run Speed, Jump, Flight Speed, Range/Endurance"
   ],
   [
    "WntGif",
    "ResSlow",
    "Crafted_Winters_Gift_C",
-   "set"
+   "set",
+   "Winter's Gift: Slow Resistance (20%)"
   ],
   [
    "Pnc",
    "Heal/EndRedux",
    "Crafted_Panacea_A",
-   "set"
+   "set",
+   "Panacea: Heal/Endurance"
   ],
   [
    "Pnc",
    "EndRdx/Rchg",
    "Crafted_Panacea_B",
-   "set"
+   "set",
+   "Panacea: Endurance/Recharge"
   ],
   [
    "Pnc",
    "Heal/Rchg",
    "Crafted_Panacea_C",
-   "set"
+   "set",
+   "Panacea: Heal/Recharge"
   ],
   [
    "Pnc",
    "Heal/EndRedux/Rchg",
    "Crafted_Panacea_D",
-   "set"
+   "set",
+   "Panacea: Heal/Endurance/Recharge"
   ],
   [
    "Pnc",
    "Heal",
    "Crafted_Panacea_E",
-   "set"
+   "set",
+   "Panacea: Heal"
   ],
   [
    "Pnc",
    "Heal/+End",
    "Crafted_Panacea_F",
-   "set"
+   "set",
+   "Panacea: +Hit Points/Endurance"
   ],
   [
    "JvlVll",
    "Dam%",
    "Crafted_Javelin_Volley_F",
-   "set"
+   "set",
+   "Javelin Volley: Chance of Damage(Lethal)"
   ],
   [
    "GldStr",
    "Acc/Dmg",
    "Crafted_Gladiators_Strike_A",
-   "set"
+   "set",
+   "Gladiator's Strike: Accuracy/Damage"
   ],
   [
    "GldStr",
    "Dam/Rech",
    "Crafted_Gladiators_Strike_B",
-   "set"
+   "set",
+   "Gladiator's Strike: Damage/Recharge"
   ],
   [
    "GldStr",
    "Dam/End/Rech",
    "Crafted_Gladiators_Strike_C",
-   "set"
+   "set",
+   "Gladiator's Strike: Damage/Endurance/Recharge"
   ],
   [
    "GldStr",
    "Acc/End/Rech",
    "Crafted_Gladiators_Strike_D",
-   "set"
+   "set",
+   "Gladiator's Strike: Accuracy/Endurance/Recharge"
   ],
   [
    "GldStr",
    "Acc/Dmg/End/Rech",
    "Crafted_Gladiators_Strike_E",
-   "set"
+   "set",
+   "Gladiator's Strike: Accuracy/Damage/End/Rech"
   ],
   [
    "GldStr",
    "%Dam",
    "Crafted_Gladiators_Strike_F",
-   "set"
+   "set",
+   "Gladiator's Strike: Chance for Smashing Damage"
   ],
   [
    "GldJvl",
    "Acc/Dmg",
    "Crafted_Gladiators_Javelin_A",
-   "set"
+   "set",
+   "Gladiator's Javelin: Accuracy/Damage"
   ],
   [
    "GldJvl",
    "Dam/Rech",
    "Crafted_Gladiators_Javelin_B",
-   "set"
+   "set",
+   "Gladiator's Javelin: Damage/Recharge"
   ],
   [
    "GldJvl",
    "Acc/Dmg/End/Rech",
    "Crafted_Gladiators_Javelin_E",
-   "set"
+   "set",
+   "Gladiator's Javelin: Accuracy/Damage/End/Rech"
   ],
   [
    "GldJvl",
    "Dam%",
    "Crafted_Gladiators_Javelin_F",
-   "set"
+   "set",
+   "Gladiator's Javelin: Chance of Damage(Toxic)"
   ],
   [
    "GldJvl",
    "Acc/End/Rech",
    "Crafted_Gladiators_Javelin_D",
-   "set"
+   "set",
+   "Gladiator's Javelin: Accuracy/Endurance/Recharge"
   ],
   [
    "GldJvl",
    "Dam/End/Rech",
    "Crafted_Gladiators_Javelin_C",
-   "set"
+   "set",
+   "Gladiator's Javelin: Damage/Endurance/Recharge"
   ],
   [
    "GldArm",
    "End/Res",
    "Crafted_Gladiators_Armor_E",
-   "set"
+   "set",
+   "Gladiator's Armor: End/Resist"
   ],
   [
    "GldArm",
    "RechRes",
    "Crafted_Gladiators_Armor_D",
-   "set"
+   "set",
+   "Gladiator's Armor: Recharge/Resist"
   ],
   [
    "GldArm",
    "RechEnd",
    "Crafted_Gladiators_Armor_C",
-   "set"
+   "set",
+   "Gladiator's Armor: Recharge/Endurance"
   ],
   [
    "GldArm",
    "Res/Rech/End",
    "Crafted_Gladiators_Armor_B",
-   "set"
+   "set",
+   "Gladiator's Armor: Resistance/Rech/End"
   ],
   [
    "GldArm",
    "ResDam",
    "Crafted_Gladiators_Armor_A",
-   "set"
+   "set",
+   "Gladiator's Armor: Resistance"
   ],
   [
    "GldArm",
    "3defTpProc",
    "Crafted_Gladiators_Armor_F",
-   "set"
+   "set",
+   "Gladiator's Armor: TP Protection +3% Def (All)"
   ],
   [
    "JvlVll",
    "Acc/Dmg",
    "Crafted_Javelin_Volley_A",
-   "set"
+   "set",
+   "Javelin Volley: Accuracy/Damage"
   ],
   [
    "JvlVll",
    "Dam/Rech",
    "Crafted_Javelin_Volley_B",
-   "set"
+   "set",
+   "Javelin Volley: Damage/Recharge"
   ],
   [
    "JvlVll",
    "Dam/End/Rech",
    "Crafted_Javelin_Volley_C",
-   "set"
+   "set",
+   "Javelin Volley: Damage/Endurance/Recharge"
   ],
   [
    "JvlVll",
    "Acc/End/Rech",
    "Crafted_Javelin_Volley_D",
-   "set"
+   "set",
+   "Javelin Volley: Accuracy/Endurance/Recharge"
   ],
   [
    "JvlVll",
    "Acc/Dmg/End/Rech",
    "Crafted_Javelin_Volley_E",
-   "set"
+   "set",
+   "Javelin Volley: Accuracy/Damage/End/Rech"
   ],
   [
    "FuroftheG",
    "Acc/Dmg",
    "Crafted_Fury_of_the_Gladiator_A",
-   "set"
+   "set",
+   "Fury of the Gladiator: Accuracy/Damage"
   ],
   [
    "FuroftheG",
    "Dam/Rech",
    "Crafted_Fury_of_the_Gladiator_B",
-   "set"
+   "set",
+   "Fury of the Gladiator: Damage/Recharge"
   ],
   [
    "FuroftheG",
    "Dam/End/Rech",
    "Crafted_Fury_of_the_Gladiator_C",
-   "set"
+   "set",
+   "Fury of the Gladiator: Damage/Endurance/Recharge"
   ],
   [
    "FuroftheG",
    "Acc/End/Rech",
    "Crafted_Fury_of_the_Gladiator_D",
-   "set"
+   "set",
+   "Fury of the Gladiator: Accuracy/Endurance/Recharge"
   ],
   [
    "FuroftheG",
    "Acc/Dmg/End/Rech",
    "Crafted_Fury_of_the_Gladiator_E",
-   "set"
+   "set",
+   "Fury of the Gladiator: Accuracy/Damage/End/Rech"
   ],
   [
    "FuroftheG",
    "ResDeb%",
    "Crafted_Fury_of_the_Gladiator_F",
-   "set"
+   "set",
+   "Fury of the Gladiator: Chance for Res Debuff"
   ],
   [
    "GldNet",
    "Acc/Hold",
    "Crafted_Gladiators_Net_A",
-   "set"
+   "set",
+   "Gladiator's Net: Accuracy/Hold"
   ],
   [
    "GldNet",
    "Acc/Rchg",
    "Crafted_Gladiators_Net_B",
-   "set"
+   "set",
+   "Gladiator's Net: Accuracy/Recharge"
   ],
   [
    "GldNet",
    "Rchg/Hold",
    "Crafted_Gladiators_Net_C",
-   "set"
+   "set",
+   "Gladiator's Net: Recharge/Hold"
   ],
   [
    "GldNet",
    "EndRdx/Rchg/Hold",
    "Crafted_Gladiators_Net_D",
-   "set"
+   "set",
+   "Gladiator's Net: Endurance/Recharge/Hold"
   ],
   [
    "GldNet",
    "Acc/EndRdx/Rchg/Hold",
    "Crafted_Gladiators_Net_E",
-   "set"
+   "set",
+   "Gladiator's Net: Accuracy/Endurance/Recharge/Hold"
   ],
   [
    "GldNet",
    "Dam%",
    "Crafted_Gladiators_Net_F",
-   "set"
+   "set",
+   "Gladiator's Net: Chance of Damage(Lethal)"
   ],
   [
    "ShlWal",
    "Def/EndRdx",
    "Crafted_Shield_Wall_A",
-   "set"
+   "set",
+   "Shield Wall: Defense/Endurance"
   ],
   [
    "ShlWal",
    "Def/Rchg",
    "Crafted_Shield_Wall_B",
-   "set"
+   "set",
+   "Shield Wall: Defense/Recharge"
   ],
   [
    "ShlWal",
    "EndRdx/Rchg",
    "Crafted_Shield_Wall_C",
-   "set"
+   "set",
+   "Shield Wall: Endurance/Recharge"
   ],
   [
    "ShlWal",
    "Def/EndRdx/Rchg",
    "Crafted_Shield_Wall_D",
-   "set"
+   "set",
+   "Shield Wall: Defense/Endurance/Recharge"
   ],
   [
    "ShlWal",
    "Def",
    "Crafted_Shield_Wall_E",
-   "set"
+   "set",
+   "Shield Wall: Defense"
   ],
   [
    "ShlWal",
    "ResDam/Re TP",
    "Crafted_Shield_Wall_F",
-   "set"
+   "set",
+   "Shield Wall: +Res (Teleportation), +5% Res (All)"
   ],
   [
    "DmnofArc",
    "Acc/Dmg",
    "Attuned_Dominion_of_Arachnos_A",
-   "set"
+   "set",
+   "Dominion of Arachnos: Accuracy/Damage"
   ],
   [
    "DmnofArc",
    "Dmg/Rchg",
    "Attuned_Dominion_of_Arachnos_B",
-   "set"
+   "set",
+   "Dominion of Arachnos: Damage/Recharge"
   ],
   [
    "DmnofArc",
    "Acc/Dmg/Rchg",
    "Attuned_Dominion_of_Arachnos_C",
-   "set"
+   "set",
+   "Dominion of Arachnos: Accuracy/Damage/Recharge"
   ],
   [
    "DmnofArc",
    "Dmg/EndRdx/Rchg",
    "Attuned_Dominion_of_Arachnos_D",
-   "set"
+   "set",
+   "Dominion of Arachnos: Damage/Endurance/Recharge"
   ],
   [
    "DmnofArc",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Dominion_of_Arachnos_E",
-   "set"
+   "set",
+   "Dominion of Arachnos: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "DmnofArc",
    "Rchg/-DmgFear",
    "Attuned_Dominion_of_Arachnos_F",
-   "set"
+   "set",
+   "Dominion of Arachnos: Recharge/Chance for -Dmg and Terrorize"
   ],
   [
    "BlsWrt",
    "Acc/Dmg",
    "Attuned_Blasters_Wrath_A",
-   "set"
+   "set",
+   "Blaster's Wrath: Accuracy/Damage"
   ],
   [
    "BlsWrt",
    "Dmg/Rchg",
    "Attuned_Blasters_Wrath_B",
-   "set"
+   "set",
+   "Blaster's Wrath: Damage/Recharge"
   ],
   [
    "BlsWrt",
    "Acc/Dmg/Rchg",
    "Attuned_Blasters_Wrath_C",
-   "set"
+   "set",
+   "Blaster's Wrath: Accuracy/Damage/Recharge"
   ],
   [
    "BlsWrt",
    "Acc/Dmg/EndRdx",
    "Attuned_Blasters_Wrath_D",
-   "set"
+   "set",
+   "Blaster's Wrath: Accuracy/Damage/Endurance"
   ],
   [
    "BlsWrt",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Blasters_Wrath_E",
-   "set"
+   "set",
+   "Blaster's Wrath: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "BlsWrt",
    "Rchg/Dam%",
    "Attuned_Blasters_Wrath_F",
-   "set"
+   "set",
+   "Blaster's Wrath: Recharge/Chance for Fire Damage"
   ],
   [
    "BrtFur",
    "Acc/Dmg",
    "Attuned_Brutes_Fury_A",
-   "set"
+   "set",
+   "Brute's Fury: Accuracy/Damage"
   ],
   [
    "BrtFur",
    "Dmg/Rchg",
    "Attuned_Brutes_Fury_B",
-   "set"
+   "set",
+   "Brute's Fury: Damage/Recharge"
   ],
   [
    "BrtFur",
    "Acc/Dmg/Rchg",
    "Attuned_Brutes_Fury_C",
-   "set"
+   "set",
+   "Brute's Fury: Accuracy/Damage/Recharge"
   ],
   [
    "BrtFur",
    "Dmg/EndRdx/Rchg",
    "Attuned_Brutes_Fury_D",
-   "set"
+   "set",
+   "Brute's Fury: Damage/Endurance/RechargeTime"
   ],
   [
    "BrtFur",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Brutes_Fury_E",
-   "set"
+   "set",
+   "Brute's Fury: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "BrtFur",
    "Rchg/Fury",
    "Attuned_Brutes_Fury_F",
-   "set"
+   "set",
+   "Brute's Fury: Recharge/Fury Bonus"
   ],
   [
    "WiloftheC",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear",
    "Attuned_Will_of_the_Controller_A",
-   "set"
+   "set",
+   "Will of the Controller: Accuracy/Control Duration"
   ],
   [
    "WiloftheC",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Rchg",
    "Attuned_Will_of_the_Controller_B",
-   "set"
+   "set",
+   "Will of the Controller: Control Duration/Recharge"
   ],
   [
    "WiloftheC",
    "EndRdx/Rchg",
    "Attuned_Will_of_the_Controller_C",
-   "set"
+   "set",
+   "Will of the Controller: Endurance/Recharge"
   ],
   [
    "WiloftheC",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx",
    "Attuned_Will_of_the_Controller_D",
-   "set"
+   "set",
+   "Will of the Controller: Accuracy/Control Duration/Endurance"
   ],
   [
    "WiloftheC",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Attuned_Will_of_the_Controller_E",
-   "set"
+   "set",
+   "Will of the Controller: Accuracy/Control Duration/Endurance/Recharge"
   ],
   [
    "WiloftheC",
    "Rchg/Dam%",
    "Attuned_Will_of_the_Controller_F",
-   "set"
+   "set",
+   "Will of the Controller: Recharge/Chance for Psionic Damage"
   ],
   [
    "MlcoftheC",
    "Acc/Dmg",
    "Attuned_Malice_of_the_Corruptor_A",
-   "set"
+   "set",
+   "Malice of the Corruptor: Accuracy/Damage"
   ],
   [
    "MlcoftheC",
    "Dmg/Rchg",
    "Attuned_Malice_of_the_Corruptor_B",
-   "set"
+   "set",
+   "Malice of the Corruptor: Damage/Recharge"
   ],
   [
    "MlcoftheC",
    "Acc/Dmg/Rchg",
    "Attuned_Malice_of_the_Corruptor_C",
-   "set"
+   "set",
+   "Malice of the Corruptor: Accuracy/Damage/Recharge"
   ],
   [
    "MlcoftheC",
    "Dmg/EndRdx/Rchg",
    "Attuned_Malice_of_the_Corruptor_D",
-   "set"
+   "set",
+   "Malice of the Corruptor: Damage/Endurance/Recharge"
   ],
   [
    "MlcoftheC",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Malice_of_the_Corruptor_E",
-   "set"
+   "set",
+   "Malice of the Corruptor: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "MlcoftheC",
    "Rchg/Dmg%",
    "Attuned_Malice_of_the_Corruptor_F",
-   "set"
+   "set",
+   "Malice of the Corruptor: Recharge/Chance for Negative Energy Damage"
   ],
   [
    "DfnBst",
    "Acc/Dmg",
    "Attuned_Defenders_Bastion_A",
-   "set"
+   "set",
+   "Defender's Bastion: Accuracy/Damage"
   ],
   [
    "DfnBst",
    "Dmg/Rchg",
    "Attuned_Defenders_Bastion_B",
-   "set"
+   "set",
+   "Defender's Bastion: Damage/Recharge"
   ],
   [
    "DfnBst",
    "Dmg/EndRdx/Rchg",
    "Attuned_Defenders_Bastion_C",
-   "set"
+   "set",
+   "Defender's Bastion: Damage/Endurance/Recharge"
   ],
   [
    "DfnBst",
    "Acc/Dmg/EndRdx",
    "Attuned_Defenders_Bastion_D",
-   "set"
+   "set",
+   "Defender's Bastion: Accuracy/Damage/Endurance"
   ],
   [
    "DfnBst",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Defenders_Bastion_E",
-   "set"
+   "set",
+   "Defender's Bastion: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "DfnBst",
    "Rchg/Heal%",
    "Attuned_Defenders_Bastion_F",
-   "set"
+   "set",
+   "Defender's Bastion: Recharge/Chance for Minor PBAoE Heal"
   ],
   [
    "AscoftheD",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear",
    "Attuned_Ascendency_of_the_Dominator_A",
-   "set"
+   "set",
+   "Ascendency of the Dominator: Accuracy/Control Duration"
   ],
   [
    "AscoftheD",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Rchg",
    "Attuned_Ascendency_of_the_Dominator_B",
-   "set"
+   "set",
+   "Ascendency of the Dominator: Control Duration/Recharge"
   ],
   [
    "AscoftheD",
    "EndRdx/Rchg",
    "Attuned_Ascendency_of_the_Dominator_C",
-   "set"
+   "set",
+   "Ascendency of the Dominator: Endurance/Recharge"
   ],
   [
    "AscoftheD",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx",
    "Attuned_Ascendency_of_the_Dominator_D",
-   "set"
+   "set",
+   "Ascendency of the Dominator: Accuracy/Control Duration/Endurance"
   ],
   [
    "AscoftheD",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Attuned_Ascendency_of_the_Dominator_E",
-   "set"
+   "set",
+   "Ascendency of the Dominator: Accuracy/Control Duration/Endurance/Recharge"
   ],
   [
    "AscoftheD",
    "Rchg/+Dmg%",
    "Attuned_Ascendency_of_the_Dominator_F",
-   "set"
+   "set",
+   "Ascendency of the Dominator: Recharge/Chance for +Damage"
   ],
   [
    "CmmoftheM",
    "Acc/Dmg",
    "Attuned_Command_of_the_Mastermind_A",
-   "set"
+   "set",
+   "Command of the Mastermind: Accuracy/Damage"
   ],
   [
    "CmmoftheM",
    "Dmg/EndRdx",
    "Attuned_Command_of_the_Mastermind_B",
-   "set"
+   "set",
+   "Command of the Mastermind: Damage/Endurance"
   ],
   [
    "CmmoftheM",
    "Acc/Dmg/Rchg",
    "Attuned_Command_of_the_Mastermind_C",
-   "set"
+   "set",
+   "Command of the Mastermind: Accuracy/Damage/Recharge"
   ],
   [
    "CmmoftheM",
    "Dmg/EndRdx/Rchg",
    "Attuned_Command_of_the_Mastermind_D",
-   "set"
+   "set",
+   "Command of the Mastermind: Damage/Endurance/Recharge"
   ],
   [
    "CmmoftheM",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Command_of_the_Mastermind_E",
-   "set"
+   "set",
+   "Command of the Mastermind: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "CmmoftheM",
    "Rchg/PetAoEDef",
    "Attuned_Command_of_the_Mastermind_F",
-   "set"
+   "set",
+   "Command of the Mastermind: Recharge/Pet +AoE Defense Aura"
   ],
   [
    "ScrStr",
    "Acc/Dmg",
    "Attuned_Scrappers_Strike_A",
-   "set"
+   "set",
+   "Scrapper's Strike: Accuracy/Damage"
   ],
   [
    "ScrStr",
    "Dmg/Rchg",
    "Attuned_Scrappers_Strike_B",
-   "set"
+   "set",
+   "Scrapper's Strike: Damage/Recharge"
   ],
   [
    "ScrStr",
    "Acc/Dmg/Rchg",
    "Attuned_Scrappers_Strike_C",
-   "set"
+   "set",
+   "Scrapper's Strike: Accuracy/Damage/Recharge"
   ],
   [
    "ScrStr",
    "Dmg/EndRdx/Rchg",
    "Attuned_Scrappers_Strike_D",
-   "set"
+   "set",
+   "Scrapper's Strike: Damage/Endurance/Recharge"
   ],
   [
    "ScrStr",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Scrappers_Strike_E",
-   "set"
+   "set",
+   "Scrapper's Strike: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "ScrStr",
    "Rchg/+Crit",
    "Attuned_Scrappers_Strike_F",
-   "set"
+   "set",
+   "Scrapper's Strike: Recharge/Critical Hit Bonus"
   ],
   [
    "StlGl",
    "Acc/Dmg",
    "Attuned_Stalkers_Guile_A",
-   "set"
+   "set",
+   "Stalker's Guile: Accuracy/Damage"
   ],
   [
    "StlGl",
    "Dmg/Rchg",
    "Attuned_Stalkers_Guile_B",
-   "set"
+   "set",
+   "Stalker's Guile: Damage/Recharge"
   ],
   [
    "StlGl",
    "Acc/Dmg/Rchg",
    "Attuned_Stalkers_Guile_C",
-   "set"
+   "set",
+   "Stalker's Guile: Accuracy/Damage/Recharge"
   ],
   [
    "StlGl",
    "Dmg/EndRdx/Rchg",
    "Attuned_Stalkers_Guile_D",
-   "set"
+   "set",
+   "Stalker's Guile: Damage/Endurance/Recharge"
   ],
   [
    "StlGl",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Stalkers_Guile_E",
-   "set"
+   "set",
+   "Stalker's Guile: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "StlGl",
    "Rchg/Hide%",
    "Attuned_Stalkers_Guile_F",
-   "set"
+   "set",
+   "Stalker's Guile: Recharge/Chance to Hide"
   ],
   [
    "MghoftheT",
    "Acc/Dmg",
    "Attuned_Might_of_the_Tanker_A",
-   "set"
+   "set",
+   "Might of the Tanker: Accuracy/Damage"
   ],
   [
    "MghoftheT",
    "Dmg/Rchg",
    "Attuned_Might_of_the_Tanker_B",
-   "set"
+   "set",
+   "Might of the Tanker: Damage/Recharge"
   ],
   [
    "MghoftheT",
    "Acc/Dmg/Rchg",
    "Attuned_Might_of_the_Tanker_C",
-   "set"
+   "set",
+   "Might of the Tanker: Accuracy/Damage/Recharge"
   ],
   [
    "MghoftheT",
    "Dmg/EndRdx/Rchg",
    "Attuned_Might_of_the_Tanker_D",
-   "set"
+   "set",
+   "Might of the Tanker: Damage/Endurance/Recharge"
   ],
   [
    "MghoftheT",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Might_of_the_Tanker_E",
-   "set"
+   "set",
+   "Might of the Tanker: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "MghoftheT",
    "Rchg/Res%",
    "Attuned_Might_of_the_Tanker_F",
-   "set"
+   "set",
+   "Might of the Tanker: Recharge/Chance for +Res(All)"
   ],
   [
    "KhlGrc",
    "Acc/Dmg",
    "Attuned_Kheldians_Grace_A",
-   "set"
+   "set",
+   "Kheldian's Grace: Accuracy/Damage"
   ],
   [
    "KhlGrc",
    "Dmg/Rchg",
    "Attuned_Kheldians_Grace_B",
-   "set"
+   "set",
+   "Kheldian's Grace: Damage/Recharge"
   ],
   [
    "KhlGrc",
    "Acc/Dmg/Rchg",
    "Attuned_Kheldians_Grace_C",
-   "set"
+   "set",
+   "Kheldian's Grace: Accuracy/Damage/Recharge"
   ],
   [
    "KhlGrc",
    "Dmg/EndRdx/Rchg",
    "Attuned_Kheldians_Grace_D",
-   "set"
+   "set",
+   "Kheldian's Grace: Damage/Endurance/Recharge"
   ],
   [
    "KhlGrc",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Kheldians_Grace_E",
-   "set"
+   "set",
+   "Kheldian's Grace: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "KhlGrc",
    "Rchg/FormBuff",
    "Attuned_Kheldians_Grace_F",
-   "set"
+   "set",
+   "Kheldian's Grace: Recharge/Form Empowerment"
   ],
   [
    "SprDmnofA",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Dominion_of_Arachnos_A",
-   "set"
+   "set",
+   "Superior Dominion of Arachnos: Accuracy/Damage"
   ],
   [
    "SprDmnofA",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Dominion_of_Arachnos_B",
-   "set"
+   "set",
+   "Superior Dominion of Arachnos: Damage/Recharge"
   ],
   [
    "SprDmnofA",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Dominion_of_Arachnos_C",
-   "set"
+   "set",
+   "Superior Dominion of Arachnos: Accuracy/Damage/Recharge"
   ],
   [
    "SprDmnofA",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Dominion_of_Arachnos_D",
-   "set"
+   "set",
+   "Superior Dominion of Arachnos: Damage/Endurance/Recharge"
   ],
   [
    "SprDmnofA",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Dominion_of_Arachnos_E",
-   "set"
+   "set",
+   "Superior Dominion of Arachnos: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprDmnofA",
    "Rchg/DmgFear%",
    "Superior_Attuned_Superior_Dominion_of_Arachnos_F",
-   "set"
+   "set",
+   "Superior Dominion of Arachnos: Recharge/Chance for -Dmg and Terrorize"
   ],
   [
    "SprBlsWrt",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Blasters_Wrath_A",
-   "set"
+   "set",
+   "Superior Blaster's Wrath: Accuracy/Damage"
   ],
   [
    "SprBlsWrt",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Blasters_Wrath_B",
-   "set"
+   "set",
+   "Superior Blaster's Wrath: Damage/Recharge"
   ],
   [
    "SprBlsWrt",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Blasters_Wrath_C",
-   "set"
+   "set",
+   "Superior Blaster's Wrath: Accuracy/Damage/Recharge"
   ],
   [
    "SprBlsWrt",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Superior_Blasters_Wrath_D",
-   "set"
+   "set",
+   "Superior Blaster's Wrath: Accuracy/Damage/Endurance"
   ],
   [
    "SprBlsWrt",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Blasters_Wrath_E",
-   "set"
+   "set",
+   "Superior Blaster's Wrath: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprBlsWrt",
    "Rchg/Dmg%",
    "Superior_Attuned_Superior_Blasters_Wrath_F",
-   "set"
+   "set",
+   "Superior Blaster's Wrath: Recharge/Chance for Fire Damage"
   ],
   [
    "SprBrtFur",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Brutes_Fury_A",
-   "set"
+   "set",
+   "Superior Brute's Fury: Accuracy/Damage"
   ],
   [
    "SprBrtFur",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Brutes_Fury_B",
-   "set"
+   "set",
+   "Superior Brute's Fury: Damage/Recharge"
   ],
   [
    "SprBrtFur",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Brutes_Fury_C",
-   "set"
+   "set",
+   "Superior Brute's Fury: Accuracy/Damage/Recharge"
   ],
   [
    "SprBrtFur",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Brutes_Fury_D",
-   "set"
+   "set",
+   "Superior Brute's Fury: Damage/Endurance/RechargeTime"
   ],
   [
    "SprBrtFur",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Brutes_Fury_E",
-   "set"
+   "set",
+   "Superior Brute's Fury: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprBrtFur",
    "Rech/Fury%",
    "Superior_Attuned_Superior_Brutes_Fury_F",
-   "set"
+   "set",
+   "Superior Brute's Fury: Recharge/Fury Bonus"
   ],
   [
    "SprWiloft",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear",
    "Superior_Attuned_Superior_Will_of_the_Controller_A",
-   "set"
+   "set",
+   "Superior Will of the Controller: Accuracy/Control Duration"
   ],
   [
    "SprWiloft",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Rchg",
    "Superior_Attuned_Superior_Will_of_the_Controller_B",
-   "set"
+   "set",
+   "Superior Will of the Controller: Control Duration/Recharge"
   ],
   [
    "SprWiloft",
    "EndRdx/Rchg",
    "Superior_Attuned_Superior_Will_of_the_Controller_C",
-   "set"
+   "set",
+   "Superior Will of the Controller: Endurance/Recharge"
   ],
   [
    "SprWiloft",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx",
    "Superior_Attuned_Superior_Will_of_the_Controller_D",
-   "set"
+   "set",
+   "Superior Will of the Controller: Accuracy/Control Duration/Endurance"
   ],
   [
    "SprWiloft",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Superior_Attuned_Superior_Will_of_the_Controller_E",
-   "set"
+   "set",
+   "Superior Will of the Controller: Accuracy/Control Duration/Endurance/Recharge"
   ],
   [
    "SprWiloft",
    "Rchg/Dmg%",
    "Superior_Attuned_Superior_Will_of_the_Controller_F",
-   "set"
+   "set",
+   "Superior Will of the Controller: Recharge/Chance for Psionic Damage"
   ],
   [
    "SprMlcoft",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Malice_of_the_Corruptor_A",
-   "set"
+   "set",
+   "Superior Malice of the Corruptor: Accuracy/Damage"
   ],
   [
    "SprMlcoft",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Malice_of_the_Corruptor_B",
-   "set"
+   "set",
+   "Superior Malice of the Corruptor: Damage/Recharge"
   ],
   [
    "SprMlcoft",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Malice_of_the_Corruptor_C",
-   "set"
+   "set",
+   "Superior Malice of the Corruptor: Accuracy/Damage/Recharge"
   ],
   [
    "SprMlcoft",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Malice_of_the_Corruptor_D",
-   "set"
+   "set",
+   "Superior Malice of the Corruptor: Damage/Endurance/Recharge"
   ],
   [
    "SprMlcoft",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Malice_of_the_Corruptor_E",
-   "set"
+   "set",
+   "Superior Malice of the Corruptor: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprMlcoft",
    "Rchg/Dmg%",
    "Superior_Attuned_Superior_Malice_of_the_Corruptor_F",
-   "set"
+   "set",
+   "Superior Malice of the Corruptor: Recharge/Chance for Negative Energy Damage"
   ],
   [
    "SprDfnBst",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Defenders_Bastion_A",
-   "set"
+   "set",
+   "Superior Defender's Bastion: Accuracy/Damage"
   ],
   [
    "SprDfnBst",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Defenders_Bastion_B",
-   "set"
+   "set",
+   "Superior Defender's Bastion: Damage/Recharge"
   ],
   [
    "SprDfnBst",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Defenders_Bastion_C",
-   "set"
+   "set",
+   "Superior Defender's Bastion: Damage/Endurance/Recharge"
   ],
   [
    "SprDfnBst",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Superior_Defenders_Bastion_D",
-   "set"
+   "set",
+   "Superior Defender's Bastion: Accuracy/Damage/Endurance"
   ],
   [
    "SprDfnBst",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Defenders_Bastion_E",
-   "set"
+   "set",
+   "Superior Defender's Bastion: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprDfnBst",
    "Rchg/Heal%",
    "Superior_Attuned_Superior_Defenders_Bastion_F",
-   "set"
+   "set",
+   "Superior Defender's Bastion: Recharge/Chance for Minor PBAoE Heal"
   ],
   [
    "SprAscoft",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear",
    "Superior_Attuned_Superior_Ascendency_of_the_Dominator_A",
-   "set"
+   "set",
+   "Superior Ascendency of the Dominator: Accuracy/Control Duration"
   ],
   [
    "SprAscoft",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Rchg",
    "Superior_Attuned_Superior_Ascendency_of_the_Dominator_B",
-   "set"
+   "set",
+   "Superior Ascendency of the Dominator: Control Duration/Recharge"
   ],
   [
    "SprAscoft",
    "EndRdx/Rchg",
    "Superior_Attuned_Superior_Ascendency_of_the_Dominator_C",
-   "set"
+   "set",
+   "Superior Ascendency of the Dominator: Endurance/Recharge"
   ],
   [
    "SprAscoft",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx",
    "Superior_Attuned_Superior_Ascendency_of_the_Dominator_D",
-   "set"
+   "set",
+   "Superior Ascendency of the Dominator: Accuracy/Control Duration/Endurance"
   ],
   [
    "SprAscoft",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Superior_Attuned_Superior_Ascendency_of_the_Dominator_E",
-   "set"
+   "set",
+   "Superior Ascendency of the Dominator: Accuracy/Control Duration/Endurance/Recharge"
   ],
   [
    "SprAscoft",
    "Rchg/+Dmg%",
    "Superior_Attuned_Superior_Ascendency_of_the_Dominator_F",
-   "set"
+   "set",
+   "Superior Ascendency of the Dominator: Recharge/Chance for +Damage"
   ],
   [
    "SprKhlGrc",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Kheldians_Grace_A",
-   "set"
+   "set",
+   "Superior Kheldian's Grace: Accuracy/Damage"
   ],
   [
    "SprKhlGrc",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Kheldians_Grace_B",
-   "set"
+   "set",
+   "Superior Kheldian's Grace: Damage/Recharge"
   ],
   [
    "SprKhlGrc",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Kheldians_Grace_C",
-   "set"
+   "set",
+   "Superior Kheldian's Grace: Accuracy/Damage/Recharge"
   ],
   [
    "SprKhlGrc",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Kheldians_Grace_D",
-   "set"
+   "set",
+   "Superior Kheldian's Grace: Damage/Endurance/Recharge"
   ],
   [
    "SprKhlGrc",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Kheldians_Grace_E",
-   "set"
+   "set",
+   "Superior Kheldian's Grace: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprKhlGrc",
    "Rchg/FormBuff",
    "Superior_Attuned_Superior_Kheldians_Grace_F",
-   "set"
+   "set",
+   "Superior Kheldian's Grace: Recharge/Form Empowerment"
   ],
   [
    "SprCmmoft",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Command_of_the_Mastermind_A",
-   "set"
+   "set",
+   "Superior Command of the Mastermind: Accuracy/Damage"
   ],
   [
    "SprCmmoft",
    "Dmg/EndRdx",
    "Superior_Attuned_Superior_Command_of_the_Mastermind_B",
-   "set"
+   "set",
+   "Superior Command of the Mastermind: Damage/Endurance"
   ],
   [
    "SprCmmoft",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Command_of_the_Mastermind_C",
-   "set"
+   "set",
+   "Superior Command of the Mastermind: Accuracy/Damage/Recharge"
   ],
   [
    "SprCmmoft",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Command_of_the_Mastermind_D",
-   "set"
+   "set",
+   "Superior Command of the Mastermind: Damage/Endurance/Recharge"
   ],
   [
    "SprCmmoft",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Command_of_the_Mastermind_E",
-   "set"
+   "set",
+   "Superior Command of the Mastermind: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprCmmoft",
    "Rchg/PetAoEDef",
    "Superior_Attuned_Superior_Command_of_the_Mastermind_F",
-   "set"
+   "set",
+   "Superior Command of the Mastermind: Recharge/Pet +AoE Defense Aura"
   ],
   [
    "SprScrStr",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Scrappers_Strike_A",
-   "set"
+   "set",
+   "Superior Scrapper's Strike: Accuracy/Damage"
   ],
   [
    "SprScrStr",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Scrappers_Strike_B",
-   "set"
+   "set",
+   "Superior Scrapper's Strike: Damage/Recharge"
   ],
   [
    "SprScrStr",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Scrappers_Strike_C",
-   "set"
+   "set",
+   "Superior Scrapper's Strike: Accuracy/Damage/Recharge"
   ],
   [
    "SprScrStr",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Scrappers_Strike_D",
-   "set"
+   "set",
+   "Superior Scrapper's Strike: Damage/Endurance/Recharge"
   ],
   [
    "SprScrStr",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Scrappers_Strike_E",
-   "set"
+   "set",
+   "Superior Scrapper's Strike: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprScrStr",
    "Rchg/+Crit",
    "Superior_Attuned_Superior_Scrappers_Strike_F",
-   "set"
+   "set",
+   "Superior Scrapper's Strike: Recharge/Critical Hit Bonus"
   ],
   [
    "SprStlGl",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Stalkers_Guile_A",
-   "set"
+   "set",
+   "Superior Stalker's Guile: Accuracy/Damage"
   ],
   [
    "SprStlGl",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Stalkers_Guile_B",
-   "set"
+   "set",
+   "Superior Stalker's Guile: Damage/Recharge"
   ],
   [
    "SprStlGl",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Stalkers_Guile_C",
-   "set"
+   "set",
+   "Superior Stalker's Guile: Accuracy/Damage/Recharge"
   ],
   [
    "SprStlGl",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Stalkers_Guile_D",
-   "set"
+   "set",
+   "Superior Stalker's Guile: Damage/Endurance/Recharge"
   ],
   [
    "SprStlGl",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Stalkers_Guile_E",
-   "set"
+   "set",
+   "Superior Stalker's Guile: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprStlGl",
    "Rchg/Hide%",
    "Superior_Attuned_Superior_Stalkers_Guile_F",
-   "set"
+   "set",
+   "Superior Stalker's Guile: Recharge/Chance to Hide"
   ],
   [
    "SprMghoft",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Might_of_the_Tanker_A",
-   "set"
+   "set",
+   "Superior Might of the Tanker: Accuracy/Damage"
   ],
   [
    "SprMghoft",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Might_of_the_Tanker_B",
-   "set"
+   "set",
+   "Superior Might of the Tanker: Damage/Recharge"
   ],
   [
    "SprMghoft",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Might_of_the_Tanker_C",
-   "set"
+   "set",
+   "Superior Might of the Tanker: Accuracy/Damage/Recharge"
   ],
   [
    "SprMghoft",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Might_of_the_Tanker_D",
-   "set"
+   "set",
+   "Superior Might of the Tanker: Damage/Endurance/Recharge"
   ],
   [
    "SprMghoft",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Might_of_the_Tanker_E",
-   "set"
+   "set",
+   "Superior Might of the Tanker: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprMghoft",
    "Rchg/Res%",
    "Superior_Attuned_Superior_Might_of_the_Tanker_F",
-   "set"
+   "set",
+   "Superior Might of the Tanker: Recharge/Chance for +Res(All)"
   ],
   [
    "OvrFrc",
    "Acc/Dmg",
    "Attuned_Overwhelming_Force_A",
-   "set"
+   "set",
+   "Overwhelming Force: Accuracy/Damage"
   ],
   [
    "OvrFrc",
    "End/Rech",
    "Attuned_Overwhelming_Force_B",
-   "set"
+   "set",
+   "Overwhelming Force: Endurance/Recharge"
   ],
   [
    "OvrFrc",
    "Acc/Dmg/End",
    "Attuned_Overwhelming_Force_C",
-   "set"
+   "set",
+   "Overwhelming Force: Accuracy/Damage/Endurance"
   ],
   [
    "OvrFrc",
    "Dmg/End/Rech",
    "Attuned_Overwhelming_Force_D",
-   "set"
+   "set",
+   "Overwhelming Force: Damage/Endurance/Recharge"
   ],
   [
    "OvrFrc",
    "Acc/Dmg/End/Rech",
    "Attuned_Overwhelming_Force_E",
-   "set"
+   "set",
+   "Overwhelming Force: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "OvrFrc",
    "Dam/KB",
    "Attuned_Overwhelming_Force_F",
-   "set"
+   "set",
+   "Overwhelming Force: Damage/Chance for Knockdown/Knockback to Knockdown"
   ],
   [
    "Ann",
    "Acc/Dmg",
    "Crafted_Annihilation_A",
-   "set"
+   "set",
+   "Annihilation: Accuracy/Damage"
   ],
   [
    "Ann",
    "Dmg/Rchg",
    "Crafted_Annihilation_B",
-   "set"
+   "set",
+   "Annihilation: Damage/RechargeTime"
   ],
   [
    "Ann",
    "Acc/Dmg/Rchg",
    "Crafted_Annihilation_C",
-   "set"
+   "set",
+   "Annihilation: Accuracy/Damage/RechargeTime"
   ],
   [
    "Ann",
    "Acc/Dmg/EndRdx",
    "Crafted_Annihilation_D",
-   "set"
+   "set",
+   "Annihilation: Accuracy/Damage/Endurance"
   ],
   [
    "Ann",
    "Acc/Dmg/EndRdx/Rchg",
    "Crafted_Annihilation_E",
-   "set"
+   "set",
+   "Annihilation: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "Ann",
    "ResDeb%",
    "Crafted_Annihilation_F",
-   "set"
+   "set",
+   "Annihilation: Chance for Res Debuff"
   ],
   [
    "Prv",
    "Heal",
    "Crafted_Preventive_Medicine_A",
-   "set"
+   "set",
+   "Preventive Medicine: Heal"
   ],
   [
    "Prv",
    "Heal/EndRdx",
    "Crafted_Preventive_Medicine_B",
-   "set"
+   "set",
+   "Preventive Medicine: Heal/Endurance"
   ],
   [
    "Prv",
    "EndRdx/Rchg",
    "Crafted_Preventive_Medicine_C",
-   "set"
+   "set",
+   "Preventive Medicine: Endurance/RechargeTime"
   ],
   [
    "Prv",
    "Heal/Rchg",
    "Crafted_Preventive_Medicine_D",
-   "set"
+   "set",
+   "Preventive Medicine: Heal/RechargeTime"
   ],
   [
    "Prv",
    "Heal/Rchg/EndRdx",
    "Crafted_Preventive_Medicine_E",
-   "set"
+   "set",
+   "Preventive Medicine: Heal/RechargeTime/Endurance"
   ],
   [
    "Prv",
    "Absorb%",
    "Crafted_Preventive_Medicine_F",
-   "set"
+   "set",
+   "Preventive Medicine: Chance for +Absorb"
   ],
   [
    "Rct",
    "Def",
    "Crafted_Reactive_Defenses_A",
-   "set"
+   "set",
+   "Reactive Defenses: Defense"
   ],
   [
    "Rct",
    "Def/EndRdx",
    "Crafted_Reactive_Defenses_B",
-   "set"
+   "set",
+   "Reactive Defenses: Defense/Endurance"
   ],
   [
    "Rct",
    "EndRdx/Rchg",
    "Crafted_Reactive_Defenses_C",
-   "set"
+   "set",
+   "Reactive Defenses: Endurance/RechargeTime"
   ],
   [
    "Rct",
    "Def/Rchg",
    "Crafted_Reactive_Defenses_D",
-   "set"
+   "set",
+   "Reactive Defenses: Defense/RechargeTime"
   ],
   [
    "Rct",
    "Def/EndRdx/Rchg",
    "Crafted_Reactive_Defenses_E",
-   "set"
+   "set",
+   "Reactive Defenses: Defense/Endurance/RechargeTime"
   ],
   [
    "Rct",
    "ResDam%",
    "Crafted_Reactive_Defenses_F",
-   "set"
+   "set",
+   "Reactive Defenses: Scaling Resist Damage"
   ],
   [
    "UnbGrd",
    "ResDam",
    "Crafted_Unbreakable_Guard_A",
-   "set"
+   "set",
+   "Unbreakable Guard: Resistance"
   ],
   [
    "UnbGrd",
    "ResDam/EndRdx",
    "Crafted_Unbreakable_Guard_B",
-   "set"
+   "set",
+   "Unbreakable Guard: Resistance/Endurance"
   ],
   [
    "UnbGrd",
    "EndRdx/Rchg",
    "Crafted_Unbreakable_Guard_C",
-   "set"
+   "set",
+   "Unbreakable Guard: Endurance/RechargeTime"
   ],
   [
    "UnbGrd",
    "Rchg/ResDam",
    "Crafted_Unbreakable_Guard_D",
-   "set"
+   "set",
+   "Unbreakable Guard: RechargeTime/Resistance"
   ],
   [
    "UnbGrd",
    "ResDam/EndRdx/Rchg",
    "Crafted_Unbreakable_Guard_E",
-   "set"
+   "set",
+   "Unbreakable Guard: Resistance/Endurance/RechargeTime"
   ],
   [
    "UnbGrd",
    "Max HP%",
    "Crafted_Unbreakable_Guard_F",
-   "set"
+   "set",
+   "Unbreakable Guard: +Max HP"
   ],
   [
    "DfnBrr",
    "Acc/Dmg",
    "Attuned_Defiant_Barrage_A",
-   "set"
+   "set",
+   "Defiant Barrage: Accuracy/Damage"
   ],
   [
    "DfnBrr",
    "Dmg/Rchg",
    "Attuned_Defiant_Barrage_B",
-   "set"
+   "set",
+   "Defiant Barrage: Damage/RechargeTime"
   ],
   [
    "DfnBrr",
    "Acc/Dmg/Rchg",
    "Attuned_Defiant_Barrage_C",
-   "set"
+   "set",
+   "Defiant Barrage: Accuracy/Damage/RechargeTime"
   ],
   [
    "DfnBrr",
    "Acc/Dmg/EndRdx",
    "Attuned_Defiant_Barrage_D",
-   "set"
+   "set",
+   "Defiant Barrage: Accuracy/Damage/Endurance"
   ],
   [
    "DfnBrr",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Defiant_Barrage_E",
-   "set"
+   "set",
+   "Defiant Barrage: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "DfnBrr",
    "Rchg/+Status Protect",
    "Attuned_Defiant_Barrage_F",
-   "set"
+   "set",
+   "Defiant Barrage: RechargeTime/+Status"
   ],
   [
    "SprDfnBrr",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Defiant_Barrage_A",
-   "set"
+   "set",
+   "Superior Defiant Barrage: Accuracy/Damage"
   ],
   [
    "SprDfnBrr",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Defiant_Barrage_B",
-   "set"
+   "set",
+   "Superior Defiant Barrage: Damage/RechargeTime"
   ],
   [
    "SprDfnBrr",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Defiant_Barrage_C",
-   "set"
+   "set",
+   "Superior Defiant Barrage: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprDfnBrr",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Superior_Defiant_Barrage_D",
-   "set"
+   "set",
+   "Superior Defiant Barrage: Accuracy/Damage/Endurance"
   ],
   [
    "SprDfnBrr",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Defiant_Barrage_E",
-   "set"
+   "set",
+   "Superior Defiant Barrage: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprDfnBrr",
    "Rchg/+Status Protect",
    "Superior_Attuned_Superior_Defiant_Barrage_F",
-   "set"
+   "set",
+   "Superior Defiant Barrage: RechargeTime/+Status"
   ],
   [
    "UnrFur",
    "Acc/Dmg",
    "Attuned_Unrelenting_Fury_A",
-   "set"
+   "set",
+   "Unrelenting Fury: Accuracy/Damage"
   ],
   [
    "UnrFur",
    "Dmg/Rchg",
    "Attuned_Unrelenting_Fury_B",
-   "set"
+   "set",
+   "Unrelenting Fury: Damage/RechargeTime"
   ],
   [
    "UnrFur",
    "Acc/Dmg/Rchg",
    "Attuned_Unrelenting_Fury_C",
-   "set"
+   "set",
+   "Unrelenting Fury: Accuracy/Damage/RechargeTime"
   ],
   [
    "UnrFur",
    "Dmg/EndRdx/Rchg",
    "Attuned_Unrelenting_Fury_D",
-   "set"
+   "set",
+   "Unrelenting Fury: Damage/Endurance/RechargeTime"
   ],
   [
    "UnrFur",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Unrelenting_Fury_E",
-   "set"
+   "set",
+   "Unrelenting Fury: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "UnrFur",
    "Rchg/+Regen/+End",
    "Attuned_Unrelenting_Fury_F",
-   "set"
+   "set",
+   "Unrelenting Fury: RechargeTime/+Regen/+End"
   ],
   [
    "SprUnrFur",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Unrelenting_Fury_A",
-   "set"
+   "set",
+   "Superior Unrelenting Fury: Accuracy/Damage"
   ],
   [
    "SprUnrFur",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Unrelenting_Fury_B",
-   "set"
+   "set",
+   "Superior Unrelenting Fury: Damage/RechargeTime"
   ],
   [
    "SprUnrFur",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Unrelenting_Fury_C",
-   "set"
+   "set",
+   "Superior Unrelenting Fury: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprUnrFur",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Unrelenting_Fury_D",
-   "set"
+   "set",
+   "Superior Unrelenting Fury: Damage/Endurance/RechargeTime"
   ],
   [
    "SprUnrFur",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Unrelenting_Fury_E",
-   "set"
+   "set",
+   "Superior Unrelenting Fury: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprUnrFur",
    "Rchg/+Regen/+End",
    "Superior_Attuned_Superior_Unrelenting_Fury_F",
-   "set"
+   "set",
+   "Superior Unrelenting Fury: RechargeTime/+Regen/+End"
   ],
   [
    "OvrPrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear",
    "Attuned_Overpowering_Presence_A",
-   "set"
+   "set",
+   "Overpowering Presence: Accuracy/Control Duration"
   ],
   [
    "OvrPrs",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Rchg",
    "Attuned_Overpowering_Presence_B",
-   "set"
+   "set",
+   "Overpowering Presence: Control Duration/RechargeTime"
   ],
   [
    "OvrPrs",
    "EndRdx/Rchg",
    "Attuned_Overpowering_Presence_C",
-   "set"
+   "set",
+   "Overpowering Presence: Endurance/RechargeTime"
   ],
   [
    "OvrPrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx",
    "Attuned_Overpowering_Presence_D",
-   "set"
+   "set",
+   "Overpowering Presence: Accuracy/Control Duration/Endurance"
   ],
   [
    "OvrPrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Attuned_Overpowering_Presence_E",
-   "set"
+   "set",
+   "Overpowering Presence: Accuracy/Control Duration/Endurance/RechargeTime"
   ],
   [
    "OvrPrs",
    "Rchg/Energy Font",
    "Attuned_Overpowering_Presence_F",
-   "set"
+   "set",
+   "Overpowering Presence: RechargeTime/Energy Font"
   ],
   [
    "SprOvrPrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear",
    "Superior_Attuned_Superior_Overpowering_Presence_A",
-   "set"
+   "set",
+   "Superior Overpowering Presence: Accuracy/Control Duration"
   ],
   [
    "SprOvrPrs",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Rchg",
    "Superior_Attuned_Superior_Overpowering_Presence_B",
-   "set"
+   "set",
+   "Superior Overpowering Presence: Control Duration/RechargeTime"
   ],
   [
    "SprOvrPrs",
    "EndRdx/Rchg",
    "Superior_Attuned_Superior_Overpowering_Presence_C",
-   "set"
+   "set",
+   "Superior Overpowering Presence: Endurance/RechargeTime"
   ],
   [
    "SprOvrPrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx",
    "Superior_Attuned_Superior_Overpowering_Presence_D",
-   "set"
+   "set",
+   "Superior Overpowering Presence: Accuracy/Control Duration/Endurance"
   ],
   [
    "SprOvrPrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Superior_Attuned_Superior_Overpowering_Presence_E",
-   "set"
+   "set",
+   "Superior Overpowering Presence: Accuracy/Control Duration/Endurance/RechargeTime"
   ],
   [
    "SprOvrPrs",
    "Rchg/Energy Font",
    "Superior_Attuned_Superior_Overpowering_Presence_F",
-   "set"
+   "set",
+   "Superior Overpowering Presence: RechargeTime/Energy Font"
   ],
   [
    "ScrBls",
    "Acc/Dmg",
    "Attuned_Scourging_Blast_A",
-   "set"
+   "set",
+   "Scourging Blast: Accuracy/Damage"
   ],
   [
    "ScrBls",
    "Dmg/Rchg",
    "Attuned_Scourging_Blast_B",
-   "set"
+   "set",
+   "Scourging Blast: Damage/RechargeTime"
   ],
   [
    "ScrBls",
    "Acc/Dmg/Rchg",
    "Attuned_Scourging_Blast_C",
-   "set"
+   "set",
+   "Scourging Blast: Accuracy/Damage/RechargeTime"
   ],
   [
    "ScrBls",
    "Dmg/EndRdx/Rchg",
    "Attuned_Scourging_Blast_D",
-   "set"
+   "set",
+   "Scourging Blast: Damage/Endurance/RechargeTime"
   ],
   [
    "ScrBls",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Scourging_Blast_E",
-   "set"
+   "set",
+   "Scourging Blast: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "ScrBls",
    "Rchg/+End",
    "Attuned_Scourging_Blast_F",
-   "set"
+   "set",
+   "Scourging Blast: RechargeTime/PBAoE +End"
   ],
   [
    "SprScrBls",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Scourging_Blast_A",
-   "set"
+   "set",
+   "Superior Scourging Blast: Accuracy/Damage"
   ],
   [
    "SprScrBls",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Scourging_Blast_B",
-   "set"
+   "set",
+   "Superior Scourging Blast: Damage/RechargeTime"
   ],
   [
    "SprScrBls",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Scourging_Blast_C",
-   "set"
+   "set",
+   "Superior Scourging Blast: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprScrBls",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Scourging_Blast_D",
-   "set"
+   "set",
+   "Superior Scourging Blast: Damage/Endurance/RechargeTime"
   ],
   [
    "SprScrBls",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Scourging_Blast_E",
-   "set"
+   "set",
+   "Superior Scourging Blast: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprScrBls",
    "Rchg/+End",
    "Superior_Attuned_Superior_Scourging_Blast_F",
-   "set"
+   "set",
+   "Superior Scourging Blast: RechargeTime/PBAoE +End"
   ],
   [
    "VglAss",
    "Acc/Dmg",
    "Attuned_Vigilant_Assault_A",
-   "set"
+   "set",
+   "Vigilant Assault: Accuracy/Damage"
   ],
   [
    "VglAss",
    "Dmg/Rchg",
    "Attuned_Vigilant_Assault_B",
-   "set"
+   "set",
+   "Vigilant Assault: Damage/RechargeTime"
   ],
   [
    "VglAss",
    "Dmg/EndRdx/Rchg",
    "Attuned_Vigilant_Assault_C",
-   "set"
+   "set",
+   "Vigilant Assault: Damage/Endurance/RechargeTime"
   ],
   [
    "VglAss",
    "Acc/Dmg/EndRdx",
    "Attuned_Vigilant_Assault_D",
-   "set"
+   "set",
+   "Vigilant Assault: Accuracy/Damage/Endurance"
   ],
   [
    "VglAss",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Vigilant_Assault_E",
-   "set"
+   "set",
+   "Vigilant Assault: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "VglAss",
    "Rchg/+Absorb",
    "Attuned_Vigilant_Assault_F",
-   "set"
+   "set",
+   "Vigilant Assault: RechargeTime/PBAoE +Absorb"
   ],
   [
    "SprVglAss",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Vigilant_Assault_A",
-   "set"
+   "set",
+   "Superior Vigilant Assault: Accuracy/Damage"
   ],
   [
    "SprVglAss",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Vigilant_Assault_B",
-   "set"
+   "set",
+   "Superior Vigilant Assault: Damage/RechargeTime"
   ],
   [
    "SprVglAss",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Vigilant_Assault_C",
-   "set"
+   "set",
+   "Superior Vigilant Assault: Damage/Endurance/RechargeTime"
   ],
   [
    "SprVglAss",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Superior_Vigilant_Assault_D",
-   "set"
+   "set",
+   "Superior Vigilant Assault: Accuracy/Damage/Endurance"
   ],
   [
    "SprVglAss",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Vigilant_Assault_E",
-   "set"
+   "set",
+   "Superior Vigilant Assault: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprVglAss",
    "Rchg/+Absorb",
    "Superior_Attuned_Superior_Vigilant_Assault_F",
-   "set"
+   "set",
+   "Superior Vigilant Assault: RechargeTime/PBAoE +Absorb"
   ],
   [
    "DmnGrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear",
    "Attuned_Dominating_Grasp_A",
-   "set"
+   "set",
+   "Dominating Grasp: Accuracy/Control Duration"
   ],
   [
    "DmnGrs",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Rchg",
    "Attuned_Dominating_Grasp_B",
-   "set"
+   "set",
+   "Dominating Grasp: Control Duration/RechargeTime"
   ],
   [
    "DmnGrs",
    "EndRdx/Rchg",
    "Attuned_Dominating_Grasp_C",
-   "set"
+   "set",
+   "Dominating Grasp: Endurance/RechargeTime"
   ],
   [
    "DmnGrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx",
    "Attuned_Dominating_Grasp_D",
-   "set"
+   "set",
+   "Dominating Grasp: Accuracy/Control Duration/Endurance"
   ],
   [
    "DmnGrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Attuned_Dominating_Grasp_E",
-   "set"
+   "set",
+   "Dominating Grasp: Accuracy/Control Duration/Endurance/RechargeTime"
   ],
   [
    "DmnGrs",
    "Rchg/Fiery Orb",
    "Attuned_Dominating_Grasp_F",
-   "set"
+   "set",
+   "Dominating Grasp: RechargeTime/Fiery Orb"
   ],
   [
    "SprDmnGrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear",
    "Superior_Attuned_Superior_Dominating_Grasp_A",
-   "set"
+   "set",
+   "Superior Dominating Grasp: Accuracy/Control Duration"
   ],
   [
    "SprDmnGrs",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Rchg",
    "Superior_Attuned_Superior_Dominating_Grasp_B",
-   "set"
+   "set",
+   "Superior Dominating Grasp: Control Duration/RechargeTime"
   ],
   [
    "SprDmnGrs",
    "EndRdx/Rchg",
    "Superior_Attuned_Superior_Dominating_Grasp_C",
-   "set"
+   "set",
+   "Superior Dominating Grasp: Endurance/RechargeTime"
   ],
   [
    "SprDmnGrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx",
    "Superior_Attuned_Superior_Dominating_Grasp_D",
-   "set"
+   "set",
+   "Superior Dominating Grasp: Accuracy/Control Duration/Endurance"
   ],
   [
    "SprDmnGrs",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Superior_Attuned_Superior_Dominating_Grasp_E",
-   "set"
+   "set",
+   "Superior Dominating Grasp: Accuracy/Control Duration/Endurance/RechargeTime"
   ],
   [
    "SprDmnGrs",
    "Rchg/Fiery Orb",
    "Superior_Attuned_Superior_Dominating_Grasp_F",
-   "set"
+   "set",
+   "Superior Dominating Grasp: RechargeTime/Fiery Orb"
   ],
   [
    "EssTrn",
    "Acc/Dmg",
    "Attuned_Essence_Transfer_A",
-   "set"
+   "set",
+   "Essence Transfer: Accuracy/Damage"
   ],
   [
    "EssTrn",
    "Dmg/Rchg",
    "Attuned_Essence_Transfer_B",
-   "set"
+   "set",
+   "Essence Transfer: Damage/RechargeTime"
   ],
   [
    "EssTrn",
    "Acc/Dmg/Rchg",
    "Attuned_Essence_Transfer_C",
-   "set"
+   "set",
+   "Essence Transfer: Accuracy/Damage/RechargeTime"
   ],
   [
    "EssTrn",
    "Dmg/EndRdx/Rchg",
    "Attuned_Essence_Transfer_D",
-   "set"
+   "set",
+   "Essence Transfer: Damage/Endurance/RechargeTime"
   ],
   [
    "EssTrn",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Essence_Transfer_E",
-   "set"
+   "set",
+   "Essence Transfer: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "EssTrn",
    "Rchg/Global Heal",
    "Attuned_Essence_Transfer_F",
-   "set"
+   "set",
+   "Essence Transfer: RechargeTime/Global Heal"
   ],
   [
    "SprEssTrn",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Essence_Transfer_A",
-   "set"
+   "set",
+   "Superior Essence Transfer: Accuracy/Damage"
   ],
   [
    "SprEssTrn",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Essence_Transfer_B",
-   "set"
+   "set",
+   "Superior Essence Transfer: Damage/RechargeTime"
   ],
   [
    "SprEssTrn",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Essence_Transfer_C",
-   "set"
+   "set",
+   "Superior Essence Transfer: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprEssTrn",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Essence_Transfer_D",
-   "set"
+   "set",
+   "Superior Essence Transfer: Damage/Endurance/RechargeTime"
   ],
   [
    "SprEssTrn",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Essence_Transfer_E",
-   "set"
+   "set",
+   "Superior Essence Transfer: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprEssTrn",
    "Rchg/Global Heal",
    "Superior_Attuned_Superior_Essence_Transfer_F",
-   "set"
+   "set",
+   "Superior Essence Transfer: RechargeTime/Global Heal"
   ],
   [
    "MarofSpr",
    "Dmg",
    "Attuned_Mark_of_Supremacy_A",
-   "set"
+   "set",
+   "Mark of Supremacy: Damage"
   ],
   [
    "MarofSpr",
    "Dmg/EndRdx",
    "Attuned_Mark_of_Supremacy_B",
-   "set"
+   "set",
+   "Mark of Supremacy: Damage/Endurance"
   ],
   [
    "MarofSpr",
    "Acc/Dmg",
    "Attuned_Mark_of_Supremacy_C",
-   "set"
+   "set",
+   "Mark of Supremacy: Accuracy/Damage"
   ],
   [
    "MarofSpr",
    "Acc/EndRdx",
    "Attuned_Mark_of_Supremacy_D",
-   "set"
+   "set",
+   "Mark of Supremacy: Accuracy/Endurance"
   ],
   [
    "MarofSpr",
    "Acc/Dmg/EndRdx",
    "Attuned_Mark_of_Supremacy_E",
-   "set"
+   "set",
+   "Mark of Supremacy: Accuracy/Damage/Endurance"
   ],
   [
    "MarofSpr",
    "EndRdx/+Resist/+Regen",
    "Attuned_Mark_of_Supremacy_F",
-   "set"
+   "set",
+   "Mark of Supremacy: Endurance/Pet +Resist +Regen"
   ],
   [
    "SprMarofS",
    "Dmg",
    "Superior_Attuned_Superior_Mark_of_Supremacy_A",
-   "set"
+   "set",
+   "Superior Mark of Supremacy: Damage"
   ],
   [
    "SprMarofS",
    "Dmg/EndRdx",
    "Superior_Attuned_Superior_Mark_of_Supremacy_B",
-   "set"
+   "set",
+   "Superior Mark of Supremacy: Damage/Endurance"
   ],
   [
    "SprMarofS",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Mark_of_Supremacy_C",
-   "set"
+   "set",
+   "Superior Mark of Supremacy: Accuracy/Damage"
   ],
   [
    "SprMarofS",
    "Acc/EndRdx",
    "Superior_Attuned_Superior_Mark_of_Supremacy_D",
-   "set"
+   "set",
+   "Superior Mark of Supremacy: Accuracy/Endurance"
   ],
   [
    "SprMarofS",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Superior_Mark_of_Supremacy_E",
-   "set"
+   "set",
+   "Superior Mark of Supremacy: Accuracy/Damage/Endurance"
   ],
   [
    "SprMarofS",
    "EndRdx/+Resist/+Regen",
    "Superior_Attuned_Superior_Mark_of_Supremacy_F",
-   "set"
+   "set",
+   "Superior Mark of Supremacy: Endurance/Pet +Resist +Regen"
   ],
   [
    "CrtStr",
    "Acc/Dmg",
    "Attuned_Critical_Strikes_A",
-   "set"
+   "set",
+   "Critical Strikes: Accuracy/Damage"
   ],
   [
    "CrtStr",
    "Dmg/Rchg",
    "Attuned_Critical_Strikes_B",
-   "set"
+   "set",
+   "Critical Strikes: Damage/RechargeTime"
   ],
   [
    "CrtStr",
    "Acc/Dmg/Rchg",
    "Attuned_Critical_Strikes_C",
-   "set"
+   "set",
+   "Critical Strikes: Accuracy/Damage/RechargeTime"
   ],
   [
    "CrtStr",
    "Dmg/EndRdx/Rchg",
    "Attuned_Critical_Strikes_D",
-   "set"
+   "set",
+   "Critical Strikes: Damage/Endurance/RechargeTime"
   ],
   [
    "CrtStr",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Critical_Strikes_E",
-   "set"
+   "set",
+   "Critical Strikes: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "CrtStr",
    "Rchg/+50% Crit",
    "Attuned_Critical_Strikes_F",
-   "set"
+   "set",
+   "Critical Strikes: RechargeTime/+50% Crit Proc"
   ],
   [
    "SprCrtStr",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Critical_Strikes_A",
-   "set"
+   "set",
+   "Superior Critical Strikes: Accuracy/Damage"
   ],
   [
    "SprCrtStr",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Critical_Strikes_B",
-   "set"
+   "set",
+   "Superior Critical Strikes: Damage/RechargeTime"
   ],
   [
    "SprCrtStr",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Critical_Strikes_C",
-   "set"
+   "set",
+   "Superior Critical Strikes: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprCrtStr",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Critical_Strikes_D",
-   "set"
+   "set",
+   "Superior Critical Strikes: Damage/Endurance/RechargeTime"
   ],
   [
    "SprCrtStr",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Critical_Strikes_E",
-   "set"
+   "set",
+   "Superior Critical Strikes: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprCrtStr",
    "Rchg/+50% Crit",
    "Superior_Attuned_Superior_Critical_Strikes_F",
-   "set"
+   "set",
+   "Superior Critical Strikes: RechargeTime/+50% Crit Proc"
   ],
   [
    "SpdBit",
    "Acc/Dmg",
    "Attuned_Spiders_Bite_A",
-   "set"
+   "set",
+   "Spider's Bite: Accuracy/Damage"
   ],
   [
    "SpdBit",
    "Dmg/Rchg",
    "Attuned_Spiders_Bite_B",
-   "set"
+   "set",
+   "Spider's Bite: Damage/RechargeTime"
   ],
   [
    "SpdBit",
    "Acc/Dmg/Rchg",
    "Attuned_Spiders_Bite_C",
-   "set"
+   "set",
+   "Spider's Bite: Accuracy/Damage/RechargeTime"
   ],
   [
    "SpdBit",
    "Dmg/EndRdx/Rchg",
    "Attuned_Spiders_Bite_D",
-   "set"
+   "set",
+   "Spider's Bite: Damage/Endurance/RechargeTime"
   ],
   [
    "SpdBit",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Spiders_Bite_E",
-   "set"
+   "set",
+   "Spider's Bite: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SpdBit",
    "Rchg/Global Toxic",
    "Attuned_Spiders_Bite_F",
-   "set"
+   "set",
+   "Spider's Bite: RechargeTime/Global Toxic"
   ],
   [
    "SprSpdBit",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Spiders_Bite_A",
-   "set"
+   "set",
+   "Superior Spider's Bite: Accuracy/Damage"
   ],
   [
    "SprSpdBit",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Spiders_Bite_B",
-   "set"
+   "set",
+   "Superior Spider's Bite: Damage/RechargeTime"
   ],
   [
    "SprSpdBit",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Spiders_Bite_C",
-   "set"
+   "set",
+   "Superior Spider's Bite: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprSpdBit",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Spiders_Bite_D",
-   "set"
+   "set",
+   "Superior Spider's Bite: Damage/Endurance/RechargeTime"
   ],
   [
    "SprSpdBit",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Spiders_Bite_E",
-   "set"
+   "set",
+   "Superior Spider's Bite: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprSpdBit",
    "Rchg/Global Toxic",
    "Superior_Attuned_Superior_Spiders_Bite_F",
-   "set"
+   "set",
+   "Superior Spider's Bite: RechargeTime/Global Toxic"
   ],
   [
    "AssMar",
    "Acc/Dmg",
    "Attuned_Assassins_Mark_A",
-   "set"
+   "set",
+   "Assassin's Mark: Accuracy/Damage"
   ],
   [
    "AssMar",
    "Dmg/Rchg",
    "Attuned_Assassins_Mark_B",
-   "set"
+   "set",
+   "Assassin's Mark: Damage/RechargeTime"
   ],
   [
    "AssMar",
    "Acc/Dmg/Rchg",
    "Attuned_Assassins_Mark_C",
-   "set"
+   "set",
+   "Assassin's Mark: Accuracy/Damage/RechargeTime"
   ],
   [
    "AssMar",
    "Dmg/EndRdx/Rchg",
    "Attuned_Assassins_Mark_D",
-   "set"
+   "set",
+   "Assassin's Mark: Damage/Endurance/RechargeTime"
   ],
   [
    "AssMar",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Assassins_Mark_E",
-   "set"
+   "set",
+   "Assassin's Mark: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "AssMar",
    "Rchg/Rchg Build Up",
    "Attuned_Assassins_Mark_F",
-   "set"
+   "set",
+   "Assassin's Mark: RechargeTime/Rchg Build Up"
   ],
   [
    "SprAssMar",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Assassins_Mark_A",
-   "set"
+   "set",
+   "Superior Assassin's Mark: Accuracy/Damage"
   ],
   [
    "SprAssMar",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Assassins_Mark_B",
-   "set"
+   "set",
+   "Superior Assassin's Mark: Damage/RechargeTime"
   ],
   [
    "SprAssMar",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Assassins_Mark_C",
-   "set"
+   "set",
+   "Superior Assassin's Mark: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprAssMar",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Assassins_Mark_D",
-   "set"
+   "set",
+   "Superior Assassin's Mark: Damage/Endurance/RechargeTime"
   ],
   [
    "SprAssMar",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Assassins_Mark_E",
-   "set"
+   "set",
+   "Superior Assassin's Mark: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprAssMar",
    "Rchg/Rchg Build Up",
    "Superior_Attuned_Superior_Assassins_Mark_F",
-   "set"
+   "set",
+   "Superior Assassin's Mark: RechargeTime/Rchg Build Up"
   ],
   [
    "GntFis",
    "Acc/Dmg",
    "Attuned_Gauntleted_Fist_A",
-   "set"
+   "set",
+   "Gauntleted Fist: Accuracy/Damage"
   ],
   [
    "GntFis",
    "Dmg/Rchg",
    "Attuned_Gauntleted_Fist_B",
-   "set"
+   "set",
+   "Gauntleted Fist: Damage/RechargeTime"
   ],
   [
    "GntFis",
    "Acc/Dmg/Rchg",
    "Attuned_Gauntleted_Fist_C",
-   "set"
+   "set",
+   "Gauntleted Fist: Accuracy/Damage/RechargeTime"
   ],
   [
    "GntFis",
    "Dmg/EndRdx/Rchg",
    "Attuned_Gauntleted_Fist_D",
-   "set"
+   "set",
+   "Gauntleted Fist: Damage/Endurance/RechargeTime"
   ],
   [
    "GntFis",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Gauntleted_Fist_E",
-   "set"
+   "set",
+   "Gauntleted Fist: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "GntFis",
    "Rchg/+Absorb",
    "Attuned_Gauntleted_Fist_F",
-   "set"
+   "set",
+   "Gauntleted Fist: RechargeTime/+Absorb"
   ],
   [
    "SprGntFis",
    "Acc/Dmg",
    "Superior_Attuned_Superior_Gauntleted_Fist_A",
-   "set"
+   "set",
+   "Superior Gauntleted Fist: Accuracy/Damage"
   ],
   [
    "SprGntFis",
    "Dmg/Rchg",
    "Superior_Attuned_Superior_Gauntleted_Fist_B",
-   "set"
+   "set",
+   "Superior Gauntleted Fist: Damage/RechargeTime"
   ],
   [
    "SprGntFis",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Superior_Gauntleted_Fist_C",
-   "set"
+   "set",
+   "Superior Gauntleted Fist: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprGntFis",
    "Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Gauntleted_Fist_D",
-   "set"
+   "set",
+   "Superior Gauntleted Fist: Damage/Endurance/RechargeTime"
   ],
   [
    "SprGntFis",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Superior_Gauntleted_Fist_E",
-   "set"
+   "set",
+   "Superior Gauntleted Fist: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprGntFis",
    "Rchg/+Absorb",
    "Superior_Attuned_Superior_Gauntleted_Fist_F",
-   "set"
+   "set",
+   "Superior Gauntleted Fist: RechargeTime/+Absorb"
   ],
   [
    "BlsCol",
    "Acc/Dmg",
    "Attuned_Blistering_Cold_A",
-   "set"
+   "set",
+   "Blistering Cold: Accuracy/Damage"
   ],
   [
    "BlsCol",
    "Dmg/EndRdx",
    "Attuned_Blistering_Cold_B",
-   "set"
+   "set",
+   "Blistering Cold: Damage/Endurance"
   ],
   [
    "BlsCol",
    "Acc/Dmg/EndRdx",
    "Attuned_Blistering_Cold_C",
-   "set"
+   "set",
+   "Blistering Cold: Accuracy/Damage/Endurance"
   ],
   [
    "BlsCol",
    "Acc/Dmg/Rchg",
    "Attuned_Blistering_Cold_D",
-   "set"
+   "set",
+   "Blistering Cold: Accuracy/Damage/Recharge"
   ],
   [
    "BlsCol",
    "Dmg/EndRdx/Acc/Rchg",
    "Attuned_Blistering_Cold_E",
-   "set"
+   "set",
+   "Blistering Cold: Damage/Endurance/Accuracy/RechargeTime"
   ],
   [
    "BlsCol",
    "Rchg/HoldProc",
    "Attuned_Blistering_Cold_F",
-   "set"
+   "set",
+   "Blistering Cold: Recharge/Chance for Hold"
   ],
   [
    "SprBlsCol",
    "Acc/Dmg",
    "Superior_Attuned_Blistering_Cold_A",
-   "set"
+   "set",
+   "Superior Blistering Cold: Accuracy/Damage"
   ],
   [
    "SprBlsCol",
    "Dmg/EndRdx",
    "Superior_Attuned_Blistering_Cold_B",
-   "set"
+   "set",
+   "Superior Blistering Cold: Damage/Endurance"
   ],
   [
    "SprBlsCol",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Blistering_Cold_C",
-   "set"
+   "set",
+   "Superior Blistering Cold: Accuracy/Damage/Endurance"
   ],
   [
    "SprBlsCol",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Blistering_Cold_D",
-   "set"
+   "set",
+   "Superior Blistering Cold: Accuracy/Damage/Recharge"
   ],
   [
    "SprBlsCol",
    "Dmg/EndRdx/Acc/Rchg",
    "Superior_Attuned_Blistering_Cold_E",
-   "set"
+   "set",
+   "Superior Blistering Cold: Damage/Endurance/Accuracy/RechargeTime"
   ],
   [
    "SprBlsCol",
    "Rchg/HoldProc",
    "Superior_Attuned_Blistering_Cold_F",
-   "set"
+   "set",
+   "Superior Blistering Cold: Recharge/Chance for Hold"
   ],
   [
    "Avl",
    "Acc/Dmg",
    "Attuned_Avalanche_A",
-   "set"
+   "set",
+   "Avalanche: Accuracy/Damage"
   ],
   [
    "Avl",
    "Dmg/EndRdx",
    "Attuned_Avalanche_B",
-   "set"
+   "set",
+   "Avalanche: Damage/Endurance"
   ],
   [
    "Avl",
    "Acc/Dmg/EndRdx",
    "Attuned_Avalanche_C",
-   "set"
+   "set",
+   "Avalanche: Accuracy/Damage/Endurance"
   ],
   [
    "Avl",
    "Acc/Dmg/Rchg",
    "Attuned_Avalanche_D",
-   "set"
+   "set",
+   "Avalanche: Accuracy/Damage/Recharge"
   ],
   [
    "Avl",
    "Acc/Dmg/EndRdx/Rchg",
    "Attuned_Avalanche_E",
-   "set"
+   "set",
+   "Avalanche: Accuracy/Damage/Endurance"
   ],
   [
    "Avl",
    "Rchg/KDProc",
    "Attuned_Avalanche_F",
-   "set"
+   "set",
+   "Avalanche: Recharge/Chance for Knockdown"
   ],
   [
    "SprAvl",
    "Acc/Dmg",
    "Superior_Attuned_Avalanche_A",
-   "set"
+   "set",
+   "Superior Avalanche: Accuracy/Damage"
   ],
   [
    "SprAvl",
    "Dmg/EndRdx",
    "Superior_Attuned_Avalanche_B",
-   "set"
+   "set",
+   "Superior Avalanche: Damage/Endurance"
   ],
   [
    "SprAvl",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Avalanche_C",
-   "set"
+   "set",
+   "Superior Avalanche: Accuracy/Damage/Endurance"
   ],
   [
    "SprAvl",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Avalanche_D",
-   "set"
+   "set",
+   "Superior Avalanche: Accuracy/Damage/Recharge"
   ],
   [
    "SprAvl",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Attuned_Avalanche_E",
-   "set"
+   "set",
+   "Superior Avalanche: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprAvl",
    "Rchg/KDProc",
    "Superior_Attuned_Avalanche_F",
-   "set"
+   "set",
+   "Superior Avalanche: Recharge/Chance for Knockdown"
   ],
   [
    "WntBit",
    "Acc/Dmg",
    "Attuned_Winters_Bite_A",
-   "set"
+   "set",
+   "Winter's Bite: Accuracy/Damage"
   ],
   [
    "WntBit",
    "Dmg/Rchg",
    "Attuned_Winters_Bite_B",
-   "set"
+   "set",
+   "Winter's Bite: Damage/RechargeTime"
   ],
   [
    "WntBit",
    "Acc/Dmg/EndRdx",
    "Attuned_Winters_Bite_C",
-   "set"
+   "set",
+   "Winter's Bite: Accuracy/Damage/Endurance"
   ],
   [
    "WntBit",
    "Acc/Dmg/Rchg",
    "Attuned_Winters_Bite_D",
-   "set"
+   "set",
+   "Winter's Bite: Accuracy/Damage/Recharge"
   ],
   [
    "WntBit",
    "Dmg/EndRdx/Acc/Rchg",
    "Attuned_Winters_Bite_E",
-   "set"
+   "set",
+   "Winter's Bite: Damage/Endurance/Accuracy/RechargeTime"
   ],
   [
    "WntBit",
    "Rchg/SlowProc",
    "Attuned_Winters_Bite_F",
-   "set"
+   "set",
+   "Winter's Bite: Recharge/Chance for -Speed & -Recharge"
   ],
   [
    "SprWntBit",
    "Acc/Dmg",
    "Superior_Attuned_Winters_Bite_A",
-   "set"
+   "set",
+   "Superior Winter's Bite: Accuracy/Damage"
   ],
   [
    "SprWntBit",
    "Dmg/Rchg",
    "Superior_Attuned_Winters_Bite_B",
-   "set"
+   "set",
+   "Superior Winter's Bite: Damage/RechargeTime"
   ],
   [
    "SprWntBit",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Winters_Bite_C",
-   "set"
+   "set",
+   "Superior Winter's Bite: Accuracy/Damage/Endurance"
   ],
   [
    "SprWntBit",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Winters_Bite_D",
-   "set"
+   "set",
+   "Superior Winter's Bite: Accuracy/Damage/Recharge"
   ],
   [
    "SprWntBit",
    "Dmg/EndRdx/Acc/Rchg",
    "Superior_Attuned_Winters_Bite_E",
-   "set"
+   "set",
+   "Superior Winter's Bite: Damage/Endurance/Accuracy/RechargeTime"
   ],
   [
    "SprWntBit",
    "Rchg/SlowProc",
    "Superior_Attuned_Winters_Bite_F",
-   "set"
+   "set",
+   "Superior Winter's Bite: Recharge/Chance for -Speed & -Recharge"
   ],
   [
    "FrzBls",
    "Acc/Dmg",
    "Attuned_Frozen_Blast_A",
-   "set"
+   "set",
+   "Frozen Blast: Accuracy/Damage"
   ],
   [
    "FrzBls",
    "Dmg/EndRdx",
    "Attuned_Frozen_Blast_B",
-   "set"
+   "set",
+   "Frozen Blast: Damage/Endurance"
   ],
   [
    "FrzBls",
    "Acc/Dmg/EndRdx",
    "Attuned_Frozen_Blast_C",
-   "set"
+   "set",
+   "Frozen Blast: Accuracy/Damage/Endurance"
   ],
   [
    "FrzBls",
    "Acc/Dmg/Rchg",
    "Attuned_Frozen_Blast_D",
-   "set"
+   "set",
+   "Frozen Blast: Accuracy/Damage/Recharge"
   ],
   [
    "FrzBls",
    "Dmg/EndRdx/Acc/Rchg",
    "Attuned_Frozen_Blast_E",
-   "set"
+   "set",
+   "Frozen Blast: Damage/Endurance/Accuracy/RechargeTime"
   ],
   [
    "FrzBls",
    "Rchg/ImmobProc",
    "Attuned_Frozen_Blast_F",
-   "set"
+   "set",
+   "Frozen Blast: Recharge/Chance for Immobilize"
   ],
   [
    "SprFrzBls",
    "Acc/Dmg",
    "Superior_Attuned_Frozen_Blast_A",
-   "set"
+   "set",
+   "Superior Frozen Blast: Accuracy/Damage"
   ],
   [
    "SprFrzBls",
    "Dmg/EndRdx",
    "Superior_Attuned_Frozen_Blast_B",
-   "set"
+   "set",
+   "Superior Frozen Blast: Damage/Endurance"
   ],
   [
    "SprFrzBls",
    "Acc/Dmg/EndRdx",
    "Superior_Attuned_Frozen_Blast_C",
-   "set"
+   "set",
+   "Superior Frozen Blast: Accuracy/Damage/Endurance"
   ],
   [
    "SprFrzBls",
    "Acc/Dmg/Rchg",
    "Superior_Attuned_Frozen_Blast_D",
-   "set"
+   "set",
+   "Superior Frozen Blast: Accuracy/Damage/Recharge"
   ],
   [
    "SprFrzBls",
    "Dmg/EndRdx/Acc/Rchg",
    "Superior_Attuned_Frozen_Blast_E",
-   "set"
+   "set",
+   "Superior Frozen Blast: Damage/Endurance/Accuracy/RechargeTime"
   ],
   [
    "SprFrzBls",
    "Rchg/ImmobProc",
    "Superior_Attuned_Frozen_Blast_F",
-   "set"
+   "set",
+   "Superior Frozen Blast: Recharge/Chance for Immobilize"
   ],
   [
    "Ent",
    "Acc/Hold",
    "Attuned_Entomb_A",
-   "set"
+   "set",
+   "Entomb: Accuracy/Hold"
   ],
   [
    "Ent",
    "Hold/Rchg",
    "Attuned_Entomb_B",
-   "set"
+   "set",
+   "Entomb: Hold/Recharge"
   ],
   [
    "Ent",
    "End/Rchg",
    "Attuned_Entomb_C",
-   "set"
+   "set",
+   "Entomb: Endurance/Recharge"
   ],
   [
    "Ent",
    "Acc/Hold/End",
    "Attuned_Entomb_D",
-   "set"
+   "set",
+   "Entomb: Accuracy/Hold/Endurance"
   ],
   [
    "Ent",
    "Acc/Hold/End/Rchg",
    "Attuned_Entomb_E",
-   "set"
+   "set",
+   "Entomb: Accuracy/Hold/Endurance/Recharge"
   ],
   [
    "Ent",
    "Rchg/AbsorbProc",
    "Attuned_Entomb_F",
-   "set"
+   "set",
+   "Entomb: Recharge/Chance for +Absorb"
   ],
   [
    "SprEnt",
    "Acc/Hold",
    "Superior_Attuned_Entomb_A",
-   "set"
+   "set",
+   "Superior Entomb: Accuracy/Hold"
   ],
   [
    "SprEnt",
    "Hold/Rchg",
    "Superior_Attuned_Entomb_B",
-   "set"
+   "set",
+   "Superior Entomb: Hold/Recharge"
   ],
   [
    "SprEnt",
    "End/Rchg",
    "Superior_Attuned_Entomb_C",
-   "set"
+   "set",
+   "Superior Entomb: Endurance/Recharge"
   ],
   [
    "SprEnt",
    "Acc/Hold/End",
    "Superior_Attuned_Entomb_D",
-   "set"
+   "set",
+   "Superior Entomb: Accuracy/Hold/Endurance"
   ],
   [
    "SprEnt",
    "Acc/Hold/End/Rchg",
    "Superior_Attuned_Entomb_E",
-   "set"
+   "set",
+   "Superior Entomb: Accuracy/Hold/Endurance/Recharge"
   ],
   [
    "SprEnt",
    "Rchg/AbsorbProc",
    "Superior_Attuned_Entomb_F",
-   "set"
+   "set",
+   "Superior Entomb: Recharge/Chance for +Absorb"
   ],
   [
    "GdnGft",
    "Acc/Dmg",
    "Guardian's_Gift_A",
-   "set"
+   "set",
+   "Guardian's Gift: Accuracy/Damage"
   ],
   [
    "GdnGft",
    "Dmg/Rchg",
    "Guardian's_Gift_B",
-   "set"
+   "set",
+   "Guardian's Gift: Damage/RechargeTime"
   ],
   [
    "GdnGft",
    "Acc/Dmg/Rchg",
    "Guardian's_Gift_C",
-   "set"
+   "set",
+   "Guardian's Gift: Accuracy/Damage/RechargeTime"
   ],
   [
    "GdnGft",
    "Dmg/EndRdx/Rchg",
    "Guardian's_Gift_D",
-   "set"
+   "set",
+   "Guardian's Gift: Damage/Endurance/RechargeTime"
   ],
   [
    "GdnGft",
    "Acc/Dmg/EndRdx/Rchg",
    "Guardian's_Gift_E",
-   "set"
+   "set",
+   "Guardian's Gift: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "GdnGft",
    "Rchg/+PBAoE Resolve",
    "Guardian's_Gift_F",
-   "set"
+   "set",
+   "Guardian's Gift: RechargeTime/Chance for PBAoE Resolve"
   ],
   [
    "SprGdnGft",
    "Acc/Dmg",
    "Superior_Guardian's_Gift_A",
-   "set"
+   "set",
+   "Superior Guardian's Gift: Accuracy/Damage"
   ],
   [
    "SprGdnGft",
    "Dmg/Rchg",
    "Superior_Guardian's_Gift_B",
-   "set"
+   "set",
+   "Superior Guardian's Gift: Damage/RechargeTime"
   ],
   [
    "SprGdnGft",
    "Acc/Dmg/Rchg",
    "Superior_Guardian's_Gift_C",
-   "set"
+   "set",
+   "Superior Guardian's Gift: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprGdnGft",
    "Dmg/EndRdx/Rchg",
    "Superior_Guardian's_Gift_D",
-   "set"
+   "set",
+   "Superior Guardian's Gift: Damage/Endurance/RechargeTime"
   ],
   [
    "SprGdnGft",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Guardian's_Gift_E",
-   "set"
+   "set",
+   "Superior Guardian's Gift: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprGdnGft",
    "Rchg/+PBAoE Resolve",
    "Superior_Guardian's_Gift_F",
-   "set"
+   "set",
+   "Superior Guardian's Gift: RechargeTime/Chance for PBAoE Resolve"
   ],
   [
    "AbsRes",
    "Acc/Dmg",
    "Absolute_Resolution_A",
-   "set"
+   "set",
+   "Absolute Resolution: Accuracy/Damage"
   ],
   [
    "AbsRes",
    "Dmg/Rchg",
    "Absolute_Resolution_B",
-   "set"
+   "set",
+   "Absolute Resolution: Damage/RechargeTime"
   ],
   [
    "AbsRes",
    "Acc/Dmg/Rchg",
    "Absolute_Resolution_C",
-   "set"
+   "set",
+   "Absolute Resolution: Accuracy/Damage/RechargeTime"
   ],
   [
    "AbsRes",
    "Dmg/EndRdx/Rchg",
    "Absolute_Resolution_D",
-   "set"
+   "set",
+   "Absolute Resolution: Damage/Endurance/RechargeTime"
   ],
   [
    "AbsRes",
    "Acc/Dmg/EndRdx/Rchg",
    "Absolute_Resolution_E",
-   "set"
+   "set",
+   "Absolute Resolution: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "AbsRes",
    "Rchg/+Energy%",
    "Absolute_Resolution_F",
-   "set"
+   "set",
+   "Absolute Resolution: RechargeTime/Chance for Energy Damage Bonus"
   ],
   [
    "SprAbsRes",
    "Acc/Dmg",
    "Superior_Absolute_Resolution_A",
-   "set"
+   "set",
+   "Superior Absolute Resolution: Accuracy/Damage"
   ],
   [
    "SprAbsRes",
    "Dmg/Rchg",
    "Superior_Absolute_Resolution_B",
-   "set"
+   "set",
+   "Superior Absolute Resolution: Damage/RechargeTime"
   ],
   [
    "SprAbsRes",
    "Acc/Dmg/Rchg",
    "Superior_Absolute_Resolution_C",
-   "set"
+   "set",
+   "Superior Absolute Resolution: Accuracy/Damage/RechargeTime"
   ],
   [
    "SprAbsRes",
    "Dmg/EndRdx/Rchg",
    "Superior_Absolute_Resolution_D",
-   "set"
+   "set",
+   "Superior Absolute Resolution: Damage/Endurance/RechargeTime"
   ],
   [
    "SprAbsRes",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Absolute_Resolution_E",
-   "set"
+   "set",
+   "Superior Absolute Resolution: Accuracy/Damage/Endurance/RechargeTime"
   ],
   [
    "SprAbsRes",
    "Rchg/+Energy%",
    "Superior_Absolute_Resolution_F",
-   "set"
+   "set",
+   "Superior Absolute Resolution: RechargeTime/Chance for Energy Damage Bonus"
   ],
   [
    "EndNtmr",
    "Acc/Sleep",
    "Endless_Nightmare_A",
-   "set"
+   "set",
+   "Endless Nightmare: Accuracy/Sleep"
   ],
   [
    "EndNtmr",
    "Sleep/Rchg",
    "Endless_Nightmare_B",
-   "set"
+   "set",
+   "Endless Nightmare: Sleep/Recharge"
   ],
   [
    "EndNtmr",
    "Rchg/EndRdx",
    "Endless_Nightmare_C",
-   "set"
+   "set",
+   "Endless Nightmare: Recharge/Endurance"
   ],
   [
    "EndNtmr",
    "Acc/Sleep/EndRdx",
    "Endless_Nightmare_D",
-   "set"
+   "set",
+   "Endless Nightmare: Accuracy/Sleep/Endurance"
   ],
   [
    "EndNtmr",
    "Acc/Sleep/End/Rchg",
    "Endless_Nightmare_E",
-   "set"
+   "set",
+   "Endless Nightmare: Accuracy/Sleep/Endurance/Recharge"
   ],
   [
    "EndNtmr",
    "Rchg/Fear%/Dmg%",
    "Endless_Nightmare_F",
-   "set"
+   "set",
+   "Endless Nightmare: Recharge/Chance for Fear, Psionic Damage If Woke Early"
   ],
   [
    "SprEndNtmr",
    "Acc/Sleep",
    "Superior_Endless_Nightmare_A",
-   "set"
+   "set",
+   "Superior Endless Nightmare: Accuracy/Sleep"
   ],
   [
    "SprEndNtmr",
    "Sleep/Rchg",
    "Superior_Endless_Nightmare_B",
-   "set"
+   "set",
+   "Superior Endless Nightmare: Sleep/Recharge"
   ],
   [
    "SprEndNtmr",
    "Rchg/EndRdx",
    "Superior_Endless_Nightmare_C",
-   "set"
+   "set",
+   "Superior Endless Nightmare: Recharge/Endurance"
   ],
   [
    "SprEndNtmr",
    "Acc/Sleep/EndRdx",
    "Superior_Endless_Nightmare_D",
-   "set"
+   "set",
+   "Superior Endless Nightmare: Accuracy/Sleep/Endurance"
   ],
   [
    "SprEndNtmr",
    "Acc/Sleep/End/Rchg",
    "Superior_Endless_Nightmare_E",
-   "set"
+   "set",
+   "Superior Endless Nightmare: Accuracy/Sleep/Endurance/Recharge"
   ],
   [
    "SprEndNtmr",
    "Rchg/Fear%/Dmg%",
    "Superior_Endless_Nightmare_F",
-   "set"
+   "set",
+   "Superior Endless Nightmare: Recharge/Chance for Fear, Psionic Damage If Woke Early"
   ],
   [
    "RFTG",
    "Rez",
    "Return_From_the_Grave_Rez_Effects",
-   "set"
+   "set",
+   "Return From the Grave: Rez Effects"
   ],
   [
    "RFTG",
    "Rez/Rech",
    "Return_From_the_Grave_B",
-   "set"
+   "set",
+   "Return From the Grave: Rez Effects/RechargeTime"
   ],
   [
    "RFTG",
    "EndRdx/Rchg",
    "Return_From_the_Grave_C",
-   "set"
+   "set",
+   "Return From the Grave: Endurance/RechargeTime"
   ],
   [
    "RFTG",
    "Rez/EndRdx",
    "Return_From_the_Grave_D",
-   "set"
+   "set",
+   "Return From the Grave: Rez Effects/Endurance"
   ],
   [
    "RFTG",
    "Rez/EndRdx/Rchg",
    "Return_From_the_Grave_E",
-   "set"
+   "set",
+   "Return From the Grave: Rez Effects/Endurance/RechargeTime"
   ],
   [
    "RFTG",
    "Rez/EndRdx/Rchg",
    "Return_From_the_Grave_E",
-   "set"
+   "set",
+   "Return From the Grave: Rez Effects/Endurance/RechargeTime"
   ],
   [
    "SprRFTG",
    "Rez",
    "Superior_Return_From_the_Grave_Rez_Effects",
-   "set"
+   "set",
+   "Superior Return From the Grave: Rez Effects"
   ],
   [
    "SprRFTG",
    "Rez/Rech",
    "Superior_Return_From_the_Grave_B",
-   "set"
+   "set",
+   "Superior Return From the Grave: Rez Effects/RechargeTime"
   ],
   [
    "SprRFTG",
    "EndRdx/Rchg",
    "Superior_Return_From_the_Grave_C",
-   "set"
+   "set",
+   "Superior Return From the Grave: Endurance/RechargeTime"
   ],
   [
    "SprRFTG",
    "Rez/EndRdx",
    "Superior_Return_From_the_Grave_D",
-   "set"
+   "set",
+   "Superior Return From the Grave: Rez Effects/Endurance"
   ],
   [
    "SprRFTG",
    "Rez/EndRdx/Rchg",
    "Superior_Return_From_the_Grave_E",
-   "set"
+   "set",
+   "Superior Return From the Grave: Rez Effects/Endurance/RechargeTime"
   ],
   [
    "SprRFTG",
    "Rchg",
    "Superior_Return_From_the_Grave_F",
-   "set"
+   "set",
+   "Superior Return From the Grave: RechargeTime"
   ],
   [
    "Haunt",
    "Acc/Fear",
    "The_Haunting_A",
-   "set"
+   "set",
+   "The Haunting: Accuracy/Fear"
   ],
   [
    "Haunt",
    "Fear/Rchg",
    "The_Haunting_B",
-   "set"
+   "set",
+   "The Haunting: Fear/Recharge"
   ],
   [
    "Haunt",
    "Rchg/EndRdx",
    "The_Haunting_C",
-   "set"
+   "set",
+   "The Haunting: Recharge/Endurance"
   ],
   [
    "Haunt",
    "Acc//Fear/EndRdx",
    "The_Haunting__D",
-   "set"
+   "set",
+   "The Haunting: Accuracy/Fear/Endurance"
   ],
   [
    "Haunt",
    "Acc/Fear/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "The_Haunting_E",
-   "set"
+   "set",
+   "The Haunting: Accuracy/Fear/Endurance/RechargeTime"
   ],
   [
    "Haunt",
    "Rchg/SummonGhosts",
    "The_Haunting_F",
-   "set"
+   "set",
+   "The Haunting: Recharge/Chance to Summon Ghosts"
   ],
   [
    "SprHaunt",
    "Acc/Fear",
    "Superior_The_Haunting_A",
-   "set"
+   "set",
+   "Superior Haunting: Accuracy/Fear"
   ],
   [
    "SprHaunt",
    "Fear/Rchg",
    "Superior_The_Haunting_B",
-   "set"
+   "set",
+   "Superior Haunting: Fear/Recharge"
   ],
   [
    "SprHaunt",
    "Rchg/EndRdx",
    "Superior_The_Haunting_C",
-   "set"
+   "set",
+   "Superior Haunting: Recharge/Endurance"
   ],
   [
    "SprHaunt",
    "Acc//Fear/EndRdx",
    "Superior_The_Haunting__D",
-   "set"
+   "set",
+   "Superior Haunting: Accuracy/Fear/Endurance"
   ],
   [
    "SprHaunt",
    "Acc/Fear/Hold/Immob/Sleep/Stun/Fear/EndRdx/Rchg",
    "Superior_The_Haunting_E",
-   "set"
+   "set",
+   "Superior Haunting: Accuracy/Fear/Endurance/RechargeTime"
   ],
   [
    "SprHaunt",
    "Rchg/SummonGhosts",
    "Superior_The_Haunting_F",
-   "set"
+   "set",
+   "Superior Haunting: Recharge/Chance to Summon Ghosts"
   ],
   [
    "Witch",
    "Debuff",
    "Witchcraft_A",
-   "set"
+   "set",
+   "Witchcraft: Universal Debuff"
   ],
   [
    "Witch",
    "Acc/Debuff",
    "Witchcraft_B",
-   "set"
+   "set",
+   "Witchcraft: Accuracy/ Universal Debuff"
   ],
   [
    "Witch",
    "Acc/Rchg",
    "Witchcraft_C",
-   "set"
+   "set",
+   "Witchcraft: Accuracy/Recharge"
   ],
   [
    "Witch",
    "Debuff/EndRdx/Rchg",
    "Witchcraft_D",
-   "set"
+   "set",
+   "Witchcraft: Universal Debuff/Endurance/Recharge"
   ],
   [
    "Witch",
    "Acc/EndRdx/Rchg",
    "Witchcraft_E",
-   "set"
+   "set",
+   "Witchcraft: Accuracy/Endurance/Recharge"
   ],
   [
    "Witch",
    "ResDeb%",
    "Witchcraft_F",
-   "set"
+   "set",
+   "Witchcraft: Chance for Res Debuff"
   ],
   [
    "SprWitch",
    "Debuff",
    "Superior_Witchcraft_A",
-   "set"
+   "set",
+   "Superior Witchcraft: Universal Debuff"
   ],
   [
    "SprWitch",
    "Acc/Debuff",
    "Superior_Witchcraft_B",
-   "set"
+   "set",
+   "Superior Witchcraft: Accuracy/ Universal Debuff"
   ],
   [
    "SprWitch",
    "Acc/Rchg",
    "Superior_Witchcraft_C",
-   "set"
+   "set",
+   "Superior Witchcraft: Accuracy/Recharge"
   ],
   [
    "SprWitch",
    "Debuff/EndRdx/Rchg",
    "Superior_Witchcraft_D",
-   "set"
+   "set",
+   "Superior Witchcraft: Universal Debuff/Endurance/Recharge"
   ],
   [
    "SprWitch",
    "Acc/EndRdx/Rchg",
    "Superior_Witchcraft_E",
-   "set"
+   "set",
+   "Superior Witchcraft: Accuracy/Endurance/Recharge"
   ],
   [
    "SprWitch",
    "ResDeb%",
    "Superior_Witchcraft_F",
-   "set"
+   "set",
+   "Superior Witchcraft: Chance for Res Debuff"
   ],
   [
    "VmrBt",
    "Acc/Dmg",
    "Vampire's_Bite_A",
-   "set"
+   "set",
+   "Vampire's Bite: Accuracy/Damage"
   ],
   [
    "VmrBt",
    "Dmg/EndRdx",
    "Vampire's_Bite_B",
-   "set"
+   "set",
+   "Vampire's Bite: Damage/Endurance"
   ],
   [
    "VmrBt",
    "Rchg/Heal%",
    "Vampire's_Bite_F",
-   "set"
+   "set",
+   "Vampire's Bite: Recharge/Chance to Heal"
   ],
   [
    "VmrBt",
    "Acc/Dmg/Rchg",
    "Vampire's_Bite_C",
-   "set"
+   "set",
+   "Vampire's Bite: Accuracy/Damage/Recharge"
   ],
   [
    "VmrBt",
    "Acc/Dmg/EndRdx",
    "Vampire's_Bite_D",
-   "set"
+   "set",
+   "Vampire's Bite: Accuracy/Damage/Endurance"
   ],
   [
    "VmrBt",
    "Acc/Dmg/EndRdx/Rchg",
    "Vampire's_Bite_E",
-   "set"
+   "set",
+   "Vampire's Bite: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprVmrBt",
    "Acc/Dmg",
    "Superior_Vampire's_Bite_A",
-   "set"
+   "set",
+   "Superior Vampire's Bite: Accuracy/Damage"
   ],
   [
    "SprVmrBt",
    "Dmg/EndRdx",
    "Superior_Vampire's_Bite_B",
-   "set"
+   "set",
+   "Superior Vampire's Bite: Damage/Endurance"
   ],
   [
    "SprVmrBt",
    "Acc/Dmg/Rchg",
    "Superior_Vampire's_Bite_C",
-   "set"
+   "set",
+   "Superior Vampire's Bite: Accuracy/Damage/Recharge"
   ],
   [
    "SprVmrBt",
    "Acc/Dmg/EndRdx/Rchg",
    "Superior_Vampire's_Bite_E",
-   "set"
+   "set",
+   "Superior Vampire's Bite: Accuracy/Damage/Endurance/Recharge"
   ],
   [
    "SprVmrBt",
    "Acc/Dmg/EndRdx",
    "Superior_Vampire's_Bite_D",
-   "set"
+   "set",
+   "Superior Vampire's Bite: Accuracy/Damage/Endurance"
   ],
   [
    "SprVmrBt",
    "Rchg/Heal%",
    "Superior_Vampire's_Bite_F",
-   "set"
+   "set",
+   "Superior Vampire's Bite: Recharge/Chance to Heal"
   ],
   [
    "SprWntGif",
    "RunSpd/Jump/Fly/Rng",
    "Superior_Crafted_Winters_Gift_A",
-   "set"
+   "set",
+   "Superior Winter's Gift: Run Speed, Jump, Flight Speed, Range"
   ],
   [
    "SprWntGif",
    "RunSpd/Jump/Fly/Rng/EndRdx",
    "Superior_Crafted_Winters_Gift_B",
-   "set"
+   "set",
+   "Superior Winter's Gift: Run Speed, Jump, Flight Speed, Range/Endurance"
   ],
   [
    "SprWntGif",
    "ResSlow",
    "Superior_Crafted_Winters_Gift_C",
-   "set"
+   "set",
+   "Superior Winter's Gift: Slow Resistance (25%)"
   ],
   [
    "WinStrm",
    "Acc/Slow",
    "Winter_Storm_A",
-   "set"
+   "set",
+   "Winter Storm: Accuracy/Slow"
   ],
   [
    "WinStrm",
    "Dmg/Slow",
    "Winter_Storm_B",
-   "set"
+   "set",
+   "Winter Storm: Damage/Slow"
   ],
   [
    "WinStrm",
    "Acc/Dmg/Slow",
    "Winter_Storm_D",
-   "set"
+   "set",
+   "Winter Storm: Accuracy/Damage/Slow"
   ],
   [
    "WinStrm",
    "Rchg/Dmg%",
    "Winter_Storm_F",
-   "set"
+   "set",
+   "Winter Storm: Recharge/Chance for Cold Damage"
   ],
   [
    "WinStrm",
    "End/Rchg",
    "Winter_Storm_C",
-   "set"
+   "set",
+   "Winter Storm: Endurance/Recharge"
   ],
   [
    "WinStrm",
    "Dmg/EndRdx/Slow",
    "Winter_Storm_E",
-   "set"
+   "set",
+   "Winter Storm: Damage/Endurance/Slow"
   ],
   [
    "SprWinStrm",
    "Acc/Slow",
    "Superior_Winter_Storm_A",
-   "set"
+   "set",
+   "Superior Winter Storm: Accuracy/Slow"
   ],
   [
    "SprWinStrm",
    "Dmg/Slow",
    "Superior_Winter_Storm_B",
-   "set"
+   "set",
+   "Superior Winter Storm: Damage/Slow"
   ],
   [
    "SprWinStrm",
    "End/Rchg",
    "Superior_Winter_Storm_C",
-   "set"
+   "set",
+   "Superior Winter Storm: Endurance/Recharge"
   ],
   [
    "SprWinStrm",
    "Acc/Dmg/Slow",
    "Superior_Winter_Storm_D",
-   "set"
+   "set",
+   "Superior Winter Storm: Accuracy/Damage/Slow"
   ],
   [
    "SprWinStrm",
    "Dmg/EndRdx/Slow",
    "Superior_Winter_Storm_E",
-   "set"
+   "set",
+   "Superior Winter Storm: Damage/Endurance/Slow"
   ],
   [
    "SprWinStrm",
    "Rchg/Dmg%",
    "Superior_Winter_Storm_F",
-   "set"
+   "set",
+   "Superior Winter Storm: Recharge/Chance for Cold Damage"
   ],
   [
    "RollBar",
    "Acc/Dmg",
    "Rolling_Barrage_A",
-   "set"
+   "set",
+   "Rolling Barrage: Accuracy/Damage"
   ],
   [
    "RollBar",
    "Dmg/EndRdx",
    "Rolling_Barrage_B",
-   "set"
+   "set",
+   "Rolling Barrage: Damage/Endurance"
   ],
   [
    "RollBar",
    "Dmg/Rchg",
    "Rolling_Barrage_C",
-   "set"
+   "set",
+   "Rolling Barrage: Damage/Recharge"
   ],
   [
    "RollBar",
    "Acc/EndRdx/Rchg",
    "Rolling_Barrage_D",
-   "set"
+   "set",
+   "Rolling Barrage: Accuracy/Endurance/Recharge"
   ],
   [
    "RollBar",
    "Acc/Dmg/Rchg",
    "Rolling_Barrage_E",
-   "set"
+   "set",
+   "Rolling Barrage: Accuracy/Damage/Recharge"
   ],
   [
    "RollBar",
    "Dam/EndRdx/Rchg",
    "Rolling_Barrage_F",
-   "set"
+   "set",
+   "Rolling Barrage: Damage/Endurance/Recharge"
   ],
   [
    "SynAgi",
    "RunSpd/Jump/Fly/Rng",
    "Synapse's_Agility_A",
-   "set"
+   "set",
+   "Synapse's Agility: Run Speed, Jump, Flight Speed, Range"
   ],
   [
    "SynAgi",
    "RunSpd/Jump/Fly/Rng/Rech",
    "Synapse's_Agility_B",
-   "set"
+   "set",
+   "Synapse's Agility: Run Speed, Jump, Flight Speed, Range/Recharge"
   ],
   [
    "SynAgi",
    "RunSpd/Jump/Fly/Rng/Rchg/EndRdx",
    "Synapse's_Agility_C",
-   "set"
+   "set",
+   "Synapse's Agility: Run Speed, Jump, Flight Speed, Range/Recharge/Endurance"
   ],
   [
    "SynAgi",
    "Rchg/EndRdx",
    "Synapse's_Agility_D",
-   "set"
+   "set",
+   "Synapse's Agility: Recharge/Endurance"
   ],
   [
    "SynAgi",
    "RunSpd/Jump/Fly/Rng/EndRdx",
    "Synapse's_Agility_E",
-   "set"
+   "set",
+   "Synapse's Agility: Run Speed, Jump, Flight Speed, Range/Endurance"
   ],
   [
    "SynAgi",
    "ResEndDrain",
    "Synapse's_Agility_F",
-   "set"
+   "set",
+   "Synapse's Agility: Endurance Drain Resistance (20%)"
   ],
   [
    "LbrtyBlt",
    "ResDam/EndRdx",
    "Liberty's_Belt_A",
-   "set"
+   "set",
+   "Liberty's Belt: Resistance/Endurance"
   ],
   [
    "LbrtyBlt",
    "ResDam/Rchg",
    "Liberty's_Belt_B",
-   "set"
+   "set",
+   "Liberty's Belt: Resistance/Recharge"
   ],
   [
    "LbrtyBlt",
    "EndRdx/Rchg",
    "Liberty's_Belt_C",
-   "set"
+   "set",
+   "Liberty's Belt: Endurance/Recharge"
   ],
   [
    "LbrtyBlt",
    "ResDam/EndRdx/Rchg",
    "Liberty's_Belt_D",
-   "set"
+   "set",
+   "Liberty's Belt: Resistance/Endurance/Recharge"
   ],
   [
    "LbrtyBlt",
    "ResDam",
    "Liberty's_Belt_E",
-   "set"
+   "set",
+   "Liberty's Belt: Resistance"
   ],
   [
    "LbrtyBlt",
    "ResDam/Dam+",
    "Liberty's_Belt_F",
-   "set"
+   "set",
+   "Liberty's Belt: Resistance/Global Damage Bonus"
   ],
   [
    "Inex",
    "OOC+Regen/+Recov",
    "Inexhaustibility_A",
-   "set"
+   "set",
+   "Inexhaustibility: Inexhaustibility: Out of Combat +Hit Points/Endurance"
   ],
   [
    "ImpMght",
    "KB/Acc",
    "Imperial_Might_A",
-   "set"
+   "set",
+   "Imperial Might: Knockback/Accuracy"
   ],
   [
    "ImpMght",
    "KB/EndRdx",
    "Imperial_Might_B",
-   "set"
+   "set",
+   "Imperial Might: Knockback/Endurance"
   ],
   [
    "ImpMght",
    "KB/Rech",
    "Imperial_Might_C",
-   "set"
+   "set",
+   "Imperial Might: Knockback/Recharge"
   ],
   [
    "ImpMght",
    "Rech/EndRdx",
    "Imperial_Might_D",
-   "set"
+   "set",
+   "Imperial Might: Recharge/Endurance"
   ],
   [
    "ImpMght",
    "KB/Acc/EndRdx",
    "Imperial_Might_E",
-   "set"
+   "set",
+   "Imperial Might: Knockback/Accuracy/Endurance"
   ],
   [
    "ImpMght",
    "Rech/KB",
    "Imperial_Might_F",
-   "set"
+   "set",
+   "Imperial Might: Recharge/Chance for Knockdown/Knockback to Knockdown"
   ],
   [
    "FcdInd",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Dam",
    "Forced_Indoctrination_A",
-   "set"
+   "set",
+   "Forced Indoctrination: Control Duration/Damage"
   ],
   [
    "FcdInd",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/Dam",
    "Forced_Indoctrination_B",
-   "set"
+   "set",
+   "Forced Indoctrination: Accuracy/Control Duration/Damage"
   ],
   [
    "FcdInd",
    "Conf/Hold/Immob/Sleep/Stun/Fear/Dam/Rech",
    "Forced_Indoctrination_C",
-   "set"
+   "set",
+   "Forced Indoctrination: Control Duration/Damage/Recharge"
   ],
   [
    "FcdInd",
    "Acc/Rech/EndRdx",
    "Forced_Indoctrination_D",
-   "set"
+   "set",
+   "Forced Indoctrination: Accuracy/Recharge/Endurance"
   ],
   [
    "FcdInd",
    "Acc/Conf/Hold/Immob/Sleep/Stun/Fear/Dam/Rech",
    "Forced_Indoctrination_E",
-   "set"
+   "set",
+   "Forced Indoctrination: Accuracy/Control Duration/Damage/Recharge"
   ],
   [
    "FcdInd",
    "Dam%",
    "Forced Indoctrination_F",
-   "set"
+   "set",
+   "Forced Indoctrination: Chance of Damage(Psionic)"
   ]
  ],
  "sourceSha256": "8c6aa72a781b5a4f06bce1bff292369b694693f9c2968167bacbd1a3c4b32a0e"

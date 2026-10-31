@@ -58,14 +58,17 @@ use crate::boost_index::{BoostEntry, BoostIndex, OriginTier};
 use crate::enhancements::EnhancementCatalog;
 use crate::level::Level;
 use crate::mbd::MbdEnhancement;
+use crate::mids_enh_names::{MidsEnhNames, MidsEnhRefusal};
 use crate::mids_uids::{MidsFamily, MidsUids};
 use crate::skif::SkifEnhancement;
+use std::borrow::Cow;
 
 /// A slotted piece that could not be resolved, and the UID that named it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnresolvedPiece {
-    /// The UID as the `.mbd` spelled it, kept verbatim so a report can be searched for it and
-    /// so a re-export can still write what the author had.
+    /// The UID as the `.mbd` spelled it — or the long name, in a file older than UIDs — kept
+    /// verbatim so a report can be searched for it and so a re-export can still write what the
+    /// author had.
     pub uid: String,
     pub refusal: PieceRefusal,
 }
@@ -75,6 +78,14 @@ pub struct UnresolvedPiece {
 pub enum PieceRefusal {
     #[error("the slot carries an enhancement with no Uid")]
     NoUid,
+    #[error("the slot names its piece by Mids' long name, and this dataset ships no Mids table to look it up in")]
+    NoLongNameTable,
+    #[error("Mids' database has no piece by that long name")]
+    UnknownLongName,
+    #[error(
+        "Mids' database gives that long name to {0} pieces, and nothing in the file says which"
+    )]
+    AmbiguousLongName(usize),
     #[error("neither this dataset's boost index nor its copy of Mids' table carries that UID{}", family_note(*.mids_family))]
     UnknownUid { mids_family: Option<MidsFamily> },
     #[error("Mids places this UID at {set} piece {piece}, where this dataset's boost index has no record")]
@@ -185,6 +196,34 @@ pub fn resolve_enhancement(
 
         BoostEntry::Unclassified => Err(refuse(PieceRefusal::Unclassified)),
     }
+}
+
+/// A slot from a file older than Mids' UIDs, given the UID its long name stands for, so
+/// everything after reads one spelling. A slot that already has a UID passes through.
+pub fn with_uid<'a>(
+    enhancement: &'a MbdEnhancement,
+    names: Option<&MidsEnhNames>,
+) -> Result<Cow<'a, MbdEnhancement>, UnresolvedPiece> {
+    if !enhancement.uid.is_empty() || enhancement.enhancement.is_empty() {
+        return Ok(Cow::Borrowed(enhancement));
+    }
+    let refuse = |refusal| UnresolvedPiece {
+        uid: enhancement.enhancement.clone(),
+        refusal,
+    };
+    let names = names.ok_or_else(|| refuse(PieceRefusal::NoLongNameTable))?;
+    let record = names
+        .by_long_name(&enhancement.enhancement)
+        .map_err(|refusal| {
+            refuse(match refusal {
+                MidsEnhRefusal::Ambiguous(count) => PieceRefusal::AmbiguousLongName(count),
+                _ => PieceRefusal::UnknownLongName,
+            })
+        })?;
+    Ok(Cow::Owned(MbdEnhancement {
+        uid: record.uid.clone(),
+        ..enhancement.clone()
+    }))
 }
 
 /// Which boost record a Mids UID names, through the two doors.
@@ -1153,11 +1192,13 @@ fn read_slots(
     };
 
     for slot in &entry.slot_entries {
-        let Some(enhancement) = slot.enhancement.as_ref().filter(|e| !e.uid.is_empty()) else {
+        let Some(enhancement) = slot.enhancement.as_ref().filter(|e| e.names_a_piece()) else {
             slots.push(None);
             continue;
         };
-        match resolve_enhancement(enhancement, index, mids, catalog) {
+        let resolved_piece = with_uid(enhancement, database.mids_enh_names.as_ref())
+            .and_then(|enhancement| resolve_enhancement(&enhancement, index, mids, catalog));
+        match resolved_piece {
             Ok(piece) => {
                 resolved += 1;
                 slots.push(Some(piece));

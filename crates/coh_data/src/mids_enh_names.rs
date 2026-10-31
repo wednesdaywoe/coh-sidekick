@@ -21,6 +21,10 @@
 //! (`LucoftheG-Rchg+` → `Def/Rchg+`, `SprBrtFur-Rech/Fury` → `Rech/Fury%`), and the set agrees
 //! every single time. A residual that fired without the set agreeing would be the coin flip
 //! MBDIMPORT-18 closed at the other door.
+//!
+//! **It also answers a third spelling, the long name**, `Artillery: Accuracy/Damage`. A `.mbd`
+//! written before Mids had UIDs (3.6 and earlier) names a slot by that and nothing else. It is
+//! Mids' own `LongName`, read out of the same database, so a lookup rather than a parse.
 
 use crate::mids_enh_names::MidsEnhKind::{Generic, Origin, Set, Special};
 use serde::Deserialize;
@@ -59,13 +63,15 @@ pub struct MidsEnhRecord {
     /// Mids' UID — the spelling the `.mbd` reader already resolves.
     pub uid: String,
     pub kind: MidsEnhKind,
+    /// Mids' `LongName`, which a pre-UID `.mbd` writes in place of the UID.
+    pub long_name: String,
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct MidsEnhNameSection {
     #[serde(default)]
-    enhancements: Vec<(String, String, String, MidsEnhKind)>,
+    enhancements: Vec<(String, String, String, MidsEnhKind, String)>,
     #[serde(default)]
     source_sha256: String,
 }
@@ -91,6 +97,9 @@ pub struct MidsEnhNames {
     /// decode; carrying both lets the file's own index break the tie, and lets
     /// [`MidsEnhNames::resolve`] decline where it cannot.
     by_code: HashMap<(MidsEnhKind, String), Vec<usize>>,
+    /// Long name → every index answering to it. A `Vec` for the same reason as `by_code`:
+    /// Rebirth gives two names to two records each, and a lookup declines those.
+    by_long_name: HashMap<String, Vec<usize>>,
     source_sha256: String,
 }
 
@@ -135,11 +144,12 @@ impl MidsEnhNames {
         let by_index: Vec<MidsEnhRecord> = raw
             .enhancements
             .into_iter()
-            .map(|(set_short, short, uid, kind)| MidsEnhRecord {
+            .map(|(set_short, short, uid, kind, long_name)| MidsEnhRecord {
                 set_short,
                 short,
                 uid,
                 kind,
+                long_name,
             })
             .collect();
 
@@ -152,9 +162,17 @@ impl MidsEnhNames {
                     .push(index);
             }
         }
+        let mut by_long_name: HashMap<String, Vec<usize>> = HashMap::new();
+        for (index, record) in by_index.iter().enumerate() {
+            by_long_name
+                .entry(record.long_name.clone())
+                .or_default()
+                .push(index);
+        }
         Ok(Some(Self {
             by_index,
             by_code,
+            by_long_name,
             source_sha256: raw.source_sha256,
         }))
     }
@@ -212,6 +230,16 @@ impl MidsEnhNames {
                 }
                 Ok((record, MidsEnhRoute::IndexWithinNamedSet))
             }
+        }
+    }
+
+    /// The record a pre-UID `.mbd` names by Mids' long name. Matched exactly: the name was
+    /// written from this same field, so a near miss is a different piece, not a typo.
+    pub fn by_long_name(&self, long_name: &str) -> Result<&MidsEnhRecord, MidsEnhRefusal> {
+        match self.by_long_name.get(long_name).map(Vec::as_slice) {
+            Some([only]) => Ok(&self.by_index[*only]),
+            Some(several) => Err(MidsEnhRefusal::Ambiguous(several.len())),
+            None => Err(MidsEnhRefusal::Unknown),
         }
     }
 

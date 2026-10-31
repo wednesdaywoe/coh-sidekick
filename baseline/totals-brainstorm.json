@@ -3,8 +3,8 @@
   "dataset": "brainstorm",
   "inputs": {
     "bundle": "contract/brainstorm/bundle.json.gz",
-    "bundleFnv1a64": "b7b45754d95ba7b9",
-    "bundleBytes": 2404801,
+    "bundleFnv1a64": "f321c215765d3580",
+    "bundleBytes": 2411823,
     "builds": "fixtures/totals/brainstorm/synthetic.jsonl",
     "buildsFnv1a64": "fa9b6aaed4f401f6",
     "buildsBytes": 132910

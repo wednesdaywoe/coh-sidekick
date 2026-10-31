@@ -17,6 +17,11 @@ name is one we can resolve on our own.
     Gaussian's set short name ENDS in a hyphen, so `GssSynFr--Build%` is one
     code and not a typo.
 
+Each row also carries Mids' LONG NAME, `Artillery: Accuracy/Damage`, which is
+how a `.mbd` written before Mids had UIDs (3.6 and earlier) names a slot. It is
+built the way Mids' own `Enhancement.LongName` builds it, from the set's
+`DisplayName` and the record's `Name`.
+
 So we read both out of Mids' own EnhDB.mhd, positionally, and ship them as
 data. The array position IS the index the compressed half uses, which is why
 this is emitted as a list rather than a map.
@@ -72,6 +77,17 @@ KIND_BY_TYPE = {
 KIND_SET = "set"
 
 
+def long_name(record: dict) -> str:
+    """
+    Mids' `LongName` for a record outside any set (Core/Enhancement.cs), which is what a .mbd
+    written before Mids' UIDs names a slot by. A set piece's is `<set DisplayName>: <Name>`,
+    written in `build_table` because only the set side knows the set.
+    """
+    if record["type"] == "InventO":
+        return f"Invention: {record['name']}"
+    return record["name"]
+
+
 def build_table(mhd_path: str) -> dict:
     with open(mhd_path, "rb") as fh:
         raw = fh.read()
@@ -92,7 +108,10 @@ def build_table(mhd_path: str) -> dict:
     for index, record in enumerate(enh):
         owner = set_of_index.get(index)
         if owner is not None:
-            rows.append([owner["short_name"], record["short_name"], record["uid"], KIND_SET])
+            rows.append([
+                owner["short_name"], record["short_name"], record["uid"], KIND_SET,
+                f"{owner['display_name']}: {record['name']}",
+            ])
             continue
         kind = KIND_BY_TYPE.get(record["type"])
         if kind is None:
@@ -101,10 +120,10 @@ def build_table(mhd_path: str) -> dict:
                 "this table has no kind for it and the reader will decline it"
             )
             kind = ""
-        rows.append(["", record["short_name"], record["uid"], kind])
+        rows.append(["", record["short_name"], record["uid"], kind, long_name(record)])
 
     codes: dict[str, int] = {}
-    for index, (set_short, short, _uid, kind) in enumerate(rows):
+    for index, (set_short, short, _uid, kind, _long) in enumerate(rows):
         if kind != KIND_SET:
             continue
         code = f"{set_short}-{short}"
@@ -115,6 +134,16 @@ def build_table(mhd_path: str) -> dict:
             )
         else:
             codes[code] = index
+
+    long_names: dict[str, int] = {}
+    for index, row in enumerate(rows):
+        if row[4] in long_names:
+            notes.append(
+                f"long name {row[4]!r} names both index {long_names[row[4]]} and index {index}; "
+                "a legacy .mbd naming it is declined"
+            )
+        else:
+            long_names[row[4]] = index
 
     return {
         "enhancements": rows,
