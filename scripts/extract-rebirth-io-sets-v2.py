@@ -932,6 +932,11 @@ _DMG_RESIST = {(a, 'Resistance') for a in DAMAGE_ATTRIBS}
 # separate per-type accumulators to spend it into — so the consumed types ride
 # along on the emitted effect (`mez_types`). See _MEZ_ATTRIB_TO_TYPE.
 _MEZ_RESIST = {(m, 'Resistance') for m in MEZ_ATTRIBS}
+# All four movement axes × Current → increased_movement, which the calc spends into
+# run, fly, jump speed and jump height. Only the all-four collapse earns that label;
+# a lone axis keeps its own key.
+_MOVE_ATTRIBS = MOVEMENT_SPEED_ATTRIBS | {'JumpHeight'}
+_MOVE_CURRENT = {(a, 'Current') for a in _MOVE_ATTRIBS}
 
 # Mez attrib → the planner's lowercase mez-type key (the `effects.mezResistance`
 # vocabulary a power's own mez resistance already uses, so a set bonus and a power
@@ -1106,16 +1111,18 @@ LEGACY_ATTRIB_TO_BONUS_STAT = {
     ('Immobilized',  'Strength'): 'immobilize_duration',
     ('Sleep',        'Strength'): 'sleep_duration',
     ('Terrorized',   'Strength'): 'terror_duration',
-    # Movement-speed buffs collapse to a single "increased_movement" bonus
-    # (encoded as up to 4 parallel templates; Current and Strength both seen).
-    ('RunningSpeed', 'Current'):  'increased_movement',
-    ('FlyingSpeed',  'Current'):  'increased_movement',
-    ('JumpingSpeed', 'Current'):  'increased_movement',
-    ('JumpHeight',   'Current'):  'increased_movement',
-    ('RunningSpeed', 'Strength'): 'increased_movement',
-    ('FlyingSpeed',  'Strength'): 'increased_movement',
-    ('JumpingSpeed', 'Strength'): 'increased_movement',
-    ('JumpHeight',   'Strength'): 'increased_movement',
+    # Movement speed, per axis. All four together collapse to increased_movement
+    # in _resolve_bonus_effects.
+    ('RunningSpeed', 'Current'):  'run_speed',
+    ('FlyingSpeed',  'Current'):  'fly_speed',
+    ('JumpingSpeed', 'Current'):  'jump_speed',
+    ('JumpHeight',   'Current'):  'jump_height',
+    # Strength on the movement attribs (Improved_Slow): strengthens the character's
+    # own slows and speed buffs, and moves no speed itself.
+    ('RunningSpeed', 'Strength'): 'movement_strength',
+    ('FlyingSpeed',  'Strength'): 'movement_strength',
+    ('JumpingSpeed', 'Strength'): 'movement_strength',
+    ('JumpHeight',   'Strength'): 'movement_strength',
     # Movement debuff (slow) resistance.
     ('RunningSpeed', 'Resistance'): '+res(slow)',
     ('FlyingSpeed',  'Resistance'): '+res(slow)',
@@ -1146,6 +1153,10 @@ def _bonus_stat_from_bridge(attrib: str, aspect: str, table: str = '') -> str | 
     # Explicit edge cases that bridgeAttrib intentionally leaves context-neutral.
     legacy = LEGACY_ATTRIB_TO_BONUS_STAT.get((attrib, aspect))
     if legacy in {'healing_strength', '+res(slow)', '+res(recharge_debuff)'}:
+        return legacy
+    # The bridge answers Movement for both Current and Strength, so it can't tell a
+    # speed buff from a slow-strength buff.
+    if attrib in _MOVE_ATTRIBS and legacy:
         return legacy
 
     br = _bridge_attrib(attrib, aspect, table)
@@ -1182,8 +1193,6 @@ def _bonus_stat_from_bridge(attrib: str, aspect: str, table: str = '') -> str | 
         return 'perception'
     if et == 'EnduranceDiscount':
         return 'endurance_discount'
-    if et == 'Movement':
-        return 'increased_movement'
     if et == 'MezResist':
         # `mez_resistance_(all)` is emitted by the family collapse in
         # _resolve_bonus_effects, which only fires when all six mez types are present —
@@ -1337,6 +1346,11 @@ def _resolve_bonus_effects(set_bonus_power: _JsonPower) -> list[dict]:
             _MEZ_ATTRIB_TO_TYPE[a] for a, asp in _MEZ_RESIST
         )
         family_consumed |= _MEZ_RESIST
+    if _MOVE_CURRENT.issubset(attset):
+        vals = [v for a, asp, _, v in entries if (a, asp) in _MOVE_CURRENT]
+        if vals:
+            key_values.setdefault('increased_movement', []).append(max(vals))
+        family_consumed |= _MOVE_CURRENT
 
     # Map remaining entries per-attrib through bridge/fallback resolver.
     for a, aspect, table, value in entries:

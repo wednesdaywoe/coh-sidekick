@@ -4979,8 +4979,8 @@
    {
     "effects": [
      {
-      "desc": "+2.0% Increased Movement",
-      "stat": "increased_movement",
+      "desc": "+2.0% Movement Strength",
+      "stat": "movement_strength",
       "value": 2
      }
     ],
@@ -12308,8 +12308,8 @@
    {
     "effects": [
      {
-      "desc": "+3.0% Increased Movement",
-      "stat": "increased_movement",
+      "desc": "+3.0% Movement Strength",
+      "stat": "movement_strength",
       "value": 3
      }
     ],
@@ -16570,8 +16570,8 @@
    {
     "effects": [
      {
-      "desc": "+2.5% Increased Movement",
-      "stat": "increased_movement",
+      "desc": "+2.5% Movement Strength",
+      "stat": "movement_strength",
       "value": 2.5
      }
     ],
@@ -26881,8 +26881,8 @@
    {
     "effects": [
      {
-      "desc": "+1.5% Increased Movement",
-      "stat": "increased_movement",
+      "desc": "+1.5% Movement Strength",
+      "stat": "movement_strength",
       "value": 1.5
      }
     ],

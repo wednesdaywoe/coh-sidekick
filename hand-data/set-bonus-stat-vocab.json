@@ -1,5 +1,5 @@
 {
- "_comment": "Single source of truth for the set-bonus stat vocabulary (PROD6A). The engine include_str!s this (crates/coh_math/src/set_bonuses.rs, map_stat_name) and the beta reads a build-copied copy (CoH-Sidekick src/utils/calculations/set-bonuses.ts, normalizeStatName/getPairedStat), so the two former hand-maintained tables (STAT_NAME_MAP / PAIRED_STATS and their Rust twins) can no longer drift. App-glue interpreting exported set-bonus stat strings, not binary-derived, so hand-authored here. statNameMap value: an internal stat key, or \"resAll\" (expands to all 8 resistance types in aggregation, no single tracking bucket), or null (known but no target stat). A raw string absent from statNameMap is unknown (surfaced fail-loud).",
+ "_comment": "Single source of truth for the set-bonus stat vocabulary (PROD6A). The engine include_str!s this (crates/coh_math/src/set_bonuses.rs, map_stat_name) and the beta reads a build-copied copy (CoH-Sidekick src/utils/calculations/set-bonuses.ts, normalizeStatName/getPairedStat), so the two former hand-maintained tables (STAT_NAME_MAP / PAIRED_STATS and their Rust twins) can no longer drift. App-glue interpreting exported set-bonus stat strings, not binary-derived, so hand-authored here. statNameMap value: an internal stat key, or \"resAll\" (expands to all 8 resistance types in aggregation, no single tracking bucket), or \"moveAll\" (expands to run, fly and jump speed and jump height), or null (known but no target stat). A raw string absent from statNameMap is unknown (surfaced fail-loud).",
  "statNameMap": {
   "Damage": "damage",
   "damage": "damage",
@@ -81,7 +81,8 @@
 
   "RunSpeed": "runspeed",
   "run_speed": "runspeed",
-  "increased_movement": "runspeed",
+  "increased_movement": "moveAll",
+  "movement_strength": null,
   "increased_run_speed": "runspeed",
   "FlySpeed": "flyspeed",
   "fly_speed": "flyspeed",

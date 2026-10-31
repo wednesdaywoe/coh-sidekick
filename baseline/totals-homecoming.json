@@ -3,8 +3,8 @@
   "dataset": "homecoming",
   "inputs": {
     "bundle": "contract/homecoming/bundle.json.gz",
-    "bundleFnv1a64": "c04d6aa0f1a8a0ba",
-    "bundleBytes": 2404589,
+    "bundleFnv1a64": "f89cefde9e471dcd",
+    "bundleBytes": 2404624,
     "builds": "fixtures/totals/homecoming/synthetic.jsonl",
     "buildsFnv1a64": "eb7bc5953647fa7b",
     "buildsBytes": 132910

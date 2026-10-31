@@ -44,10 +44,11 @@ const STAT_VOCAB_JSON: &str = include_str!("../../../hand-data/set-bonus-stat-vo
 /// its label nonetheless NAMES. The list IS the guard: a `null` the vocab grows without an entry
 /// here panics at build, so "the calc drops this" can never again be a default nobody argued for.
 ///
-/// Only one shape is left, a stat that IS spent, just not from here. The other, modelled
-/// nowhere, is empty since SETSTAT-1: `knockback_strength` got a `GlobalBonuses` field of its
-/// own, and `endurance_drain_resistance` turned out not to need one, being the same
-/// `kEndurance`/`aspect=Res` attrib that `debuffResistEndurance` already carried.
+/// Two shapes: a stat that IS spent, just not from here, and one modelled nowhere. The second
+/// was empty after SETSTAT-1 (`knockback_strength` got a `GlobalBonuses` field of its own, and
+/// `endurance_drain_resistance` turned out to be the `kEndurance`/`aspect=Res` attrib that
+/// `debuffResistEndurance` already carried) until `movement_strength` split off from
+/// `increased_movement`.
 ///
 /// The `names` column exists because "the calc spends this elsewhere" and "the set does not grant
 /// this" are different facts, and only the first is true here. A reader searching the catalog for
@@ -63,6 +64,14 @@ const UNSPENT_STATS: &[(&str, &str, &[SetBonusStat])] = &[
         "defense_(all)",
         "applied via the piece/global proc path",
         &ALL_DEF_TYPES,
+    ),
+    // Modelled nowhere. +Strength on the four movement attribs (the slow sets'
+    // Improved_Slow tier) strengthens the character's own slows and speed buffs; it moves
+    // no speed itself, and no calc reads movement strength yet.
+    (
+        "movement_strength",
+        "a +Strength on movement, which no calc reads",
+        &[],
     ),
 ];
 
@@ -99,6 +108,7 @@ static STAT_NAME_MAP: LazyLock<HashMap<String, StatMapping>> = LazyLock::new(|| 
                         )
                     }),
                 Some("resAll") => StatMapping::ResAll,
+                Some("moveAll") => StatMapping::MoveAll,
                 // The beta's scalar mez-resist-all key. It routes to a `GlobalBonuses` field
                 // the beta writes and never reads; here it expands per type instead, so the
                 // vocab's one key becomes an expansion rather than a stat (MEZRES-1).
@@ -521,6 +531,9 @@ enum StatMapping {
     /// `damage_resistance_(all)`, which expands to all eight resistance types (no pairing;
     /// the eight are already the full set).
     ResAll,
+    /// `increased_movement`, which expands to the four movement axes. The converter only
+    /// emits it when the bonus raises all four at once; a lone axis keeps its own key.
+    MoveAll,
     /// `mez_resistance_(all)`, which expands to the mez types the effect's own
     /// [`mez_types`](coh_data::SetBonusEffect::mez_types) names. Unlike [`ResAll`](Self::ResAll)
     /// the set isn't implied by the label: the binary encodes the bonus as one multi-attrib
@@ -581,6 +594,8 @@ pub fn effect_stat_key(raw: &str) -> EffectStatKey {
         Some(StatMapping::MezAll) => {
             EffectStatKey::Tracked(SetBonusStat::MezResistHold.as_beta_key())
         }
+        // Same reasoning: the four axes carry identical buckets.
+        Some(StatMapping::MoveAll) => EffectStatKey::Tracked(SetBonusStat::RunSpeed.as_beta_key()),
         Some(StatMapping::ResAll | StatMapping::Unspent { .. }) => EffectStatKey::KnownUntracked,
         None => EffectStatKey::Unknown,
     }
@@ -607,6 +622,7 @@ pub fn stats_named(effect: &coh_data::SetBonusEffect) -> NamedStats {
             NamedStats::Stats(named)
         }
         Some(StatMapping::ResAll) => NamedStats::Stats(ALL_RES_TYPES.to_vec()),
+        Some(StatMapping::MoveAll) => NamedStats::Stats(ALL_MOVE_AXES.to_vec()),
         Some(StatMapping::Unspent { names, .. }) => NamedStats::Stats(names.to_vec()),
         // The label says "all" and the export named no types, so which types it covers isn't
         // stated anywhere, the same gap the calc refuses to guess past (MEZRES-1). A describing
@@ -762,6 +778,14 @@ const ALL_DEF_TYPES: [SetBonusStat; 8] = [
     SetBonusStat::DefFire,
     SetBonusStat::DefCold,
     SetBonusStat::DefEnergy,
+];
+
+/// The axes `increased_movement` raises.
+const ALL_MOVE_AXES: [SetBonusStat; 4] = [
+    SetBonusStat::RunSpeed,
+    SetBonusStat::FlySpeed,
+    SetBonusStat::JumpSpeed,
+    SetBonusStat::JumpHeight,
 ];
 
 /// The eight resistance types `resAll` expands to.
@@ -1080,6 +1104,11 @@ pub fn calculate_set_bonuses<'a>(
                         Some(StatMapping::ResAll) => {
                             for res in ALL_RES_TYPES {
                                 track_bonus(&mut tracking, res, effect.value, &source);
+                            }
+                        }
+                        Some(StatMapping::MoveAll) => {
+                            for axis in ALL_MOVE_AXES {
+                                track_bonus(&mut tracking, axis, effect.value, &source);
                             }
                         }
                         Some(StatMapping::MezAll) if effect.mez_types.is_empty() => {
