@@ -4228,9 +4228,10 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   line-height: 1.2;
   color: var(--text-dim);
 }
-/* No hover on a touch screen, so the title can't stand in for a cut-off name. */
+/* No hover on a touch screen, so the title can't stand in for a cut-off name: it wraps at its
+   spaces instead, and a single word too long for the tile still ends in an ellipsis. */
 @media (pointer: coarse) {
-  .picker-icon-caption { white-space: normal; text-overflow: clip; }
+  .picker-icon-caption { white-space: normal; }
 }
 
 /* A set: its icon once, beside its pieces as shorthand buttons (`Acc/Dmg`). A tile per piece
@@ -4341,6 +4342,35 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   pointer-events: none;
 }
 .picker-item.is-queued { position: relative; }
+
+/* The power's enhancement now, and what the marks and the hovered item would make it. One
+   wrapping line above the marks bar: on a phone it costs a line or two, never the list. The
+   after value takes the ED card's heat: amber on the steep part, red past the last step. */
+.picker-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+  padding: 6px var(--pad-modal);
+  border-top: 1px solid var(--seam-raised);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+.picker-preview__title {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.picker-preview__empty { color: var(--text-faint); }
+.picker-preview__aspect { white-space: nowrap; }
+.picker-preview__name { color: var(--text); font-weight: 600; }
+.picker-preview__after { color: var(--action-active-core); font-weight: 600; }
+.picker-preview__after.is-steep { color: var(--action-hover); }
+.picker-preview__after.is-capped { color: var(--action-danger); }
 
 /* The bar that spends the marks. Above the footer rather than inside it, because the footer's
    controls are about the picker (close, empty this slot) and this one is about the build. Absent

@@ -3839,6 +3839,9 @@ fn EnhancementPickerModal(
     // The in-flight drag: the set it started in, the piece it started on, and how far it has
     // reached. Held per set because a range across two sets is not a range.
     let mut drag = use_signal(|| None::<(String, usize, usize)>);
+    // The item under the mouse, or under a finger held on a set piece: the preview strip counts
+    // it as one more mark, which is what a click on it would do.
+    let mut hovered = use_signal(|| None::<crate::picker_queue::QueuedPick>);
     // A finger held on a set piece: `held` numbers the press so a timer left from an earlier one
     // can tell it's stale, and `peeked` says the hold opened the tooltip, so letting go closes
     // it instead of slotting. A touch screen's stand-in for hovering a piece.
@@ -3892,6 +3895,41 @@ fn EnhancementPickerModal(
     let slot_filled = slots.get(slot_index as usize).is_some_and(Option::is_some);
     // The slots a bulk placement would fill, and therefore how many marks can actually land.
     let open_slots = crate::picker_queue::slots_to_fill_from(&slots, slot_index as usize);
+
+    // The preview strip: this power's enhancement now, and as the marks plus the hovered item
+    // would leave it. Both through a whole recalculation, so they read what the card would.
+    let (enhancement_now, enhancement_after) = {
+        let build = session.build.read();
+        let now = coh_math::ed_breakdown::breakdown_for_slots(
+            &build,
+            &powerset_id,
+            &power_internal_name,
+            &slots,
+            &database,
+        );
+        let previewed = previewed_slots(
+            &database,
+            &build,
+            destination,
+            &queue.read(),
+            hovered.read().as_ref(),
+            &slots,
+            slot_index as usize,
+            &|pick| build_queued_pick(&database, pick, defaults, &session),
+        );
+        let after = if previewed == slots {
+            now.clone()
+        } else {
+            coh_math::ed_breakdown::breakdown_for_slots(
+                &build,
+                &powerset_id,
+                &power_internal_name,
+                &previewed,
+                &database,
+            )
+        };
+        (now, after)
+    };
 
     let tab_class = |tab: PickerTab| {
         if active_tab() == tab {
@@ -4162,6 +4200,20 @@ fn EnhancementPickerModal(
                                                         class: if icon_url.is_some() { "picker-icon-item" } else { "picker-item picker-piece" },
                                                         title: "{stat} IO",
                                                         class: if queued_at.is_some() { "is-queued" } else { "" },
+                                                        // A mouse over a tile previews it in the strip, as one more mark.
+                                                        onpointerenter: {
+                                                            let pick = pick.clone();
+                                                            move |evt: Event<PointerData>| {
+                                                                if evt.pointer_type() == "mouse" {
+                                                                    hovered.set(Some(pick.clone()));
+                                                                }
+                                                            }
+                                                        },
+                                                        onpointerleave: move |evt: Event<PointerData>| {
+                                                            if evt.pointer_type() == "mouse" {
+                                                                hovered.set(None);
+                                                            }
+                                                        },
                                                         oncontextmenu: {
                                                             let pick = pick.clone();
                                                             move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &pick)
@@ -4670,6 +4722,7 @@ fn EnhancementPickerModal(
                                                                         let slots = slots.clone();
                                                                         move |evt: Event<PointerData>| {
                                                                             if evt.pointer_type() == "mouse" {
+                                                                                hovered.set(Some(pick.clone()));
                                                                                 let hint = if marking() {
                                                                                     "Click to mark · drag to mark several"
                                                                                 } else {
@@ -4696,6 +4749,7 @@ fn EnhancementPickerModal(
                                                                     onpointerleave: move |evt: Event<PointerData>| {
                                                                         if evt.pointer_type() == "mouse" {
                                                                             tip.set(None);
+                                                                            hovered.set(None);
                                                                         }
                                                                     },
                                                                     onpointerdown: {
@@ -4731,6 +4785,7 @@ fn EnhancementPickerModal(
                                                                                 &powerset_id, &power_id, &slots,
                                                                                 (point.x, point.y), "Let go to close",
                                                                             );
+                                                                            let held_pick = pick.clone();
                                                                             spawn(async move {
                                                                                 let _ = document::eval(&format!(
                                                                                     "await new Promise(done => setTimeout(done, {LONG_PRESS_MS})); return true;"
@@ -4742,6 +4797,7 @@ fn EnhancementPickerModal(
                                                                                     drag.set(None);
                                                                                     peeked.set(true);
                                                                                     tip.set(Some(target));
+                                                                                    hovered.set(Some(held_pick));
                                                                                 }
                                                                             });
                                                                         }
@@ -4764,6 +4820,7 @@ fn EnhancementPickerModal(
                                                                         if *peeked.peek() {
                                                                             peeked.set(false);
                                                                             tip.set(None);
+                                                                            hovered.set(None);
                                                                         }
                                                                     },
                                                                     onpointerup: {
@@ -4780,6 +4837,7 @@ fn EnhancementPickerModal(
                                                                             if *peeked.peek() {
                                                                                 peeked.set(false);
                                                                                 tip.set(None);
+                                                                                hovered.set(None);
                                                                                 return;
                                                                             }
                                                                             let span = drag.peek().clone();
@@ -4950,6 +5008,20 @@ fn EnhancementPickerModal(
                                                                 class: if icon_url.is_some() { "picker-icon-item" } else { "picker-item picker-piece" },
                                                                 class: if queued_at.is_some() { "is-queued" } else { "" },
                                                                 title: "{item_title}",
+                                                                // A mouse over a tile previews it in the strip, as one more mark.
+                                                                onpointerenter: {
+                                                                    let pick = pick.clone();
+                                                                    move |evt: Event<PointerData>| {
+                                                                        if evt.pointer_type() == "mouse" {
+                                                                            hovered.set(Some(pick.clone()));
+                                                                        }
+                                                                    }
+                                                                },
+                                                                onpointerleave: move |evt: Event<PointerData>| {
+                                                                    if evt.pointer_type() == "mouse" {
+                                                                        hovered.set(None);
+                                                                    }
+                                                                },
                                                                 oncontextmenu: {
                                                                     let pick = pick.clone();
                                                                     move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &pick)
@@ -5051,6 +5123,20 @@ fn EnhancementPickerModal(
                                                                 class: if icon_url.is_some() { "picker-icon-item" } else { "picker-item picker-piece" },
                                                                 class: if queued_at.is_some() { "is-queued" } else { "" },
                                                                 title: "{stat} {tier}",
+                                                                // A mouse over a tile previews it in the strip, as one more mark.
+                                                                onpointerenter: {
+                                                                    let pick = pick.clone();
+                                                                    move |evt: Event<PointerData>| {
+                                                                        if evt.pointer_type() == "mouse" {
+                                                                            hovered.set(Some(pick.clone()));
+                                                                        }
+                                                                    }
+                                                                },
+                                                                onpointerleave: move |evt: Event<PointerData>| {
+                                                                    if evt.pointer_type() == "mouse" {
+                                                                        hovered.set(None);
+                                                                    }
+                                                                },
                                                                 oncontextmenu: {
                                                                     let pick = pick.clone();
                                                                     move |evt: Event<MouseData>| unmark_one(evt, &mut queue, &pick)
@@ -5110,6 +5196,7 @@ fn EnhancementPickerModal(
                         },
                     }
                 }
+                crate::ed_view::EdPreviewStrip { now: enhancement_now, after: enhancement_after }
                 // The marks, and what spending them would do. Present only while something is
                 // marked, so the picker's resting state is unchanged. It states the slot count
                 // before the act rather than reporting it after, because the marks can outnumber
@@ -5151,24 +5238,18 @@ fn EnhancementPickerModal(
                             onclick: {
                                 let powerset_id = powerset_id.clone();
                                 let power_id = power_id.clone();
-                                let open_slots = open_slots.clone();
                                 let database = database.clone();
                                 move |_| {
                                     let picks = queue.read().clone();
-                                    // The opened slot's current piece is being replaced, so it
-                                    // must not count against what the marks may hold.
-                                    let mut slots = slots.clone();
-                                    if let Some(opened) = slots.get_mut(slot_index as usize) {
-                                        *opened = None;
-                                    }
-                                    let built = placeable_picks(
-                                        &database, &picks, &slots, destination, defaults, &session,
+                                    let placements = mark_placements(
+                                        &database,
+                                        &session.build.read(),
+                                        destination,
+                                        &picks,
+                                        &slots,
+                                        slot_index as usize,
+                                        &|pick| build_queued_pick(&database, pick, defaults, &session),
                                     );
-                                    let placements: Vec<(usize, coh_data::Enhancement)> = open_slots
-                                        .iter()
-                                        .copied()
-                                        .zip(built)
-                                        .collect();
                                     if placements.is_empty() {
                                         return;
                                     }
@@ -6122,18 +6203,6 @@ fn build_queued_pick(
     }
 }
 
-/// The marked picks that can still be placed, in order, each graded against the slots AS THEY
-/// FILL rather than against the slots as they were when the mark was made.
-///
-/// Two windows close here. A mark can go stale while the picker is open — its twin slotted into
-/// this power, a unique spent elsewhere in the build — and a drag range sweeps pieces the pointer
-/// never stopped on, which is how the beta placed a Superior ATO piece that was already in the
-/// power (2026-08-17). And the batch can conflict with ITSELF: a set's piece 1 and its Superior
-/// twin's piece 1 are both legal against a build holding neither, and illegal together. Threading
-/// the running slots through the rule is what makes the second pick see the first.
-///
-/// Only set pieces are graded. A generic IO, an origin and a special carry no single-copy rule —
-/// two commons of the same stat in one power is a real slotting, not a mistake.
 /// Right-click on a marked tile takes one copy back off the queue. Only when something is marked:
 /// on an unmarked tile the browser's own menu is left alone.
 fn unmark_one(
@@ -6148,19 +6217,95 @@ fn unmark_one(
     crate::picker_queue::unmark_last(&mut queue.write(), pick);
 }
 
-fn placeable_picks(
-    database: &Db,
+/// Where the marks land, as `(slot, enhancement)`: the opened slot first, even when it's full,
+/// then this power's empty slots after it, each taking the next mark the rules still allow.
+/// Marks past the last open slot are left out. The commit button spends exactly this and the
+/// preview strip shows it, so the two can't disagree. `make` builds a pick at the picker's
+/// current level, boosters and attunement.
+fn mark_placements(
+    database: &coh_data::PowerDatabase,
+    build: &coh_data::CharacterState,
+    destination: PickerDestination,
     picks: &[crate::picker_queue::QueuedPick],
     slots: &[Option<coh_data::Enhancement>],
+    slot_index: usize,
+    make: &dyn Fn(&crate::picker_queue::QueuedPick) -> Option<coh_data::Enhancement>,
+) -> Vec<(usize, coh_data::Enhancement)> {
+    let open = crate::picker_queue::slots_to_fill_from(slots, slot_index);
+    // The opened slot's current piece is being replaced, so it must not count against what the
+    // marks may hold.
+    let mut cleared = slots.to_vec();
+    if let Some(opened) = cleared.get_mut(slot_index) {
+        *opened = None;
+    }
+    open.into_iter()
+        .zip(placeable_picks(
+            database,
+            build,
+            destination,
+            picks,
+            &cleared,
+            make,
+        ))
+        .collect()
+}
+
+/// The power's slots as the marks would leave them, with `hovered` counted as one more mark: what
+/// the next click would make of the power, and what the preview strip reads.
+#[allow(clippy::too_many_arguments)]
+fn previewed_slots(
+    database: &coh_data::PowerDatabase,
+    build: &coh_data::CharacterState,
     destination: PickerDestination,
-    defaults: PickerDefaults,
-    session: &BuildSession,
+    picks: &[crate::picker_queue::QueuedPick],
+    hovered: Option<&crate::picker_queue::QueuedPick>,
+    slots: &[Option<coh_data::Enhancement>],
+    slot_index: usize,
+    make: &dyn Fn(&crate::picker_queue::QueuedPick) -> Option<coh_data::Enhancement>,
+) -> Vec<Option<coh_data::Enhancement>> {
+    let mut picks = picks.to_vec();
+    picks.extend(hovered.cloned());
+    let mut previewed = slots.to_vec();
+    for (slot, enhancement) in mark_placements(
+        database,
+        build,
+        destination,
+        &picks,
+        slots,
+        slot_index,
+        make,
+    ) {
+        if let Some(cell) = previewed.get_mut(slot) {
+            *cell = Some(enhancement);
+        }
+    }
+    previewed
+}
+
+/// The marked picks that can still be placed, in order, each graded against the slots AS THEY
+/// FILL rather than against the slots as they were when the mark was made.
+///
+/// Two windows close here. A mark can go stale while the picker is open — its twin slotted into
+/// this power, a unique spent elsewhere in the build — and a drag range sweeps pieces the pointer
+/// never stopped on, which is how the beta placed a Superior ATO piece that was already in the
+/// power (2026-08-17). And the batch can conflict with ITSELF: a set's piece 1 and its Superior
+/// twin's piece 1 are both legal against a build holding neither, and illegal together. Threading
+/// the running slots through the rule is what makes the second pick see the first.
+///
+/// Only set pieces are graded. A generic IO, an origin and a special carry no single-copy rule —
+/// two commons of the same stat in one power is a real slotting, not a mistake.
+fn placeable_picks(
+    database: &coh_data::PowerDatabase,
+    build: &coh_data::CharacterState,
+    destination: PickerDestination,
+    picks: &[crate::picker_queue::QueuedPick],
+    slots: &[Option<coh_data::Enhancement>],
+    make: &dyn Fn(&crate::picker_queue::QueuedPick) -> Option<coh_data::Enhancement>,
 ) -> Vec<coh_data::Enhancement> {
-    let build = session.build.read();
     let mut running = slots.to_vec();
     let mut placeable = Vec::new();
     for pick in picks {
-        let Some(enhancement) = build_queued_pick(database, pick, defaults, session) else {
+        let Some(enhancement) = make(pick) else {
             continue;
         };
         if let crate::picker_queue::QueuedPick::SetPiece {
@@ -6176,7 +6321,7 @@ fn placeable_picks(
                     let piece = set.pieces.get(*piece_index)?;
                     let scope = match destination {
                         PickerDestination::Build => coh_data::slotting_rules::UniqueScope::Build {
-                            state: &build,
+                            state: build,
                             catalog,
                         },
                         PickerDestination::CompareCopy { .. } => {
@@ -6797,5 +6942,149 @@ mod tests {
             "Accuracy/\u{200B}Damage"
         );
         assert_eq!(breakable_at_slashes("Chance for Hold"), "Chance for Hold");
+    }
+
+    mod placement {
+        use crate::panels::powers::{previewed_slots, PickerDestination};
+        use crate::picker_queue::QueuedPick;
+        use coh_data::{CharacterState, DatasetId, Enhancement, IoSlotting, Level, PowerDatabase};
+        use std::path::PathBuf;
+
+        fn database() -> PowerDatabase {
+            let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../contract/homecoming/bundle.json.gz");
+            let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+            PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads")
+        }
+
+        fn generic(stat: &str) -> QueuedPick {
+            QueuedPick::Generic { stat: stat.into() }
+        }
+
+        /// What the picker's `make` does, at level 50 with no boosters.
+        fn make(database: &PowerDatabase) -> impl Fn(&QueuedPick) -> Option<Enhancement> + '_ {
+            move |pick| match pick {
+                QueuedPick::Generic { stat } => {
+                    Some(Enhancement::generic_io(stat.clone(), Level::new(50), 0))
+                }
+                QueuedPick::SetPiece {
+                    set_id,
+                    piece_index,
+                } => {
+                    let set = database.io_sets.as_ref()?.get(set_id)?;
+                    Some(Enhancement::io_set(
+                        set_id.clone(),
+                        set.name.clone(),
+                        *piece_index,
+                        set.pieces.get(*piece_index)?,
+                        set.min_level,
+                        set.max_level,
+                        set.attuned_only,
+                        IoSlotting {
+                            attuned: false,
+                            io_level: 50,
+                            boost: 0,
+                        },
+                    ))
+                }
+                _ => None,
+            }
+        }
+
+        fn io(stat: &str) -> Option<Enhancement> {
+            Some(Enhancement::generic_io(stat, Level::new(50), 0))
+        }
+
+        /// The stat in each slot, `-` for an empty one.
+        fn stats(slots: &[Option<Enhancement>]) -> Vec<String> {
+            slots
+                .iter()
+                .map(|slot| match slot.as_ref().map(|e| &e.kind) {
+                    Some(coh_data::EnhancementKind::GenericIo { stat, .. }) => stat.clone(),
+                    Some(_) => "set".into(),
+                    None => "-".into(),
+                })
+                .collect()
+        }
+
+        fn preview(
+            database: &PowerDatabase,
+            marks: &[QueuedPick],
+            hovered: Option<&QueuedPick>,
+            slots: &[Option<Enhancement>],
+            opened: usize,
+        ) -> Vec<Option<Enhancement>> {
+            let build = CharacterState::empty(DatasetId::Homecoming);
+            previewed_slots(
+                database,
+                &build,
+                PickerDestination::Build,
+                marks,
+                hovered,
+                slots,
+                opened,
+                &make(database),
+            )
+        }
+
+        /// With nothing marked, the piece under the pointer goes where a click would put it: the
+        /// opened slot, full or not.
+        #[test]
+        fn a_hovered_piece_replaces_the_opened_slot() {
+            let db = database();
+            let slots = [io("Accuracy"), io("Accuracy"), None];
+            let got = preview(&db, &[], Some(&generic("Damage")), &slots, 1);
+            assert_eq!(stats(&got), ["Accuracy", "Damage", "-"]);
+        }
+
+        /// Marks fill the opened slot, then the empties after it; full slots after it and
+        /// anything before it stay as they are. A hovered piece is the next mark.
+        #[test]
+        fn marks_fill_the_opened_slot_then_the_empties_after_it() {
+            let db = database();
+            let slots = [io("Accuracy"), io("Accuracy"), None, io("Accuracy"), None];
+            let marks = [generic("Damage"), generic("Damage")];
+            let got = preview(&db, &marks, Some(&generic("Recharge")), &slots, 1);
+            assert_eq!(
+                stats(&got),
+                ["Accuracy", "Damage", "Damage", "Accuracy", "Recharge"]
+            );
+        }
+
+        /// Marks past the last open slot are left out, as the commit leaves them out.
+        #[test]
+        fn marks_past_the_open_slots_are_left_out() {
+            let db = database();
+            let slots = [io("Accuracy"), io("Accuracy")];
+            let marks = [generic("Damage"), generic("Recharge")];
+            let got = preview(&db, &marks, None, &slots, 0);
+            assert_eq!(stats(&got), ["Damage", "Accuracy"]);
+        }
+
+        /// A set piece the single-copy rule refuses a second time is left out of the preview,
+        /// and the next mark takes its slot.
+        #[test]
+        fn a_refused_piece_is_left_out() {
+            let db = database();
+            let catalog = db.io_sets.as_ref().expect("sets");
+            let (set_id, piece_index) = catalog
+                .sets
+                .iter()
+                .find_map(|(id, set)| {
+                    set.pieces
+                        .iter()
+                        .position(|p| p.unique)
+                        .map(|i| (id.to_string(), i))
+                })
+                .expect("a unique piece");
+            let unique = QueuedPick::SetPiece {
+                set_id,
+                piece_index,
+            };
+            let slots = [None, None, None];
+            let marks = [unique.clone(), unique, generic("Damage")];
+            let got = preview(&db, &marks, None, &slots, 0);
+            assert_eq!(stats(&got), ["set", "Damage", "-"]);
+        }
     }
 }

@@ -12,7 +12,7 @@ use crate::enhancement::{
     schedule_for_aspect,
 };
 use crate::incarnates::AlphaEnhancement;
-use coh_data::{CombatContext, Enhancement, Level, Power, PowerDatabase};
+use coh_data::{CharacterState, CombatContext, Enhancement, Level, Power, PowerDatabase};
 
 /// One aspect of a power's enhancement, through Enhancement Diversification. Values are
 /// fractions (0.95 is +95%).
@@ -94,4 +94,28 @@ pub fn power_enhancement_breakdown(
             })
         })
         .collect()
+}
+
+/// The breakdown a held power would show with `slots` in place of the build's: the picker's
+/// preview of pieces it hasn't placed yet. It recalculates a copy of the whole build, so level,
+/// Alpha, combat and the recharge-strength rule are the card's own (well under a millisecond a
+/// build). Empty when the build doesn't hold the power.
+pub fn breakdown_for_slots(
+    state: &CharacterState,
+    powerset: &str,
+    internal_name: &str,
+    slots: &[Option<Enhancement>],
+    db: &PowerDatabase,
+) -> Vec<AspectBreakdown> {
+    let mut trial = state.clone();
+    let Some(pick) = trial.selected_power_mut(powerset, internal_name) else {
+        return Vec::new();
+    };
+    pick.slots = slots.to_vec();
+    crate::recalculate(&trial, db)
+        .power_projection
+        .into_iter()
+        .find(|p| p.power_set == powerset && p.power_internal_name == internal_name)
+        .map(|p| p.enhancement_breakdown)
+        .unwrap_or_default()
 }

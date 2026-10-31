@@ -217,3 +217,53 @@ fn EdRow(row: AspectBreakdown) -> Element {
         }
     }
 }
+
+/// The enhancement picker's strip: each aspect's after-ED value now, and an arrow to what the
+/// marks and the hovered item would make it. An aspect only one side has reads 0% on the other,
+/// so a piece that adds Recharge, or a replaced one that took Accuracy away, shows as such.
+#[component]
+pub fn EdPreviewStrip(now: Vec<AspectBreakdown>, after: Vec<AspectBreakdown>) -> Element {
+    let mut aspects: Vec<&'static str> = now.iter().map(|row| row.aspect).collect();
+    for row in &after {
+        if !aspects.contains(&row.aspect) {
+            aspects.push(row.aspect);
+        }
+    }
+    let find = |rows: &[AspectBreakdown], aspect: &str| {
+        rows.iter().find(|row| row.aspect == aspect).cloned()
+    };
+    rsx! {
+        div { class: "picker-preview", "aria-live": "polite",
+            span { class: "picker-preview__title", "Enhancement" }
+            if aspects.is_empty() {
+                span { class: "picker-preview__empty", "none yet" }
+            }
+            for aspect in aspects {
+                {
+                    let was = find(&now, aspect);
+                    let will = find(&after, aspect);
+                    let was_value = was.as_ref().map_or(0.0, |row| row.counted);
+                    let will_value = will.as_ref().map_or(0.0, |row| row.counted);
+                    let stage = will.as_ref().or(was.as_ref()).map_or(0, |row| row.stage);
+                    let label = aspect_label(aspect);
+                    let short = crate::naming::stat_abbreviation(&label).to_string();
+                    rsx! {
+                        span {
+                            key: "{aspect}",
+                            class: "picker-preview__aspect",
+                            title: "{label}: {stage_words(stage)}",
+                            span { class: "picker-preview__name", "{short}" }
+                            " {percent(was_value)}"
+                            if (will_value - was_value).abs() > 0.000_5 {
+                                " → "
+                                span { class: "picker-preview__after {bar_class(stage)}",
+                                    "{percent(will_value)}"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

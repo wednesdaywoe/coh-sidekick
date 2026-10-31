@@ -177,3 +177,30 @@ fn an_unslotted_power_has_no_breakdown() {
         .enhancement_breakdown
         .is_empty());
 }
+
+/// A preview of slots the build doesn't hold yet reads what a build holding them shows, with and
+/// without an Alpha, and not the build's current numbers.
+#[test]
+fn a_preview_is_what_holding_the_slots_shows() {
+    let db = load();
+    let trial = vec![io("Damage"), io("Damage"), io("Accuracy")];
+    for alpha in [None, Some("Musculature_Core_Paragon")] {
+        let now = build(vec![io("Damage"), None, None], alpha);
+        let preview = coh_math::ed_breakdown::breakdown_for_slots(&now, SET, POWER, &trial, &db);
+        let holding = projected(&build(trial.clone(), alpha), &db).enhancement_breakdown;
+        assert_eq!(preview, holding, "alpha {alpha:?}");
+        assert_ne!(
+            preview,
+            projected(&now, &db).enhancement_breakdown,
+            "alpha {alpha:?}"
+        );
+    }
+    let not_held = coh_math::ed_breakdown::breakdown_for_slots(
+        &build(vec![], None),
+        SET,
+        "Fire_Ball",
+        &trial,
+        &db,
+    );
+    assert!(not_held.is_empty());
+}
