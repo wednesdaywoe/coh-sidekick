@@ -835,9 +835,11 @@ fn signed(n: i32) -> String {
     }
 }
 
-/// The names of the combat inputs that are off their baselines, in form order.
+/// The combat inputs that are off their baselines, each with its value, in form order.
 ///
-/// HM3: this is what the Build Settings trigger shows in place of a bare `•`.
+/// HM3: this is what the Build Settings trigger shows in place of a bare `•`, and the image
+/// export prints it under the poster's header, where it is the only place a reader of the PNG
+/// learns what the totals assumed.
 /// It is always derived by diffing against [`CombatContext::default`] — never a
 /// hand-maintained list — so it cannot disagree with what the form shows, and a
 /// new field added to [`CombatContext`] appears here the moment it is off-baseline.
@@ -852,19 +854,22 @@ pub fn drift_summary(combat: &CombatContext) -> Vec<String> {
         parts.push(format!("Target {}", signed(combat.enemy_level_offset)));
     }
     if combat.fury_level != default.fury_level {
-        parts.push("Fury".to_string());
+        parts.push(format!("Fury {:.0}", combat.fury_level));
     }
     if combat.vigilance_team_size != default.vigilance_team_size {
         parts.push(format!("Team {}", combat.vigilance_team_size));
     }
     if combat.hit_points_percent != default.hit_points_percent {
-        parts.push(format!("Health {}", combat.hit_points_percent));
+        parts.push(format!("Health {:.0}%", combat.hit_points_percent));
     }
-    if combat.exemplar_level != default.exemplar_level {
-        parts.push("Exemplar".to_string());
+    if let Some(level) = combat.exemplar_level {
+        parts.push(format!("Exemplar {level}"));
     }
-    if combat.incarnate_level_shift != default.incarnate_level_shift {
-        parts.push("Level shift".to_string());
+    // A ceiling, not a magnitude: the engine spends it down the shifts the loadout has earned.
+    match combat.incarnate_level_shift {
+        Some(shift) if shift <= 0.0 => parts.push("No level shift".to_string()),
+        Some(shift) => parts.push(format!("Level shift up to +{shift:.0}")),
+        None => {}
     }
     if combat.content_mode != default.content_mode {
         parts.push("Incarnate content".to_string());

@@ -220,6 +220,8 @@ const SLATE_700: Rgba<u8> = Rgba([51, 65, 85, 255]);
 const SLATE_800: Rgba<u8> = Rgba([30, 41, 59, 255]);
 /// A tile's level badge, dark enough to read over any power's art.
 const BADGE_BG: Rgba<u8> = Rgba([15, 23, 42, 230]);
+/// Behind a power's ON tag (emerald-900), so ON reads green at a glance and OFF stays quiet.
+const ON_TAG_BG: Rgba<u8> = Rgba([6, 78, 59, 255]);
 
 // ============================================================
 // Simple text renderer.
@@ -375,6 +377,19 @@ pub fn render_to_png(
         draw_text(&mut img, pad, y, SLATE_400, body, &text);
         y += text_height(body) + 6 * s;
     }
+    // What the totals assumed beyond the build itself, so the image alone says how its numbers
+    // were read. Nothing is drawn for a build at the planner's defaults.
+    let assumed = assumptions(build, database);
+    if !assumed.is_empty() {
+        let lead = "SETTINGS  ";
+        draw_text(&mut img, pad, y, ZONE_LABEL_COLOR, body, lead);
+        let indent = text_width(lead, body);
+        for line in wrap_items(&assumed, body, inner_w - indent) {
+            draw_text(&mut img, pad + indent, y, AMBER, body, &line);
+            y += text_height(body) + 4 * s;
+        }
+        y += 2 * s;
+    }
     y += 4 * s;
     fill_rect(&mut img, pad, y, inner_w, s, BORDER_COLOR);
     y += 12 * s;
@@ -406,6 +421,7 @@ pub fn render_to_png(
         scale: s,
         show_enhancements: options.show_enhancements,
         origin: build.origin.as_deref(),
+        build,
     };
     if !powers.is_empty() {
         y = zone_label(&mut img, y, "Powers by level", s);
@@ -520,6 +536,60 @@ pub fn render_to_png(
     let used = bottom.min(height);
     let img = image::imageops::crop_imm(&img, 0, 0, width as u32, used as u32).to_image();
     encode_plain_png(&img)
+}
+
+/// What the totals assumed beyond the build itself: the combat settings off their defaults, the
+/// form each stance power is in, the what-if team buffs and the proc kinds switched off. Empty for
+/// a build read at the planner's defaults.
+fn assumptions(build: &CharacterState, database: &Db) -> Vec<String> {
+    let mut parts = crate::panels::combat::drift_summary(&build.combat);
+    for group in coh_data::caster_state::stance_groups(build, &database.0) {
+        let Some(active) = &group.active else {
+            continue;
+        };
+        let name = group
+            .options
+            .iter()
+            .find(|option| &option.internal_name == active)
+            .map_or(active.as_str(), |option| option.name.as_str());
+        parts.push(format!("{}: {name}", group.parent_name));
+    }
+    let what_if = crate::panels::what_if::summary(&build.combat.what_if_buffs);
+    if !what_if.is_empty() {
+        parts.push(format!("What-if {}", what_if.join(", ")));
+    }
+    if !build.disabled_proc_categories.is_empty() {
+        let off: Vec<&str> = build
+            .disabled_proc_categories
+            .iter()
+            .map(String::as_str)
+            .collect();
+        parts.push(format!("Procs off: {}", off.join(", ")));
+    }
+    parts
+}
+
+/// `items` joined with ` | ` into lines no wider than `room`. An item too wide for a line of its
+/// own is cut to it. Not the app's `·`: the poster's font is Basic Latin only.
+fn wrap_items(items: &[String], size: usize, room: usize) -> Vec<String> {
+    const SEP: &str = " | ";
+    let mut lines: Vec<String> = Vec::new();
+    let mut line = String::new();
+    for item in items {
+        let item = truncate_to(item, size, room);
+        let joined = format!("{line}{SEP}{item}");
+        if line.is_empty() {
+            line = item;
+        } else if text_width(&joined, size) <= room {
+            line = joined;
+        } else {
+            lines.push(std::mem::replace(&mut line, item));
+        }
+    }
+    if !line.is_empty() {
+        lines.push(line);
+    }
+    lines
 }
 
 /// Whether anything is slotted in the power — what "only slotted powers" keeps.
@@ -813,6 +883,8 @@ struct TileStyle<'a> {
     show_enhancements: bool,
     /// The character's origin, which an origin enhancement's frame carries.
     origin: Option<&'a str>,
+    /// The build, for each power's ON/OFF switch.
+    build: &'a CharacterState,
 }
 
 /// Draw a power tile: the power's art with its level on it, the name beside it, and under the
@@ -871,10 +943,53 @@ fn draw_power_tile(
         );
     }
 
-    // The name gets everything right of the art, and is cut to it.
-    let text_x = x + pad + icon_size + pad;
-    let room = (x + w).saturating_sub(text_x + pad);
+    // Tags down the tile's right edge: the power's ON/OFF switch as its planner card shows it,
+    // then the targets hit or stacks counted where the power takes a count. A count on a power
+    // switched off counts nothing, so it is left off, and so is a stack count nobody set: one
+    // stack is just the power.
     let size = POSTER_TEXT * s;
+    let switch = crate::panels::powers::pill_state(database, style.build, power);
+    let count = def
+        .filter(|_| switch != Some(false))
+        .and_then(coh_math::stacking::stacking_slider)
+        .and_then(|slider| {
+            let n = slider.effective(power.targets_hit);
+            match slider.kind {
+                coh_math::stacking::SliderKind::Targets => Some(format!("{n} hit")),
+                coh_math::stacking::SliderKind::Stacks => {
+                    power.targets_hit.map(|_| format!("x{n}"))
+                }
+            }
+        });
+    let tags: Vec<(String, Rgba<u8>, Rgba<u8>)> = [
+        switch.map(|on| {
+            if on {
+                ("ON".to_string(), ON_TAG_BG, EMERALD)
+            } else {
+                ("OFF".to_string(), BADGE_BG, SLATE_500)
+            }
+        }),
+        count.map(|text| (text, BADGE_BG, SLATE_400)),
+    ]
+    .into_iter()
+    .flatten()
+    .collect();
+    let mut tag_y = y + pad / 2;
+    let mut tags_w = 0;
+    for (text, bg, fg) in &tags {
+        let tag_w = text_width(text, size) + 4 * s;
+        let tag_h = text_height(size) + 2 * s;
+        let tag_x = x + w - pad / 2 - tag_w;
+        fill_rect(img, tag_x, tag_y, tag_w, tag_h, *bg);
+        stroke_rect(img, tag_x, tag_y, tag_w, tag_h, SLATE_600);
+        draw_text(img, tag_x + 2 * s, tag_y + s, *fg, size, text);
+        tag_y += tag_h + 2 * s;
+        tags_w = tags_w.max(tag_w + pad / 2);
+    }
+
+    // The name gets everything right of the art, short of the tags, and is cut to it.
+    let text_x = x + pad + icon_size + pad;
+    let room = (x + w).saturating_sub(text_x + pad.max(tags_w + 2 * s));
     let name = truncate_to(tile_label(power, database), size, room);
     draw_text(img, text_x, y + pad, TEXT_COLOR, size, &name);
 
@@ -1715,4 +1830,200 @@ fn today_utc() -> String {
     chrono::DateTime::from_timestamp_millis(at_ms)
         .map(|at| at.format("%Y-%m-%d").to_string())
         .unwrap_or_default()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use coh_data::{DatasetId, PowerDatabase};
+    use std::path::PathBuf;
+    use std::sync::Arc;
+
+    fn database() -> Db {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../contract/homecoming/bundle.json.gz");
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        Db(Arc::new(
+            PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads"),
+        ))
+    }
+
+    /// A Homecoming Scrapper with toggles and attacks, imported as the planner imports it.
+    fn maiden_fury(database: &Db) -> CharacterState {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../fixtures/buildsave/homecoming/maidenfury.txt");
+        let text = std::fs::read_to_string(&path).expect("fixture reads");
+        let mut build = crate::build_file::decode_import(&text, &database.0, DatasetId::Homecoming)
+            .expect("fixture imports")
+            .build;
+        crate::inherents::sync(&mut build, &database.0);
+        crate::granted_powers::sync(&mut build, &database.0);
+        build
+    }
+
+    fn poster(build: &CharacterState, database: &Db) -> Vec<u8> {
+        let totals = coh_math::recalculate(build, &database.0);
+        let options = ExportImageOptions::default();
+        render_to_png(
+            build,
+            database,
+            &totals,
+            &Dashboards::default(),
+            &options,
+            &PowerArt::default(),
+        )
+        .expect("renders")
+    }
+
+    #[test]
+    fn a_build_at_the_planners_defaults_assumes_nothing() {
+        let database = database();
+        let mut build = maiden_fury(&database);
+        build.combat = coh_data::CombatContext::default();
+        build.disabled_proc_categories.clear();
+        assert_eq!(assumptions(&build, &database), Vec::<String>::new());
+    }
+
+    #[test]
+    fn off_default_settings_are_listed_with_their_values() {
+        let database = database();
+        let mut build = maiden_fury(&database);
+        build.combat = coh_data::CombatContext::default();
+        build.combat.in_combat = true;
+        build.combat.fury_level = 80.0;
+        build.combat.exemplar_level = coh_data::Level::new(30);
+        build
+            .combat
+            .what_if_buffs
+            .insert("damage".to_string(), 20.0);
+        build.disabled_proc_categories.insert("Defense".to_string());
+        let assumed = assumptions(&build, &database);
+        for expected in ["In combat", "Fury 80", "Exemplar 30", "Procs off: Defense"] {
+            assert!(
+                assumed.iter().any(|part| part == expected),
+                "{expected} missing from {assumed:?}"
+            );
+        }
+        assert!(
+            assumed
+                .iter()
+                .any(|part| part.starts_with("What-if ") && part.ends_with("+20%")),
+            "what-if missing from {assumed:?}"
+        );
+    }
+
+    /// The tile's tag is the card's pill: a toggle shows one that follows `is_active`, an attack
+    /// shows none.
+    #[test]
+    fn the_tile_tag_follows_the_cards_pill() {
+        let database = database();
+        let mut build = maiden_fury(&database);
+        let states: Vec<(String, Option<bool>)> = build
+            .all_selected()
+            .map(|power| {
+                let state = crate::panels::powers::pill_state(&database, &build, power);
+                (power.internal_name.clone(), state)
+            })
+            .collect();
+        assert!(
+            states.iter().any(|(_, state)| state.is_none()),
+            "{states:?}"
+        );
+        let (toggle, _) = states
+            .iter()
+            .find(|(name, state)| state.is_some() && name == "Focused_Fighting")
+            .or_else(|| states.iter().find(|(_, state)| state.is_some()))
+            .expect("the build has a power with a pill");
+        for on in [false, true] {
+            build
+                .all_selected_mut()
+                .find(|power| &power.internal_name == toggle)
+                .expect("still held")
+                .is_active = on;
+            let power = build
+                .all_selected()
+                .find(|power| &power.internal_name == toggle)
+                .expect("still held");
+            assert_eq!(
+                crate::panels::powers::pill_state(&database, &build, power),
+                Some(on),
+                "{toggle}"
+            );
+        }
+    }
+
+    /// One tile drawn alone, so nothing but the tile itself can differ between two draws.
+    fn tile(build: &CharacterState, database: &Db, power: &SelectedPower) -> RgbaImage {
+        let mut img = RgbaImage::new(300, TILE_H as u32);
+        let style = TileStyle {
+            scale: 1,
+            show_enhancements: false,
+            origin: None,
+            build,
+        };
+        draw_power_tile(
+            &mut img,
+            0,
+            0,
+            300,
+            power,
+            &style,
+            database,
+            &PowerArt::default(),
+        );
+        img
+    }
+
+    /// A toggle's tile draws differently on and off; an attack's has no tag to change.
+    #[test]
+    fn the_tile_draws_its_switch() {
+        let database = database();
+        let mut build = maiden_fury(&database);
+        let toggle = build
+            .all_selected()
+            .find(|power| crate::panels::powers::pill_state(&database, &build, power).is_some())
+            .map(|power| power.internal_name.clone())
+            .expect("the build has a power with a pill");
+        let mut drawn = Vec::new();
+        for on in [false, true] {
+            build
+                .all_selected_mut()
+                .find(|power| power.internal_name == toggle)
+                .expect("still held")
+                .is_active = on;
+            let power = build
+                .all_selected()
+                .find(|power| power.internal_name == toggle)
+                .expect("still held");
+            drawn.push(tile(&build, &database, power));
+        }
+        assert_ne!(drawn[0], drawn[1], "{toggle} draws the same on and off");
+    }
+
+    /// The settings line is drawn: a build in combat makes a taller poster than one at defaults.
+    #[test]
+    fn the_poster_draws_its_settings() {
+        let database = database();
+        let mut build = maiden_fury(&database);
+        build.combat = coh_data::CombatContext::default();
+        build.disabled_proc_categories.clear();
+        let height = |png: Vec<u8>| image::load_from_memory(&png).expect("decodes").height();
+        let plain = height(poster(&build, &database));
+        build.combat.in_combat = true;
+        let assumed = height(poster(&build, &database));
+        assert!(assumed > plain, "{assumed} vs {plain}");
+    }
+
+    #[test]
+    fn settings_wrap_to_the_room_given() {
+        let items: Vec<String> = (0..12).map(|i| format!("Setting number {i}")).collect();
+        let room = 300;
+        let lines = wrap_items(&items, 8, room);
+        assert!(lines.len() > 1);
+        assert!(
+            lines.iter().all(|line| text_width(line, 8) <= room),
+            "{lines:?}"
+        );
+        assert_eq!(lines.join(" | ").matches("Setting").count(), 12);
+    }
 }

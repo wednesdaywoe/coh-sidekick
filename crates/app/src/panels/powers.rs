@@ -2868,42 +2868,12 @@ pub fn PickedPowerCard(
             .and_then(|v| v.as_str()),
     );
 
-    // Only powers that land a persistent effect on the caster get an ON/OFF pill (beta
-    // `shouldShowToggle`); a pure attack shows none. A power whose def can't be resolved shows
-    // no pill — the gate is undecidable without its `effects` bag.
-    //
-    // Which switch the pill throws depends on where that effect lives, and the two are
-    // partitioned so one pill never carries two meanings. A power that buffs the caster
-    // directly is switched by its own `is_active`. A power whose only caster-facing payload is
-    // the aura of something it summons has nothing on itself to switch: the fold is gated on
-    // the per-pet opt-in instead, so the pill writes THAT key — the same one the Info panel's
-    // adjuster row writes, so the two surfaces cannot disagree. Both sides are read off the
-    // export (Rule 0).
-    let pill = if power_def
-        .is_some_and(|def| self_pill_slots(def, &database, &session.build.read()).is_some())
-    {
-        Some(PowerPill::Active)
-    } else if power_def
-        .is_some_and(|def| !coh_math::buff_pets::buff_pet_sources(def, &database.0).is_empty())
-    {
-        Some(PowerPill::BuffPet(
-            coh_math::buff_pets::buff_pet_toggle_key(&powerset_id, &power_id),
-        ))
-    } else {
-        None
-    };
-    let pill_on = match &pill {
-        Some(PowerPill::Active) => power.is_active,
-        Some(PowerPill::BuffPet(key)) => session
-            .build
-            .read()
-            .combat
-            .power_state
-            .get(key)
-            .copied()
-            .unwrap_or(false),
-        None => false,
-    };
+    // Only powers that land a persistent effect on the caster get an ON/OFF pill; see
+    // [`power_pill`]. A power whose def can't be resolved shows no pill.
+    let pill = power_def.and_then(|def| power_pill(def, &database, &session.build.read(), &power));
+    let pill_on = pill
+        .as_ref()
+        .is_some_and(|pill| pill.is_on(&power, &session.build.read()));
 
     // Perma ring — only perma-eligible click powers (a self-buff/pet/self-penalty with an
     // achievable recharge/duration gap; beta `isPermaEligible`) get a ring around the icon, filled
@@ -5450,6 +5420,51 @@ impl PowerPill {
             }
         }
     }
+
+    /// Whether the switch this pill throws is on for `power`.
+    fn is_on(&self, power: &coh_data::SelectedPower, build: &coh_data::CharacterState) -> bool {
+        match self {
+            PowerPill::Active => power.is_active,
+            PowerPill::BuffPet(key) => build.combat.power_state.get(key).copied().unwrap_or(false),
+        }
+    }
+}
+
+/// The ON/OFF pill a picked power shows, or `None` for a power with nothing on the caster to
+/// switch (beta `shouldShowToggle`).
+///
+/// Which switch the pill throws depends on where that effect lives, and the two are partitioned
+/// so one pill never carries two meanings. A power that buffs the caster directly is switched by
+/// its own `is_active`. A power whose only caster-facing payload is the aura of something it
+/// summons has nothing on itself to switch: the fold is gated on the per-pet opt-in instead, so
+/// the pill writes THAT key — the same one the Info panel's adjuster row writes, so the two
+/// surfaces cannot disagree. Both sides are read off the export (Rule 0).
+fn power_pill(
+    def: &coh_data::Power,
+    database: &Db,
+    build: &coh_data::CharacterState,
+    power: &coh_data::SelectedPower,
+) -> Option<PowerPill> {
+    if self_pill_slots(def, database, build).is_some() {
+        Some(PowerPill::Active)
+    } else if !coh_math::buff_pets::buff_pet_sources(def, &database.0).is_empty() {
+        Some(PowerPill::BuffPet(
+            coh_math::buff_pets::buff_pet_toggle_key(&power.powerset, &power.internal_name),
+        ))
+    } else {
+        None
+    }
+}
+
+/// Whether a picked power's ON/OFF pill is on, or `None` when the card shows no pill. The image
+/// export's ON/OFF tags read this, so the poster says what the card says.
+pub(crate) fn pill_state(
+    database: &Db,
+    build: &coh_data::CharacterState,
+    power: &coh_data::SelectedPower,
+) -> Option<bool> {
+    let def = resolve_power_def(database, &power.powerset, &power.internal_name)?;
+    power_pill(def, database, build, power).map(|pill| pill.is_on(power, build))
 }
 
 /// The slot projection behind a power's own ON/OFF pill, or `None` when the power shows no such

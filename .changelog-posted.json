@@ -550,6 +550,36 @@
       "id": "shopping-list-persistance",
       "date": "2026-10-29",
       "preview": "Your incarnate component and enhancement shopping list progress should now store"
+    },
+    {
+      "id": "picker-tracked-stats",
+      "date": "2026-10-30",
+      "preview": "The enhancement picker has a new Tracked stats button. Press it to see only the "
+    },
+    {
+      "id": "picker-bonus-filter",
+      "date": "2026-10-30",
+      "preview": "The enhancement picker can now filter sets with a specific bonus you pick."
+    },
+    {
+      "id": "picker-fold-filters",
+      "date": "2026-10-30",
+      "preview": "The picker's filter rows can be folded: click Category, Rarity, Size or Bonus an"
+    },
+    {
+      "id": "finder-by-power",
+      "date": "2026-10-30",
+      "preview": "The Set Bonus Finder has a new By power view. Choose the bonuses you want, or us"
+    },
+    {
+      "id": "archetype-conversion",
+      "date": "2026-10-30",
+      "preview": "You can convert a build to another archetype: open Build Identity and choose Con"
+    },
+    {
+      "id": "ed-caps",
+      "date": "2026-10-30",
+      "preview": "Power cards now have a new icon that shows your enhancement amounts for that pow"
     }
   ]
 }

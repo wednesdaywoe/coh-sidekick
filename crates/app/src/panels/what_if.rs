@@ -108,6 +108,27 @@ pub fn set_buff(session: BuildSession, stat: &'static str, magnitude: f64) {
     });
 }
 
+/// Each simulated buff as `Damage +20%`, labelled and formatted the way its slider row is. A key
+/// with no control is still listed, humanised, because the engine still adds it to the totals.
+pub fn summary(buffs: &std::collections::BTreeMap<String, f64>) -> Vec<String> {
+    let all = controls();
+    buffs
+        .iter()
+        .map(|(stat, magnitude)| {
+            let (label, value) = match all.iter().find(|control| control.stat == stat) {
+                Some(control) => (control.label.clone(), control.format.render(*magnitude)),
+                None => (humanise(stat), magnitude.to_string()),
+            };
+            let sign = if value.starts_with(|c: char| c.is_ascii_digit()) {
+                "+"
+            } else {
+                ""
+            };
+            format!("{label} {sign}{value}")
+        })
+        .collect()
+}
+
 /// The controls for `stats`, in the order given — how another surface offers part of the same
 /// layer without a second idea of what a stat is called or how it steps.
 ///

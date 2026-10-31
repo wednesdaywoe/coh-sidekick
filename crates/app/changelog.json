@@ -1,6 +1,13 @@
 [
 
   {
+    "date": "2026-10-31",
+    "items": [
+      { "id": "export-image-toggles", "type": "feat", "message": "Export as image now marks powers ON or OFF, and lists any Build Settings you changed, such as In combat, Fury, exemplar level or what-if buffs." },
+      { "id": "build-settings-values", "type": "feat", "message": "The Build Settings button now shows the value of each setting you changed, like Fury 80 or Exemplar 30, not just its name." }
+    ]
+  },
+  {
     "date": "2026-10-30",
     "items": [
       { "id": "picker-tracked-stats", "type": "feat", "message": "The enhancement picker has a new Tracked stats button. Press it to see only the sets with a bonus to a stat you are tracking" },
