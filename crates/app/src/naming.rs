@@ -110,3 +110,36 @@ pub fn enhancement_qualifiers(enhancement: &Enhancement) -> Vec<String> {
     }
     qualifiers
 }
+
+/// The short form of an aspect or enhancement stat, as players write it. Three vocabularies
+/// reach here — set pieces carry aspect names (`Damage Resistance`), generic and origin pieces
+/// carry the enhancement stat type (`Resistance`), and the picker splits set piece names
+/// (`To Hit Debuff`) — so each spelling is listed. An unlisted name prints whole rather than
+/// guessed at.
+pub fn stat_abbreviation(stat: &str) -> &str {
+    match stat {
+        "Accuracy" => "Acc",
+        "Damage" => "Dmg",
+        "Recharge" => "Rech",
+        "Endurance" | "EnduranceReduction" | "Endurance Reduction" => "EndRdx",
+        "EndMod" | "EnduranceModification" | "Endurance Modification" => "EndMod",
+        "Range" => "Rng",
+        "Defense" => "Def",
+        "Damage Resistance" | "Resistance" => "Res",
+        "Heal" | "Healing" => "Heal",
+        "ToHit" | "To Hit Buff" => "ToHit",
+        "ToHit Debuff" | "To Hit Debuff" => "ToHitDeb",
+        "Defense Debuff" => "DefDeb",
+        "Immobilize" => "Immob",
+        "Confuse" => "Conf",
+        "Terrorize" | "Fear" => "Fear",
+        "Knockback" => "KB",
+        "KnockToKnockDown" => "KB>KD",
+        "Run" | "Run Speed" => "Run",
+        "Move Speed" => "Move",
+        "InterruptTime" | "Interrupt" => "Intrpt",
+        "Mez" | "Mez Duration" => "Mez",
+        "Intangible" => "Intan",
+        other => other,
+    }
+}

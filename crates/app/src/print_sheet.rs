@@ -283,38 +283,6 @@ fn incarnates(input: &SheetInput) -> Vec<(String, String)> {
 // Enhancement labels.
 // ============================================================
 
-/// The short form of an aspect or enhancement stat, as players write it. Both vocabularies reach
-/// here — set pieces carry aspect names (`Damage Resistance`), generic and origin pieces carry
-/// the enhancement stat type (`Resistance`) — so both spellings are listed. An unlisted name
-/// prints whole rather than guessed at.
-fn abbreviate(stat: &str) -> &str {
-    match stat {
-        "Accuracy" => "Acc",
-        "Damage" => "Dmg",
-        "Recharge" => "Rech",
-        "Endurance" | "EnduranceReduction" => "EndRdx",
-        "EndMod" | "EnduranceModification" => "EndMod",
-        "Range" => "Rng",
-        "Defense" => "Def",
-        "Damage Resistance" | "Resistance" => "Res",
-        "Heal" | "Healing" => "Heal",
-        "ToHit" => "ToHit",
-        "ToHit Debuff" => "ToHitDeb",
-        "Defense Debuff" => "DefDeb",
-        "Immobilize" => "Immob",
-        "Confuse" => "Conf",
-        "Terrorize" | "Fear" => "Fear",
-        "Knockback" => "KB",
-        "KnockToKnockDown" => "KB>KD",
-        "Run" | "Run Speed" => "Run",
-        "Move Speed" => "Move",
-        "InterruptTime" | "Interrupt" => "Intrpt",
-        "Mez" | "Mez Duration" => "Mez",
-        "Intangible" => "Intan",
-        other => other,
-    }
-}
-
 /// What the piece enhances, abbreviated.
 ///
 /// A proc's own text is kept: `Chance for Smashing Damage` is what distinguishes it, and its
@@ -324,8 +292,10 @@ fn short_label(enhancement: &Enhancement) -> String {
         EnhancementKind::IoSet {
             aspects, is_proc, ..
         } => {
-            let mut parts: Vec<String> =
-                aspects.iter().map(|a| abbreviate(a).to_string()).collect();
+            let mut parts: Vec<String> = aspects
+                .iter()
+                .map(|a| naming::stat_abbreviation(a).to_string())
+                .collect();
             if *is_proc {
                 let name = naming::enhancement_name(enhancement);
                 match name.find("Chance for") {
@@ -341,7 +311,7 @@ fn short_label(enhancement: &Enhancement) -> String {
             }
         }
         EnhancementKind::GenericIo { stat, .. } | EnhancementKind::Origin { stat, .. } => {
-            abbreviate(stat).to_string()
+            naming::stat_abbreviation(stat).to_string()
         }
         EnhancementKind::Special { .. } => naming::enhancement_name(enhancement).to_string(),
     }

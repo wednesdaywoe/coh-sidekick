@@ -4103,6 +4103,14 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 @media (max-width: 899.98px) {
   .picker-main { overflow-y: auto; }
   .picker-main > .picker-body { flex: none; overflow: visible; }
+  /* The picker takes the screen's height, not 60vh of it: at 60 the list showed one set
+     and a half between empty bands above and below the card. */
+  .modal-card:has(> .modal-content > .picker) { height: 90dvh; }
+  .picker { flex: 1 1 0; height: auto; }
+  /* The controls on rows of their own, the two steppers on the first and the three ticks on
+     the second. In source order they wrapped into three ragged rows pushed to the right. */
+  .picker-controls { flex-basis: 100%; justify-content: flex-start; margin-left: 0; }
+  .picker-controls > .picker-toggle { order: 1; }
 }
 
 .picker-body {
@@ -4220,6 +4228,53 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   line-height: 1.2;
   color: var(--text-dim);
 }
+/* No hover on a touch screen, so the title can't stand in for a cut-off name. */
+@media (pointer: coarse) {
+  .picker-icon-caption { white-space: normal; text-overflow: clip; }
+}
+
+/* A set: its icon once, beside its pieces as shorthand buttons (`Acc/Dmg`). A tile per piece
+   drew one icon six times and cut every name to "Accuracy/…". Two columns on a phone; six at
+   desktop widths, which is every set on one row, since none has more than six pieces. */
+.picker-set-row { flex-wrap: nowrap; align-items: flex-start; gap: 8px; }
+.picker-set-icon { flex: none; width: 36px; height: 36px; }
+.picker-piece-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .picker-piece-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+.picker-set-piece {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 4px 6px;
+  border: 1px solid var(--seam-raised);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+  /* Lines break at spaces and after slashes; a word is split only if it alone is wider. */
+  overflow-wrap: break-word;
+  cursor: pointer;
+  /* Holding a piece opens its tooltip; without these iOS selects the text or offers a menu. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: border-color var(--ease), background var(--ease);
+}
+.picker-set-piece:hover { background: var(--surface-warmed); border-color: var(--action-active-core); }
+@media (pointer: coarse) {
+  .picker-set-piece { min-height: var(--touch-seat); font-size: 12.5px; }
+}
 
 /* The set's level band, beside its name: the one fact that decides whether a set is usable on
    this character yet, so it sits where the name is read rather than in a hover. Pushed to the
@@ -4237,12 +4292,14 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    and inert rather than hidden: a set with a hole in its strip says "you already have that one",
    where a set silently one piece short says nothing and reads as missing data. */
 .picker-icon-item:disabled,
+.picker-set-piece:disabled,
 .picker-item:disabled {
   opacity: 0.32;
   cursor: not-allowed;
   filter: grayscale(1);
 }
 .picker-icon-item:disabled:hover,
+.picker-set-piece:disabled:hover,
 .picker-item:disabled:hover {
   background: transparent;
   border-color: var(--seam-raised);
@@ -4252,13 +4309,15 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 /* A marked piece, waiting to be spent. The accent border is the same one the active tab and the
    active facet wear, so "this is chosen" is one visual idea throughout the picker. */
 .picker-icon-item.is-queued,
+.picker-set-piece.is-queued,
 .picker-item.is-queued {
   position: relative;
   border: 1px solid var(--action-active-core);
   background: var(--surface-warmed);
 }
 /* Mid-drag, before the pointer comes up: the range is shown while it can still be changed. */
-.picker-icon-item.is-dragging {
+.picker-icon-item.is-dragging,
+.picker-set-piece.is-dragging {
   border-color: var(--action-hover);
   background: var(--surface-warmed);
 }

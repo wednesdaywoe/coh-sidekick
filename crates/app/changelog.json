@@ -4,7 +4,10 @@
     "date": "2026-10-31",
     "items": [
       { "id": "export-image-toggles", "type": "feat", "message": "Export as image now marks powers ON or OFF, and lists any Build Settings you changed, such as In combat, Fury, exemplar level or what-if buffs." },
-      { "id": "build-settings-values", "type": "feat", "message": "The Build Settings button now shows the value of each setting you changed, like Fury 80 or Exemplar 30, not just its name." }
+      { "id": "build-settings-values", "type": "feat", "message": "The Build Settings button now shows the value of each setting you changed, like Fury 80 or Exemplar 30, not just its name." },
+      { "id": "picker-phone-layout", "type": "fix", "message": "The enhancement picker on phones is taller, and its level, boost and tick boxes fit on two rows. Attuned-only sets say \"attuned\" instead of \"lv 1-1\"." },
+      { "id": "picker-set-list", "type": "feat", "message": "In the enhancement picker, each IO set now shows its icon once, with its pieces listed beside it in short form (Acc/Dmg, Dmg/EndRdx, 🎲 for Psi Dmg) instead of a row of identical icons labelled \"Accuracy/...\". Hover a piece on desktop for its full name and numbers." },
+      { "id": "picker-hold-piece", "type": "feat", "message": "On a phone, hold a set piece in the enhancement picker to see its full name, what it enhances and its set's bonuses. Let go to close it. Tapping a piece no longer opens these details by accident." }
     ]
   },
   {

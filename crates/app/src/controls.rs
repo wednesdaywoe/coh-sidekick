@@ -124,11 +124,12 @@ const DESKTOP: [Section; 3] = [
     },
 ];
 
-/// The mobile half. No long-press and no touch-hold menu exist in this tree, and
-/// that is now a decided absence rather than an unbuilt one: the slot's acts are
-/// reached through the picker a tap already opens and through the card's own
-/// controls, so a finger and a mouse run the same roads. The rows are the touch
-/// forms of acts that are already here
+/// The mobile half. There's no touch-hold menu: the slot's acts are reached
+/// through the picker a tap already opens and through the card's own controls, so
+/// a finger and a mouse run the same roads. The one hold is on a set piece in the
+/// picker, and it does what hovering does with a mouse (2026-10-31: once pieces
+/// were shorthand, a phone had no way to read a piece's full name). The rows are
+/// the touch forms of acts that are already here
 /// — and the two that are new to the platform: the Reorder overlay and the
 /// touch-seat growth.
 const MOBILE: [Section; 3] = [
@@ -163,6 +164,10 @@ const MOBILE: [Section; 3] = [
                 description: "Slots it at the craft level, attunement and boosters the picker header sets.",
             },
             Row {
+                action: "Hold a set piece",
+                description: "Shows its full name, what it enhances and its set's bonuses, as hovering does with a mouse. Let go to close it; nothing is slotted.",
+            },
+            Row {
                 action: "Lv / Attune / Boost",
                 description: "The picker header's global slotting controls, stamped onto whatever piece you pick next.",
             },
@@ -189,8 +194,8 @@ const MOBILE: [Section; 3] = [
 ///
 /// The Slots section is here for a reason worth stating, because it is the
 /// slot-context-menu call made visible: this tree has no slot menu and no
-/// long-press, so every act on a slot beyond the direct gestures is reached the
-/// same way on a mouse and on a finger. Rows that read identically on both
+/// long-press on a slot, so every act on a slot beyond the direct gestures is
+/// reached the same way on a mouse and on a finger. Rows that read identically on both
 /// halves belong here — `no_act_reads_identically_on_desktop_and_mobile` is the
 /// gate, and it caught these two the first time they were filed as a pair.
 const EVERYWHERE: [Section; 2] = [
