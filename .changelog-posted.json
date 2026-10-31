@@ -580,6 +580,36 @@
       "id": "ed-caps",
       "date": "2026-10-30",
       "preview": "Power cards now have a new icon that shows your enhancement amounts for that pow"
+    },
+    {
+      "id": "export-image-toggles",
+      "date": "2026-10-31",
+      "preview": "Export as image now marks powers ON or OFF, and lists any Build Settings you cha"
+    },
+    {
+      "id": "build-settings-values",
+      "date": "2026-10-31",
+      "preview": "The Build Settings button now shows the value of each setting you changed, like "
+    },
+    {
+      "id": "picker-phone-layout",
+      "date": "2026-10-31",
+      "preview": "The enhancement picker on desktop and mobile has been cleaned up."
+    },
+    {
+      "id": "picker-hold-piece",
+      "date": "2026-10-31",
+      "preview": "On a phone, hold a set piece in the enhancement picker to see its full name, wha"
+    },
+    {
+      "id": "picker-enhancement-preview",
+      "date": "2026-10-31",
+      "preview": "The enhancement picker now shows the power's enhancement values, and how they wo"
+    },
+    {
+      "id": "picker-filter-dropdowns",
+      "date": "2026-10-31",
+      "preview": "The enhancement picker's set filters are now dropdowns."
     }
   ]
 }
