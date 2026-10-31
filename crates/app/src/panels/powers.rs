@@ -930,18 +930,35 @@ pub(crate) fn SetBonusTierList(tiers: Vec<BonusTierRow>) -> Element {
     }
 }
 
-/// A filter row's label, doubling as the button that folds the row to its current choice.
+/// One IO Sets filter as a dropdown: "any" first, then each choice with how many sets it would
+/// leave. Lit while it narrows the list, as the chips it replaced were.
 #[component]
-fn FoldLabel(text: &'static str, ontoggle: EventHandler<()>) -> Element {
+fn FilterSelect(
+    label: &'static str,
+    placeholder: &'static str,
+    choices: Vec<(String, String, usize)>,
+    selected: Option<String>,
+    onchange: EventHandler<Option<String>>,
+) -> Element {
     rsx! {
-        button {
-            r#type: "button",
-            class: "picker-filter-label picker-filter-fold",
-            aria_expanded: "true",
-            title: "Fold this row into the summary line",
-            onclick: move |_| ontoggle.call(()),
-            span { class: "picker-filter-caret", "▾" }
-            "{text}"
+        select {
+            class: if selected.is_some() { "select-compact picker-filter-select is-on" } else { "select-compact picker-filter-select" },
+            aria_label: "{label}",
+            title: "{label}",
+            value: selected.clone().unwrap_or_default(),
+            onchange: move |evt: Event<FormData>| {
+                let chosen = evt.value();
+                onchange.call((!chosen.is_empty()).then_some(chosen));
+            },
+            option { value: "", selected: selected.is_none(), "{placeholder}" }
+            for (value , text , count) in choices {
+                option {
+                    key: "{value}",
+                    value: "{value}",
+                    selected: selected.as_deref() == Some(value.as_str()),
+                    "{text} ({count})"
+                }
+            }
         }
     }
 }
@@ -974,7 +991,7 @@ pub(crate) fn BonusSelect(
 ) -> Element {
     rsx! {
         select {
-            class: "select-compact picker-bonus-select",
+            class: if selected.is_some() { "select-compact picker-bonus-select is-on" } else { "select-compact picker-bonus-select" },
             aria_label: "{label}",
             value: selected.clone().unwrap_or_default(),
             onchange: move |evt: Event<FormData>| {
@@ -3812,7 +3829,6 @@ fn EnhancementPickerModal(
     let mut tracked_only = use_signal(|| false);
     // Only sets with a bonus to this one stat row.
     let mut set_bonus = use_signal(|| None::<String>);
-    let mut folded_filters = defaults.folded_filters;
     let mut set_sort = use_signal(crate::picker_sets::SetSort::default);
     // The set to scroll to on open — set only when this open is a CHANGE to a piece already in
     // the slot, where the thing being changed is the best guess at what the user is looking for.
@@ -4316,43 +4332,12 @@ fn EnhancementPickerModal(
                                         chip_ids.push(id);
                                     }
                                 }
-                                let folded = folded_filters.read().clone();
-                                let fold_category = folded.contains("category");
-                                let fold_rarity = folded.contains("rarity");
-                                let fold_size = folded.contains("size");
-                                let fold_bonus = folded.contains("bonus");
-                                let mut toggle_fold = move |key: &'static str| {
-                                    folded_filters.with_mut(|set| {
-                                        if !set.remove(key) {
-                                            set.insert(key);
-                                        }
-                                    });
-                                };
+                                // A dropdown earns its place by offering a choice. One whose only
+                                // option is already the whole list does nothing — unless it is the
+                                // one switched on, which has to stay reachable to be switched off.
                                 let show_types = type_counts.len() > 1 || set_category().is_some();
                                 let show_rarities = rarity_counts.len() > 1 || set_rarity().is_some();
                                 let show_sizes = size_counts.len() > 1 || set_size().is_some();
-                                let any = || "Any".to_string();
-                                let folded_rows: Vec<(&'static str, &'static str, String)> = [
-                                    (fold_category && show_types).then(|| ("category", "Category", set_category().unwrap_or_else(any))),
-                                    (fold_rarity && show_rarities).then(|| (
-                                        "rarity",
-                                        "Rarity",
-                                        set_rarity().map(|r| crate::picker_sets::rarity_label(&r)).unwrap_or_else(any),
-                                    )),
-                                    (fold_size && show_sizes).then(|| ("size", "Size", set_size().map(|n| format!("{n} pieces")).unwrap_or_else(any))),
-                                    (fold_bonus && !bonus_counts.is_empty()).then(|| (
-                                        "bonus",
-                                        "Bonus",
-                                        set_bonus()
-                                            .as_deref()
-                                            .and_then(crate::panels::stat_registry::by_id)
-                                            .map(|stat| bonus_label(stat, &bonus_counts))
-                                            .unwrap_or_else(any),
-                                    )),
-                                ]
-                                .into_iter()
-                                .flatten()
-                                .collect();
                                 // The scope the build-wide single-copy rule is asked in. A Compare
                                 // row is one power's hypothetical, so it is graded against its own
                                 // slots alone (`coh_data::slotting_rules`).
@@ -4367,10 +4352,6 @@ fn EnhancementPickerModal(
                                     }
                                 };
                                 let attuned_frame = attuned();
-                                // A row earns its place by offering a choice. One chip that is
-                                // already the whole list reads as a filter that does nothing —
-                                // unless it is the one switched on, which has to stay reachable
-                                // to be switched off.
                                 let any_filter = set_category().is_some()
                                     || set_rarity().is_some()
                                     || set_size().is_some()
@@ -4378,176 +4359,120 @@ fn EnhancementPickerModal(
                                     || tracked_only()
                                     || set_bonus().is_some();
                                 rsx! {
-                                    // Each chip is a toggle: pressing the lit one clears its row,
-                                    // so no row needs an "any" chip of its own.
+                                    // The facets as an even row of dropdowns, then a line of
+                                    // the two switches with the count, sort and Clear on the right.
                                     div { class: "picker-filters",
-                                        // Folded rows share one line, each naming its current
-                                        // choice; tapping one unfolds it.
-                                        if !folded_rows.is_empty() {
-                                            div { class: "picker-filter-row picker-filter-folded",
-                                                for (key , label , choice) in folded_rows {
-                                                    button {
-                                                        key: "{key}",
-                                                        r#type: "button",
-                                                        class: "picker-filter-fold picker-filter-fold-summary",
-                                                        aria_expanded: "false",
-                                                        title: "Show every choice",
-                                                        onclick: move |_| toggle_fold(key),
-                                                        span { class: "picker-filter-caret", "▸" }
-                                                        span { class: "picker-filter-fold-name", "{label}" }
-                                                        span { class: "picker-filter-fold-choice", "{choice}" }
-                                                    }
+                                        div { class: "picker-filter-facets",
+                                        if show_types {
+                                            FilterSelect {
+                                                label: "Only sets of this category",
+                                                placeholder: "Any category",
+                                                choices: type_counts
+                                                    .iter()
+                                                    .map(|facet| (facet.value.clone(), facet.value.clone(), facet.count))
+                                                    .collect::<Vec<_>>(),
+                                                selected: set_category(),
+                                                onchange: move |chosen| set_category.set(chosen),
+                                            }
+                                        }
+                                        // Derived from the export's own `category` vocabulary, so
+                                        // a fork that ships a seventh tier gets an option for it.
+                                        if show_rarities {
+                                            FilterSelect {
+                                                label: "Only sets of this rarity",
+                                                placeholder: "Any rarity",
+                                                choices: rarity_counts
+                                                    .iter()
+                                                    .map(|facet| (
+                                                        facet.value.clone(),
+                                                        crate::picker_sets::rarity_label(&facet.value),
+                                                        facet.count,
+                                                    ))
+                                                    .collect::<Vec<_>>(),
+                                                selected: set_rarity(),
+                                                onchange: move |chosen| set_rarity.set(chosen),
+                                            }
+                                        }
+                                        if show_sizes {
+                                            FilterSelect {
+                                                label: "Only sets with this many pieces",
+                                                placeholder: "Any size",
+                                                choices: size_counts
+                                                    .iter()
+                                                    .map(|&(size, count)| (size.to_string(), format!("{size} pieces"), count))
+                                                    .collect::<Vec<_>>(),
+                                                selected: set_size().map(|size| size.to_string()),
+                                                onchange: move |chosen: Option<String>| {
+                                                    set_size.set(chosen.and_then(|size| size.parse().ok()))
+                                                },
+                                            }
+                                        }
+                                        if !bonus_counts.is_empty() {
+                                            BonusSelect {
+                                                counts: bonus_counts.clone(),
+                                                selected: set_bonus(),
+                                                placeholder: "Any bonus",
+                                                label: "Only sets with a bonus to",
+                                                onchange: move |chosen| set_bonus.set(chosen),
+                                            }
+                                        }
+                                        }
+                                        div { class: "picker-filter-chips",
+                                            button {
+                                                class: if procs_only() { "picker-chip is-on" } else { "picker-chip" },
+                                                aria_pressed: "{procs_only()}",
+                                                title: "Only proc pieces, from the sets that carry one",
+                                                onclick: move |_| {
+                                                    let next = !*procs_only.peek();
+                                                    procs_only.set(next);
+                                                },
+                                                "Procs only"
+                                            }
+                                            // With nothing tracked there is nothing to match,
+                                            // so the chip says so instead of emptying the list.
+                                            // Lit stays clickable, so it can be switched off.
+                                            button {
+                                                class: if tracked_only() { "picker-chip is-on" } else { "picker-chip" },
+                                                aria_pressed: "{tracked_only()}",
+                                                disabled: tracked_count.is_none() && !tracked_only(),
+                                                title: if tracked_count.is_some() {
+                                                    "Only sets with a bonus to a stat you track"
+                                                } else {
+                                                    "Track a stat in a stats panel first; this then shows only the sets with a bonus to it"
+                                                },
+                                                onclick: move |_| {
+                                                    let next = !*tracked_only.peek();
+                                                    tracked_only.set(next);
+                                                },
+                                                "Tracked stats"
+                                                if let Some(count) = tracked_count {
+                                                    span { class: "picker-chip-count", "{count}" }
                                                 }
                                             }
                                         }
-                                        if show_types && !fold_category {
-                                            div { class: "picker-filter-row",
-                                                FoldLabel { text: "Category", ontoggle: move |_| toggle_fold("category") }
-                                                div { class: "picker-filter-chips",
-                                                    for facet in type_counts {
-                                                        {
-                                                            let on = set_category().as_deref() == Some(facet.value.as_str());
-                                                            rsx! {
-                                                                button {
-                                                                    key: "{facet.value}",
-                                                                    class: if on { "picker-chip is-on" } else { "picker-chip" },
-                                                                    aria_pressed: "{on}",
-                                                                    onclick: {
-                                                                        let value = facet.value.clone();
-                                                                        move |_| set_category.set((!on).then(|| value.clone()))
-                                                                    },
-                                                                    "{facet.value}"
-                                                                    span { class: "picker-chip-count", "{facet.count}" }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        // Rarity cuts ACROSS the slot categories above, so it gets
-                                        // its own row instead of extending that run. Derived from
-                                        // the export's own `category` vocabulary, so a fork that
-                                        // ships a seventh tier gets a chip for it rather than
-                                        // having its sets fall out of the filters.
-                                        if show_rarities && !fold_rarity {
-                                            div { class: "picker-filter-row",
-                                                FoldLabel { text: "Rarity", ontoggle: move |_| toggle_fold("rarity") }
-                                                div { class: "picker-filter-chips",
-                                                    for facet in rarity_counts {
-                                                        {
-                                                            let on = set_rarity().as_deref() == Some(facet.value.as_str());
-                                                            rsx! {
-                                                                button {
-                                                                    key: "{facet.value}",
-                                                                    class: if on { "picker-chip is-on" } else { "picker-chip" },
-                                                                    aria_pressed: "{on}",
-                                                                    onclick: {
-                                                                        let value = facet.value.clone();
-                                                                        move |_| set_rarity.set((!on).then(|| value.clone()))
-                                                                    },
-                                                                    "{crate::picker_sets::rarity_label(&facet.value)}"
-                                                                    span { class: "picker-chip-count", "{facet.count}" }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if show_sizes && !fold_size {
-                                            div { class: "picker-filter-row",
-                                                FoldLabel { text: "Size", ontoggle: move |_| toggle_fold("size") }
-                                                div { class: "picker-filter-chips",
-                                                    for (size, count) in size_counts.iter().copied() {
-                                                        button {
-                                                            key: "{size}",
-                                                            class: if set_size() == Some(size) { "picker-chip is-on" } else { "picker-chip" },
-                                                            aria_pressed: "{set_size() == Some(size)}",
-                                                            title: "Only {size}-piece sets, the full set \
-                                                                    fits in {size} slots",
-                                                            onclick: move |_| {
-                                                                let on = *set_size.peek() == Some(size);
-                                                                set_size.set((!on).then_some(size));
-                                                            },
-                                                            "{size} pieces"
-                                                            span { class: "picker-chip-count", "{count}" }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        // A dropdown rather than chips: a power's sets can grant
-                                        // dozens of different bonuses, grouped as the stats
-                                        // panels group them.
-                                        if !bonus_counts.is_empty() && !fold_bonus {
-                                            div { class: "picker-filter-row",
-                                                FoldLabel { text: "Bonus", ontoggle: move |_| toggle_fold("bonus") }
-                                                BonusSelect {
-                                                    counts: bonus_counts.clone(),
-                                                    selected: set_bonus(),
-                                                    placeholder: "Any bonus",
-                                                    label: "Only sets with a bonus to",
-                                                    onchange: move |chosen| set_bonus.set(chosen),
-                                                }
-                                            }
-                                        }
-                                        div { class: "picker-filter-row",
-                                            span { class: "picker-filter-label", "Show" }
-                                            div { class: "picker-filter-chips",
-                                                button {
-                                                    class: if procs_only() { "picker-chip is-on" } else { "picker-chip" },
-                                                    aria_pressed: "{procs_only()}",
-                                                    title: "Only proc pieces, from the sets that carry one",
-                                                    onclick: move |_| {
-                                                        let next = !*procs_only.peek();
-                                                        procs_only.set(next);
-                                                    },
-                                                    "Procs only"
-                                                }
-                                                // With nothing tracked there is nothing to match,
-                                                // so the chip says so instead of emptying the list.
-                                                // Lit stays clickable, so it can be switched off.
-                                                button {
-                                                    class: if tracked_only() { "picker-chip is-on" } else { "picker-chip" },
-                                                    aria_pressed: "{tracked_only()}",
-                                                    disabled: tracked_count.is_none() && !tracked_only(),
-                                                    title: if tracked_count.is_some() {
-                                                        "Only sets with a bonus to a stat you track"
-                                                    } else {
-                                                        "Track a stat in a stats panel first; this then shows only the sets with a bonus to it"
-                                                    },
-                                                    onclick: move |_| {
-                                                        let next = !*tracked_only.peek();
-                                                        tracked_only.set(next);
-                                                    },
-                                                    "Tracked stats"
-                                                    if let Some(count) = tracked_count {
-                                                        span { class: "picker-chip-count", "{count}" }
-                                                    }
-                                                }
-                                            }
-                                            // Sort orders the list rather than narrowing it, so it
-                                            // is one choice of two and never off.
-                                            span { class: "picker-filter-label picker-filter-label-inline", "Sort" }
-                                            div { class: "picker-filter-chips",
-                                                for (label, sort) in [
-                                                    ("Name", crate::picker_sets::SetSort::Name),
-                                                    ("Level", crate::picker_sets::SetSort::Level),
-                                                ] {
-                                                    button {
-                                                        key: "{label}",
-                                                        class: if set_sort() == sort { "picker-chip is-on" } else { "picker-chip" },
-                                                        aria_pressed: "{set_sort() == sort}",
-                                                        onclick: move |_| set_sort.set(sort),
-                                                        "{label}"
-                                                    }
-                                                }
-                                            }
+                                        div { class: "picker-filter-tail",
                                             span { class: "picker-filter-total", "{total} sets" }
+                                            // Sort orders the list rather than narrowing it, so it
+                                            // has no "any" and is never lit.
+                                            select {
+                                                class: "select-compact picker-filter-select",
+                                                aria_label: "Sort the sets",
+                                                title: "Sort the sets",
+                                                value: if set_sort() == crate::picker_sets::SetSort::Level { "level" } else { "name" },
+                                                onchange: move |evt: Event<FormData>| {
+                                                    set_sort.set(if evt.value() == "level" {
+                                                        crate::picker_sets::SetSort::Level
+                                                    } else {
+                                                        crate::picker_sets::SetSort::Name
+                                                    });
+                                                },
+                                                option { value: "name", selected: set_sort() == crate::picker_sets::SetSort::Name, "By name" }
+                                                option { value: "level", selected: set_sort() == crate::picker_sets::SetSort::Level, "By level" }
+                                            }
                                             if any_filter {
                                                 button {
                                                     class: "picker-filter-clear",
+                                                    aria_label: "Clear filters",
                                                     onclick: move |_| {
                                                         set_category.set(None);
                                                         set_rarity.set(None);
@@ -4556,7 +4481,7 @@ fn EnhancementPickerModal(
                                                         tracked_only.set(false);
                                                         set_bonus.set(None);
                                                     },
-                                                    "Clear filters"
+                                                    "Clear"
                                                 }
                                             }
                                         }

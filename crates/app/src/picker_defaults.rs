@@ -139,9 +139,6 @@ pub struct PickerDefaults {
     /// Whether changing a slotted set piece opens the list narrowed to that piece's category
     /// and rarity. On by default; someone shopping for a replacement turns it off.
     pub filter_to_piece: Signal<bool>,
-    /// The IO Sets filter rows folded to one line (`"category"`, `"rarity"`, `"size"`,
-    /// `"bonus"`). Kept across opens, since a row folded to save room is wanted folded next time.
-    pub folded_filters: Signal<std::collections::BTreeSet<&'static str>>,
 }
 
 impl PickerDefaults {
@@ -155,7 +152,6 @@ impl PickerDefaults {
             relative_level: Signal::new(0),
             select_mode: Signal::new(false),
             filter_to_piece: Signal::new(true),
-            folded_filters: Signal::new(std::collections::BTreeSet::new()),
         }
     }
 

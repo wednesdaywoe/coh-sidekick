@@ -4016,44 +4016,34 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   flex: 1;
 }
 
-/* The IO Sets filters: one labelled row per facet, above the list and outside its scroll so
-   they stay in reach. Rows rather than one run because the facets combine — a single run would
-   read as alternatives. */
+/* The IO Sets filters: a row of dropdowns, then the two switches with the count and sort,
+   above the list and outside its scroll so they stay in reach. A dropdown that is narrowing
+   the list is lit. */
 .picker-filters {
   flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
   padding: 8px 10px;
   border-bottom: 1px solid var(--seam-raised);
   background: color-mix(in srgb, var(--surface-raised) 40%, transparent);
 }
-.picker-filter-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
-.picker-filter-label {
-  flex: 0 0 62px;
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-faint);
+.picker-filter-select, .picker-bonus-select { max-width: 100%; min-width: 0; }
+/* Four across on desktop, two by two on a phone; a hidden facet's share goes to the others. */
+.picker-filter-facets {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 6px;
 }
-.picker-filter-label-inline { flex-basis: auto; margin-left: 10px; }
-/* The label is the fold toggle: same type as before, plus a caret, with no button chrome. */
-.picker-filter-fold {
-  display: inline-flex; align-items: baseline; gap: 4px;
-  padding: 0; background: none; border: none; text-align: left; cursor: pointer;
+.picker-filter-facets > select { width: 100%; }
+.picker-filters select.is-on {
+  color: var(--action-active);
+  border-color: var(--action-active);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--focus-ring) 40%, transparent);
 }
-.picker-filter-fold:hover { color: var(--text-dim); }
-.picker-filter-fold:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
-.picker-filter-caret { font-size: 10px; }
-.picker-filter-folded { gap: 4px 14px; }
-.picker-filter-fold-name {
-  font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--text-faint);
-}
-.picker-filter-fold-choice { font-size: 11.5px; font-family: var(--font-chrome); color: var(--text-dim); }
-.picker-filter-fold-summary:hover .picker-filter-fold-choice { color: var(--text); }
-.picker-bonus-select { max-width: 100%; }
+.picker-filter-tail { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .picker-filter-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 /* The same on-treatment as `.sb-chip`: state rides the accent channel, never a surface fill. */
 .picker-chip {
@@ -4082,7 +4072,6 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .picker-chip-count { font-size: 10px; font-variant-numeric: tabular-nums; color: var(--text-faint); }
 .picker-chip.is-on .picker-chip-count { color: inherit; opacity: 0.75; }
 .picker-filter-total {
-  margin-left: auto;
   font-size: 11px;
   font-variant-numeric: tabular-nums;
   color: var(--text-faint);
@@ -7081,9 +7070,9 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   .switch {
     min-height: var(--touch-seat);
   }
-  /* A picker filter row's fold label takes the header lane's 26px floor, not the full seat:
-     the fold exists to make those rows short, and a 44px label would undo it. */
-  .picker-filter-fold { min-height: 26px; align-items: center; }
+  /* The filter dropdowns stop short of the full seat: a tap opens the phone's own chooser,
+     and three lines of 44px rebuilt the height the dropdowns were there to save. */
+  .picker-filters select { min-height: 36px; }
   /* A switch is an inline-flex holding one 34×18 track; without this the track stretches to
      fill the taller box and stops being a switch. */
   .switch { align-items: center; }
