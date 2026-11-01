@@ -232,8 +232,25 @@ pub fn EdPreviewStrip(now: Vec<AspectBreakdown>, after: Vec<AspectBreakdown>) ->
     let find = |rows: &[AspectBreakdown], aspect: &str| {
         rows.iter().find(|row| row.aspect == aspect).cloned()
     };
+    // The strip keeps its tallest height at this width. Shrinking back when the pointer left a
+    // piece would grow the list, slide the piece back under the pointer, and loop.
+    let mut floor = use_signal(|| (0.0_f64, 0.0_f64));
+    let (_, floor_px) = floor();
     rsx! {
-        div { class: "picker-preview", "aria-live": "polite",
+        div {
+            class: "picker-preview",
+            style: "min-height: {floor_px}px;",
+            "aria-live": "polite",
+            onresize: move |evt| {
+                let Ok(size) = evt.get_border_box_size() else { return };
+                let (width, tallest) = floor();
+                if (size.width - width).abs() > 0.5 {
+                    // A new width wraps differently: let go and measure afresh.
+                    floor.set((size.width, 0.0));
+                } else if size.height > tallest + 0.5 {
+                    floor.set((width, size.height));
+                }
+            },
             span { class: "picker-preview__title", "Enhancement" }
             if aspects.is_empty() {
                 span { class: "picker-preview__empty", "none yet" }

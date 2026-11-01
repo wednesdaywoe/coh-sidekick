@@ -1,6 +1,12 @@
 [
 
   {
+    "date": "2026-11-01",
+    "items": [
+      { "id": "picker-preview-shake", "type": "fix", "message": "Hovering a piece near the bottom of the enhancement picker no longer makes the picker shake." }
+    ]
+  },
+  {
     "date": "2026-10-31",
     "items": [
       { "id": "export-image-toggles", "type": "feat", "message": "Export as image now marks powers ON or OFF, and lists any Build Settings you changed, such as In combat, Fury, exemplar level or what-if buffs." },
