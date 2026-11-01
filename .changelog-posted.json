@@ -610,6 +610,21 @@
       "id": "picker-filter-dropdowns",
       "date": "2026-10-31",
       "preview": "The enhancement picker's set filters are now dropdowns."
+    },
+    {
+      "id": "picker-preview-shake",
+      "date": "2026-11-01",
+      "preview": "Hovering near the bottom of the enhancement picker no longer makes the picker sh"
+    },
+    {
+      "id": "picker-resizable",
+      "date": "2026-11-01",
+      "preview": "The enhancement picker is bigger on desktop, and you can drag its bottom-right c"
+    },
+    {
+      "id": "picker-category-list",
+      "date": "2026-11-01",
+      "preview": "On desktop, the enhancement picker lists set categories down its left side again"
     }
   ]
 }

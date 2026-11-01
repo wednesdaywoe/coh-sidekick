@@ -3,9 +3,9 @@
   {
     "date": "2026-11-01",
     "items": [
-      { "id": "picker-preview-shake", "type": "fix", "message": "Hovering a piece near the bottom of the enhancement picker no longer makes the picker shake." },
-      { "id": "picker-resizable", "type": "feat", "message": "The enhancement picker is bigger on desktop, and you can drag its bottom-right corner to make it larger or smaller. It remembers the size you leave it at." },
-      { "id": "picker-category-list", "type": "feat", "message": "On desktop, the enhancement picker lists set categories down its left side again, so picking one takes a single click. On a phone, or with the picker dragged narrow, categories stay in the dropdown." }
+      { "id": "picker-preview-shake", "type": "fix", "message": "Hovering near the bottom of the enhancement picker no longer makes the picker shake." },
+      { "id": "picker-resizable", "type": "feat", "message": "The enhancement picker is bigger on desktop, and you can drag its bottom-right corner to resize it." },
+      { "id": "picker-category-list", "type": "feat", "message": "On desktop, the enhancement picker lists set categories down its left side again." }
     ]
   },
   {
