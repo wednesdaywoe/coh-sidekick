@@ -30,14 +30,18 @@ struct StoredDefaults {
     /// "Filter to piece". Absent in older state, which means the old behaviour: on.
     #[serde(default = "on")]
     filter_to_piece: bool,
+    /// The dragged card size. Absent means never dragged, the default size.
+    #[serde(default)]
+    card_size: Option<(f64, f64)>,
 }
 
 fn on() -> bool {
     true
 }
 
-/// What [`load`] hands back: `(io_level, attuned, boost, memory, select_mode, filter_to_piece)`.
-pub type Restored = (u8, bool, u8, PickerMemory, bool, bool);
+/// What [`load`] hands back: `(io_level, attuned, boost, memory, select_mode, filter_to_piece,
+/// card_size)`.
+pub type Restored = (u8, bool, u8, PickerMemory, bool, bool, Option<(f64, f64)>);
 
 /// Persist the current picker defaults (fire-and-forget, like [`crate::build_store::persist`]).
 pub fn persist(
@@ -47,6 +51,7 @@ pub fn persist(
     memory: PickerMemory,
     select_mode: bool,
     filter_to_piece: bool,
+    card_size: Option<(f64, f64)>,
 ) {
     let stored = StoredDefaults {
         io_level,
@@ -55,6 +60,7 @@ pub fn persist(
         memory,
         select_mode,
         filter_to_piece,
+        card_size,
     };
     let Ok(json) = serde_json::to_string(&stored) else {
         return;
@@ -89,5 +95,6 @@ pub async fn load() -> Option<Restored> {
         stored.memory,
         stored.select_mode,
         stored.filter_to_piece,
+        stored.card_size,
     ))
 }

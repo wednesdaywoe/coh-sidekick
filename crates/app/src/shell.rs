@@ -915,7 +915,7 @@ pub fn Shell() -> Element {
     use_future(move || async move {
         let mut defaults = picker_defaults;
         let mut memory = picker_memory;
-        if let Some((io_level, attuned, boost, places, select_mode, filter_to_piece)) =
+        if let Some((io_level, attuned, boost, places, select_mode, filter_to_piece, card_size)) =
             picker_store::load().await
         {
             defaults.io_level.set(io_level);
@@ -924,6 +924,7 @@ pub fn Shell() -> Element {
             memory.set(places);
             defaults.select_mode.set(select_mode);
             defaults.filter_to_piece.set(filter_to_piece);
+            defaults.card_size.set(card_size);
         }
         picker_restored.set(true);
     });
@@ -937,6 +938,7 @@ pub fn Shell() -> Element {
         let memory = picker_memory.read().clone();
         let select_mode = *picker_defaults.select_mode.read();
         let filter_to_piece = *picker_defaults.filter_to_piece.read();
+        let card_size = *picker_defaults.card_size.read();
         if !*picker_restored.read() {
             return;
         }
@@ -947,6 +949,7 @@ pub fn Shell() -> Element {
             memory,
             select_mode,
             filter_to_piece,
+            card_size,
         );
     });
 

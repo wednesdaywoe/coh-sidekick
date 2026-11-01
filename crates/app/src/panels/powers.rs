@@ -4004,6 +4004,7 @@ fn EnhancementPickerModal(
 
     rsx! {
         Modal { title, size: ModalSize::Lg, on_close,
+            resizable: defaults.card_size,
             on_key: move |evt: KeyboardEvent| track_shift(evt.modifiers().shift()),
             div { class: "picker",
                 onpointermove: move |evt| track_shift(evt.modifiers().shift()),
@@ -4358,12 +4359,46 @@ fn EnhancementPickerModal(
                                     || procs_only()
                                     || tracked_only()
                                     || set_bonus().is_some();
+                                // Every set lands in one category, so the counts add up to
+                                // what "All" would show.
+                                let all_types: usize = type_counts.iter().map(|facet| facet.count).sum();
                                 rsx! {
+                                    // The categories as a one-click list down the left, when the
+                                    // picker is wide enough for it; the stylesheet then hides the
+                                    // category dropdown, which narrower pickers and phones keep.
+                                    if show_types {
+                                        nav { class: "picker-rail", aria_label: "Set categories",
+                                            button {
+                                                class: if set_category().is_none() { "picker-rail-item is-on" } else { "picker-rail-item" },
+                                                aria_pressed: "{set_category().is_none()}",
+                                                onclick: move |_| set_category.set(None),
+                                                span { "All categories" }
+                                                span { class: "picker-rail-count", "{all_types}" }
+                                            }
+                                            for facet in type_counts.iter() {
+                                                {
+                                                    let on = set_category().as_deref() == Some(facet.value.as_str());
+                                                    let value = facet.value.clone();
+                                                    rsx! {
+                                                        button {
+                                                            key: "{facet.value}",
+                                                            class: if on { "picker-rail-item is-on" } else { "picker-rail-item" },
+                                                            aria_pressed: "{on}",
+                                                            onclick: move |_| set_category.set(Some(value.clone())),
+                                                            span { "{facet.value}" }
+                                                            span { class: "picker-rail-count", "{facet.count}" }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                     // The facets as an even row of dropdowns, then a line of
                                     // the two switches with the count, sort and Clear on the right.
                                     div { class: "picker-filters",
                                         div { class: "picker-filter-facets",
                                         if show_types {
+                                            div { class: "picker-category-select",
                                             FilterSelect {
                                                 label: "Only sets of this category",
                                                 placeholder: "Any category",
@@ -4373,6 +4408,7 @@ fn EnhancementPickerModal(
                                                     .collect::<Vec<_>>(),
                                                 selected: set_category(),
                                                 onchange: move |chosen| set_category.set(chosen),
+                                            }
                                             }
                                         }
                                         // Derived from the export's own `category` vocabulary, so

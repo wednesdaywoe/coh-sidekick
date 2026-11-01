@@ -139,6 +139,9 @@ pub struct PickerDefaults {
     /// Whether changing a slotted set piece opens the list narrowed to that piece's category
     /// and rarity. On by default; someone shopping for a replacement turns it off.
     pub filter_to_piece: Signal<bool>,
+    /// The picker card's width and height in CSS pixels, once someone has dragged its corner.
+    /// `None` is the stylesheet's default size; phones ignore it.
+    pub card_size: Signal<Option<(f64, f64)>>,
 }
 
 impl PickerDefaults {
@@ -152,6 +155,7 @@ impl PickerDefaults {
             relative_level: Signal::new(0),
             select_mode: Signal::new(false),
             filter_to_piece: Signal::new(true),
+            card_size: Signal::new(None),
         }
     }
 
