@@ -1033,7 +1033,7 @@
     "setName": "Reactive Defenses",
     "ioName": "Scaling +Res(All)",
     "ppm": null,
-    "mechanics": "Resistance(All 3%--12.9%)",
+    "mechanics": "Resistance(All 3%--13%)",
     "pvpNotes": "",
     "type": "Global",
     "levelRange": "20--50",

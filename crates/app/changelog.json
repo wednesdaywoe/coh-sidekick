@@ -5,7 +5,8 @@
     "items": [
       { "id": "picker-preview-shake", "type": "fix", "message": "Hovering near the bottom of the enhancement picker no longer makes the picker shake." },
       { "id": "picker-resizable", "type": "feat", "message": "The enhancement picker is bigger on desktop, and you can drag its bottom-right corner to resize it." },
-      { "id": "picker-category-list", "type": "feat", "message": "On desktop, the enhancement picker lists set categories down its left side again." }
+      { "id": "picker-category-list", "type": "feat", "message": "On desktop, the enhancement picker lists set categories down its left side again." },
+      { "id": "reactive-defenses-scaling-cap", "type": "fix", "message": "Reactive Defenses (Scaling Damage Resistance) now scales up to +13% resistance at 0% health instead of stopping at 12.9%. It is 3% at full health plus 1% for every 10% of health you are missing — the in-game tooltip's \"+0% … around 10%\" does not match what the game actually does." }
     ]
   },
   {

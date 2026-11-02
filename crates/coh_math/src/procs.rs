@@ -262,7 +262,7 @@ pub fn proc_override_key(powerset: &str, internal_name: &str, slot_index: usize)
     format!("{address}:{slot_index}")
 }
 
-/// Interpolate an HP-scaling proc's magnitude: full HP (100%) ⇒ `floor`, ~0 HP ⇒ `cap`, linear
+/// Interpolate an HP-scaling proc's magnitude: full HP (100%) ⇒ `floor`, 0 HP ⇒ `cap`, linear
 /// in %HP. The beta `interpolateScalingValue`.
 fn interpolate_scaling_value(floor: f64, cap: f64, hp_pct: f64) -> f64 {
     let clamped = hp_pct.clamp(0.0, 100.0);

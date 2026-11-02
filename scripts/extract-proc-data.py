@@ -365,8 +365,13 @@ PET_CARRIED_GROUPS = {
 # an HP-scaling expression or special mechanic. Hand-override to match the current
 # planner behaviour (parity); revisit when the scaling model is improved.
 SCALING_OVERRIDES = {
-    # Reactive Defenses / Preventive Medicine: scaling +Res 3%–12.9% (planner
-    # applies the 3% floor via this structured `scaling` effect).
+    # Reactive Defenses / Preventive Medicine: scaling +Res 3%–13% (planner
+    # applies the 3% floor via this structured `scaling` effect; the cap rides in
+    # hand-data/proc-variable-controls.json). Both ends are the granted global's own
+    # magnitude RPN, `100 kHitPoints% source> - 10 / 3 + 100 / @StdResult *`
+    # = 3 + (100 - HP%) / 10, which is 3.0 at full health and 13.0 at none. The
+    # boost's own "+0% at full health … around 10%" tooltip contradicts that, and is
+    # the stale one (the Homecoming Wiki documents 3% → ~13%).
     'reactivedefenses': [{'category': 'Resistance', 'value': 3.0, 'effectType': 'All', 'scaling': True}],
     'preventivemedicine': [{'category': 'Absorb', 'value': 20.0, 'scaling': True}],
     # Kheldian's Grace ATO global — the only SELF global among the ATO passive-

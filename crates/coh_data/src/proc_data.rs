@@ -59,8 +59,8 @@ pub struct ProcEffect {
     /// Omitted = always on.
     #[serde(default)]
     pub chance: Option<f64>,
-    /// True when the value is an HP-scaling floor (Reactive Defenses 3%–12.9%):
-    /// `value` is the floor (full HP), `value_max` the cap (near-0 HP).
+    /// True when the value is an HP-scaling floor (Reactive Defenses 3%–13%):
+    /// `value` is the floor (full HP), `value_max` the cap (0 HP).
     #[serde(default)]
     pub scaling: bool,
     /// Max concurrent stacks for a self-stacking buff proc (Might of the Tanker = 3).
