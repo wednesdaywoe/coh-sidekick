@@ -19,16 +19,16 @@ self-consistent.
 | `game-export/` (7) | plain base64 over `/buildsave` text, no compression | **nobody yet** — the Vault, prospectively |
 | `game-export-deflated/` (1) | the same text through the beta encoder | nobody yet; it is what a link would be if one carried an export |
 | `zlib/` (1) | a v4 `.skif` under a zlib header instead of raw deflate | nobody — the beta's decoder accepts it, so this one grades that arm |
+| `vault/` (1) | raw deflate + URL-safe base64 over the game client's JSON build | **Homecoming's Vault, live** — taken from a real `/build-export/…/sidekick` page on 2026-11-03 |
 
-**Three of the four arms have no producer, and that is stated rather than hidden.** The one
-format actually in circulation is `planner/`. The game-export arms have a *prospective* one as of
-2026-09-08: Homecoming's Vault, a build library in development that will hand builds to this
-planner, and whose payload is the savebuild (import-export).
-Nothing has been seen from it yet, so the arms below stay as described — but they are the arms it
-would land on, and the beta cannot read either of them. The uncompressed game-export arm is named as a
+**Three of the five arms have no producer, and that is stated rather than hidden.** The formats
+actually in circulation are `planner/` and `vault/`. The Vault went live sending the client's JSON
+build, not the `/buildsave` text it was expected to, so the game-export arms still have no writer,
+and the beta cannot read either of them. The Vault's page forwards to `/#…` and its build names no
+server, which is why `open_route` sends it to Homecoming. The uncompressed game-export arm is named as a
 requirement by REBUILD-PROGRESS and is *rejected* by the beta's
 own decoder, whose uncompressed branch takes a payload only if it starts with `{`. The Rust
-decoder accepts all four because it decides transport and payload separately instead of pairing
+decoder accepts all five because it decides transport and payload separately instead of pairing
 them, which is what makes the game-export arms fall out rather than needing a case each.
 
 ## What the corpus cannot see

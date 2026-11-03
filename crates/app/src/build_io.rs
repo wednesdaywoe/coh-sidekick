@@ -128,6 +128,8 @@ pub enum OpenRoute {
     Decode,
     /// Load this fork first. Decoding against the loaded one would resolve nothing.
     SwitchTo(DatasetId),
+    /// The document names no fork, but only one fork writes it, so go there without asking.
+    MoveTo(DatasetId),
     /// The document names no fork and never will — the game client writes one build format and
     /// has no idea other servers exist. Read it against whatever is loaded; what fails to
     /// resolve is the report, and the report is what lets the user say it was the wrong one.
@@ -155,8 +157,11 @@ pub fn open_route(text: &str, loaded: DatasetId) -> OpenRoute {
         // eight powerset paths and nothing that says whose game they are from. So it reads
         // against the loaded fork, and the receipt is what says it was the wrong one.
         Document::Mxd => OpenRoute::DecodeUnstamped,
-        // The client knows its own server only, and never names it.
-        Document::ClientBuild => OpenRoute::DecodeUnstamped,
+        // Only Homecoming's Vault and client write this, and neither says so. Read on another
+        // fork it loses every powerset that fork lacks, so it goes home. If it's ever wrong,
+        // the receipt still offers the other servers.
+        Document::ClientBuild if loaded == DatasetId::Homecoming => OpenRoute::DecodeUnstamped,
+        Document::ClientBuild => OpenRoute::MoveTo(DatasetId::Homecoming),
         // A `.skif` naming a fork nothing carries is a file this build cannot serve. No switch
         // can help, so the text goes to a reader that can refuse it in those words.
         Document::Skif => match skif::probe_dataset(text) {
@@ -307,8 +312,11 @@ pub fn adopt_as(
                 // to read it elsewhere is answering. A `.mbd` authored in Mids' `Generic`
                 // database names none either, and that is the file every Thunderspy build
                 // arrives as.
-                unstamped: (open_route(text, loaded) == OpenRoute::DecodeUnstamped)
-                    .then(|| text.to_string()),
+                unstamped: matches!(
+                    open_route(text, loaded),
+                    OpenRoute::DecodeUnstamped | OpenRoute::MoveTo(_)
+                )
+                .then(|| text.to_string()),
             }));
         }
         Err(error) => report.set(Some(BuildIoOutcome::Refused {
@@ -338,7 +346,7 @@ pub(crate) fn take_build(
     file_name: String,
     library_id: Option<String>,
     database: Option<Db>,
-    dataset: Signal<DatasetId>,
+    mut dataset: Signal<DatasetId>,
     session: BuildSession,
     mut pending: Signal<Option<PendingImport>>,
     mut choice: Signal<Option<CrossForkChoice>>,
@@ -352,6 +360,15 @@ pub(crate) fn take_build(
             text,
             library_id,
         })),
+        (_, OpenRoute::MoveTo(fork)) => {
+            pending.set(Some(PendingImport {
+                dataset: fork,
+                file_name,
+                text,
+                library_id,
+            }));
+            dataset.set(fork);
+        }
         // No database means the bundle is still loading, which is also the one case where
         // parking the text is the whole answer.
         (None, _) => pending.set(Some(PendingImport {
@@ -1296,6 +1313,59 @@ mod tests {
             .collect();
         files.sort();
         files
+    }
+
+    fn vault_link() -> String {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../fixtures/import-link/vault/eidothea.frag");
+        let fragment = std::fs::read_to_string(&path).expect("fixture reads");
+        read_pasted(&fragment).expect("the link decodes")
+    }
+
+    fn bundle(dataset: DatasetId) -> PowerDatabase {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(format!(
+            "../../contract/{}/bundle.json.gz",
+            dataset.as_str()
+        ));
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+        PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads")
+    }
+
+    #[test]
+    fn a_vault_link_leaves_for_homecoming_from_any_other_server() {
+        let text = vault_link();
+        for loaded in DatasetId::ALL {
+            let expected = match loaded {
+                DatasetId::Homecoming => OpenRoute::DecodeUnstamped,
+                _ => OpenRoute::MoveTo(DatasetId::Homecoming),
+            };
+            assert_eq!(open_route(&text, loaded), expected, "{loaded:?}");
+        }
+    }
+
+    #[test]
+    fn a_vault_link_reads_whole_on_homecoming() {
+        let dataset = DatasetId::Homecoming;
+        let decoded =
+            build_file::decode_import(&vault_link(), &bundle(dataset), dataset).expect("decodes");
+        assert_eq!(pick_count(&decoded.build), 18);
+        assert!(decoded.unresolved.is_empty(), "{:?}", decoded.unresolved);
+        assert_eq!(
+            decoded.build.primary.id.as_deref(),
+            Some("controller/symphony-control")
+        );
+    }
+
+    // A /buildsave file could be from any server, so it stays where the user is.
+    #[test]
+    fn a_buildsave_export_is_still_read_on_the_loaded_server() {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../fixtures/buildsave/homecoming/charnel.txt");
+        let text = std::fs::read_to_string(&path).expect("fixture reads");
+        assert_eq!(
+            open_route(&text, DatasetId::Thunderspy),
+            OpenRoute::DecodeUnstamped
+        );
     }
 
     #[test]

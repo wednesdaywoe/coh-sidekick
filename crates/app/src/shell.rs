@@ -961,7 +961,12 @@ pub fn Shell() -> Element {
         let env = build_store::load()
             .await
             .unwrap_or_else(StoredBuilds::empty);
-        let active = env.active_dataset;
+        // A build that arrived while this was reading (a link, say) decides the server, or
+        // this would pull the app away and leave the build waiting for a fork that never loads.
+        let active = build_io_pending
+            .peek()
+            .as_ref()
+            .map_or(env.active_dataset, |parked| parked.dataset);
         stored.set(env);
         booted.set(true);
         if active != *dataset.peek() {
