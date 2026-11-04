@@ -1,6 +1,12 @@
 [
 
   {
+    "date": "2026-11-04",
+    "items": [
+      { "id": "vault-import-phantom-picks", "type": "fix", "message": "Builds imported from the Vault (or a /buildsave file) no longer count the powers the game hands you for free — Bio Armor's Adaptation forms, Staff Fighting's staff forms and Dual Pistols' ammo types — as if you had spent power picks on them. That miscount is what made a level 50 import say a power sits at a level the dataset grants no pick at, and refuse the level 44 and higher picks." }
+    ]
+  },
+  {
     "date": "2026-11-01",
     "items": [
       { "id": "picker-preview-shake", "type": "fix", "message": "Hovering near the bottom of the enhancement picker no longer makes the picker shake." },

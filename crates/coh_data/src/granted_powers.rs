@@ -243,23 +243,29 @@ fn sync_round(state: &mut CharacterState, db: &PowerDatabase) -> Vec<String> {
 
     if let Some(set_id) = state.primary.id.clone() {
         let desired = desired_in_powerset(state, db, &set_id, &mut faults);
-        apply(&mut state.primary.powers, &set_id, desired);
+        let duplicates = held_stance_options(db, &set_id, &state.primary.powers);
+        apply(&mut state.primary.powers, &set_id, desired, duplicates);
     }
     if let Some(set_id) = state.secondary.id.clone() {
         let desired = desired_in_powerset(state, db, &set_id, &mut faults);
-        apply(&mut state.secondary.powers, &set_id, desired);
+        let duplicates = held_stance_options(db, &set_id, &state.secondary.powers);
+        apply(&mut state.secondary.powers, &set_id, desired, duplicates);
     }
     for index in 0..state.pools.len() {
         let set_id = state.pools[index].id.clone();
         let scope: Vec<&Power> = partition_scope(&db.pool_powers, &set_id);
         let desired = desired_grants(&scope, &set_id, state, &db.set_paths, &mut faults);
-        apply(&mut state.pools[index].powers, &set_id, desired);
+        let duplicates = held_stance_options_of(&scope, &state.pools[index].powers);
+        apply(&mut state.pools[index].powers, &set_id, desired, duplicates);
     }
     if let Some(set_id) = state.epic_pool.as_ref().map(|epic| epic.id.clone()) {
         let scope: Vec<&Power> = partition_scope(&db.epic_powers, &set_id);
         let desired = desired_grants(&scope, &set_id, state, &db.set_paths, &mut faults);
-        if let Some(epic) = state.epic_pool.as_mut() {
-            apply(&mut epic.powers, &set_id, desired);
+        if let Some(epic) = state.epic_pool.as_ref() {
+            let duplicates = held_stance_options_of(&scope, &epic.powers);
+            if let Some(epic) = state.epic_pool.as_mut() {
+                apply(&mut epic.powers, &set_id, desired, duplicates);
+            }
         }
     }
 
@@ -312,7 +318,7 @@ fn desired_grants(
     sets: &SetPaths,
     faults: &mut Vec<String>,
 ) -> Vec<Grant> {
-    let stance_owned = stance_owned(scope);
+    let stance_owned = stance_owned(scope, |_| true);
     let archetype = state.archetype.id.as_deref();
     scope
         .iter()
@@ -344,9 +350,14 @@ fn desired_grants(
 ///
 /// Ownership, not availability: a selector's options are the parent's whatever level the
 /// build has reached, so the level term that gates materialization has no place here.
-fn stance_owned<'a>(scope: &[&'a Power]) -> BTreeSet<&'a str> {
+///
+/// `owned_by` narrows which parents count. Materialization asks every parent in the set
+/// (`|_| true`), because a selector's options belong to it whether or not the build holds
+/// it yet; [`apply`] asks only the parents the build DOES hold, so that dropping a
+/// duplicate can never shrink a build that names an option without its parent.
+fn stance_owned<'a>(scope: &[&'a Power], owned_by: impl Fn(&Power) -> bool) -> BTreeSet<&'a str> {
     let mut owned = BTreeSet::new();
-    for parent in scope {
+    for parent in scope.iter().filter(|parent| owned_by(parent)) {
         let handed: Vec<&str> = scope
             .iter()
             .filter(|sub| sub.is_auto_issued() && granted_by(sub, parent.ident()))
@@ -371,8 +382,66 @@ fn grant_slots(power: &Power) -> Vec<Option<crate::Enhancement>> {
     }
 }
 
-fn apply(powers: &mut Vec<SelectedPower>, set_id: &str, desired: Vec<Grant>) {
+/// The idents in `set_id` that a parent HELD in `powers` hands out as stance options.
+///
+/// A stance selector's options are the parent's own surface: [`crate::caster_state`] offers
+/// all of them from the parent pick's [`SelectedPower::active_sub_power`], and
+/// [`crate::gather`] states the invariant outright — "the granted stance toggles are never
+/// persisted as their own selections". So an entry under one of their names is a duplicate
+/// of state the parent already carries, and it is not a grant either: [`stance_owned`]
+/// deliberately keeps them out of what this reconcile materializes, which is why nothing
+/// claimed them and they came through as ordinary picks.
+///
+/// How a game build arrives carrying them: the client lists every power the character
+/// OWNS, and the game hands these out, so both the Vault's JSON build and `/buildsave`
+/// print one line per option at level 0. Left in place each one spends a power pick
+/// ([`CharacterState::picked_powers`] counts every unlocked selection), which shifts every
+/// later pick up a cell of the by-level grid and pushes the topmost power off the end —
+/// reported 2026-11-04 as a Bio Armor / Spines import from the Vault failing with
+/// "1 power(s) sit at a level this dataset grants no pick at: Physical_Perfection" at L44
+/// on a level-50 build. Three phantom picks, because Bio Armor's Adaptation hands out
+/// three. Twelve parents on Homecoming do the same: Bio Armor's Adaptation in four
+/// archetypes, Staff Fighting's Staff Mastery in three, Dual Pistols' Swap Ammo in four.
+///
+/// Only a HELD parent's options are named, so an entry whose parent the build does not
+/// hold is left alone — dropping that one would shrink the build on import, which is the
+/// outcome `skif.rs` rule 8 exists to prevent.
+fn held_stance_options<'a>(
+    db: &'a PowerDatabase,
+    set_id: &str,
+    powers: &[SelectedPower],
+) -> BTreeSet<&'a str> {
+    let scope: Vec<&Power> = db
+        .find_powerset(set_id)
+        .map(|set| set.powers.iter().collect())
+        .unwrap_or_default();
+    held_stance_options_of(&scope, powers)
+}
+
+/// [`held_stance_options`] for a bucket whose scope has already been read (a pool or the
+/// epic pool, whose powers come from a partition rather than a powerset).
+fn held_stance_options_of<'a>(scope: &[&'a Power], powers: &[SelectedPower]) -> BTreeSet<&'a str> {
+    let held: BTreeSet<&str> = powers
+        .iter()
+        .map(|power| power.internal_name.as_str())
+        .collect();
+    stance_owned(scope, |parent| held.contains(parent.ident()))
+}
+
+fn apply(
+    powers: &mut Vec<SelectedPower>,
+    set_id: &str,
+    desired: Vec<Grant>,
+    duplicates: BTreeSet<&str>,
+) {
     powers.retain(|power| {
+        // A stance option the parent's own control already represents. See
+        // [`held_stance_options`] for what makes an entry one, and for why dropping it
+        // costs the build nothing: no stance option on any fork takes an enhancement
+        // slot, and a game import never states a toggle for one.
+        if duplicates.contains(power.internal_name.as_str()) {
+            return false;
+        }
         !power.is_locked
             || desired
                 .iter()

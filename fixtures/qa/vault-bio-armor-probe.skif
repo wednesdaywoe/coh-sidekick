@@ -1,0 +1,736 @@
+{
+  "version": 5,
+  "authoredAgainst": {
+    "dataset": "homecoming",
+    "contractSchema": 1,
+    "datasetSchema": 1
+  },
+  "build": {
+    "name": "Echinoderm",
+    "dataset": "homecoming",
+    "archetype": "tanker",
+    "origin": "Natural",
+    "level": 50,
+    "primary": {
+      "id": "tanker/bio-armor",
+      "powers": [
+        {
+          "internalName": "Efficient_Adaptation",
+          "level": 0,
+          "slots": [
+            null
+          ]
+        },
+        {
+          "internalName": "Defensive_Adaptation",
+          "level": 0,
+          "slots": [
+            null
+          ]
+        },
+        {
+          "internalName": "Offensive_Adaptation",
+          "level": 0,
+          "slots": [
+            null
+          ]
+        },
+        {
+          "internalName": "Hardened_Carapace",
+          "level": 1,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "unbreakable_guard",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "unbreakable_guard",
+              "pieceNum": 2,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "unbreakable_guard",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "unbreakable_guard",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Environmental_Adaptation",
+          "level": 2,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "luck_of_the_gambler",
+              "pieceNum": 5,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "luck_of_the_gambler",
+              "pieceNum": 6,
+              "attuned": true
+            },
+            {
+              "type": "io-generic",
+              "stat": "Defense",
+              "level": 50
+            },
+            {
+              "type": "io-set",
+              "setId": "reactive_defenses",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Evolution",
+          "level": 6,
+          "slots": [
+            null
+          ]
+        },
+        {
+          "internalName": "Ablative_Carapace",
+          "level": 8,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 3,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 5,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Inexhaustible",
+          "level": 12,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "numinas_convalesence",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "numinas_convalesence",
+              "pieceNum": 5,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Adaptation",
+          "level": 14,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "gladiators_armor",
+              "pieceNum": 6,
+              "level": 10
+            }
+          ]
+        },
+        {
+          "internalName": "DNA_Siphon",
+          "level": 18,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "preemptive_optimization",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "preemptive_optimization",
+              "pieceNum": 6,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "preemptive_optimization",
+              "pieceNum": 5,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Genetic_Contamination",
+          "level": 22,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 2,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 3,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 5,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Parasitic_Aura",
+          "level": 26,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 3,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 5,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "doctored_wounds",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        }
+      ]
+    },
+    "secondary": {
+      "id": "tanker/spines",
+      "powers": [
+        {
+          "internalName": "Barb_Swipe",
+          "level": 1,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "kinetic_combat",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "kinetic_combat",
+              "pieceNum": 2,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "kinetic_combat",
+              "pieceNum": 3,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "kinetic_combat",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "crushing_impact",
+              "pieceNum": 1,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Spine_Burst",
+          "level": 4,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "cleaving_blow",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "sciroccos_dervish",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "sciroccos_dervish",
+              "pieceNum": 6,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "eradication",
+              "pieceNum": 6,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Lunge",
+          "level": 10,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "superior_gauntleted_fist",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_gauntleted_fist",
+              "pieceNum": 2,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_gauntleted_fist",
+              "pieceNum": 3,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_gauntleted_fist",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_gauntleted_fist",
+              "pieceNum": 5,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_gauntleted_fist",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Ripper",
+          "level": 16,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 6,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "cleaving_blow",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "sciroccos_dervish",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "eradication",
+              "pieceNum": 6,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "armageddon",
+              "pieceNum": 6,
+              "level": 50
+            }
+          ]
+        },
+        {
+          "internalName": "Taunt",
+          "level": 20,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "mocking_beratement",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "mocking_beratement",
+              "pieceNum": 2,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "mocking_beratement",
+              "pieceNum": 3,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "mocking_beratement",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "mocking_beratement",
+              "pieceNum": 5,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "mocking_beratement",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Quills",
+          "level": 28,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 2,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 3,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 4,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 5,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "obliteration",
+              "pieceNum": 6,
+              "attuned": true
+            }
+          ]
+        },
+        {
+          "internalName": "Throw_Spines",
+          "level": 30,
+          "slots": [
+            {
+              "type": "io-set",
+              "setId": "superior_might_of_the_tanker",
+              "pieceNum": 1,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_might_of_the_tanker",
+              "pieceNum": 3,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_might_of_the_tanker",
+              "pieceNum": 6,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_might_of_the_tanker",
+              "pieceNum": 5,
+              "attuned": true
+            },
+            {
+              "type": "io-set",
+              "setId": "superior_might_of_the_tanker",
+              "pieceNum": 2,
+              "attuned": true
+            }
+          ]
+        }
+      ]
+    },
+    "pools": [
+      {
+        "id": "fighting",
+        "powers": [
+          {
+            "internalName": "Kick",
+            "level": 24,
+            "slots": [
+              null
+            ]
+          },
+          {
+            "internalName": "Tough",
+            "level": 32,
+            "slots": [
+              {
+                "type": "io-set",
+                "setId": "titanium_coating",
+                "pieceNum": 5,
+                "attuned": true
+              },
+              {
+                "type": "io-set",
+                "setId": "steadfast_protection",
+                "pieceNum": 2,
+                "attuned": true
+              },
+              {
+                "type": "io-set",
+                "setId": "titanium_coating",
+                "pieceNum": 1,
+                "attuned": true
+              },
+              {
+                "type": "io-set",
+                "setId": "titanium_coating",
+                "pieceNum": 4,
+                "attuned": true
+              }
+            ]
+          },
+          {
+            "internalName": "Weave",
+            "level": 35,
+            "slots": [
+              {
+                "type": "io-set",
+                "setId": "luck_of_the_gambler",
+                "pieceNum": 6,
+                "attuned": true
+              },
+              {
+                "type": "io-set",
+                "setId": "luck_of_the_gambler",
+                "pieceNum": 5,
+                "attuned": true
+              },
+              {
+                "type": "io-set",
+                "setId": "shield_wall",
+                "pieceNum": 6,
+                "level": 22
+              },
+              {
+                "type": "io-generic",
+                "stat": "Defense",
+                "level": 25
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "speed",
+        "powers": [
+          {
+            "internalName": "Hasten",
+            "level": 38,
+            "slots": [
+              {
+                "type": "io-generic",
+                "stat": "Recharge",
+                "level": 50
+              },
+              {
+                "type": "io-generic",
+                "stat": "Recharge",
+                "level": 50
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "leaping"
+      }
+    ],
+    "epicPool": {
+      "id": "energy_mastery",
+      "powers": [
+        {
+          "internalName": "Focused_Accuracy",
+          "level": 41,
+          "slots": [
+            null
+          ]
+        },
+        {
+          "internalName": "Physical_Perfection",
+          "level": 44,
+          "slots": [
+            null
+          ]
+        }
+      ]
+    },
+    "inherents": [
+      {
+        "internalName": "Health",
+        "level": 0,
+        "slots": [
+          {
+            "type": "io-set",
+            "setId": "panacea",
+            "pieceNum": 6,
+            "level": 10
+          }
+        ]
+      },
+      {
+        "internalName": "Stamina",
+        "level": 0,
+        "slots": [
+          {
+            "type": "io-set",
+            "setId": "performance_shifter",
+            "pieceNum": 6,
+            "level": 21
+          },
+          {
+            "type": "io-set",
+            "setId": "performance_shifter",
+            "pieceNum": 1,
+            "level": 50
+          }
+        ]
+      }
+    ],
+    "incarnates": {
+      "alpha": {
+        "power": "Agility_Partial_Radial_Revamp",
+        "active": true
+      },
+      "destiny": {
+        "power": "Incandescence_Total_Core_Invocation",
+        "active": true
+      },
+      "hybrid": {
+        "power": "Melee_Genome_6",
+        "active": true
+      },
+      "interface": {
+        "power": "Spectral_Interface",
+        "active": true
+      },
+      "judgement": {
+        "power": "Mighty_Core_Final_Judgement",
+        "active": true
+      },
+      "lore": {
+        "power": "Banished_Pantheon_Partial_Core_Improved_Ally",
+        "active": true
+      }
+    }
+  }
+}
