@@ -346,6 +346,16 @@ impl Dashboards {
 /// comparing lists compare the same list, and `MobileOrder::default_order` is literally it.
 pub fn surfaces(dashboards: &Dashboards) -> Vec<PanelKind> {
     let mut roster = vec![PanelKind::Powers, PanelKind::Available, PanelKind::Pools];
+    // The five granted-inherent groups, in the order the Inherents section drew them before
+    // they became panels. They sit here rather than after the dashboards because they are
+    // fixed surfaces — they exist whether or not the user has built anything — and because
+    // this is the order the More menu and the Panels modal list them in.
+    roster.extend(
+        crate::grid::model::INHERENT_GROUPS
+            .iter()
+            .copied()
+            .map(PanelKind::Inherent),
+    );
     roster.extend(dashboards.ids().map(PanelKind::Dashboard));
     roster.push(PanelKind::SetBonuses);
     roster.push(PanelKind::Info);

@@ -3,7 +3,8 @@
   {
     "date": "2026-11-04",
     "items": [
-      { "id": "vault-import-phantom-picks", "type": "fix", "message": "Builds imported from the Vault (or a /buildsave file) no longer count the powers the game hands you for free — Bio Armor's Adaptation forms, Staff Fighting's staff forms and Dual Pistols' ammo types — as if you had spent power picks on them. That miscount is what made a level 50 import say a power sits at a level the dataset grants no pick at, and refuse the level 44 and higher picks." }
+      { "id": "vault-import-phantom-picks", "type": "fix", "message": "Builds imported from the Vault (or a /buildsave file) no longer count the powers the game hands you for free — Bio Armor's Adaptation forms, Staff Fighting's staff forms and Dual Pistols' ammo types — as if you had spent power picks on them. That miscount is what made a level 50 import say a power sits at a level the dataset grants no pick at, and refuse the level 44 and higher picks." },
+      { "id": "inherent-panels", "type": "feat", "message": "The powers the game hands you are panels of their own now: Fitness, Basic, Prestige, Archetype and Granted each sit where you put them instead of in one fixed section of the Powers panel. Fitness and Archetype start on the grid, the other three are a click away in the Display menu, and an inherent that takes no enhancement slots can be hidden from its own ⋮ menu — Athletic, Beast and Ninja Run included — with the panel naming what it hides and a button to bring it back." }
     ]
   },
   {

@@ -511,7 +511,10 @@ impl SelectedPower {
 /// pick-gated grants the reconcile materializes into the inherents list
 /// ([`crate::granted_powers`]), which the identity sync carries through untouched.
 /// The category doubles as the ownership marker between those two writers.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+// `Hash` because the grid keys its surfaces by `PanelKind`, and a granted-inherent group is
+// one of them (`PanelKind::Inherent`). The derive is here rather than on a wrapper in the app
+// so the two cannot disagree about which values are distinct.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum InherentCategory {
     Fitness,

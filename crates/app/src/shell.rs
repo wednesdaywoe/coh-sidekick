@@ -513,6 +513,26 @@ pub fn Shell() -> Element {
         }
         crate::slot_level_store::persist(shown);
     });
+    // Which granted inherents the user has hidden from their panels — a preference, nothing
+    // hidden by default. Held here rather than in the panel because every inherent panel reads
+    // it and the ⋮ menu writes it, and the two are different surfaces.
+    let hidden_inherents = use_signal(std::collections::BTreeSet::<String>::new);
+    use_context_provider(|| crate::hidden_inherents_store::HiddenInherents(hidden_inherents));
+    let mut hidden_inherents_restored = use_signal(|| false);
+    use_future(move || async move {
+        let mut hidden = hidden_inherents;
+        if let Some(saved) = crate::hidden_inherents_store::load().await {
+            hidden.set(saved);
+        }
+        hidden_inherents_restored.set(true);
+    });
+    use_effect(move || {
+        let hidden = hidden_inherents.read().clone();
+        if !*hidden_inherents_restored.read() {
+            return;
+        }
+        crate::hidden_inherents_store::persist(&hidden);
+    });
     // Whether picked powers under the 95% hit cap are badged — an Options preference, off by
     // default.
     let hit_chance_alert = use_signal(|| false);
@@ -1930,6 +1950,9 @@ fn MobilePanel(panel: PanelKind, database: Db, selection: Signal<Selection>) -> 
         PanelKind::Pools => rsx! { panels::powers::PoolsPanel { database } },
         PanelKind::SetBonuses => rsx! { panels::set_bonus_totals::SetBonusTotals { database } },
         PanelKind::Info => rsx! { panels::info::Info { database, selection } },
+        PanelKind::Inherent(group) => {
+            rsx! { panels::inherents_section::InherentGroupPanel { database, group } }
+        }
         PanelKind::Dashboard(id) => rsx! { panels::stats::StatGroup { panel: id } },
     }
 }

@@ -3,20 +3,72 @@
 //! `GridConfig` (the cell↔pixel geometry). No Dioxus, no I/O — plain data the
 //! `math` and `collide` modules operate on and the view renders from.
 
+use coh_data::InherentCategory;
 use serde::{Deserialize, Serialize};
 
-/// The surfaces a fresh install has: the fixed five, plus the four category panels
-/// `Dashboards::defaults()` mints.
+/// One granted-inherent group, as a surface of its own.
+///
+/// An alias rather than a second enum: the five groups ARE [`InherentCategory`]'s five
+/// variants, and a parallel type would need a conversion table that could fall out of step
+/// with the one the build stores on every inherent. The name is here because the grid's
+/// vocabulary is "which surface", and `PanelKind::Inherent(InherentCategory)` would read as
+/// the grid knowing about categories rather than about groups.
+pub type InherentGroup = InherentCategory;
+
+/// The groups in display order, most build-specific first — the order the Inherents section
+/// drew them in before they became panels, kept so a fresh install seats them the same way.
+///
+/// Exhaustive over [`InherentCategory`] by construction: a new variant fails to compile in
+/// [`inherent_group_title`] below, so it cannot be silently dropped from the roster.
+pub const INHERENT_GROUPS: [InherentGroup; 5] = [
+    InherentCategory::Archetype,
+    InherentCategory::Granted,
+    InherentCategory::Fitness,
+    InherentCategory::Basic,
+    InherentCategory::Prestige,
+];
+
+/// A group's panel title. The `match` is exhaustive with no `_` arm on purpose.
+pub fn inherent_group_title(group: InherentGroup) -> &'static str {
+    match group {
+        InherentCategory::Archetype => "Archetype Inherents",
+        InherentCategory::Granted => "Granted Powers",
+        InherentCategory::Fitness => "Fitness",
+        InherentCategory::Basic => "Basic Inherents",
+        InherentCategory::Prestige => "Prestige Sprints",
+    }
+}
+
+/// A group's key in markup — its `data-id`, its render key, its quickbar slug. Distinct from
+/// every fixed surface's slug and from `dashboard-<n>`, which is what lets one roster hold
+/// all three kinds.
+pub fn inherent_group_slug(group: InherentGroup) -> &'static str {
+    match group {
+        InherentCategory::Archetype => "inherent-archetype",
+        InherentCategory::Granted => "inherent-granted",
+        InherentCategory::Fitness => "inherent-fitness",
+        InherentCategory::Basic => "inherent-basic",
+        InherentCategory::Prestige => "inherent-prestige",
+    }
+}
+
+/// The surfaces a fresh install has: the fixed five, the five granted-inherent groups, plus
+/// the four category panels `Dashboards::defaults()` mints.
 ///
 /// Stated here rather than read off the roster, because the roster lives a layer up — the grid
 /// is kept ignorant of what a dashboard CONTAINS, and reaching into `panels::dashboards` for the
 /// default would be the grid learning it. So this is a restatement, and a restatement drifts:
 /// `the_authored_default_seats_exactly_the_default_roster` in `panels::dashboards` is what holds
 /// the two together, from the side that can see both.
-pub const DEFAULT_SURFACES: [PanelKind; 9] = [
+pub const DEFAULT_SURFACES: [PanelKind; 14] = [
     PanelKind::Powers,
     PanelKind::Available,
     PanelKind::Pools,
+    PanelKind::Inherent(InherentCategory::Fitness),
+    PanelKind::Inherent(InherentCategory::Archetype),
+    PanelKind::Inherent(InherentCategory::Basic),
+    PanelKind::Inherent(InherentCategory::Prestige),
+    PanelKind::Inherent(InherentCategory::Granted),
     PanelKind::SetBonuses,
     PanelKind::Info,
     PanelKind::Dashboard(DashboardId(1)),
@@ -89,6 +141,20 @@ pub enum PanelKind {
     /// is read while spending slots.
     SetBonuses,
     Info,
+    /// One granted-inherent group — the powers the game hands the character, which spend no
+    /// power pick. A surface each rather than one section inside [`PanelKind::Powers`], so a
+    /// group can be placed, folded, hidden and popped out like any other panel.
+    ///
+    /// This is the beta's arrangement (`inherent-fitness`, `inherent-basic`,
+    /// `inherent-prestige`, `inherent-archetype` were planner columns there), and it is what
+    /// makes the order of the groups the user's: the section this replaces drew them in one
+    /// fixed order and could only be folded whole.
+    ///
+    /// The variant carries the group rather than being five variants, for the reason
+    /// [`Self::Dashboard`] carries an id: the grid needs to tell one surface from another and
+    /// nothing else, and five variants would mean five arms in every `match` below for one
+    /// behaviour.
+    Inherent(InherentGroup),
     /// One of the user's dashboard panels — whichever stats they put in it, under whatever name
     /// they gave it. Both of those live in [`crate::panels::dashboards`]; all the grid holds is
     /// the id, because a rectangle does not need to know what is drawn in it.
@@ -168,13 +234,14 @@ impl PanelKind {
     // runtime caller would be nice to have and is not what makes it load-bearing. Annotated
     // rather than deleted 2026-09-26; deleting it removes a check, not a leftover.
     #[allow(dead_code)]
-    pub const FIXED: [PanelKind; 5] = {
+    pub const FIXED: [PanelKind; 10] = {
         match PanelKind::Powers {
             PanelKind::Powers
             | PanelKind::Available
             | PanelKind::Pools
             | PanelKind::SetBonuses
             | PanelKind::Info
+            | PanelKind::Inherent(_)
             | PanelKind::Dashboard(_) => {}
         }
         [
@@ -183,6 +250,11 @@ impl PanelKind {
             PanelKind::Pools,
             PanelKind::SetBonuses,
             PanelKind::Info,
+            PanelKind::Inherent(InherentCategory::Archetype),
+            PanelKind::Inherent(InherentCategory::Granted),
+            PanelKind::Inherent(InherentCategory::Fitness),
+            PanelKind::Inherent(InherentCategory::Basic),
+            PanelKind::Inherent(InherentCategory::Prestige),
         ]
     };
 
@@ -210,6 +282,7 @@ impl PanelKind {
             PanelKind::Pools => Some("Power Pools"),
             PanelKind::SetBonuses => Some("Set Bonuses"),
             PanelKind::Info => Some("Info"),
+            PanelKind::Inherent(group) => Some(inherent_group_title(*group)),
             PanelKind::Dashboard(_) => None,
         }
     }
@@ -226,9 +299,11 @@ impl PanelKind {
     pub fn group(&self) -> PanelGroup {
         match self {
             PanelKind::Dashboard(_) => PanelGroup::Dashboards,
-            PanelKind::Powers | PanelKind::Available | PanelKind::Pools | PanelKind::SetBonuses => {
-                PanelGroup::Loadout
-            }
+            PanelKind::Powers
+            | PanelKind::Available
+            | PanelKind::Pools
+            | PanelKind::SetBonuses
+            | PanelKind::Inherent(_) => PanelGroup::Loadout,
             PanelKind::Info => PanelGroup::Reference,
         }
     }
@@ -248,6 +323,11 @@ impl PanelKind {
             | PanelKind::SetBonuses
             | PanelKind::Info
             | PanelKind::Dashboard(_) => 4,
+            // Three, not four: a group is a short column of cards, and the width it wants is
+            // the card floor (256px) rather than a third of the grid. A group appended by
+            // `reconcile_layout` lands at the foot of the grid, where a narrow column reads as
+            // a list rather than as a panel with three empty cells beside it.
+            PanelKind::Inherent(_) => 3,
         }
     }
 
@@ -264,6 +344,7 @@ impl PanelKind {
             PanelKind::Pools => "pools".to_string(),
             PanelKind::SetBonuses => "set-bonuses".to_string(),
             PanelKind::Info => "info".to_string(),
+            PanelKind::Inherent(group) => inherent_group_slug(*group).to_string(),
             PanelKind::Dashboard(id) => format!("dashboard-{}", id.0),
         }
     }
@@ -290,7 +371,8 @@ impl PanelKind {
             PanelKind::Dashboard(_)
             | PanelKind::Powers
             | PanelKind::Available
-            | PanelKind::Pools => true,
+            | PanelKind::Pools
+            | PanelKind::Inherent(_) => true,
             PanelKind::SetBonuses | PanelKind::Info => false,
         }
     }
@@ -323,6 +405,9 @@ impl PanelKind {
             // keep it that small.
             PanelKind::SetBonuses => (2, 3),
             PanelKind::Info => (2, 4),
+            // A group heading over one card, which is what a group with a single power draws.
+            // Fitted, so this is only the floor a drag falls back to.
+            PanelKind::Inherent(_) => (2, 3),
         }
     }
 
@@ -337,6 +422,7 @@ impl PanelKind {
             | PanelKind::Pools
             | PanelKind::SetBonuses
             | PanelKind::Info
+            | PanelKind::Inherent(_)
             | PanelKind::Dashboard(_) => (None, None),
         }
     }
@@ -781,6 +867,7 @@ impl GridItem {
             GridItem::new(PanelKind::SetBonuses, 6, below, 2, tall).off_grid(),
         ];
         seat_dashboards(&mut items, expected, 8, below);
+        seat_inherents(&mut items, expected, 8, 2, below);
         items
     }
 
@@ -824,6 +911,7 @@ impl GridItem {
             GridItem::new(PanelKind::SetBonuses, 6, below, 2, tall).off_grid(),
         ];
         seat_dashboards(&mut items, expected, 10, below);
+        seat_inherents(&mut items, expected, 12, 3, below);
         items
     }
 }
@@ -849,10 +937,19 @@ pub fn fit_band(items: &mut [GridItem], band_rows: u32) {
         }
         if item.panel.fits_content() && item.y == 0 {
             item.h = band_rows;
-        } else if item.y == COLUMN_START_ROW {
+        } else if item.y >= COLUMN_START_ROW && item.y < COLUMN_START_ROW + item.h {
+            // Anything that STARTED under the band — not only a surface sitting exactly on the
+            // column row. The test used to be `y == COLUMN_START_ROW`, which was the same set
+            // while every surface under the band was authored there; the granted-inherent
+            // seats are authored at the FOOT of the column they sit under, so they start
+            // deeper and would keep the rows the band just grew into.
+            // Shift by however much the band grew (or shrank), keeping the bottom edge the
+            // surface was authored with — `band_rows` itself for one authored on the column
+            // row, which is what this did before any seat started deeper.
             let bottom = item.y + item.h;
-            item.y = band_rows;
-            item.h = bottom.saturating_sub(band_rows).max(item.min_height);
+            let shift = i64::from(band_rows) - i64::from(COLUMN_START_ROW);
+            item.y = (i64::from(item.y) + shift).max(i64::from(band_rows)) as u32;
+            item.h = bottom.saturating_sub(item.y).max(item.min_height);
         }
     }
 }
@@ -905,6 +1002,74 @@ fn pools_seat(tall: u32, x: u32, width: u32, below: u32) -> GridItem {
         )
     } else {
         GridItem::new(PanelKind::Pools, x + 2, below, width, POOLS_MIN_ROWS).off_grid()
+    }
+}
+
+/// Give the granted-inherent groups their cells: the two a build plans around on the grid at
+/// the foot of it, the other three off the grid below them.
+///
+/// **Why the foot.** The band across the top is the readouts and the columns under it are the
+/// build, and both are full at every column count — there is no authored seat left for a
+/// surface that arrived after them. The foot of the grid is where a surface with no authored
+/// seat goes, which is the same rule [`reconcile_layout`](crate::grid::collide::reconcile_layout)
+/// applies to a panel the user has just made: below the visible content, where `compact` will
+/// lift it as high as the surfaces above allow. A user who wants Fitness beside the powersets
+/// drags it there once, and the layout remembers.
+///
+/// **Why these two.** Fitness takes enhancement slots and the archetype's own inherent drives
+/// the AT's whole mechanic, so both are powers a build plans around and both are worth a
+/// scroll. Basic, Prestige and Granted are the powers every character is handed — Brawl, Rest,
+/// the Sprints, the Kheldian form attacks — and a fresh build reads better without them. They
+/// are off the grid rather than gone: the More menu and the Panels modal list them, and
+/// [`crate::quickbar::model::default_pins`] pins them, which is the rule that fn already states
+/// for Set Bonuses.
+///
+/// The hidden three still name real rectangles, because a hidden surface keeps the cell it
+/// returns to. They sit under the two visible ones, which is where showing one lands it.
+fn seat_inherents(
+    items: &mut Vec<GridItem>,
+    expected: &[PanelKind],
+    columns: u32,
+    start_x: u32,
+    below: u32,
+) {
+    const SEAT_WIDTH: u32 = 3;
+    const SEAT_ROWS: u32 = 4;
+    let width = SEAT_WIDTH.min(columns / 2).max(2);
+    let on_grid: Vec<PanelKind> = [InherentCategory::Fitness, InherentCategory::Archetype]
+        .iter()
+        .map(|group| PanelKind::Inherent(*group))
+        .filter(|panel| expected.contains(panel))
+        .collect();
+
+    // The visible seats take the row under the columns, starting beside the left column —
+    // the first cells the columns' bottom edge frees. Authored there rather than at the very
+    // foot of the grid because `compact` lifts a surface to the first clear cell it can reach,
+    // and the columns ARE that cell: a seat written lower would be lifted on the first drag
+    // the user made anywhere (`default_layout_is_already_compact` is the gate that catches it).
+    let mut x = start_x;
+    let mut y = below;
+    for panel in &on_grid {
+        if x + width > columns {
+            x = 0;
+            y += SEAT_ROWS;
+        }
+        items.push(GridItem::new(*panel, x, y, width, SEAT_ROWS));
+        x += width;
+    }
+
+    // The three a fresh build does not plan around are off the grid, below everything visible.
+    // They stack one to a row at the left edge: hidden, they collide with nothing and cost the
+    // grid no space, so any cell would do — and this one keeps a saved layout legible when the
+    // user shows one, since the rectangle is the cell it returns to.
+    let mut y = y + SEAT_ROWS;
+    for group in INHERENT_GROUPS {
+        let panel = PanelKind::Inherent(group);
+        if !expected.contains(&panel) || on_grid.contains(&panel) {
+            continue;
+        }
+        items.push(GridItem::new(panel, 0, y, width, SEAT_ROWS).off_grid());
+        y += SEAT_ROWS;
     }
 }
 
@@ -1214,6 +1379,70 @@ mod tests {
             authored_shape(&[powers, band]),
             authored_shape(&[powers_moved, band])
         );
+    }
+
+    /// Every granted-inherent group is a surface, and its key is its own.
+    ///
+    /// The exhaustiveness this rests on is the compiler's — [`inherent_group_title`] and
+    /// [`inherent_group_slug`] match `InherentCategory` with no `_` arm, so a new variant fails
+    /// to build. What the compiler cannot see is whether the five GROUPS are all in
+    /// [`INHERENT_GROUPS`] and whether a slug collides with a fixed surface's or another
+    /// group's, and both of those read as an unnamed or doubled panel at runtime.
+    #[test]
+    fn every_inherent_group_is_one_panel_with_its_own_key() {
+        let roster = roster();
+        let mut slugs: Vec<String> = Vec::new();
+        for group in INHERENT_GROUPS {
+            let panel = PanelKind::Inherent(group);
+            assert_eq!(
+                roster.iter().filter(|p| **p == panel).count(),
+                1,
+                "{group:?} is not in the roster exactly once"
+            );
+            assert_eq!(
+                panel.fixed_title(),
+                Some(inherent_group_title(group)),
+                "{group:?} names itself twice"
+            );
+            slugs.push(panel.slug());
+        }
+        // Every other roster surface's key, so a group cannot take one of them.
+        for panel in &roster {
+            if matches!(panel, PanelKind::Inherent(_)) {
+                continue;
+            }
+            slugs.push(panel.slug());
+        }
+        let distinct: std::collections::HashSet<&String> = slugs.iter().collect();
+        assert_eq!(
+            distinct.len(),
+            slugs.len(),
+            "two surfaces share a key: {slugs:?}"
+        );
+    }
+
+    /// A fresh install opens on Fitness and the archetype's own inherent, and keeps the other
+    /// three groups one click away rather than on the grid.
+    ///
+    /// The split is the user's choice (2026-11-04): Fitness takes slots and the archetype
+    /// inherent drives the AT's mechanic, so both are planned around; Basic, Prestige and
+    /// Granted hold what every character is handed.
+    #[test]
+    fn a_fresh_install_seats_the_planned_around_groups_and_hides_the_rest() {
+        for columns in COLUMN_STEPS {
+            let items = GridItem::default_layout_for(columns, DEFAULT_COLUMN_ROWS, &roster());
+            for group in INHERENT_GROUPS {
+                let item = items
+                    .iter()
+                    .find(|item| item.panel == PanelKind::Inherent(group))
+                    .unwrap_or_else(|| panic!("{group:?} is seated at {columns} columns"));
+                let wanted_hidden = !matches!(
+                    group,
+                    InherentCategory::Fitness | InherentCategory::Archetype
+                );
+                assert_eq!(item.hidden, wanted_hidden, "{group:?} at {columns} columns");
+            }
+        }
     }
 
     /// The gate [`GridItem::default_layout`]'s own doc has cited since it was written, and which

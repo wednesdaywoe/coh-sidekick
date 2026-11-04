@@ -395,6 +395,28 @@ pub fn PowerMenuHost(database: Db) -> Element {
     let for_clear = power_ref.clone();
     let for_remove = power_ref;
 
+    // Hide is offered only for a granted inherent that takes no enhancement slots. A slotted
+    // power that vanished would take its slotting out of sight while still spending the build's
+    // slots, and a picked power is the build — hiding one would be a second, quieter way to
+    // remove it. The answer comes from the definition, never from a name list, so a fork that
+    // marks a power differently gets the right answer with no edit here.
+    let hideable = session
+        .build
+        .read()
+        .selected_power(&target.powerset_id, &target.power_internal_name)
+        .filter(|power| power.is_locked && power.inherent_category.is_some())
+        .and_then(|power| {
+            crate::view::power_view::resolve_power_def(
+                &database,
+                &target.powerset_id,
+                &power.internal_name,
+            )
+            .map(|def| !def.accepts_enhancements())
+        })
+        .unwrap_or(false);
+    let mut hidden_inherents = use_context::<crate::hidden_inherents_store::HiddenInherents>().0;
+    let for_hide = target.power_internal_name.clone();
+
     rsx! {
         div { class: "popover-backdrop", onclick: move |_| menu.set(None) }
         div {
@@ -443,6 +465,18 @@ pub fn PowerMenuHost(database: Db) -> Element {
                     menu.set(None);
                 },
                 span { class: "main-menu__label", "Remove all slots" }
+            }
+            if hideable {
+                button {
+                    class: "main-menu__item",
+                    role: "menuitem",
+                    title: "Hide this power's card. It stays in the build and keeps contributing.",
+                    onclick: move |_| {
+                        hidden_inherents.write().insert(for_hide.clone());
+                        menu.set(None);
+                    },
+                    span { class: "main-menu__label", "Hide from the Powers window" }
+                }
             }
         }
     }
@@ -1130,13 +1164,18 @@ pub fn PowersPanel(database: Db) -> Element {
             match layout() {
                 PowersLayout::ByPowerset if has_picked => rsx! {
                     // FOUR fixed tracks — Primary, Secondary, every pool stacked, then the
-                    // epic pool and the granted inherents. Fixed because a track per set made
-                    // the grid ragged in proportion to how many pools the build held (up to
-                    // `maxPowerPools` + 3 = eight tracks on the fork that allows five), and
-                    // because it asserted a parity that isn't real: a primary contributes ~9
-                    // picks, a pool contributes one to four. Stacking the pools into one track
-                    // sizes them by the weight they actually carry, and the track count no
-                    // longer moves as pools are added.
+                    // epic pool. Fixed because a track per set made the grid ragged in
+                    // proportion to how many pools the build held (up to `maxPowerPools` + 3 =
+                    // eight tracks on the fork that allows five), and because it asserted a
+                    // parity that isn't real: a primary contributes ~9 picks, a pool
+                    // contributes one to four. Stacking the pools into one track sizes them by
+                    // the weight they actually carry, and the track count no longer moves as
+                    // pools are added.
+                    //
+                    // The granted inherents used to ride in the fourth track. They are panels
+                    // of their own now (`PanelKind::Inherent`), so this panel draws none of
+                    // them: one place to see a card, and the order of the groups is the user's
+                    // rather than this layout's.
                     div { class: "power-tracks",
                         div { class: "power-track",
                             PickedPowersGroupPrimary { database: database.clone() }
@@ -1163,30 +1202,19 @@ pub fn PowersPanel(database: Db) -> Element {
                             if let Some(epic) = build.read().epic_pool.clone() {
                                 PickedPowersGroupEpic { pool: epic, database: database.clone() }
                             }
-                            crate::panels::inherents_section::InherentsSection {
-                                database: database.clone(),
-                                stacked: true,
-                            }
                         }
                     }
                 },
                 PowersLayout::ByPowerset => rsx! {
                     p { class: "hint", "Pick powers from the Available panel to build your loadout." }
-                    crate::panels::inherents_section::InherentsSection {
-                        database: database.clone(),
-                        stacked: false,
-                    }
                 },
                 // The by-level ladder has one cell per pick the character earns, and a granted
-                // power spends no pick — so grants and inherents stay sections below the grid,
-                // the one place that is true in that arrangement.
+                // power spends no pick — so the pick-gated grants stay a section below the
+                // grid, the one place that is true in that arrangement. The inherents are
+                // panels of their own and are not drawn here either.
                 PowersLayout::ByLevel => rsx! {
                     crate::panels::powers_by_level::PowersByLevel { database: database.clone() }
                     GrantedPowersSection { database: database.clone() }
-                    crate::panels::inherents_section::InherentsSection {
-                        database: database.clone(),
-                        stacked: false,
-                    }
                 },
             }
         }

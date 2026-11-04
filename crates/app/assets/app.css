@@ -1761,8 +1761,8 @@
 .powers .hint { color: var(--text-faint); font-size: 12px; line-height: 1.5; }
 
 /* ---- power-card columns ----
-   The wrapping column shape: the by-level layout deals one column per band of pick levels, and
-   the inherents section one per category. (The by-powerset layout wants a FIXED track count
+   The wrapping column shape: the by-level layout deals one column per band of pick levels.
+   (The by-powerset layout wants a FIXED track count
    instead — see `.power-tracks` below — but both are built from the same `.power-column`, which
    is what keeps a card identical wherever it is shown.)
 
@@ -1811,7 +1811,7 @@
 .power-column .group-title { border-bottom: 1px solid var(--seam); padding-bottom: 3px; }
 
 /* ---- the by-powerset layout: four fixed tracks ----
-   Primary · Secondary · every pool stacked · the epic pool and the granted inherents.
+   Primary · Secondary · every pool stacked · the epic pool.
 
    FIXED, unlike the `auto-fit` grid above, because a track per set made the column count a
    function of how many pools the build held (up to eight on the fork that allows five pools)
@@ -2023,7 +2023,7 @@ button.power-pick--empty {
 .icon-select:has(> .powerset-group__select) { flex: 1 1 auto; min-width: 0; }
 .powerset-group__select .icon-select__icon { width: 16px; height: 16px; }
 
-/* A shared section label (Primary / Secondary / a pool name / an inherents category / a band
+/* A shared section label (Primary / Secondary / a pool name / an inherent group / a band
    of the by-level ladder) over the cards it heads. Every group folds, and the label IS the
    control: a separate caret target would be a second, smaller hit area for the same action.
    The count stays visible while folded, so a closed group still says how much it holds. */
@@ -2309,41 +2309,43 @@ button.power-pick--empty {
 }
 
 /* ---- granted inherents ----
-   A collapsible section under whichever power layout is showing. The header reads as a
-   quieter tier than a panel title: these are powers the build did not spend anything on. */
-.inherents {
-  display: flex; flex-direction: column; gap: var(--gap-stack);
-  margin-top: var(--gap-section); padding-top: 7px;
-  border-top: 1px solid var(--seam);
+   One group per panel. The group's own heading is the shared fold band (`.group-title`), so
+   this block only holds the body: the cards, or the sentence a group with nothing to draw owes
+   the reader. It is a column rather than a grid because a panel is already one column wide at
+   the widths a group is normally dragged to, and `.power-columns` inside a narrow surface would
+   wrap to a single column anyway — with the extra machinery that implies. */
+.inherent-group {
+  display: flex; flex-direction: column; gap: var(--gap-section);
+  min-width: 0;
 }
-.inherents__header {
-  display: flex; align-items: baseline; gap: 8px; width: 100%;
-  padding: 0 2px; text-align: left;
-  background: none; border: none; cursor: pointer;
+.inherents__empty {
   color: var(--text-faint);
-  font-family: var(--font-chrome);
+  font-size: 12px; line-height: 1.5;
+  font-style: italic;
 }
-.inherents__header:hover .inherents__title { color: var(--action-hover); }
-.inherents__header:focus-visible {
+
+/* The line naming what this group is hiding, each name a button that brings it back. Quiet —
+   it is a trace, not a control the user came here for — but a real hit target, because the
+   only other way back is the ⋮ menu on a card that is no longer drawn. */
+.inherents__hidden {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px;
+  padding-top: 2px;
+  font-size: 11px; color: var(--text-faint);
+}
+.inherents__hidden-label { font-style: italic; }
+.inherents__show {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  padding: 1px 6px;
+  background: none; border: 1px solid var(--seam); border-radius: 4px;
+  color: var(--text-dim); cursor: pointer;
+  font-family: var(--font-chrome); font-size: 11px;
+}
+.inherents__show:hover { color: var(--action-hover); border-color: var(--action-hover); }
+.inherents__show:focus-visible {
   outline: none;
   box-shadow: 0 0 8px color-mix(in srgb, var(--focus-ring) 40%, transparent);
 }
-.inherents__caret { flex: 0 0 auto; font-size: var(--glyph-caret); line-height: 1; }
-.inherents__title {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--text-dim);
-  transition: color var(--ease);
-}
-.inherents__count { font-size: 11px; font-variant-numeric: tabular-nums; }
-.inherents__note { margin-left: auto; font-size: 11px; font-style: italic; }
-
-/* Inside the by-powerset layout's fourth track the section is already in a column, so it
-   drops the top rule that separated it from a layout above (there is none) and lets the
-   categories stack rather than claim their own grid. The `--note` goes: the track is one
-   column wide, and a right-aligned aside in it would wrap before it read. */
-.inherents--stacked { margin-top: 0; padding-top: 0; border-top: none; }
-.inherents--stacked .inherents__note { display: none; }
-.inherents__stack { display: flex; flex-direction: column; gap: var(--gap-section); min-width: 0; }
+.inherents__show-mark { font-size: 10px; }
 
 /* The granted marker replacing a card's pick-level badge. */
 .power-level--granted { color: var(--action-hover); cursor: help; }
@@ -7119,7 +7121,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   /* And the gap between them stops being a hairline and becomes a miss you can afford. */
   .power-card-top { gap: 10px; }
 
-  /* The full-width fold bands — a section title, a powerset header, the inherents disclosure.
+  /* The full-width fold bands — a section title, a powerset header, a group heading.
      Each is already the width of the panel and 16–20px tall, so height is the only thing
      missing and it costs nothing but scroll. Their baseline alignment was sitting the caret on
      the text's baseline in a box exactly as tall as the line; in a 44px box that reads as text
@@ -7127,10 +7129,6 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   .group-title,
   .powerset-group__header,
   .powerset-group__toggle,
-  .inherents__header {
-    align-items: center;
-    min-height: var(--touch-seat);
-  }
 
   /* The chip family: one hairline frame around a short label, which is every header control
      and every open-the-picker button in the app. Wide enough already — only the 24–25px height

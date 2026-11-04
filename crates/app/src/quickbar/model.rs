@@ -233,17 +233,17 @@ pub fn seam_before(previous: QuickBarItem, item: QuickBarItem) -> bool {
 /// this default is making: a row of twenty-four is the mess the customising exists to end, and
 /// an empty row teaches nobody that the row can be filled.
 ///
-/// **The one panel** is exactly the one [`GridItem::default_layout`] ships OFF the grid. A
-/// docked panel can always be dismissed from its own header ✕, so its pill is a convenience;
+/// **The pinned panels** are exactly the ones [`GridItem::default_layout`] ships OFF the grid.
+/// A docked panel can always be dismissed from its own header ✕, so its pill is a convenience;
 /// for a panel that starts hidden the pill is the only single click that brings it back, and
 /// `default_layout`'s own reasoning for hiding it rather than folding it depends on that click
 /// existing. Pinning it is what keeps that promise true.
 ///
-/// It was three until the eight fixed stat panels retired (2026-09-14). The rule is unchanged —
-/// pin what starts hidden — and the three it used to name were the mez panels, which started
-/// hidden because no fresh build shows a row from them. Set Bonuses is now the only surface the
-/// default ships off-grid. A dashboard panel is never pinned by default because it is never
-/// hidden by default: the user made it, so it is on the grid.
+/// It was one until the granted-inherent groups became panels (2026-11-04). The rule is
+/// unchanged — pin what starts hidden — and Set Bonuses has since been joined by the three
+/// groups a fresh build does not plan around (Basic, Prestige, Granted). A dashboard panel is
+/// never pinned by default because it is never hidden by default: the user made it, so it is
+/// on the grid.
 ///
 /// There is no old pinning behaviour to preserve — pinning did not exist — so this is a fresh
 /// default rather than a behaviour-preserving migration.
@@ -254,6 +254,9 @@ pub fn default_pins() -> Vec<QuickBarItem> {
         QuickBarItem::Tool(ToolId::AttackChain),
         QuickBarItem::Tool(ToolId::EnhancementList),
         QuickBarItem::Panel(PanelKind::SetBonuses),
+        QuickBarItem::Panel(PanelKind::Inherent(coh_data::InherentCategory::Basic)),
+        QuickBarItem::Panel(PanelKind::Inherent(coh_data::InherentCategory::Prestige)),
+        QuickBarItem::Panel(PanelKind::Inherent(coh_data::InherentCategory::Granted)),
     ]
 }
 
@@ -275,4 +278,41 @@ pub fn validate_pins(pins: &[QuickBarItem]) -> bool {
     pins.iter()
         .enumerate()
         .all(|(index, item)| !pins[..index].contains(item))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The rule [`default_pins`] states, checked rather than trusted: every panel a fresh
+    /// install ships off the grid has a pill, and nothing on the grid is pinned.
+    ///
+    /// The two halves are written by different files — the layout in `grid::model`, the pins
+    /// here — so nothing but this keeps "pin what starts hidden" true when either changes.
+    #[test]
+    fn every_panel_a_fresh_install_hides_is_pinned() {
+        let layout = crate::grid::model::GridItem::default_layout();
+        let pinned: Vec<PanelKind> = default_pins()
+            .into_iter()
+            .filter_map(|item| match item {
+                QuickBarItem::Panel(panel) => Some(panel),
+                QuickBarItem::Tool(_) => None,
+            })
+            .collect();
+        for item in &layout {
+            assert_eq!(
+                pinned.contains(&item.panel),
+                item.hidden,
+                "{:?} is hidden: {}, pinned: {}",
+                item.panel,
+                item.hidden,
+                pinned.contains(&item.panel)
+            );
+        }
+    }
+
+    #[test]
+    fn the_default_pins_are_sound() {
+        assert!(validate_pins(&default_pins()));
+    }
 }
