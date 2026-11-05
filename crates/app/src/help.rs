@@ -661,7 +661,7 @@ pub const TOPICS: &[Topic] = &[
                Brawl, Sprint, Health and Stamina. They spend none of your picks, and the ones the \
                game lets you slot take enhancements exactly like any other power. Each group \
                (Fitness, Basic, Prestige, Archetype, Granted) is a panel of its own, so you can put \
-               it where you want it: Fitness and Archetype are on the grid already, and Basic, \
+               it where you want it: Fitness is on the grid already, and Archetype, Basic, \
                Prestige and Granted are a click away in the More menu. An inherent that takes no \
                slots can be hidden from its own ⋮ menu, and the panel names what it is hiding.",
         keywords: &[

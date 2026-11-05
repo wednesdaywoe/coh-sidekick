@@ -240,10 +240,10 @@ pub fn seam_before(previous: QuickBarItem, item: QuickBarItem) -> bool {
 /// existing. Pinning it is what keeps that promise true.
 ///
 /// It was one until the granted-inherent groups became panels (2026-11-04). The rule is
-/// unchanged — pin what starts hidden — and Set Bonuses has since been joined by the three
-/// groups a fresh build does not plan around (Basic, Prestige, Granted). A dashboard panel is
-/// never pinned by default because it is never hidden by default: the user made it, so it is
-/// on the grid.
+/// unchanged — pin what starts hidden — and Set Bonuses has since been joined by the four
+/// groups a fresh build does not plan around (Archetype, Basic, Prestige, Granted). A dashboard
+/// panel is never pinned by default because it is never hidden by default: the user made it, so
+/// it is on the grid.
 ///
 /// There is no old pinning behaviour to preserve — pinning did not exist — so this is a fresh
 /// default rather than a behaviour-preserving migration.
@@ -254,6 +254,7 @@ pub fn default_pins() -> Vec<QuickBarItem> {
         QuickBarItem::Tool(ToolId::AttackChain),
         QuickBarItem::Tool(ToolId::EnhancementList),
         QuickBarItem::Panel(PanelKind::SetBonuses),
+        QuickBarItem::Panel(PanelKind::Inherent(coh_data::InherentCategory::Archetype)),
         QuickBarItem::Panel(PanelKind::Inherent(coh_data::InherentCategory::Basic)),
         QuickBarItem::Panel(PanelKind::Inherent(coh_data::InherentCategory::Prestige)),
         QuickBarItem::Panel(PanelKind::Inherent(coh_data::InherentCategory::Granted)),

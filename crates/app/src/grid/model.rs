@@ -1005,8 +1005,8 @@ fn pools_seat(tall: u32, x: u32, width: u32, below: u32) -> GridItem {
     }
 }
 
-/// Give the granted-inherent groups their cells: the two a build plans around on the grid at
-/// the foot of it, the other three off the grid below them.
+/// Give the granted-inherent groups their cells: the one a build plans around on the grid at
+/// the foot of it, the other four off the grid below it.
 ///
 /// **Why the foot.** The band across the top is the readouts and the columns under it are the
 /// build, and both are full at every column count — there is no authored seat left for a
@@ -1016,16 +1016,21 @@ fn pools_seat(tall: u32, x: u32, width: u32, below: u32) -> GridItem {
 /// lift it as high as the surfaces above allow. A user who wants Fitness beside the powersets
 /// drags it there once, and the layout remembers.
 ///
-/// **Why these two.** Fitness takes enhancement slots and the archetype's own inherent drives
-/// the AT's whole mechanic, so both are powers a build plans around and both are worth a
-/// scroll. Basic, Prestige and Granted are the powers every character is handed — Brawl, Rest,
-/// the Sprints, the Kheldian form attacks — and a fresh build reads better without them. They
+/// **Why Fitness alone.** It takes enhancement slots, so it is the one group a build plans
+/// around and the one worth a scroll. Archetype was seated beside it until 2026-11-04 and came
+/// off: the panel holds a single row — Gauntlet, or whatever the AT's own inherent is — in a
+/// seat sized for four, so it read as an unfinished panel next to the dense ones rather than as
+/// a group. It is one click away on the quickbar, and a user who wants it on the grid shows it
+/// once and the layout remembers.
+///
+/// Basic, Prestige and Granted are the powers every character is handed — Brawl, Rest, the
+/// Sprints, the Kheldian form attacks — and a fresh build reads better without them. All four
 /// are off the grid rather than gone: the More menu and the Panels modal list them, and
 /// [`crate::quickbar::model::default_pins`] pins them, which is the rule that fn already states
 /// for Set Bonuses.
 ///
-/// The hidden three still name real rectangles, because a hidden surface keeps the cell it
-/// returns to. They sit under the two visible ones, which is where showing one lands it.
+/// The hidden four still name real rectangles, because a hidden surface keeps the cell it
+/// returns to. They sit under the visible one, which is where showing one lands it.
 fn seat_inherents(
     items: &mut Vec<GridItem>,
     expected: &[PanelKind],
@@ -1036,7 +1041,7 @@ fn seat_inherents(
     const SEAT_WIDTH: u32 = 3;
     const SEAT_ROWS: u32 = 4;
     let width = SEAT_WIDTH.min(columns / 2).max(2);
-    let on_grid: Vec<PanelKind> = [InherentCategory::Fitness, InherentCategory::Archetype]
+    let on_grid: Vec<PanelKind> = [InherentCategory::Fitness]
         .iter()
         .map(|group| PanelKind::Inherent(*group))
         .filter(|panel| expected.contains(panel))
@@ -1058,7 +1063,7 @@ fn seat_inherents(
         x += width;
     }
 
-    // The three a fresh build does not plan around are off the grid, below everything visible.
+    // The four a fresh build does not plan around are off the grid, below everything visible.
     // They stack one to a row at the left edge: hidden, they collide with nothing and cost the
     // grid no space, so any cell would do — and this one keeps a saved layout legible when the
     // user shows one, since the rectangle is the cell it returns to.
@@ -1424,11 +1429,11 @@ mod tests {
     /// A fresh install opens on Fitness and the archetype's own inherent, and keeps the other
     /// three groups one click away rather than on the grid.
     ///
-    /// The split is the user's choice (2026-11-04): Fitness takes slots and the archetype
-    /// inherent drives the AT's mechanic, so both are planned around; Basic, Prestige and
-    /// Granted hold what every character is handed.
+    /// The split is the user's choice (2026-11-04, narrowed the same day): Fitness takes slots,
+    /// so it is the one group planned around; Archetype holds a single row and read as an
+    /// unfinished panel, so it joined Basic, Prestige and Granted off the grid.
     #[test]
-    fn a_fresh_install_seats_the_planned_around_groups_and_hides_the_rest() {
+    fn a_fresh_install_seats_fitness_and_hides_the_rest() {
         for columns in COLUMN_STEPS {
             let items = GridItem::default_layout_for(columns, DEFAULT_COLUMN_ROWS, &roster());
             for group in INHERENT_GROUPS {
@@ -1436,10 +1441,7 @@ mod tests {
                     .iter()
                     .find(|item| item.panel == PanelKind::Inherent(group))
                     .unwrap_or_else(|| panic!("{group:?} is seated at {columns} columns"));
-                let wanted_hidden = !matches!(
-                    group,
-                    InherentCategory::Fitness | InherentCategory::Archetype
-                );
+                let wanted_hidden = group != InherentCategory::Fitness;
                 assert_eq!(item.hidden, wanted_hidden, "{group:?} at {columns} columns");
             }
         }
