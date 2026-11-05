@@ -332,10 +332,28 @@ pub fn to_skif_build(
     Converted { build, unresolved }
 }
 
-/// Add a pick to a selection, creating it at the set the pick came from.
-fn push(slot: &mut Option<SkifSelection>, id: Option<String>, pick: SkifPower) {
+/// Add a pick to a selection, creating it at the set the pick came from, and stamping the pick
+/// with its own set whenever the selection is already open at a DIFFERENT one.
+///
+/// The stamp is the VEAT case, and the game format is where it bites. A Night Widow's primary
+/// list arrives as one flat run of `Widow_Training.*` lines — some from `Widow_Training`, some
+/// from `Night_Widow_Training`, in the order the character bought them — so the selection seats
+/// itself at whichever line came first and every pick from the other set would otherwise be
+/// filed under that seat. `skif::hydrate` widens its NAME lookup across the archetype's branch
+/// sets (so the ident still resolves), but it keeps the seated set as the pick's own, and the
+/// app resolves a power with an exact `find_power(powerset, ident)` — a pair that names nothing
+/// renders as the internal name beside the unknown icon.
+///
+/// [`crate::mbd_import`]'s `push` has done this since the VEAT base-seat fix; the game reader
+/// is the one that kept dropping the `id` it was handed.
+fn push(slot: &mut Option<SkifSelection>, id: Option<String>, mut pick: SkifPower) {
     match slot {
-        Some(selection) => selection.powers.push(pick),
+        Some(selection) => {
+            if let Some(id) = id.filter(|id| *id != selection.id) {
+                pick.powerset = Some(id);
+            }
+            selection.powers.push(pick);
+        }
         None => {
             *slot = Some(SkifSelection {
                 id: id.unwrap_or_default(),
