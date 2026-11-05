@@ -465,12 +465,19 @@ fn resolve_summoned(
     for (root, count) in summoned_counts(summon) {
         for entity in summoned_entity_chain(database, &root) {
             from_entity_table = true;
-            // A pet that follows its owner between zones fights beside the player: its damage
-            // is the pet's, over a lifetime of its own choosing, and not this power's hit.
-            // Summon Widow's 240 seconds read as 18,605 damage before this. What it creates
-            // in place is part of its kit, so the chain under a kept root goes with it.
-            if follows_owner(entity) {
-                if entity.get("name").and_then(Json::as_str) == Some(root.as_str()) {
+            // The summon's window is the root's; a pet the root creates in place lives its own.
+            // Read before the companion test below, which is partly a question about it.
+            let own_lifespan = entity.get("lifespan").and_then(Json::as_f64);
+            let is_root = entity.get("name").and_then(Json::as_str) == Some(root.as_str());
+            let lifespan = match is_root {
+                true => summon_lifespan.or(own_lifespan),
+                false => own_lifespan.or(summon_lifespan),
+            };
+            // A creature that fights beside the player does its own damage over a lifetime of
+            // its own choosing, and that is not this power's hit. What a kept pet creates in
+            // place is part of its kit, so the chain under a kept root goes with it.
+            if fights_as_a_companion(entity, lifespan) {
+                if is_root {
                     break;
                 }
                 continue;
@@ -486,13 +493,6 @@ fn resolve_summoned(
                 copy_boosts || entity.get("copyCreatorMods").and_then(Json::as_bool) == Some(true);
             let strength =
                 Strength::of(if copies { enhancement } else { 0.0 }, global_damage, None);
-            // The summon's window is the root's; a pet the root creates in place lives its own.
-            let own_lifespan = entity.get("lifespan").and_then(Json::as_f64);
-            let is_root = entity.get("name").and_then(Json::as_str) == Some(root.as_str());
-            let lifespan = match is_root {
-                true => summon_lifespan.or(own_lifespan),
-                false => own_lifespan.or(summon_lifespan),
-            };
             let name = entity
                 .get("name")
                 .and_then(Json::as_str)
@@ -606,7 +606,10 @@ fn resolve_summoned(
                 let chance = spawn.get("chance").and_then(Json::as_f64).unwrap_or(1.0);
                 let boosted = spawn.get("copyBoosts").and_then(Json::as_bool) == Some(true);
                 for entity in summoned_entity_chain(database, root) {
-                    if follows_owner(entity) {
+                    // The shell's own window, not the spawner's: these live and die on their
+                    // own def, and `grows` above counts the SHELL's activations.
+                    if fights_as_a_companion(entity, entity.get("lifespan").and_then(Json::as_f64))
+                    {
                         continue;
                     }
                     let Some(class) = entity.get("characterClass").and_then(Json::as_str) else {
@@ -654,10 +657,59 @@ fn resolve_summoned(
     }
 }
 
-/// The entity's `canZone`: a kept pet, as against a placed effect. Absent reads as placed — the
-/// converter writes the field wherever the villain def states it, which is every player pet.
-fn follows_owner(entity: &Json) -> bool {
-    entity.get("canZone").and_then(Json::as_bool) == Some(true)
+/// A summoned entity that fights as a companion of its own, rather than delivering the
+/// power's payload in place.
+///
+/// `canZone` alone was the whole test, and it is the wrong FIELD: the villain defs set it
+/// on things that never move, so Acid Mortar — a mortar that sits where it was placed and
+/// fires grenades for 60 seconds — was kept out beside Summon Widow, and the power showed
+/// no damage at all while its own shipped text promises some. `canZone` stays the entry to
+/// the question (an entity without the flag is a placed effect, and is not what this is
+/// asked about); the ANSWER is what the entity does:
+///
+///   * one damaging ability — a payload, not a rotation (Acid Mortar, the Gun Drone);
+///   * `oneShot` — it detonates and is gone, so it never has a rotation to build (Photon
+///     Seekers, Seeker Drones);
+///   * a permanent window — [`PERMANENT_LIFESPAN`] is already read as ONE activation
+///     below, so folding it cannot produce a lifetime total (Singularity, Animate Stone).
+///
+/// Anything else is a creature running an attack rotation for as long as it lives, and
+/// that damage is its own: Summon Widow's 240 seconds read as 18,605 damage before this,
+/// and Decoy's sixteen rows as 22,112 — for a power whose entire purpose is a taunt.
+///
+/// The exception is the game's own taxonomy rather than a count. A class naming a
+/// `henchman` is a creature that fights FOR its master however few moves it has, and Gang
+/// War's thug is the case the ability count gets wrong: one Click attack, nine of them at
+/// 2,104 damage (ten of a `Posse` in Rebirth, where the same power reads 7,657) for a
+/// power whose point is bodies that soak hits. The word moves around the class name —
+/// Homecoming and Brainstorm write `henchman_minion_small`, Rebirth and Thunderspy
+/// `minion_henchman` — so it is searched for, not prefixed.
+fn fights_as_a_companion(entity: &Json, lifespan: Option<f64>) -> bool {
+    if entity.get("canZone").and_then(Json::as_bool) != Some(true) {
+        return false;
+    }
+    if entity
+        .get("characterClass")
+        .and_then(Json::as_str)
+        .is_some_and(|class| class.contains("henchman"))
+    {
+        return true;
+    }
+    if entity.get("oneShot").and_then(Json::as_bool) == Some(true) {
+        return false;
+    }
+    if lifespan.is_some_and(|lifespan| lifespan >= PERMANENT_LIFESPAN) {
+        return false;
+    }
+    entity_abilities(entity)
+        .filter(|ability| {
+            ability
+                .get("damage")
+                .and_then(Json::as_array)
+                .is_some_and(|rows| !rows.is_empty())
+        })
+        .count()
+        > 1
 }
 
 /// One summoned pet as its damage reads it.

@@ -16,7 +16,8 @@ use dioxus::prelude::*;
 use std::collections::HashMap;
 
 use super::collide::{
-    clamp_resize, fit_item, move_item, place_item, resize_item, shared_row_heights, toggle_collapse,
+    clamp_resize, clamp_resize_from_left, clamp_resize_height, fit_item, move_item, place_item,
+    resize_item, shared_row_heights, toggle_collapse,
 };
 use super::math::{container_height, item_to_px, px_to_cell, px_to_span, rows_for_px};
 use super::model::{GridConfig, GridItem, PanelKind};
@@ -51,13 +52,33 @@ pub struct ContainerWidth(pub Signal<f64>);
 #[derive(Clone, Copy)]
 pub struct GridColumns(pub Signal<u32>);
 
-/// Which gesture a live drag is: relocating the surface, or resizing it from its
-/// south-east corner. FG4 ships that one corner — the only one that leaves the
-/// item's origin fixed, so a resize never doubles as a move.
+/// Which gesture a live drag is: relocating the surface, or resizing it from one of its
+/// lower corners.
+///
+/// Only the bottom two are offered, and the reason is gravity rather than geometry.
+/// `compact` floats every unpinned surface up to its neighbours, so a north drag would be
+/// undone the instant it was released — the surface would spring back to the top of its own
+/// box, and the drag would read as broken. A west drag has no such problem: the box keeps its
+/// right AND top edges, so only `x` and `w` move, and the height — which is the whole of a
+/// fitted surface's sizing — is untouched.
 #[derive(Clone, Copy, PartialEq)]
 enum DragMode {
     Move,
-    Resize,
+    /// A resize, and which lower corner it is pulled from. The opposite corner is the anchor:
+    /// the east drag holds the top-left, the west drag the top-right.
+    Resize(Corner),
+}
+
+/// The lower corners a surface can be resized from.
+#[derive(Clone, Copy, PartialEq)]
+enum Corner {
+    /// The original FG4 gesture: the anchor is the top-left, so `x` and `y` stay and the
+    /// width is capped by the room to the right.
+    SouthEast,
+    /// The mirror: the anchor is the TOP-RIGHT, so the height still clamps through
+    /// [`clamp_resize_height`](super::collide::clamp_resize_height) while the width is capped
+    /// by the room to the left and `x` is what gives.
+    SouthWest,
 }
 
 /// One live drag, either a move or a resize (`mode`). Everything here is in client
@@ -108,24 +129,115 @@ impl DragState {
         px_to_cell(self.anchor(), config, container_width)
     }
 
-    /// The unsnapped pixel size of a resize: the bottom-right anchor minus the
-    /// item's committed top-left. Floored at zero so dragging past the origin
-    /// doesn't produce a negative box. This drives the live floating copy; the
-    /// placeholder snaps it.
-    fn resize_size_px(&self, config: &GridConfig, container_width: f64) -> (f64, f64) {
-        let (left, top, _, _) = item_to_px(&self.item, config, container_width);
-        let (right, bottom) = self.anchor();
-        ((right - left).max(0.0), (bottom - top).max(0.0))
+    /// The unsnapped pixel box of a resize as `(left, top, width, height)`, in
+    /// container-relative pixels. One corner is pinned and the pointer pulls the other, so
+    /// which pair is the box's base depends on the corner: a south-east drag holds the
+    /// top-left and takes the pointer as its bottom-right; a south-west drag holds the
+    /// top-RIGHT and takes the pointer as its bottom-left. Either dimension is floored at zero
+    /// so dragging past the anchor doesn't produce a negative box. This drives the live
+    /// floating copy; the placeholder snaps it.
+    fn resize_box_px(&self, config: &GridConfig, container_width: f64) -> (f64, f64, f64, f64) {
+        let (left, top, width, _) = item_to_px(&self.item, config, container_width);
+        let (anchor_x, anchor_y) = self.anchor();
+        match self.mode {
+            DragMode::Resize(Corner::SouthEast) => (
+                left,
+                top,
+                (anchor_x - left).max(0.0),
+                (anchor_y - top).max(0.0),
+            ),
+            DragMode::Resize(Corner::SouthWest) => {
+                let right = left + width;
+                (
+                    anchor_x,
+                    top,
+                    (right - anchor_x).max(0.0),
+                    (anchor_y - top).max(0.0),
+                )
+            }
+            // Not reached: a move has no box of its own, it follows the cursor at its
+            // committed size.
+            DragMode::Move => (left, top, width, 0.0),
+        }
     }
 
-    /// The cell span the surface would resize to if released now (resize only),
-    /// before clamping.
+    /// The pixel box the floating copy may draw: the pointer's unsnapped box, held inside the
+    /// bounds the release will clamp to.
+    ///
+    /// `resize_box_px` is what the pointer asks; `clamp_resize` is what the grid answers, and
+    /// the placeholder has always asked the second question while the copy never has. So a
+    /// surface whose height is answered by its content — every
+    /// [`PanelKind::fits_content`](super::model::PanelKind::fits_content) panel — stretched its
+    /// copy down the page while the ghost under it, and the box the release committed, both
+    /// stayed put: the copy promised a size the surface springs back from the moment the
+    /// pointer leaves it, which is exactly what reads as "this panel refuses to resize to that
+    /// size". The same lie runs in the other direction past `min_width`/`min_height`.
+    ///
+    /// Only the axis the clamp binds is held; the other keeps tracking the pointer unsnapped,
+    /// so the copy still reads as stretching in place rather than snapping to cells. Asked and
+    /// answered by the same functions the commit uses, so no second copy of the rules lives
+    /// here to drift.
+    fn clamped_resize_box_px(
+        &self,
+        config: &GridConfig,
+        container_width: f64,
+    ) -> (f64, f64, f64, f64) {
+        let (left, top, width, height) = self.resize_box_px(config, container_width);
+        let (floor_w, floor_h, ceil_w, ceil_h) = match self.mode {
+            DragMode::Resize(Corner::SouthEast) => {
+                let (floor_w, floor_h) = clamp_resize(&self.item, 0, 0, config);
+                let (ceil_w, ceil_h) = clamp_resize(&self.item, u32::MAX, u32::MAX, config);
+                (floor_w, floor_h, ceil_w, ceil_h)
+            }
+            DragMode::Resize(Corner::SouthWest) => {
+                // A west drag's width is the room between the pointer and the FIXED right
+                // edge, so its bounds come from the two asks that bracket that room; its
+                // height is still the shared answer.
+                let right = self.item.x + self.item.w;
+                let floor_w = clamp_resize_from_left(&self.item, right, config).1;
+                let ceil_w = clamp_resize_from_left(&self.item, 0, config).1;
+                (
+                    floor_w,
+                    clamp_resize_height(&self.item, 0),
+                    ceil_w,
+                    clamp_resize_height(&self.item, u32::MAX),
+                )
+            }
+            // Not reached: a move draws its copy at the committed size.
+            DragMode::Move => return (left, top, width, height),
+        };
+        let px = |w: u32, h: u32| {
+            let (_, _, w_px, h_px) =
+                item_to_px(&GridItem { w, h, ..self.item }, config, container_width);
+            (w_px, h_px)
+        };
+        let (floor_w_px, floor_h_px) = px(floor_w, floor_h);
+        let (ceil_w_px, ceil_h_px) = px(ceil_w, ceil_h);
+        let asked = width;
+        let width = width.clamp(floor_w_px, ceil_w_px);
+        let height = height.clamp(floor_h_px, ceil_h_px);
+        // A width the clamp pulled back moves the LEFT edge with it on a west drag, so the
+        // right edge — the anchor — is the one that stays under the finger.
+        let left = match self.mode {
+            DragMode::Resize(Corner::SouthWest) => left + asked - width,
+            _ => left,
+        };
+        (left, top, width, height)
+    }
+
+    /// The cell span the surface would resize to if released now, before clamping. Width and
+    /// height only — where the box lands is the corner's business, not the span's.
     fn resized_span(&self, config: &GridConfig, container_width: f64) -> (u32, u32) {
-        px_to_span(
-            self.resize_size_px(config, container_width),
-            config,
-            container_width,
-        )
+        let (_, _, width, height) = self.resize_box_px(config, container_width);
+        px_to_span((width, height), config, container_width)
+    }
+
+    /// The column the surface's LEFT edge would land on if released now (a south-west drag
+    /// only). Derived from the same unsnapped box the span is, so the placeholder's origin and
+    /// its width always describe one rectangle.
+    fn resized_left_cell(&self, config: &GridConfig, container_width: f64) -> u32 {
+        let (left, _, _, _) = self.resize_box_px(config, container_width);
+        px_to_cell((left, 0.0), config, container_width).0
     }
 }
 
@@ -511,9 +623,12 @@ pub fn GridContainer(
     // The overlay's cursor modifier for the live gesture, memoized so it re-renders the
     // overlay on the gesture's edges (it never changes mid-drag) rather than on every
     // pointer move. A resize of a surface that fits its content moves one axis only —
-    // `clamp_resize` holds its height — so that gesture must not advertise the diagonal.
+    // `clamp_resize_height` holds its height — so that gesture must not advertise the
+    // diagonal; and a west drag moves one axis whatever the surface does, because the
+    // height it keeps is the height it already had.
     let drag_cursor = use_memo(move || match drag.read().as_ref() {
-        Some(d) if d.mode != DragMode::Resize => "",
+        Some(d) if d.mode == DragMode::Resize(Corner::SouthWest) => "drag-overlay--resize-x",
+        Some(d) if d.mode == DragMode::Move => "",
         Some(d) if d.item.panel.fits_content() => "drag-overlay--resize-x",
         Some(_) => "drag-overlay--resize",
         None => "",
@@ -1029,7 +1144,7 @@ fn GridSurface(
                     let (surface_x, surface_y, surface_w, surface_h) =
                         item_to_px(&item, &config, container_width());
                     drag.set(Some(DragState {
-                        mode: DragMode::Resize,
+                        mode: DragMode::Resize(Corner::SouthEast),
                         item,
                         grab: (0.0, 0.0),
                         container_origin: (
@@ -1042,6 +1157,50 @@ fn GridSurface(
                     }));
                 },
             }
+            }
+
+            // West resize strip. The complaint this answers is specific: widening a panel
+            // leftwards used to mean moving the whole surface left and THEN dragging its
+            // corner right, so this is the gesture that removes the two steps. It runs the
+            // full body height and stops below the header, so the header's own left edge stays
+            // the move-grab it is (its 12px lead-in is where a drag is aimed) and only the
+            // body's edge resizes.
+            //
+            // It is the south-west drag's twin — same `Corner`, same anchor at the top-right —
+            // because pulling the left edge of the box at its foot and at its side are one
+            // gesture with two targets. A folded surface has neither: its rendered height is
+            // its header, which is exactly the band this must not cover.
+            if !item.collapsed {
+                div {
+                    class: "resize-handle resize-handle--west",
+                    "aria-hidden": "true",
+                    onpointerdown: move |evt| {
+                        let mut drag = drag;
+                        evt.prevent_default();
+                        keyboard.set(None);
+                        let pointer = evt.client_coordinates();
+                        let (surface_x, surface_y, _, surface_h) =
+                            item_to_px(&item, &config, container_width());
+                        // The pointer pulls the TOP-LEFT of the box — the left edge is the one
+                        // being resized — while the bottom-right stays pinned. Grab is zeroed
+                        // and the container origin recovered such that `resize_box_px`
+                        // reproduces the committed box exactly at grab time, so the left edge
+                        // follows the pointer with no jump. `surface_h` is what keeps the fixed
+                        // foot: the pointer's y is measured back from the box's bottom edge.
+                        drag.set(Some(DragState {
+                            mode: DragMode::Resize(Corner::SouthWest),
+                            item,
+                            grab: (0.0, 0.0),
+                            container_origin: (
+                                pointer.x - surface_x,
+                                pointer.y - surface_y - surface_h,
+                            ),
+                            pointer: (pointer.x, pointer.y),
+                            origin_pointer: (pointer.x, pointer.y),
+                            moved: false,
+                        }));
+                    },
+                }
             }
         }
     }
@@ -1067,10 +1226,25 @@ fn DragPlaceholder(drag: Signal<Option<DragState>>, config: GridConfig) -> Eleme
                 ..state.item
             }
         }
-        DragMode::Resize => {
+        DragMode::Resize(Corner::SouthEast) => {
             let (span_w, span_h) = state.resized_span(&config, container_width());
             let (w, h) = clamp_resize(&state.item, span_w, span_h, &config);
             GridItem { w, h, ..state.item }
+        }
+        DragMode::Resize(Corner::SouthWest) => {
+            let (_, span_h) = state.resized_span(&config, container_width());
+            let h = clamp_resize_height(&state.item, span_h);
+            let (x, w) = clamp_resize_from_left(
+                &state.item,
+                state.resized_left_cell(&config, container_width()),
+                &config,
+            );
+            GridItem {
+                x,
+                w,
+                h,
+                ..state.item
+            }
         }
     };
     let (x, y, width, height) = item_to_px(&target, &config, container_width());
@@ -1099,11 +1273,11 @@ fn DragLayer(
         return rsx! {};
     };
 
-    // Move: the whole surface follows the cursor at its committed size. Resize:
-    // the top-left stays pinned at the committed cell (client-space) while the
-    // box grows to the unsnapped pointer size, so the surface reads as stretching
-    // in place. The origin surface is hidden either way (`data-drag`), so this
-    // copy is what the eye tracks.
+    // Move: the whole surface follows the cursor at its committed size. Resize: the
+    // corner opposite the grabbed one stays pinned (client-space) while the box grows
+    // to the unsnapped pointer size, so the surface reads as stretching in place — a
+    // south-east drag pins the top-left, a south-west drag the top-right. The origin
+    // surface is hidden either way (`data-drag`), so this copy is what the eye tracks.
     let (left, top, width, height) = match state.mode {
         DragMode::Move => {
             let (_, _, w, h) = item_to_px(&state.item, &config, container_width());
@@ -1114,12 +1288,11 @@ fn DragLayer(
                 h,
             )
         }
-        DragMode::Resize => {
-            let (surface_x, surface_y, _, _) = item_to_px(&state.item, &config, container_width());
-            let (w, h) = state.resize_size_px(&config, container_width());
+        DragMode::Resize(_) => {
+            let (box_x, box_y, w, h) = state.clamped_resize_box_px(&config, container_width());
             (
-                state.container_origin.0 + surface_x,
-                state.container_origin.1 + surface_y,
+                state.container_origin.0 + box_x,
+                state.container_origin.1 + box_y,
                 w,
                 h,
             )
@@ -1192,9 +1365,30 @@ fn DragOverlay(
                                 let (cell_x, cell_y) = active.landing_cell(&config, container_width());
                                 move_item(&mut items, active.item.panel, cell_x, cell_y, &config);
                             }
-                            DragMode::Resize => {
+                            DragMode::Resize(Corner::SouthEast) => {
                                 let (span_w, span_h) = active.resized_span(&config, container_width());
                                 resize_item(&mut items, active.item.panel, span_w, span_h, &config);
+                            }
+                            DragMode::Resize(Corner::SouthWest) => {
+                                // Through `place_item`, not `resize_item`: a west drag moves
+                                // the origin and the size together, which is exactly the
+                                // whole-rectangle commit FG6's keyboard placement uses.
+                                let (_, span_h) = active.resized_span(&config, container_width());
+                                let h = clamp_resize_height(&active.item, span_h);
+                                let (x, w) = clamp_resize_from_left(
+                                    &active.item,
+                                    active.resized_left_cell(&config, container_width()),
+                                    &config,
+                                );
+                                place_item(
+                                    &mut items,
+                                    active.item.panel,
+                                    x,
+                                    active.item.y,
+                                    w,
+                                    h,
+                                    &config,
+                                );
                             }
                         }
                         // Persist the committed layout, mirroring mobile's persist-on-reorder.
@@ -1222,6 +1416,9 @@ fn SurfaceBody(panel: PanelKind, database: Db, selection: Signal<Selection>) -> 
         PanelKind::Pools => rsx! { panels::powers::PoolsPanel { database } },
         PanelKind::SetBonuses => rsx! { panels::set_bonus_totals::SetBonusTotals { database } },
         PanelKind::Info => rsx! { panels::info::Info { database, selection } },
+        PanelKind::Inherent(group) => {
+            rsx! { panels::inherents_section::InherentGroupPanel { database, group } }
+        }
         PanelKind::Dashboard(id) => rsx! { panels::stats::StatGroup { panel: id } },
     }
 }

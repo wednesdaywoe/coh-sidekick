@@ -34,6 +34,7 @@ mod forum_export;
 mod granted_powers;
 mod grid;
 mod help;
+mod hidden_inherents_store;
 mod history;
 mod hit_chance_alert_store;
 mod icon_select;

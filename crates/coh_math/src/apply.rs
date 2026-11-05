@@ -1632,38 +1632,81 @@ impl<'a, 'b> WalkCtx<'a, 'b> {
         // `accuracy` and `range` are in that map since DEBUFFRES-1; the oracle has no field for
         // either, so those two are the one place this pass reads higher than the frozen calc.
         //
-        // NO debuff-resistance type is enhanced, defense included — DDR-1. Both planner
-        // lineages said otherwise: the beta's `debuffResEnhMapping = { defense: 'defense' }`
-        // (legacy-totals.oracle.ts:837) and Mids Reborn's `GBPA_Pass1_EnhancePreED`, which
-        // special-cases `EffectType == ResEffect && ETModifies == Defense` onto `eEnhance.Defense`
-        // (clsToonX.cs:1798). Two independent planners agreeing is strong evidence, and it was
-        // still wrong — measured on the Homecoming test server, a level-50 Tanker with Granite
-        // Armor ON reads 43.25% Defense DDR with 0, 1, 2, 3, 4, 5 or 6 level-50 Defense IOs
-        // slotted: flat. The unslotted 43.25 is `scale 1.0 × Tanker melee_res_boolean[50]`, so
-        // the table read is right and only the multiplier was wrong (it had been inflating this
-        // to 73.48% at six slots).
+        // DDR-2: a row takes its OWN attribute's enhancement, UNLESS the granting template
+        // carries `IgnoreStrength`. The flag is the gate, and it gates every routed type.
         //
-        // The data agrees with the game once the right boost token is asked about. A DDR row is
-        // `Base_Defense` with `aspect=Resistance`; the boost that governs resisting a defense
-        // debuff is `Debuff_Defense`, and over all four datasets 1168 powers carry a DDR row and
-        // 2373 allow `Debuff_Defense` — with an overlap of exactly ZERO. What the 118 DDR powers
-        // do allow is `Buff_Defense`, which is the token for the positional defense BUFF, a
-        // different row of the same power. The beta read the power's Defense slots and applied
-        // what it found to the wrong row; Mids has no per-row token either and hardcodes the
-        // same pairing. So `allowedEnhancements` containing "Defense" does NOT mean the DDR row
-        // is enhanceable — it means the power's positional defense rows are.
+        // DDR-1 (this block, 2026-10-24) removed the Defense multiplier after an L50 Tanker's
+        // Granite Armor Defense DDR was measured flat at 43.25% across 0..6 slotted L50 Defense
+        // IOs on the Homecoming test server, then generalized one power's behaviour to every
+        // type. The measurement was right and the generalization was not: Granite's DDR template
+        // carries `IgnoreStrength` (flags_raw 0x430) and the seven Super Reflexes DDR templates
+        // do not (0x420; Evasion 0x60), and that one bit is the entire difference between the two
+        // readings. Owner's reading of the game's own Defense Resistance breakdown on a Super
+        // Reflexes character, 2026-11-05 — Evasion / Focused Fighting / Focused Senses at
+        // +27.66%, Agile / Dodge / Lucky at +13.58 / 13.66 / 13.62%, against the engine's
+        // unenhanced 17.3 and 8.65 — is what an enhanced row looks like, and three different
+        // values from three data-identical toggles can only come from each power's own Defense
+        // enhancement.
+        //
+        // So both planner lineages were half right: the beta's `debuffResEnhMapping = { defense:
+        // 'defense' }` (legacy-totals.oracle.ts:837) and Mids Reborn's `GBPA_Pass1_EnhancePreED`
+        // (clsToonX.cs:1798, `EffectType == ResEffect && ETModifies == Defense` onto
+        // `eEnhance.Defense`) both knew a DDR row enhances and both applied it unconditionally,
+        // which is why they put Granite at 73.48% where the game holds it at 43.25. DDR-1 kept
+        // the wrong half of that verdict.
+        //
+        // The flag is read per row and for every type, not defense alone, because it is the ONLY
+        // thing in the data that can make a row unenhanceable: a DDR row is the `Res` face of the
+        // same attrib its enhanceable buff row uses, so the two share the power's
+        // `boosts_allowed` list and reading that list cannot tell them apart — which is exactly
+        // the census DDR-1 leaned on (1168 DDR powers, 2373 allowing `Debuff_Defense`, overlap
+        // zero) and why it proved nothing either way. Which aspect each type takes is
+        // `debuff_resistance_enhancement_aspect`, the same attrib-keyed rule this pass already
+        // applies per mez type; perception, recovery, regeneration and the collapsed movement
+        // slot have no aspect, so they read unenhanced flagged or not. `buff_pets::enh_multiplier`
+        // shares both halves of the rule, so a slotted buff-pet and the slotted power it copies
+        // agree on what a Defense IO does.
+        //
+        // Census over the four contract datasets' player sets, routed `aspect=Res` atoms,
+        // flagged/unflagged: Defense 584/168, Movement 2131/65, Perception 90/155, Endurance
+        // 410/45, RechargeTime 643/10, Recovery 404/10, Regeneration 240/26, ToHit 405/10,
+        // Accuracy 8/0, Range 20/0 — 489 flagged of 4935. The flag is the armors' signature:
+        // Stone/Granite/Crystal Armor and Rooted, every Shield's Defense buff, the AV
+        // `Resistance` buff, Destiny's Ageless invocations. Unflagged, and so now enhanced:
+        // Super Reflexes and Temporal Reaction toggles, Shield Defense's Battle_Agility and
+        // Deflection, Empathy's Fortitude, Psionic Armor, Teamwork's Foresight, Sonic Siphon,
+        // Consume.
+        //
+        // Three of the six mapped types can fire on a real build: defense (39 powers across the
+        // four forks), endurance (Consume, Psionic Shield) and recharge (the Mastermind's Sonic
+        // Siphon). ToHit has ten unflagged rows and not one of them sits in a power that accepts
+        // ToHit enhancement, and no unflagged accuracy or range row exists anywhere, so those
+        // three entries state the rule whole rather than change a number. Two of the names above
+        // are also not what they look like: Empathy's Fortitude is aimed at an ally, so
+        // `is_ally_only` keeps it out of the caster's totals entirely, and Sonic Siphon carries
+        // its self-facing DDR rows UNFLAGGED on the Mastermind's set and FLAGGED on the
+        // Defender's, Controller's and Corruptor's — the flag is per row, and the same power name
+        // differs between archetypes.
         //
         // `adjustForStacking` is the corpus-zero no-op seam (default combat context).
-        let debuff_resistance_entries: Option<Vec<(String, Scaled)>> =
-            debuff_resistance_value(self.power).map(|es| {
-                es.into_iter()
-                    .map(|(ty, tv)| (ty, self.to_scaled(tv)))
+        let debuff_resistance_entries: Option<Vec<(&'static str, Scaled, Option<&'static str>)>> =
+            debuff_resistance_value(self.power).map(|rows| {
+                rows.into_iter()
+                    .map(|row| {
+                        (
+                            row.type_key,
+                            self.to_scaled(row.value),
+                            row.enhancement_aspect,
+                        )
+                    })
                     .collect()
             });
         if let Some(entries) = debuff_resistance_entries {
-            for (ty, s) in entries {
+            for (ty, s, aspect) in entries {
                 let s = self.stack(s, StackFamily::DebuffResistance);
-                // DDR-1: no multiplier for any type, defense included. See the block comment.
+                // `None` covers both reasons a row reads unenhanced — the granting template said
+                // so, or the resisted attribute has no enhancement category to come from.
+                let enh_multiplier = 1.0 + aspect.map_or(0.0, |aspect| self.enh.get(aspect));
                 let percent = resolve_scaled_effect(
                     s.scale,
                     s.table.as_deref(),
@@ -1671,11 +1714,12 @@ impl<'a, 'b> WalkCtx<'a, 'b> {
                     self.level,
                     self.db,
                     self.errors,
-                ) * 100.0;
+                ) * 100.0
+                    * enh_multiplier;
                 surface_route(
-                    g.add_debuff_resistance(&ty, percent),
+                    g.add_debuff_resistance(ty, percent),
                     "Debuff resistance",
-                    &ty,
+                    ty,
                     &self.power.name,
                     self.errors,
                 );

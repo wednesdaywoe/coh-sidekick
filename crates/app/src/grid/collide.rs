@@ -218,19 +218,52 @@ pub fn place_item(
 /// exactly where the surface will land, before any collision handling.
 pub fn clamp_resize(item: &GridItem, new_w: u32, new_h: u32, config: &GridConfig) -> (u32, u32) {
     let max_width = item.max_width.unwrap_or(config.columns);
-    let max_height = item.max_height.unwrap_or(u32::MAX);
     let w = clamp_dim(new_w, item.min_width, max_width).min(config.columns - item.x);
-    // A surface that fits its content has no height for a gesture to propose: whatever the
-    // drag asks for, the next measurement overrules it, so honouring the ask would show a
-    // surface springing back the instant the pointer left it. Held here rather than at each
-    // gesture, so the pointer resize, its placeholder and the keyboard's Shift+arrows all
-    // get the same answer and cannot drift apart.
-    let h = if item.panel.fits_content() {
-        item.h
-    } else {
-        clamp_dim(new_h, item.min_height, max_height)
-    };
-    (w, h)
+    (w, clamp_resize_height(item, new_h))
+}
+
+/// The height a resize request clamps to — split out of [`clamp_resize`] because a west
+/// drag clamps its WIDTH against the left edge instead of `x`, and must still get this exact
+/// answer for its height rather than a second, drifting copy of the rules.
+///
+/// A surface that fits its content has no height for a gesture to propose: whatever the drag
+/// asks for, the next measurement overrules it, so honouring the ask would show a surface
+/// springing back the instant the pointer left it. Held here rather than at each gesture, so
+/// the pointer resize, its placeholder and the keyboard's Shift+arrows all get the same answer
+/// and cannot drift apart.
+pub fn clamp_resize_height(item: &GridItem, new_h: u32) -> u32 {
+    if item.panel.fits_content() {
+        return item.h;
+    }
+    let max_height = item.max_height.unwrap_or(u32::MAX);
+    clamp_dim(new_h, item.min_height, max_height)
+}
+
+/// The `(x, w)` a resize pulled from the item's LEFT edge clamps to — the mirror of
+/// [`clamp_resize`]'s width half, and the reason a west drag needs its own function.
+///
+/// The right edge is the one that stays put, so the width is capped by the columns to the
+/// left of it rather than by the room to the right, and `x` is what gives (`x = right - w`)
+/// instead of the width. The item's own minimum and maximum widths still apply. `left_x` is
+/// the leftmost column the pointer is asking for, clamped so the origin cannot pass the
+/// fixed right edge.
+///
+/// There is no requested-width parameter, and that is the point: a west drag's width is not
+/// asked for, it is whatever is left between the pointer and the fixed right edge.
+pub fn clamp_resize_from_left(item: &GridItem, left_x: u32, config: &GridConfig) -> (u32, u32) {
+    let max_width = item.max_width.unwrap_or(config.columns);
+    let right = item.x + item.w;
+    // The widest box that still leaves the origin at x = 0. `max_w` carries it into
+    // `clamp_dim`, so a surface whose own minimum is wider than the room to the left keeps
+    // its minimum rather than being clamped to a width nothing draws.
+    let room = right.max(1);
+    let max_w = max_width.min(room).max(1);
+    let wanted = right.saturating_sub(left_x.min(right));
+    let w = clamp_dim(wanted, item.min_width, max_w).min(room).max(1);
+    // The width is bounded by the room to the left of the fixed right edge, so the origin
+    // lands on the grid without a post-check; `saturating_sub` rather than a subtraction
+    // anyway, because `item.x + item.w` is only as trustworthy as the layout it came from.
+    (right.saturating_sub(w), w)
 }
 
 /// Set `panel`'s height to a measured content fit of `rows`, then push and compact exactly
@@ -662,5 +695,70 @@ mod tests {
         let items = vec![GridItem::new(a, 0, 0, 3, 3), folded];
         let rows = HashMap::from([(a, 2), (b, 9)]);
         assert_eq!(shared_row_heights(&items, &rows), vec![(a, 2)]);
+    }
+
+    // The west-resize clamp. `clamp_resize` caps width at the room to the RIGHT of a fixed
+    // origin; this caps it at the room to the LEFT of a fixed right edge and moves the origin.
+    // The pair are mirrors, so the properties below are the ones that tell them apart.
+
+    fn a_panel_at(x: u32, w: u32) -> GridItem {
+        GridItem::new(PanelKind::Dashboard(DashboardId(1)), x, 0, w, 4)
+    }
+
+    #[test]
+    fn a_west_resize_moves_the_origin_and_keeps_the_right_edge() {
+        let item = a_panel_at(6, 4);
+        let (x, w) = clamp_resize_from_left(&item, 2, &GridConfig::default());
+        assert_eq!((x, w), (2, 8));
+        assert_eq!(x + w, item.x + item.w, "the right edge is the anchor");
+    }
+
+    /// The request is what the pointer asks for; the width follows the fixed right edge, so a
+    /// pointer dragged past the left edge of the grid stops rather than wrapping.
+    #[test]
+    fn a_west_resize_cannot_run_off_the_left_of_the_grid() {
+        let item = a_panel_at(2, 3);
+        let (x, w) = clamp_resize_from_left(&item, 0, &GridConfig::default());
+        assert_eq!((x, w), (0, 5));
+    }
+
+    /// A pointer dragged past the right anchor is a zero-width ask rather than a negative one:
+    /// the item's own minimum wins and the origin sits at the anchor.
+    #[test]
+    fn a_west_resize_past_the_anchor_keeps_the_minimum_width() {
+        let item = a_panel_at(0, 4);
+        let (x, w) = clamp_resize_from_left(&item, 9, &GridConfig::default());
+        let (min_w, _) = item.panel.min_size();
+        assert_eq!(w, min_w.max(1));
+        assert_eq!(x + w, 4);
+    }
+
+    /// A fitted surface's height is its content's, so a drag must not propose one — the rule
+    /// `clamp_resize` enforces for its own callers, shared here rather than copied.
+    #[test]
+    fn a_fitted_surface_holds_its_height_through_the_split_clamp() {
+        let item = a_panel_at(2, 4);
+        assert!(item.panel.fits_content());
+        assert_eq!(clamp_resize_height(&item, 99), item.h);
+        assert_eq!(clamp_resize(&item, 3, 99, &GridConfig::default()).1, item.h);
+    }
+
+    /// The whole south-west commit: origin and width move together and the layout ends valid
+    /// and compacted, which is what makes the gesture safe to drive through `place_item`.
+    #[test]
+    fn a_west_resize_commit_lands_a_valid_layout() {
+        let config = GridConfig::default();
+        let [a, b] = [
+            PanelKind::Dashboard(DashboardId(1)),
+            PanelKind::Dashboard(DashboardId(2)),
+        ];
+        // `b` sits below `a`, so widening `a` leftwards must not need to push anything.
+        let mut items = vec![GridItem::new(a, 4, 0, 3, 4), GridItem::new(b, 4, 4, 3, 4)];
+        let (x, w) = clamp_resize_from_left(&items[0], 1, &config);
+        let h = items[0].h;
+        place_item(&mut items, a, x, 0, w, h, &config);
+        assert_eq!((items[0].x, items[0].w), (1, 6));
+        assert_eq!(item(&items, b).y, 4, "the surface below stayed put");
+        assert!(validate_layout(&items, &config, &[a, b]));
     }
 }

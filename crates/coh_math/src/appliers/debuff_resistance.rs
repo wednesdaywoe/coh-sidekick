@@ -59,11 +59,48 @@ pub(crate) fn is_debuff_resistance_atom(atom: &coh_data::AtomicEffect) -> bool {
             .any(|(_, effect_type)| atom.effect_type == Some(*effect_type))
 }
 
+/// One routed debuff-resistance row, in the shape Pass 2b consumes.
+pub struct DebuffResistance {
+    /// The lowercase bag type `GlobalBonuses::add_debuff_resistance` routes on.
+    pub type_key: &'static str,
+    /// `|scale|` on the atom's table, no per-target — the converter's `makeEffect`.
+    pub value: TypedValue,
+    /// The enhancement aspect this row takes, or `None` when nothing may boost it.
+    /// Resolved here rather than at the pass because only here is the granting atom still
+    /// in hand: its `IgnoreStrength` flag is what decides the row's fate, and the flag is
+    /// per template, not per power ([`debuff_resistance_enhancement_aspect`]).
+    pub enhancement_aspect: Option<&'static str>,
+}
+
+/// The enhancement aspect that governs a debuff-resistance row of this bag type: the SAME
+/// aspect that governs that stat's own buff row. A debuff-resistance is that attribute's
+/// `Res` face of the very attrib its buff row uses, and the game keys an enhancement's boost
+/// by attribute rather than by face — which is why a Defense IO moves Super Reflexes' DDR at
+/// all, and why [`debuff_resistance_enhancement_aspect`] is a map from the resisted attribute
+/// rather than a special case for defense. It is the rule Pass 2b already applies per mez
+/// type (`1 + enh.get(type)`); debuff resistance simply has types with no entry.
+///
+/// `None` where the resisted attribute has no enhancement category of its own — perception,
+/// recovery and regeneration are absent from the aspect vocabulary — and for `movement`,
+/// whose Run/Fly/Jump/JumpHeight axes the converter collapses into one slot with no single
+/// aspect to take. Those rows read unenhanced on every power, flagged or not.
+pub(crate) fn debuff_resistance_enhancement_aspect(type_key: &str) -> Option<&'static str> {
+    match type_key {
+        "defense" => Some("defense"),
+        "endurance" => Some("endurance"),
+        "recharge" => Some("recharge"),
+        "tohit" => Some("tohit"),
+        "accuracy" => Some("accuracy"),
+        "range" => Some("range"),
+        _ => None,
+    }
+}
+
 /// The per-type debuff RESISTANCE this power contributes (`effects.debuffResistance`), keyed by
 /// the lowercase bag type. `None` when no routed `<Attr> aspect=Res` atom exists (→ the bag
 /// fallback). Value is `|scale|` on the atom's table (the converter's `makeEffect` = `Math.abs`),
 /// no per-target (`makeEffect` drops it — a debuff-resistance is never a per-foe increment).
-pub fn debuff_resistance_value(power: &Power) -> Option<Vec<(String, TypedValue)>> {
+pub fn debuff_resistance_value(power: &Power) -> Option<Vec<DebuffResistance>> {
     let mut out = Vec::new();
     for (key, effect_type) in ROUTED {
         // OVERWRITE fold (converter `effects.debuffResistance.<type> = makeEffect()`): the LAST
@@ -79,14 +116,26 @@ pub fn debuff_resistance_value(power: &Power) -> Option<Vec<(String, TypedValue)
             continue;
         };
         let Some(scale) = atom.scale else { continue };
-        out.push((
-            key.to_string(),
-            TypedValue {
+        // `IgnoreStrength` on the granting template is the game's word that the row is not
+        // enhanced, and it is the ONLY thing that makes a row unenhanceable: the same attrib
+        // carries an enhanceable buff row, so the power's `boosts_allowed` list cannot answer
+        // this question. Granite Armor's DDR row carries it; all seven Super Reflexes DDR
+        // rows do not — which is why one Tanker's Defense IOs move its DDR and the other's
+        // do not, and why the flag is read per row rather than per power or per type.
+        let enhancement_aspect = if atom.ignore_strength == Some(true) {
+            None
+        } else {
+            debuff_resistance_enhancement_aspect(key)
+        };
+        out.push(DebuffResistance {
+            type_key: key,
+            value: TypedValue {
                 scale: scale.abs(),
                 table: table_of(atom).map(Box::from),
                 per_target: None,
             },
-        ));
+            enhancement_aspect,
+        });
     }
     if out.is_empty() {
         None

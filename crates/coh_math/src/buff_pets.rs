@@ -45,6 +45,7 @@
 //! differs enough between the two that Force Field Generator's mag-20 hold protection is 6.92 on
 //! `minion_pets` and 8.65 read as a Defender (ENT-10).
 
+use crate::appliers::debuff_resistance::debuff_resistance_enhancement_aspect;
 use crate::apply::{defense_enh, power_enhancement};
 use crate::enhancement::EnhancementBonuses;
 use crate::granted::{faced_route, FacedFamily, FacedRoute};
@@ -269,8 +270,10 @@ fn faced_value(
 /// stays flat as it does on the parent.
 ///
 /// Protection is unenhanced, as the parent's `Res_Boolean` armor protection is. Recharge buffs are
-/// unenhanced, as the parent reads them scale-directly. Of the debuff resistances only defense
-/// takes an enhancement, by Defense, and taunt/placate resistance takes none (both as the parent).
+/// unenhanced, as the parent reads them scale-directly. A debuff resistance takes its OWN
+/// attribute's enhancement through the parent's own map, so a Defense DDR row takes Defense
+/// enhancement and a perception or movement row takes nothing, flagged or not; taunt/placate
+/// resistance takes none (all as the parent).
 fn enh_multiplier(effect: &Value, faced: Option<FacedRoute>, enh: &EnhancementBonuses) -> f64 {
     if effect.get("ignoreStrength").and_then(Value::as_bool) == Some(true) {
         return 1.0;
@@ -280,8 +283,9 @@ fn enh_multiplier(effect: &Value, faced: Option<FacedRoute>, enh: &EnhancementBo
             (FacedFamily::Protection, _) => 0.0,
             (FacedFamily::MezResistance, "taunt" | "placate") => 0.0,
             (FacedFamily::MezResistance, ty) => enh.get(ty),
-            (FacedFamily::DebuffResistance, "defense") => enh.get("defense"),
-            (FacedFamily::DebuffResistance, _) => 0.0,
+            (FacedFamily::DebuffResistance, ty) => {
+                debuff_resistance_enhancement_aspect(ty).map_or(0.0, |aspect| enh.get(aspect))
+            }
         },
         None => match effect.get("type").and_then(Value::as_str) {
             Some("DefenseBuff") => defense_enh(enh),

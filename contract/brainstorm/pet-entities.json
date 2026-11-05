@@ -28465,6 +28465,12 @@
      ],
      "effects": [
       {
+       "type": "ResistanceDebuff",
+       "scale": 2.5,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "Knockback",
        "magnitude": 1,
        "scale": 2,
@@ -28661,6 +28667,12 @@
        "type": "EndDrain",
        "scale": 0.025,
        "table": "Ranged_Ones",
+       "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 3,
+       "table": "Ranged_Res_Dmg",
        "ignoreStrength": true
       }
      ],
@@ -29765,6 +29777,12 @@
      ],
      "effects": [
       {
+       "type": "ResistanceDebuff",
+       "scale": 2.5,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "Knockback",
        "magnitude": 1,
        "scale": 2,
@@ -29961,6 +29979,12 @@
        "type": "EndDrain",
        "scale": 0.025,
        "table": "Ranged_Ones",
+       "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 3,
+       "table": "Ranged_Res_Dmg",
        "ignoreStrength": true
       }
      ],
@@ -31063,6 +31087,14 @@
        "table": "Melee_Damage"
       }
      ],
+     "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 1,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      }
+     ],
      "atoms": [
       [
        "Damage",
@@ -31166,6 +31198,12 @@
       }
      ],
      "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 1,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      },
       {
        "type": "Fear",
        "magnitude": 4,
@@ -31973,6 +32011,14 @@
        "table": "Melee_Damage"
       }
      ],
+     "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 1,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      }
+     ],
      "atoms": [
       [
        "Damage",
@@ -32076,6 +32122,12 @@
       }
      ],
      "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 1,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      },
       {
        "type": "Fear",
        "magnitude": 4,
@@ -33595,6 +33647,12 @@
        "type": "ToHitDebuff",
        "scale": 1,
        "table": "Ranged_Debuff_ToHit"
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 1.25,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
       }
      ],
      "atoms": [
@@ -126112,6 +126170,12 @@
      ],
      "effects": [
       {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "Stun",
        "magnitude": 4,
        "scale": 6,
@@ -127380,6 +127444,12 @@
       }
      ],
      "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
+      },
       {
        "type": "Stun",
        "magnitude": 4,
@@ -131124,6 +131194,12 @@
      ],
      "effects": [
       {
+       "type": "ResistanceDebuff",
+       "scale": 1,
+       "table": "Melee_Debuff_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "Knockback",
        "magnitude": 1,
        "scale": 0.67,
@@ -132270,6 +132346,12 @@
       }
      ],
      "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 1,
+       "table": "Melee_Debuff_Res_Dmg",
+       "ignoreStrength": true
+      },
       {
        "type": "Knockback",
        "magnitude": 1,
@@ -167119,6 +167201,14 @@
        "table": "Ranged_Damage"
       }
      ],
+     "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Ranged_Debuff_Res_Dmg",
+       "ignoreStrength": true
+      }
+     ],
      "atoms": [
       [
        "Damage",
@@ -167432,6 +167522,14 @@
          "damageType": "Toxic",
          "scale": 0.66,
          "table": "Ranged_Damage"
+        }
+       ],
+       "effects": [
+        {
+         "type": "ResistanceDebuff",
+         "scale": 2,
+         "table": "Ranged_Debuff_Res_Dmg",
+         "ignoreStrength": true
         }
        ],
        "atoms": [
@@ -167904,6 +168002,14 @@
          "damageType": "Toxic",
          "scale": 0.26,
          "table": "Ranged_Damage"
+        }
+       ],
+       "effects": [
+        {
+         "type": "ResistanceDebuff",
+         "scale": 2,
+         "table": "Ranged_Debuff_Res_Dmg",
+         "ignoreStrength": true
         }
        ],
        "atoms": [
@@ -168787,6 +168893,14 @@
        "table": "Ranged_Damage"
       }
      ],
+     "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Ranged_Debuff_Res_Dmg",
+       "ignoreStrength": true
+      }
+     ],
      "atoms": [
       [
        "Damage",
@@ -169037,6 +169151,14 @@
          "damageType": "Toxic",
          "scale": 0.3,
          "table": "Melee_Damage"
+        }
+       ],
+       "effects": [
+        {
+         "type": "ResistanceDebuff",
+         "scale": 2,
+         "table": "Melee_Debuff_Res_Dmg",
+         "ignoreStrength": true
         }
        ],
        "atoms": [
@@ -233450,6 +233572,12 @@
        "ignoreStrength": true
       },
       {
+       "type": "ResistanceDebuff",
+       "scale": 1,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "Knockback",
        "magnitude": 1,
        "scale": 0.1,
@@ -236111,6 +236239,12 @@
        "ignoreStrength": true
       },
       {
+       "type": "ResistanceDebuff",
+       "scale": 5,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "ToHitDebuff",
        "scale": 1.8,
        "table": "Ranged_Debuff_ToHit"
@@ -236124,6 +236258,12 @@
        "type": "DamageDebuff",
        "scale": 1.8,
        "table": "Ranged_Debuff_Dam",
+       "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 3.75,
+       "table": "Ranged_Res_Dmg",
        "ignoreStrength": true
       },
       {
@@ -238137,6 +238277,12 @@
        "type": "DamageDebuff",
        "scale": 3,
        "table": "Ranged_Debuff_Dam",
+       "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 5,
+       "table": "Ranged_Res_Dmg",
        "ignoreStrength": true
       }
      ],
@@ -243919,6 +244065,12 @@
        "ignoreStrength": true
       },
       {
+       "type": "ResistanceDebuff",
+       "scale": 3.5,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "Knockback",
        "magnitude": 1,
        "scale": 0.1,
@@ -244991,6 +245143,12 @@
        "type": "RechargeDebuff",
        "scale": 0.2,
        "table": "Melee_Slow",
+       "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 3,
+       "table": "Melee_Res_Dmg",
        "ignoreStrength": true
       },
       {
@@ -252070,6 +252228,12 @@
        "scale": 0.24,
        "table": "Melee_Slow",
        "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 2.4,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
       }
      ],
      "atoms": [
@@ -252505,6 +252669,12 @@
        "axis": "runSpeed",
        "scale": 1,
        "table": "Melee_SpeedRunning",
+       "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 3,
+       "table": "Melee_Res_Dmg",
        "ignoreStrength": true
       }
      ],
@@ -257914,6 +258084,14 @@
        "scale": 0.1,
        "table": "Ranged_Damage",
        "chance": 0.5
+      }
+     ],
+     "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
       }
      ],
      "atoms": [
@@ -274752,6 +274930,14 @@
        "damageType": "Energy",
        "scale": 0.5,
        "table": "Ranged_Damage"
+      }
+     ],
+     "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
       }
      ],
      "atoms": [
@@ -336286,6 +336472,12 @@
      ],
      "effects": [
       {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "DefenseDebuff",
        "scale": 2,
        "table": "Ranged_Debuff_Def"
@@ -349686,6 +349878,12 @@
        "ignoreStrength": true
       },
       {
+       "type": "ResistanceDebuff",
+       "scale": 3,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "DefenseDebuff",
        "scale": 3,
        "table": "Melee_Debuff_Def"
@@ -350420,6 +350618,12 @@
        "type": "RechargeDebuff",
        "scale": 0.2,
        "table": "Melee_Slow",
+       "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 3,
+       "table": "Melee_Res_Dmg",
        "ignoreStrength": true
       },
       {
@@ -352285,7 +352489,513 @@
    "commandable": false,
    "copyCreatorMods": true,
    "canZone": false,
-   "abilities": []
+   "abilities": [
+    {
+     "name": "SonicDebuffArrow",
+     "displayName": "SonicDebuffArrow",
+     "type": "Auto",
+     "damage": [],
+     "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      }
+     ],
+     "atoms": [
+      [
+       "Resistance",
+       "Smashing",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Lethal",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Fire",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Cold",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Energy",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Negative",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Psionic",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Toxic",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Smashing",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Lethal",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Fire",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Cold",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Energy",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Negative",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Psionic",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ]
+      ],
+      [
+       "Resistance",
+       "Toxic",
+       -2,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ]
+      ]
+     ],
+     "recharge": 0,
+     "castTime": 0,
+     "activatePeriod": 5,
+     "effectArea": "Sphere",
+     "targetsAffected": [
+      "Foe"
+     ],
+     "radius": 25,
+     "maxTargets": 10
+    }
+   ]
   },
   "Pets_SonicDebuffArrow_Controller": {
    "name": "Pets_SonicDebuffArrow_Controller",
@@ -352294,7 +353004,193 @@
    "commandable": false,
    "copyCreatorMods": true,
    "canZone": false,
-   "abilities": []
+   "abilities": [
+    {
+     "name": "SonicDebuffArrow",
+     "displayName": "SonicDebuffArrow",
+     "type": "Auto",
+     "damage": [],
+     "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 1.5,
+       "table": "Melee_Res_Dmg",
+       "ignoreStrength": true
+      }
+     ],
+     "atoms": [
+      [
+       "Resistance",
+       "Smashing",
+       -1.5,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Resistance",
+       "Lethal",
+       -1.5,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Resistance",
+       "Fire",
+       -1.5,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Resistance",
+       "Cold",
+       -1.5,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Resistance",
+       "Energy",
+       -1.5,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Resistance",
+       "Negative",
+       -1.5,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Resistance",
+       "Psionic",
+       -1.5,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Resistance",
+       "Toxic",
+       -1.5,
+       1,
+       5.25,
+       "Melee_Res_Dmg",
+       "Res",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ]
+     ],
+     "recharge": 0,
+     "castTime": 0,
+     "activatePeriod": 5,
+     "effectArea": "Sphere",
+     "targetsAffected": [
+      "Foe"
+     ],
+     "radius": 25,
+     "maxTargets": 10
+    }
+   ]
   },
   "Pets_SoulAbsorptionBuff": {
    "name": "Pets_SoulAbsorptionBuff",
@@ -360111,6 +361007,12 @@
        "axis": "jumpHeight",
        "scale": 500,
        "table": "Ranged_Ones",
+       "ignoreStrength": true
+      },
+      {
+       "type": "ResistanceDebuff",
+       "scale": 3,
+       "table": "Ranged_Res_Dmg",
        "ignoreStrength": true
       },
       {
@@ -374645,6 +375547,12 @@
      ],
      "effects": [
       {
+       "type": "ResistanceDebuff",
+       "scale": 2,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
+      },
+      {
        "type": "DefenseDebuff",
        "scale": 2,
        "table": "Ranged_Debuff_Def"
@@ -375804,6 +376712,12 @@
       }
      ],
      "effects": [
+      {
+       "type": "ResistanceDebuff",
+       "scale": 2.66,
+       "table": "Ranged_Res_Dmg",
+       "ignoreStrength": true
+      },
       {
        "type": "DefenseDebuff",
        "scale": 2.66,

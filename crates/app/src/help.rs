@@ -315,7 +315,7 @@ impl Surface {
             Surface::IncarnatePicker => "panels::incarnate_picker::IncarnatePickerHost",
             Surface::IncarnateCrafting => "panels::incarnate_crafting::IncarnateCraftingHost",
             Surface::Accolades => "panels::accolade_picker::AccoladePickerHost",
-            Surface::Inherents => "panels::inherents_section::InherentsSection",
+            Surface::Inherents => "panels::inherents_section::InherentGroupPanel",
             Surface::PowersByLevel => "panels::powers_by_level::PowersByLevel",
             Surface::PinnedPowers => "pinned_powers::PinnedPowersStrip",
             Surface::EnhancementPicker => "panels::powers::EnhancementPickerHost",
@@ -393,6 +393,7 @@ fn surface_of_panel(panel: PanelKind) -> Surface {
         PanelKind::Pools => Surface::PoolsPanel,
         PanelKind::SetBonuses => Surface::SetBonusTotals,
         PanelKind::Info => Surface::InfoPanel,
+        PanelKind::Inherent(_) => Surface::Inherents,
         PanelKind::Dashboard(_) => Surface::Dashboards,
     }
 }
@@ -657,9 +658,12 @@ pub const TOPICS: &[Topic] = &[
         category: Category::Powers,
         surface: Surface::Inherents,
         body: "Every character is handed powers it never picks — the archetype's own inherent, \
-               Brawl, Sprint, Health and Stamina. They sit in the Powers panel beside the picks, \
-               marked apart because they spend none of your picks, and the ones the game lets you \
-               slot take enhancements exactly like any other power.",
+               Brawl, Sprint, Health and Stamina. They spend none of your picks, and the ones the \
+               game lets you slot take enhancements exactly like any other power. Each group \
+               (Fitness, Basic, Prestige, Archetype, Granted) is a panel of its own, so you can put \
+               it where you want it: Fitness is on the grid already, and Archetype, Basic, \
+               Prestige and Granted are a click away in the More menu. An inherent that takes no \
+               slots can be hidden from its own ⋮ menu, and the panel names what it is hiding.",
         keywords: &[
             "inherent", "brawl", "sprint", "rest", "prestige", "fitness", "stamina",
         ],
