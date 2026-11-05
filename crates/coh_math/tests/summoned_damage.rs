@@ -4,10 +4,14 @@
 //! hit lives on the pet, so the card read them as non-attacks. Each pet's own atoms are now read
 //! through the same resolver a direct attack uses, counted over the hits one summon lands.
 //!
-//! The other half is what must NOT fold. A pet that follows its owner between zones (Summon
-//! Widow, Phantom Army's decoys) fights beside the player; its 240-second lifetime read as an
-//! 18,605-damage "hit" before `canZone` kept it out. And a patch that exists only once something
-//! ignites it (Oil Slick Arrow's fire) is inert until it does.
+//! The other half is what must NOT fold. A creature that fights beside its owner — Summon
+//! Widow, Phantom Army's decoys, Gang War's thugs — does its own damage over a lifetime of its
+//! own choosing, and Summon Widow's 240 seconds read as an 18,605-damage "hit" before anything
+//! was kept out. `canZone` alone was the guard, and it is the wrong FIELD: the villain defs set
+//! it on stationary traps too, so Acid Mortar was kept out with the companions and read as a
+//! non-attack while its own shipped text promises a hit. What separates the two is what the
+//! entity DOES. And a patch that exists only once something ignites it (Oil Slick Arrow's fire)
+//! is inert until it does.
 
 use coh_data::{DatasetId, Power, PowerDatabase};
 use coh_math::damage::{resolve_power_damage, DamageApplication, PowerDamage};
@@ -113,7 +117,7 @@ fn a_rain_lands_every_pulse_of_its_life() {
 }
 
 #[test]
-fn a_pet_that_follows_its_owner_is_not_the_powers_hit() {
+fn a_companion_fights_its_own_fight() {
     for dataset in DatasetId::ALL {
         let db = load(dataset);
         for ident in ["Summon_Widow", "Decoy", "Gang_War"] {
@@ -125,6 +129,60 @@ fn a_pet_that_follows_its_owner_is_not_the_powers_hit() {
                     damage.components
                 );
             }
+        }
+    }
+}
+
+/// A mortar, a mine and a drone ARE the power's payload: they are placed, they deliver, and
+/// nothing else about them fights. All four forks set `canZone` on them anyway, so the old
+/// guard dropped their damage whole and the card read the power as a non-attack.
+#[test]
+fn a_placed_payload_is_the_powers_hit() {
+    for dataset in DatasetId::ALL {
+        let db = load(dataset);
+        for ident in ["Acid_Mortar", "Seeker_Drones", "Photon_Seekers"] {
+            for power in db.all_powers().filter(|p| p.ident() == ident) {
+                let damage = damage(&db, "corruptor", power);
+                let landed: Vec<_> = damage
+                    .components
+                    .iter()
+                    .filter(|c| c.summoned.is_some() && c.is_certain())
+                    .collect();
+                assert!(
+                    !landed.is_empty(),
+                    "{dataset:?} {ident}: the pet's damage never reached the power ({:?})",
+                    damage.components
+                );
+            }
+        }
+    }
+}
+
+/// A permanent summon has no lifetime to sum: a lifespan at or past the export's sentinel is
+/// already read as ONE activation, so folding it cannot reproduce the 240-second total the
+/// companion guard exists to stop. Singularity is the case — a vortex that sits in the world and
+/// crushes, whose damage is the power's and nobody else's.
+#[test]
+fn a_permanent_summon_lands_one_activation() {
+    let db = load(DatasetId::Homecoming);
+    for power in powers(&db, "Singularity") {
+        let damage = damage(&db, "dominator", power);
+        let folded: Vec<_> = damage
+            .components
+            .iter()
+            .filter_map(|c| c.summoned.as_ref().map(|s| (c, s)))
+            .collect();
+        assert!(
+            !folded.is_empty(),
+            "Homecoming Singularity: {:?}",
+            damage.components
+        );
+        for (component, summoned) in folded {
+            assert!(
+                summoned.per_activation && summoned.fires == 1.0,
+                "Singularity folded a lifetime, not an activation: {summoned:?} of {}",
+                component.total.base
+            );
         }
     }
 }

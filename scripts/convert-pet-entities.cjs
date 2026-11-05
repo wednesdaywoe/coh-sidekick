@@ -874,6 +874,41 @@ function extractDamageStrength(template) {
   return { effects: out, consumed };
 }
 
+/**
+ * Is this template a foe −Damage-RESISTANCE row — the other half of the pair
+ * `extractDamageStrength` documents, and the half three of the four forks could not see.
+ *
+ * The attribs are the damage types themselves (`Smashing_Dmg` … `Toxic_Dmg`) and the ASPECT
+ * is what makes the row a resistance rather than damage (§2), so no name-keyed table can
+ * hold it: `DEBUFF_ATTRIBS` keys position and resource attribs and deliberately holds no
+ * damage-type key, `extractBuffAura` declines it on its `scale > 0` gate and
+ * `extractDamageStrength` on its aspect=Strength gate. It was the last branch such a row
+ * could reach, and there was none — so it parsed, atomized and fell out. Measured before
+ * this rule: 31 Homecoming abilities, 35 Rebirth and 31 Brainstorm carried a −Res that
+ * never reached the planner, against 1 in Thunderspy, which has had the rule since ENT-4.
+ * Acid Mortar is the report — its own shipped text says the mortar "reduces the target's
+ * Defense as well as their Damage Resistance", and the planner showed only the Defense.
+ *
+ * The TABLE carries the direction, exactly as the Thunderspy branch reads it: a
+ * `*_Res_Dmg` / `*_Debuff_Res_Dmg` row is a resistance magnitude, while a `*_Ones` row is a
+ * marker whose number is not a percent — the pet's own `Resistance` power lists a full
+ * immunity that way (`Heal_Dmg,Smashing_Dmg,…` at -10 on `Melee_Ones`, `target: Self`).
+ * A positive scale is the pet's own +Resist, which is a self-buff and stays dropped.
+ *
+ * `Heal_Dmg` is not a damage type and is excluded: at aspect=Resistance it is heal-debuff
+ * RESISTANCE, the same reading that gates the heal emitters either side of it. No row in
+ * the corpus reaches that exclusion today — every negative `Heal_Dmg` resistance row sits
+ * on a `*_Ones` table — but the gate is the rule, not the accident.
+ */
+function isFoeResistanceDebuff(attribLower, template) {
+  return template.aspect === 'Resistance'
+    && attribLower.endsWith('_dmg')
+    && attribLower !== 'heal_dmg'
+    && (template.scale || 0) < 0
+    && !!template.table
+    && !/_ones$/i.test(template.table);
+}
+
 // Attrib cache values that indicate non-attack utility powers
 const UTILITY_ATTRIBS = new Set([
   'fly', 'untouchable', 'translucency', 'stealth',
@@ -1275,9 +1310,7 @@ function extractEffects(powerData) {
             // negative = the foe -Resistance debuff we surface (once, deduped across
             // the per-type rows); positive = a pet self-buff, dropped. Gated to a
             // real magnitude table, mirroring the `*_Ones`-marker exclusion above.
-            if (!debuffType && template.aspect === 'Resistance'
-                && attribLower.endsWith('_dmg') && template.scale < 0
-                && !/_ones$/i.test(template.table || '')) {
+            if (!debuffType && isFoeResistanceDebuff(attribLower, template)) {
               debuffType = 'ResistanceDebuff';
             }
             if (debuffType) {
@@ -1316,6 +1349,20 @@ function extractEffects(powerData) {
             if (attribLower === 'endurance' && template.scale >= 0) continue;
 
             const effect = { type: debuffType };
+            if (template.scale && template.table) {
+              effect.scale = Math.abs(template.scale);
+              effect.table = template.table;
+            }
+            push(effect);
+          }
+
+          // A foe −Damage-RESISTANCE, which the name-keyed table above is blind to by
+          // construction. Same rule Thunderspy has since ENT-4, now shared rather than
+          // forked — see `isFoeResistanceDebuff`. One template names every damage type at
+          // one scale, so the eight attribs of one row collapse to one effect through
+          // `push`'s identity, exactly as they do on the Thunderspy side.
+          if (isFoeResistanceDebuff(attribLower, template)) {
+            const effect = { type: 'ResistanceDebuff' };
             if (template.scale && template.table) {
               effect.scale = Math.abs(template.scale);
               effect.table = template.table;
