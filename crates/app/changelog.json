@@ -1,6 +1,12 @@
 [
 
   {
+    "date": "2026-11-05",
+    "items": [
+      { "id": "veat-vault-import-names", "type": "fix", "message": "Arachnos Widow, Arachnos Soldier and other branch-set builds opened from Homecoming's Vault (or a /buildsave file) now show the right name and icon on every power. The branch powers — Night Widow, Fortunata, Bane Spider, Crab Spider — used to come in as internal names like NW_Slash beside a blank icon, because the import filed them under the base set they share a column with instead of their own." }
+    ]
+  },
+  {
     "date": "2026-11-04",
     "items": [
       { "id": "vault-import-phantom-picks", "type": "fix", "message": "Builds imported from the Vault (or a /buildsave file) no longer count the powers the game hands you for free — Bio Armor's Adaptation forms, Staff Fighting's staff forms and Dual Pistols' ammo types — as if you had spent power picks on them. That miscount is what made a level 50 import say a power sits at a level the dataset grants no pick at, and refuse the level 44 and higher picks." }
