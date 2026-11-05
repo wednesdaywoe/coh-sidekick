@@ -1,6 +1,12 @@
 [
 
   {
+    "date": "2026-11-05",
+    "items": [
+      { "id": "vault-search", "type": "feat", "message": "My Builds has a search box and filters. Type words to find a build by name, description, archetype, powerset, tag or server — every word has to match, so \"tank dark\" finds a Tanker in Dark Armor. Narrow further by archetype, primary, secondary and visibility; the count reads \"6 of 60 builds\" whenever a filter is on, and Clear filters puts them all back. The search and filters are remembered between visits, like the All Builds tab's." }
+    ]
+  },
+  {
     "date": "2026-11-04",
     "items": [
       { "id": "vault-import-phantom-picks", "type": "fix", "message": "Builds imported from the Vault (or a /buildsave file) no longer count the powers the game hands you for free — Bio Armor's Adaptation forms, Staff Fighting's staff forms and Dual Pistols' ammo types — as if you had spent power picks on them. That miscount is what made a level 50 import say a power sits at a level the dataset grants no pick at, and refuse the level 44 and higher picks." },

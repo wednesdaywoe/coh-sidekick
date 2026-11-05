@@ -1175,6 +1175,23 @@
    advertises the one axis it actually moves. */
 .resize-handle--width { cursor: ew-resize; }
 
+/* West resize strip: the surface's left edge, pulled to widen it leftwards without moving
+   the surface first. It starts BELOW the header, because the header's left lead-in is the
+   move-grab — a strip over it would turn "drag the panel" into "resize the panel" for anyone
+   who grabbed the title's left end. `.panel-head` is `flex: 0 0 auto`, so its height is its
+   own content's and anchoring to it is what keeps the two targets apart without a magic
+   number. One axis only, so the horizontal cursor; the tick marks are the corner glyph rotated
+   to run down the edge rather than across a corner. */
+.resize-handle--west {
+  left: 0; right: auto; bottom: 0;
+  top: var(--panel-head-height);
+  width: 8px; height: auto;
+  cursor: ew-resize;
+  background:
+    linear-gradient(45deg, transparent 3px, var(--text-faint) 3px, var(--text-faint) 4px, transparent 4px),
+    linear-gradient(45deg, transparent 7px, var(--text-faint) 7px, var(--text-faint) 8px, transparent 8px);
+}
+
 /* Snapped landing zone. Transitions between cells so the target reads as gliding
    into place while the surface above it tracks the cursor freely. */
 .grid-placeholder {

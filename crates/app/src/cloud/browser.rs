@@ -49,7 +49,8 @@ use crate::cloud::avatar::avatar_src;
 use crate::cloud::favorites;
 use crate::cloud::profile;
 use crate::cloud::shared_builds::{
-    self, BuildVisibility, SearchFilters, SharedBuild, SharedBuildSummary, SortBy, VaultSort,
+    self, BuildVisibility, SearchFilters, SharedBuild, SharedBuildSummary, SortBy, VaultFilter,
+    VaultSort,
 };
 use crate::cloud::tag_vocab;
 use crate::modal::{Modal, ModalSize};
@@ -170,6 +171,14 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
     // state — only the menu of choices. Persisted with the rest, so the picker opens the way
     // it was left.
     let mut tags_open = use_signal(|| false);
+    // The vault tab's own search, filters and order. They live up here with the rest of the
+    // browser's state rather than inside [`VaultPanel`] for one reason: the save is one save,
+    // and a second writer of it would be a second place for the modal's half to be lost. The
+    // panel receives them as props and mutates them through the same `save_state` funnel every
+    // other control in this modal uses.
+    let vault_filter = use_signal(VaultFilter::default);
+    let vault_query = use_signal(String::new);
+    let vault_sort = use_signal(VaultSort::default);
 
     // The persisted state, read once at mount and applied to the signals above. The first
     // search waits for this to land (the `restored` gate in `result` below): a
@@ -186,6 +195,9 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
         let mut filters = filters;
         let mut pinned = pinned;
         let mut tags_open = tags_open;
+        let mut vault_filter = vault_filter;
+        let mut vault_query = vault_query;
+        let mut vault_sort = vault_sort;
         let mut restored = restored;
         if let Some(saved) = crate::browser_store::load().await {
             // "My builds…" names its tab, so it wins over the save; every other door reopens
@@ -199,6 +211,9 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
             filters.set(saved.filters);
             pinned.set(saved.pinned.map(pinned_to_result));
             tags_open.set(saved.tags_open);
+            vault_query.set(saved.vault.query.clone());
+            vault_filter.set(saved.vault);
+            vault_sort.set(saved.vault_sort);
         }
         restored.set(true);
     });
@@ -216,6 +231,8 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
             filters: filters.read().clone(),
             pinned: pinned.read().as_ref().map(pinned_from_result),
             tags_open: tags_open(),
+            vault: vault_filter.read().clone(),
+            vault_sort: vault_sort(),
         };
         crate::browser_store::persist(&state);
     };
@@ -647,7 +664,13 @@ fn BrowserModal(database: Option<Db>, initial: BrowserView) -> Element {
                         }
                     }
                 } else {
-                    VaultPanel { database: database.clone() }
+                    VaultPanel {
+                        database: database.clone(),
+                        filter: vault_filter,
+                        query_input: vault_query,
+                        sort: vault_sort,
+                        save_state: save_state,
+                    }
                 }
             }
         }
@@ -690,7 +713,20 @@ enum BrowserView {
 /// default is the order the tab has always shipped in, so the picker's arrival refiles
 /// nothing for a user who never touches it.
 #[component]
-fn VaultPanel(database: Option<Db>) -> Element {
+fn VaultPanel(
+    database: Option<Db>,
+    /// The vault's search and filters, owned by [`BrowserModal`] so the one save carries them.
+    filter: Signal<VaultFilter>,
+    /// The search box's draft text, committed to `filter` on submit.
+    query_input: Signal<String>,
+    /// The order the read comes back in. Read INSIDE the resource below for the reason the
+    /// account id is: a pick made while the panel is open re-runs the read in the chosen order
+    /// rather than re-sorting a list the server ordered a different way.
+    sort: Signal<VaultSort>,
+    /// The modal's one persist funnel, so a vault click is saved by the same line as every
+    /// other control in the browser.
+    save_state: Callback<()>,
+) -> Element {
     let account = use_context::<Account>();
     let user = account.user();
 
@@ -698,10 +734,6 @@ fn VaultPanel(database: Option<Db>) -> Element {
     let mut working = use_signal(|| false);
     let mut refusal = use_signal(|| None::<String>);
     let mut confirming = use_signal(|| false);
-    // The order the vault comes back in. Read INSIDE the resource for the reason the account id
-    // is (the note above): a pick made while the panel is open re-runs the read in the chosen
-    // order rather than re-sorting a list the server ordered a different way.
-    let mut sort = use_signal(VaultSort::default);
 
     // The account id is read INSIDE the resource, not captured outside it, so the list re-runs
     // when a sign-in lands while the panel is open. Captured outside it, the closure would hold
@@ -759,6 +791,66 @@ fn VaultPanel(database: Option<Db>) -> Element {
         });
     });
 
+    // The facets' options come from the ROWS, not from the dataset: the archetypes and sets this
+    // account actually has, sorted, so every option in the picker is a choice that can match
+    // something. A dataset-driven list would offer a hundred sets the user has never built and
+    // would have to be narrowed by archetype the way the browse tab's is — see [`VaultFilter`]
+    // for why this one does not need that.
+    // Cloned out of the resource rather than borrowed: the grid below draws from this list and
+    // the resource's read guard must not be held across the rsx! that also reads it.
+    let all_rows: Vec<SharedBuildSummary> = match &*builds.read() {
+        Some(Ok(rows)) => rows.clone(),
+        _ => Vec::new(),
+    };
+    let archetypes = facet_options(&all_rows, |row| (&row.archetype, &row.archetype_name));
+    let primaries = facet_options(&all_rows, |row| (&row.primary_set, &row.primary_name));
+    let secondaries = facet_options(&all_rows, |row| (&row.secondary_set, &row.secondary_name));
+
+    let current = filter.read().clone();
+    let filtered: Vec<SharedBuildSummary> = all_rows
+        .iter()
+        .filter(|row| current.matches(row))
+        .cloned()
+        .collect();
+    let total = all_rows.len();
+    let showing = filtered.len();
+    let filtering = !current.is_empty();
+
+    // The search box commits on submit, the browse tab's rule and for its reason: a keystroke is
+    // not a search. `prevent_default` is not decoration — an uncancelled submit does a native GET
+    // to the current URL and the page reloads, taking the modal and the typed text with it.
+    let submit = move |evt: Event<FormData>| {
+        evt.prevent_default();
+        let mut filter = filter;
+        let mut next = filter.write();
+        next.query = query_input.read().trim().to_string();
+        drop(next);
+        save_state.call(());
+    };
+    let set_facet = move |facet: VaultFacet, value: String| {
+        let mut filter = filter;
+        let mut next = filter.write();
+        let picked = (!value.is_empty()).then_some(value);
+        match facet {
+            VaultFacet::Archetype => next.archetype = picked,
+            VaultFacet::Primary => next.primary_set = picked,
+            VaultFacet::Secondary => next.secondary_set = picked,
+            VaultFacet::Visibility => {
+                next.visibility = picked.as_deref().and_then(visibility_for_value)
+            }
+        }
+        drop(next);
+        save_state.call(());
+    };
+    let select_class = "sb-select";
+    let clear = move |_| {
+        let mut filter = filter;
+        let mut query_input = query_input;
+        filter.set(VaultFilter::default());
+        query_input.set(String::new());
+        save_state.call(());
+    };
+
     rsx! {
         div { class: "sb-vault",
             ReclaimBox {}
@@ -782,8 +874,139 @@ fn VaultPanel(database: Option<Db>) -> Element {
                     } else {
                         let noun = if rows.len() == 1 { "build" } else { "builds" };
                         rsx! {
+                            // The search and filters. Above the bar rather than in it, because
+                            // the bar is about the SELECTION and this is about which rows there
+                            // are to select — two different questions, and mixing them puts a
+                            // search box beside a Delete button.
+                            form {
+                                class: "sb-search",
+                                onsubmit: submit,
+                                input {
+                                    class: "sb-search__input",
+                                    placeholder: "Search your builds…",
+                                    value: query_input(),
+                                    oninput: move |evt| {
+                                        let mut query_input = query_input;
+                                        query_input.set(evt.value());
+                                    },
+                                    "aria-label": "Search your builds"
+                                }
+                                button { class: "seg is-primary", r#type: "submit", "Search" }
+                            }
+                            div { class: "sb-filters",
+                                // `selected:` on every option, not just `value:` on the select.
+                                // The options here come from the ROWS, so on the render that
+                                // restores a saved filter the list is still empty and the
+                                // select's `value` names an option that does not exist yet —
+                                // the browser drops it, and the control then draws blank while
+                                // the filter is applied, which reads as a filter with no cause.
+                                // `selected` is applied as each option is created, so the
+                                // restored pick lands whenever the rows arrive. The browse tab
+                                // does not need this because its options come from the dataset
+                                // and are there on the first render.
+                                select {
+                                    class: select_class,
+                                    value: current.archetype.clone().unwrap_or_default(),
+                                    onchange: move |evt| set_facet(VaultFacet::Archetype, evt.value()),
+                                    "aria-label": "Archetype",
+                                    option {
+                                        value: "",
+                                        selected: current.archetype.is_none(),
+                                        "All Archetypes"
+                                    }
+                                    for (id , name) in &archetypes {
+                                        option {
+                                            key: "{id}",
+                                            value: "{id}",
+                                            selected: current.archetype.as_deref() == Some(id.as_str()),
+                                            "{name}"
+                                        }
+                                    }
+                                }
+                                select {
+                                    class: select_class,
+                                    value: current.primary_set.clone().unwrap_or_default(),
+                                    onchange: move |evt| set_facet(VaultFacet::Primary, evt.value()),
+                                    "aria-label": "Primary powerset",
+                                    option {
+                                        value: "",
+                                        selected: current.primary_set.is_none(),
+                                        "All Primaries"
+                                    }
+                                    for (id , name) in &primaries {
+                                        option {
+                                            key: "{id}",
+                                            value: "{id}",
+                                            selected: current.primary_set.as_deref() == Some(id.as_str()),
+                                            "{name}"
+                                        }
+                                    }
+                                }
+                                select {
+                                    class: select_class,
+                                    value: current.secondary_set.clone().unwrap_or_default(),
+                                    onchange: move |evt| set_facet(VaultFacet::Secondary, evt.value()),
+                                    "aria-label": "Secondary powerset",
+                                    option {
+                                        value: "",
+                                        selected: current.secondary_set.is_none(),
+                                        "All Secondaries"
+                                    }
+                                    for (id , name) in &secondaries {
+                                        option {
+                                            key: "{id}",
+                                            value: "{id}",
+                                            selected: current.secondary_set.as_deref() == Some(id.as_str()),
+                                            "{name}"
+                                        }
+                                    }
+                                }
+                                select {
+                                    class: select_class,
+                                    value: current
+                                        .visibility
+                                        .map(visibility_value)
+                                        .unwrap_or_default(),
+                                    onchange: move |evt| set_facet(VaultFacet::Visibility, evt.value()),
+                                    "aria-label": "Visibility",
+                                    option {
+                                        value: "",
+                                        selected: current.visibility.is_none(),
+                                        "Any visibility"
+                                    }
+                                    for (value , label) in [
+                                        ("public", "Public"),
+                                        ("unlisted", "Unlisted"),
+                                        ("private", "Private"),
+                                    ] {
+                                        option {
+                                            key: "{value}",
+                                            value: "{value}",
+                                            selected: current.visibility.map(visibility_value) == Some(value),
+                                            "{label}"
+                                        }
+                                    }
+                                }
+                                if filtering {
+                                    button {
+                                        class: "seg",
+                                        r#type: "button",
+                                        onclick: clear,
+                                        "Clear filters"
+                                    }
+                                }
+                            }
                             div { class: "sb-vault__bar",
-                                p { class: "sb-count", "{rows.len()} {noun}" }
+                                // "N of M" whenever a filter is on, so a remembered filter can
+                                // never silently hide builds: the total is always on screen
+                                // beside the number that survived it.
+                                p { class: "sb-count",
+                                    if filtering {
+                                        "{showing} of {total} {noun}"
+                                    } else {
+                                        "{total} {noun}"
+                                    }
+                                }
                                 // The order the list comes back in. The default ("Last edited")
                                 // is the order the tab has always shipped in, so the picker
                                 // appearing changes nothing for nobody who does not use it.
@@ -791,7 +1014,9 @@ fn VaultPanel(database: Option<Db>) -> Element {
                                     class: "sb-select",
                                     value: vault_sort_value(sort()),
                                     onchange: move |evt| {
+                                        let mut sort = sort;
                                         sort.set(vault_sort_for_value(evt.value().as_str()));
+                                        save_state.call(());
                                     },
                                     "aria-label": "Sort your builds",
                                     option { value: "edited", "Last edited" }
@@ -857,8 +1082,19 @@ fn VaultPanel(database: Option<Db>) -> Element {
                             if let Some(reason) = refusal() {
                                 div { class: "load-state error", "{reason}" }
                             }
+                            if filtered.is_empty() {
+                                // Never the "no builds" empty state: the account HAS builds,
+                                // the filter is hiding them, and saying otherwise would be a
+                                // claim about the account that is not true.
+                                div { class: "empty-state",
+                                    "No builds match these filters."
+                                    span { class: "hint",
+                                        "Clear the filters to see all {total} again."
+                                    }
+                                }
+                            }
                             div { class: "sb-cards",
-                                for row in rows {
+                                for row in filtered {
                                     div { key: "{row.id}", class: "sb-vault__row",
                                         label { class: "sb-vault__pick",
                                             input {
@@ -932,6 +1168,87 @@ async fn apply_bulk(account: &Account, act: BulkAct, ids: &[String]) -> Result<(
         }
     }
     Ok(())
+}
+
+/// The distinct (id, label) pairs a facet's picker offers, sorted by label.
+///
+/// **A `BTreeMap` and not a sort-then-`dedup_by`**, which is what this was first written as and
+/// what crashed the app: `dedup_by` only removes ADJACENT duplicates, and sorting by name leaves
+/// two rows with the same id in whatever order the sort happened to put them — so a set held by
+/// two builds could survive as two options with one `key`, and Dioxus panics on a re-render
+/// ("keyed siblings must each have a unique key") the moment anything redraws the list. The map
+/// makes the id the identity, which is what the option's `key` and `value` both are.
+///
+/// **A name that two ids share is qualified with the archetype.** A powerset id is
+/// `archetype/set`, so "Arsenal Control" exists once for Controllers and once for Dominators and
+/// a picker listing both would show the same words twice with no way to tell them apart — which
+/// is what the first version did, measured on a real 1000-row account. The qualifier is the
+/// archetype's display name, and it is added ONLY where the name is ambiguous, so the common
+/// case stays the plain set name.
+///
+/// The label is the sort key because that is what the user reads; the id breaks ties so the
+/// order is stable between renders rather than whatever the map's iteration gives.
+fn facet_options<'a>(
+    rows: &'a [SharedBuildSummary],
+    pick: impl Fn(&'a SharedBuildSummary) -> (&'a String, &'a String),
+) -> Vec<(String, String)> {
+    let mut by_id: std::collections::BTreeMap<&str, (&str, &str)> =
+        std::collections::BTreeMap::new();
+    for row in rows {
+        let (id, name) = pick(row);
+        by_id
+            .entry(id.as_str())
+            .or_insert((name.as_str(), row.archetype_name.as_str()));
+    }
+    let mut name_counts: std::collections::BTreeMap<&str, usize> =
+        std::collections::BTreeMap::new();
+    for (name, _) in by_id.values() {
+        *name_counts.entry(name).or_insert(0) += 1;
+    }
+    let mut options: Vec<(String, String)> = by_id
+        .into_iter()
+        .map(|(id, (name, archetype))| {
+            let label = if name_counts.get(name).copied().unwrap_or(0) > 1 {
+                format!("{name} ({archetype})")
+            } else {
+                name.to_string()
+            };
+            (id.to_string(), label)
+        })
+        .collect();
+    options.sort_by(|a, b| a.1.cmp(&b.1).then_with(|| a.0.cmp(&b.0)));
+    options
+}
+
+/// Which facet a vault picker sets. The four selects share one handler, and this is what tells
+/// it which field of [`VaultFilter`] the value belongs to — the browse tab's [`Picker`] for the
+/// same reason, and separate from it because the two set different types.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum VaultFacet {
+    Archetype,
+    Primary,
+    Secondary,
+    Visibility,
+}
+
+/// The visibility select's value for a [`BuildVisibility`], and the walk back from it. The enum
+/// is the state; the strings are the control's, joined here rather than in the rsx! so a value
+/// the control reports but was never offered lands on "any visibility" rather than on a guess.
+fn visibility_value(visibility: BuildVisibility) -> &'static str {
+    match visibility {
+        BuildVisibility::Public => "public",
+        BuildVisibility::Unlisted => "unlisted",
+        BuildVisibility::Private => "private",
+    }
+}
+
+fn visibility_for_value(value: &str) -> Option<BuildVisibility> {
+    match value {
+        "public" => Some(BuildVisibility::Public),
+        "unlisted" => Some(BuildVisibility::Unlisted),
+        "private" => Some(BuildVisibility::Private),
+        _ => None,
+    }
 }
 
 /// The word shown on a vault row's badge. A label, not a branch — the enum is the state.
@@ -2436,6 +2753,41 @@ fn boot_target(pathname: &str) -> Option<BrowserTarget> {
 mod vault_sort_control_tests {
     use super::*;
 
+    /// One row with only the fields a facet picker reads set to anything.
+    fn summary(
+        id: &str,
+        archetype: &str,
+        archetype_name: &str,
+        primary_set: &str,
+        primary_name: &str,
+    ) -> SharedBuildSummary {
+        SharedBuildSummary {
+            id: id.to_string(),
+            name: id.to_string(),
+            description: String::new(),
+            archetype: archetype.to_string(),
+            archetype_name: archetype_name.to_string(),
+            primary_set: primary_set.to_string(),
+            primary_name: primary_name.to_string(),
+            secondary_set: String::new(),
+            secondary_name: String::new(),
+            level: 50,
+            author_name: String::new(),
+            server: String::new(),
+            tags: Vec::new(),
+            created_at: String::new(),
+            updated_at: String::new(),
+            views: 0,
+            user_id: None,
+            visibility: BuildVisibility::Private,
+            preview_image_path: None,
+            preview_template_version: None,
+            author_handle: None,
+            author_display_name: None,
+            author_avatar_url: None,
+        }
+    }
+
     /// Every option the picker offers must walk the value → enum walk back to itself: an option
     /// that mapped to the wrong order would silently refile the vault in a sort the user did
     /// not pick.
@@ -2450,6 +2802,95 @@ mod vault_sort_control_tests {
         ] {
             assert_eq!(vault_sort_for_value(vault_sort_value(sort)), sort);
         }
+    }
+
+    /// The facet pickers offer each id ONCE, however many builds hold it. This is the bug that
+    /// crashed the app: a sort-then-`dedup_by` leaves non-adjacent duplicates, two options end
+    /// up sharing a `key`, and Dioxus panics on the next render.
+    ///
+    /// **The fixture is the shape that actually broke it, and the obvious one does not.** Two
+    /// builds sharing a set id sort next to each other by name, so `dedup_by` catches them and a
+    /// two-row fixture passes against the broken code. Three rows do not: A, B, A by name is
+    /// what a stable sort leaves when two ids share a name and one of them is held twice, and
+    /// `dedup_by` removes nothing from it. That is the real vault — 339 duplicate options in a
+    /// 1000-row account — and it is why this test has three rows and not two.
+    #[test]
+    fn a_facet_offers_each_id_once() {
+        let rows = vec![
+            summary("a", "brute", "Brute", "brute/energy-melee", "Energy Melee"),
+            summary(
+                "b",
+                "scrapper",
+                "Scrapper",
+                "scrapper/energy-melee",
+                "Energy Melee",
+            ),
+            summary("c", "brute", "Brute", "brute/energy-melee", "Energy Melee"),
+        ];
+        let options = facet_options(&rows, |row| (&row.primary_set, &row.primary_name));
+        // Two ids share the name "Energy Melee", so both are qualified by archetype; a name
+        // only one id holds is left plain.
+        assert_eq!(
+            options,
+            vec![
+                (
+                    "brute/energy-melee".to_string(),
+                    "Energy Melee (Brute)".to_string()
+                ),
+                (
+                    "scrapper/energy-melee".to_string(),
+                    "Energy Melee (Scrapper)".to_string()
+                ),
+            ]
+        );
+        let ids: Vec<&String> = options.iter().map(|(id, _)| id).collect();
+        let unique: std::collections::BTreeSet<&&String> = ids.iter().collect();
+        assert_eq!(ids.len(), unique.len(), "an id appears twice: {ids:?}");
+    }
+
+    /// A name only one id holds is offered plain — the qualifier is for the ambiguous case and
+    /// must not spread to every option, which would make the common picker read as noise.
+    #[test]
+    fn an_unambiguous_name_is_not_qualified() {
+        let rows = vec![
+            summary("a", "tanker", "Tanker", "tanker/dark-armor", "Dark Armor"),
+            summary("b", "brute", "Brute", "brute/energy-melee", "Energy Melee"),
+        ];
+        let options = facet_options(&rows, |row| (&row.primary_set, &row.primary_name));
+        assert_eq!(
+            options,
+            vec![
+                ("tanker/dark-armor".to_string(), "Dark Armor".to_string()),
+                ("brute/energy-melee".to_string(), "Energy Melee".to_string()),
+            ]
+        );
+    }
+
+    /// The visibility select round-trips the same way the sort does: every option it offers
+    /// must walk value → enum → value back to itself, or a pick would filter on a visibility
+    /// the user did not choose.
+    #[test]
+    fn the_visibility_picker_round_trips_to_the_enum() {
+        for visibility in [
+            BuildVisibility::Public,
+            BuildVisibility::Unlisted,
+            BuildVisibility::Private,
+        ] {
+            assert_eq!(
+                visibility_for_value(visibility_value(visibility)),
+                Some(visibility)
+            );
+        }
+    }
+
+    /// "Any visibility" is the empty value, and a value the control was never offered is that
+    /// same answer rather than a guess — the vault then shows every row, which is the state the
+    /// user can see and correct.
+    #[test]
+    fn an_unoffered_visibility_is_no_filter() {
+        assert_eq!(visibility_for_value(""), None);
+        assert_eq!(visibility_for_value("Public"), None);
+        assert_eq!(visibility_for_value("everyone"), None);
     }
 
     /// A value the control reports but the picker never offers — a hand-edited DOM, a stale

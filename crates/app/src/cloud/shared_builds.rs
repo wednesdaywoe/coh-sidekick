@@ -417,7 +417,13 @@ pub async fn search(cloud: &Cloud, filters: &SearchFilters) -> Result<SearchResu
 /// refetch. The date orders carry none: `created_at` is stamped at creation and not rewritten
 /// by an edit, and a microsecond-precision stamp makes two rows collide only when they are
 /// saved in the same microsecond — the same tiebreak-free date order the public browse ships.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+///
+/// `Serialize`/`Deserialize` are here for [`crate::browser_store`], which saves the chosen order
+/// beside the vault's filter: the order is an option the user picks as much as a facet is, and a
+/// save that remembered "Tanker" but forgot "Name (A–Z)" would be the same reset in a smaller
+/// hat. The wire spelling is the enum's own name, so a rename is a save that no longer decodes —
+/// which is the answer [`crate::browser_store`] gives every unknown value, rather than a guess.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum VaultSort {
     /// Last edited first — the beta's `getMyBuilds` order, and the default.
     RecentlyEdited,
@@ -505,6 +511,104 @@ pub async fn my_builds(
         .map(|(k, v)| (k.as_str(), v.as_str()))
         .collect();
     list_rows(cloud, &refs, Some(order)).await
+}
+
+/// The vault's own filter: the one the CLIENT applies, over rows it already holds.
+///
+/// [`SearchFilters`] is the browse query — every facet of it becomes a PostgREST parameter,
+/// because the public list is thousands of rows and the server is the only thing that can
+/// narrow it. The vault is the opposite shape: [`my_builds`] is unpaged and uncounted on
+/// purpose (a personal vault is tens of rows), so every row is already in memory and a filter
+/// over it costs nothing but a comparison. Sending this one to the server would be a request
+/// per keystroke to narrow a list the client is holding.
+///
+/// **The facets are independent, and that is a choice.** The browse tab narrows its primary and
+/// secondary pickers to the chosen archetype and clears them when the archetype changes,
+/// because its options come from the dataset and a Tanker's list is not a Blaster's. Here the
+/// options come from the rows themselves — the archetypes and sets this account actually has —
+/// so every facet is a short list of things that exist, and combining two of them narrows
+/// rather than contradicts. Nothing resets when another facet changes, which is one less rule
+/// to explain and one less way to lose a filter the user set.
+///
+/// **The text is a conjunction of terms**, not one substring: "tank dark" finds a Tanker in
+/// Dark Armor, where a single substring would find nothing. Each term is matched
+/// case-insensitively against the name, the description, the archetype and both powersets, the
+/// tags and the server — the fields a card draws, so a search can never match a row for a
+/// reason the user cannot see on it.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct VaultFilter {
+    /// Free text, matched term by term. Empty means no text filter.
+    #[serde(default)]
+    pub query: String,
+    #[serde(default)]
+    pub archetype: Option<String>,
+    #[serde(default)]
+    pub primary_set: Option<String>,
+    #[serde(default)]
+    pub secondary_set: Option<String>,
+    /// The row's own visibility. A vault holds all three, and "which of these did I publish" is
+    /// a question the bulk buttons beside it make worth asking.
+    #[serde(default)]
+    pub visibility: Option<BuildVisibility>,
+}
+
+impl VaultFilter {
+    /// Whether this filter keeps every row — the state the count line reads as "60 builds"
+    /// rather than "60 of 60".
+    pub fn is_empty(&self) -> bool {
+        self.query.trim().is_empty()
+            && self.archetype.is_none()
+            && self.primary_set.is_none()
+            && self.secondary_set.is_none()
+            && self.visibility.is_none()
+    }
+
+    /// Whether one row survives the filter. Every facet is conjunctive: a row must satisfy all
+    /// of them, and a facet that is unset asks nothing.
+    pub fn matches(&self, row: &SharedBuildSummary) -> bool {
+        if let Some(archetype) = self.archetype.as_deref() {
+            if row.archetype != archetype {
+                return false;
+            }
+        }
+        if let Some(primary) = self.primary_set.as_deref() {
+            if row.primary_set != primary {
+                return false;
+            }
+        }
+        if let Some(secondary) = self.secondary_set.as_deref() {
+            if row.secondary_set != secondary {
+                return false;
+            }
+        }
+        if let Some(visibility) = self.visibility {
+            if row.visibility != visibility {
+                return false;
+            }
+        }
+        let terms: Vec<String> = self
+            .query
+            .split_whitespace()
+            .map(str::to_lowercase)
+            .collect();
+        if terms.is_empty() {
+            return true;
+        }
+        let haystack = [
+            row.name.as_str(),
+            row.description.as_str(),
+            row.archetype_name.as_str(),
+            row.primary_name.as_str(),
+            row.secondary_name.as_str(),
+            row.server.as_str(),
+        ]
+        .join(" ")
+        .to_lowercase();
+        let tags = row.tags.join(" ").to_lowercase();
+        terms
+            .iter()
+            .all(|term| haystack.contains(term) || tags.contains(term))
+    }
 }
 
 /// Read one shared build by exact id, through `get-build` — the only path a non-owner reads an
@@ -1124,5 +1228,180 @@ mod vault_sort_tests {
             );
             assert_eq!(order, sort.order());
         }
+    }
+}
+
+#[cfg(test)]
+mod vault_filter_tests {
+    use super::*;
+
+    /// One row of the shape the vault read answers with, with only the fields the filter reads
+    /// set to anything: a filter that started reading a field this fixture leaves empty would
+    /// fail here rather than in the app.
+    fn row(
+        name: &str,
+        archetype: &str,
+        archetype_name: &str,
+        primary: &str,
+        primary_name: &str,
+        secondary: &str,
+        secondary_name: &str,
+        visibility: BuildVisibility,
+    ) -> SharedBuildSummary {
+        SharedBuildSummary {
+            id: format!("id-{name}"),
+            name: name.to_string(),
+            description: String::new(),
+            archetype: archetype.to_string(),
+            archetype_name: archetype_name.to_string(),
+            primary_set: primary.to_string(),
+            primary_name: primary_name.to_string(),
+            secondary_set: secondary.to_string(),
+            secondary_name: secondary_name.to_string(),
+            level: 50,
+            author_name: String::new(),
+            server: "Everlasting".to_string(),
+            tags: Vec::new(),
+            created_at: "2026-01-01T00:00:00Z".to_string(),
+            updated_at: "2026-01-01T00:00:00Z".to_string(),
+            views: 0,
+            user_id: Some("account-1".to_string()),
+            visibility,
+            preview_image_path: None,
+            preview_template_version: None,
+            author_handle: None,
+            author_display_name: None,
+            author_avatar_url: None,
+        }
+    }
+
+    fn tanker() -> SharedBuildSummary {
+        row(
+            "Charnel",
+            "tanker",
+            "Tanker",
+            "dark-armor",
+            "Dark Armor",
+            "dark-melee",
+            "Dark Melee",
+            BuildVisibility::Private,
+        )
+    }
+
+    fn blaster() -> SharedBuildSummary {
+        row(
+            "Tzarina",
+            "blaster",
+            "Blaster",
+            "fire-blast",
+            "Fire Blast",
+            "energy-manipulation",
+            "Energy Manipulation",
+            BuildVisibility::Public,
+        )
+    }
+
+    /// The default filter is the tab as it shipped: every row, and the count line reads "60
+    /// builds" rather than "60 of 60".
+    #[test]
+    fn an_unset_filter_keeps_every_row() {
+        let filter = VaultFilter::default();
+        assert!(filter.is_empty());
+        assert!(filter.matches(&tanker()));
+        assert!(filter.matches(&blaster()));
+    }
+
+    /// Text is matched term by term, so two words that are on different fields of the same row
+    /// find it. A single substring would find nothing here, which is the whole reason for the
+    /// split.
+    #[test]
+    fn every_term_must_match_somewhere_on_the_row() {
+        let filter = VaultFilter {
+            query: "tank dark".to_string(),
+            ..VaultFilter::default()
+        };
+        assert!(filter.matches(&tanker()));
+        assert!(!filter.matches(&blaster()));
+
+        let filter = VaultFilter {
+            query: "tank fire".to_string(),
+            ..VaultFilter::default()
+        };
+        assert!(!filter.matches(&tanker()));
+        assert!(!filter.matches(&blaster()));
+    }
+
+    /// Case is not the user's problem: a search typed in lower case finds a capitalised name,
+    /// and one typed in upper case finds it too.
+    #[test]
+    fn text_matching_ignores_case() {
+        for query in ["charnel", "CHARNEL", "ChArNeL"] {
+            let filter = VaultFilter {
+                query: query.to_string(),
+                ..VaultFilter::default()
+            };
+            assert!(filter.matches(&tanker()), "{query} should find Charnel");
+        }
+    }
+
+    /// The facets are independent: an archetype and a powerset from the same row both apply,
+    /// and one that contradicts the row excludes it. Nothing resets when another facet is set,
+    /// which is the difference from the browse tab's pickers.
+    #[test]
+    fn facets_narrow_together_and_never_reset_each_other() {
+        let filter = VaultFilter {
+            archetype: Some("tanker".to_string()),
+            primary_set: Some("dark-armor".to_string()),
+            ..VaultFilter::default()
+        };
+        assert!(filter.matches(&tanker()));
+        assert!(!filter.matches(&blaster()));
+
+        let contradictory = VaultFilter {
+            archetype: Some("tanker".to_string()),
+            primary_set: Some("fire-blast".to_string()),
+            ..VaultFilter::default()
+        };
+        assert!(!contradictory.matches(&tanker()));
+        assert!(!contradictory.matches(&blaster()));
+    }
+
+    /// Visibility is a facet like any other, because a vault holds all three and "which of
+    /// these did I publish" is a question the bulk buttons beside the list make worth asking.
+    #[test]
+    fn visibility_is_a_facet() {
+        let filter = VaultFilter {
+            visibility: Some(BuildVisibility::Public),
+            ..VaultFilter::default()
+        };
+        assert!(!filter.matches(&tanker()));
+        assert!(filter.matches(&blaster()));
+    }
+
+    /// A tag is searchable text, so a build filed under "AFK farming" is found by typing it —
+    /// the tag is drawn on the card, and a search that could not reach it would be matching on
+    /// less than the user can see.
+    #[test]
+    fn a_tag_is_searchable() {
+        let mut tagged = tanker();
+        tagged.tags = vec!["AFK farming".to_string()];
+        let filter = VaultFilter {
+            query: "afk".to_string(),
+            ..VaultFilter::default()
+        };
+        assert!(filter.matches(&tagged));
+        assert!(!filter.matches(&tanker()));
+    }
+
+    /// Whitespace alone is not a search. A box holding one space must not empty the list, which
+    /// is what a naive `contains("")` on a split would do.
+    #[test]
+    fn a_blank_query_is_no_query() {
+        let filter = VaultFilter {
+            query: "   ".to_string(),
+            ..VaultFilter::default()
+        };
+        assert!(filter.is_empty());
+        assert!(filter.matches(&tanker()));
     }
 }

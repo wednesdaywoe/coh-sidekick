@@ -22,7 +22,7 @@
 //! value this app never wrote, and a save that half-restores is a reset that only admits it on
 //! the second look.
 
-use crate::cloud::shared_builds::SearchFilters;
+use crate::cloud::shared_builds::{SearchFilters, VaultFilter, VaultSort};
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -72,6 +72,20 @@ pub struct BrowserState {
     /// Whether the tag picker is open. Defaulted for the same reason; a save without it closes.
     #[serde(default)]
     pub tags_open: bool,
+    /// The vault tab's own search and filters, and the order it is in. Defaulted for the same
+    /// reason as `filters`: a save written before the vault had a search restores the rest and
+    /// opens the vault unfiltered, which is what a fresh install gets.
+    ///
+    /// **Why the vault's filter is a separate field and not `filters`.** The two are different
+    /// queries over different lists — see [`VaultFilter`] — and one field holding whichever tab
+    /// was last touched would carry a public-browse archetype filter into the vault, where it
+    /// would silently hide the user's own builds. Two fields, two tabs, no crossing.
+    #[serde(default)]
+    pub vault: VaultFilter,
+    /// The vault's order, as a [`VaultSort`]. Defaulted to the order the tab has always shipped
+    /// in, so a save without it refiles nothing.
+    #[serde(default)]
+    pub vault_sort: VaultSort,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -138,7 +152,7 @@ pub async fn load() -> Option<BrowserState> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cloud::shared_builds::SortBy;
+    use crate::cloud::shared_builds::{BuildVisibility, SortBy};
 
     fn state() -> BrowserState {
         BrowserState {
@@ -164,6 +178,14 @@ mod tests {
                 build_count: 7,
             }),
             tags_open: true,
+            vault: VaultFilter {
+                query: "dark".to_string(),
+                archetype: Some("tanker".to_string()),
+                primary_set: Some("dark-armor".to_string()),
+                secondary_set: None,
+                visibility: Some(BuildVisibility::Private),
+            },
+            vault_sort: VaultSort::NameAsc,
         }
     }
 
@@ -229,6 +251,8 @@ mod tests {
         assert_eq!(back.filters.sort_by, SortBy::Newest);
         assert_eq!(back.pinned, None);
         assert!(!back.tags_open);
+        assert!(back.vault.is_empty());
+        assert_eq!(back.vault_sort, VaultSort::RecentlyEdited);
     }
 
     // A page a state does not name is page one — the page control's floor — and a page size
