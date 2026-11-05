@@ -161,6 +161,70 @@ impl DragState {
         }
     }
 
+    /// The pixel box the floating copy may draw: the pointer's unsnapped box, held inside the
+    /// bounds the release will clamp to.
+    ///
+    /// `resize_box_px` is what the pointer asks; `clamp_resize` is what the grid answers, and
+    /// the placeholder has always asked the second question while the copy never has. So a
+    /// surface whose height is answered by its content — every
+    /// [`PanelKind::fits_content`](super::model::PanelKind::fits_content) panel — stretched its
+    /// copy down the page while the ghost under it, and the box the release committed, both
+    /// stayed put: the copy promised a size the surface springs back from the moment the
+    /// pointer leaves it, which is exactly what reads as "this panel refuses to resize to that
+    /// size". The same lie runs in the other direction past `min_width`/`min_height`.
+    ///
+    /// Only the axis the clamp binds is held; the other keeps tracking the pointer unsnapped,
+    /// so the copy still reads as stretching in place rather than snapping to cells. Asked and
+    /// answered by the same functions the commit uses, so no second copy of the rules lives
+    /// here to drift.
+    fn clamped_resize_box_px(
+        &self,
+        config: &GridConfig,
+        container_width: f64,
+    ) -> (f64, f64, f64, f64) {
+        let (left, top, width, height) = self.resize_box_px(config, container_width);
+        let (floor_w, floor_h, ceil_w, ceil_h) = match self.mode {
+            DragMode::Resize(Corner::SouthEast) => {
+                let (floor_w, floor_h) = clamp_resize(&self.item, 0, 0, config);
+                let (ceil_w, ceil_h) = clamp_resize(&self.item, u32::MAX, u32::MAX, config);
+                (floor_w, floor_h, ceil_w, ceil_h)
+            }
+            DragMode::Resize(Corner::SouthWest) => {
+                // A west drag's width is the room between the pointer and the FIXED right
+                // edge, so its bounds come from the two asks that bracket that room; its
+                // height is still the shared answer.
+                let right = self.item.x + self.item.w;
+                let floor_w = clamp_resize_from_left(&self.item, right, config).1;
+                let ceil_w = clamp_resize_from_left(&self.item, 0, config).1;
+                (
+                    floor_w,
+                    clamp_resize_height(&self.item, 0),
+                    ceil_w,
+                    clamp_resize_height(&self.item, u32::MAX),
+                )
+            }
+            // Not reached: a move draws its copy at the committed size.
+            DragMode::Move => return (left, top, width, height),
+        };
+        let px = |w: u32, h: u32| {
+            let (_, _, w_px, h_px) =
+                item_to_px(&GridItem { w, h, ..self.item }, config, container_width);
+            (w_px, h_px)
+        };
+        let (floor_w_px, floor_h_px) = px(floor_w, floor_h);
+        let (ceil_w_px, ceil_h_px) = px(ceil_w, ceil_h);
+        let asked = width;
+        let width = width.clamp(floor_w_px, ceil_w_px);
+        let height = height.clamp(floor_h_px, ceil_h_px);
+        // A width the clamp pulled back moves the LEFT edge with it on a west drag, so the
+        // right edge — the anchor — is the one that stays under the finger.
+        let left = match self.mode {
+            DragMode::Resize(Corner::SouthWest) => left + asked - width,
+            _ => left,
+        };
+        (left, top, width, height)
+    }
+
     /// The cell span the surface would resize to if released now, before clamping. Width and
     /// height only — where the box lands is the corner's business, not the span's.
     fn resized_span(&self, config: &GridConfig, container_width: f64) -> (u32, u32) {
@@ -1225,7 +1289,7 @@ fn DragLayer(
             )
         }
         DragMode::Resize(_) => {
-            let (box_x, box_y, w, h) = state.resize_box_px(&config, container_width());
+            let (box_x, box_y, w, h) = state.clamped_resize_box_px(&config, container_width());
             (
                 state.container_origin.0 + box_x,
                 state.container_origin.1 + box_y,
