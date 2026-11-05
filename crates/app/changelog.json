@@ -5,7 +5,9 @@
     "items": [
       { "id": "debuff-resistance-enhancement", "type": "fix", "message": "Debuff resistance now grows with the enhancement slotted in the power that grants it, wherever the game allows it. Super Reflexes’ Evasion, Focused Fighting and Focused Senses, Agile, Dodge and Lucky, Shield Defense’s Deflection, Psionic Armor, Consume’s resistance to an endurance drain and the Mastermind’s Sonic Siphon all read higher once slotted — and three powers that look identical in the data now read three different numbers when you slot them differently, the way the game’s own breakdown shows them. Armour toggles whose debuff resistance the game holds flat — Granite, Stone and Crystal Armor, Rooted — still read the same with six Defense IOs in them as with none." },
       { "id": "vault-search", "type": "feat", "message": "My Builds has a search box and filters. Type words to find a build by name, description, archetype, powerset, tag or server — every word has to match, so \"tank dark\" finds a Tanker in Dark Armor. Narrow further by archetype, primary, secondary and visibility; the count reads \"6 of 60 builds\" whenever a filter is on, and Clear filters puts them all back. The search and filters are remembered between visits, like the All Builds tab's." },
-      { "id": "veat-vault-import-names", "type": "fix", "message": "Arachnos Widow, Arachnos Soldier and other branch-set builds opened from Homecoming's Vault (or a /buildsave file) now show the right name and icon on every power. The branch powers — Night Widow, Fortunata, Bane Spider, Crab Spider — used to come in as internal names like NW_Slash beside a blank icon, because the import filed them under the base set they share a column with instead of their own." }
+      { "id": "veat-vault-import-names", "type": "fix", "message": "Arachnos Widow, Arachnos Soldier and other branch-set builds opened from Homecoming's Vault (or a /buildsave file) now show the right name and icon on every power. The branch powers — Night Widow, Fortunata, Bane Spider, Crab Spider — used to come in as internal names like NW_Slash beside a blank icon, because the import filed them under the base set they share a column with instead of their own." },
+      { "id": "summoned-pet-resistance-and-damage", "type": "fix", "message": "Powers that deal through a summoned entity now show what that entity actually does. Acid Mortar reads -Resist beside -Defense and carries a damage number, where it showed the -Defense alone and no damage at all; the same is true of Seeker Drones, Photon Seekers, Singularity, Animate Stone, Fire Imps, Gremlins, Jack Frost, Umbra Beast, Vortex, Fly Trap, Catherine Wheel, the Gun Drone and Phantasm. Two things were wrong: the -Damage-Resistance row a pet carries is written as the damage types themselves with a Resistance aspect, and only one fork's converter had a rule that could see past the aspect to the debuff; and the planner decided a summoned entity was a pet that fights beside you by reading a single flag the game also sets on traps that never move, so it threw the payload out with the companions. Companions are still kept out on purpose - Summon Widow, Decoy, Gang War and the patron summons fight their own fights, and their 240 seconds of damage is not the power's hit." },
+      { "id": "drag-preview-committed-size", "type": "fix", "message": "A panel being resized now shows the size it will actually land at. The floating copy followed the cursor in every direction while the dashed outline below it, and the panel itself, held the line - so a panel that sizes itself to its content appeared to stretch, then snapped straight back the moment you let go, which read as the panel refusing to be resized. The copy is now held inside the same limits the release applies, and still follows the cursor freely in the direction that is genuinely yours to change." }
     ]
   },
   {
@@ -13,6 +15,12 @@
     "items": [
       { "id": "vault-import-phantom-picks", "type": "fix", "message": "Builds imported from the Vault (or a /buildsave file) no longer count the powers the game hands you for free — Bio Armor's Adaptation forms, Staff Fighting's staff forms and Dual Pistols' ammo types — as if you had spent power picks on them. That miscount is what made a level 50 import say a power sits at a level the dataset grants no pick at, and refuse the level 44 and higher picks." },
       { "id": "inherent-panels", "type": "feat", "message": "The powers the game hands you are panels of their own now: Fitness, Basic, Prestige, Archetype and Granted each sit where you put them instead of in one fixed section of the Powers panel. Fitness starts on the grid, the other four are a click away in the Display menu, and an inherent that takes no enhancement slots can be hidden from its own ⋮ menu — Athletic, Beast and Ninja Run included — with the panel naming what it hides and a button to bring it back." }
+    ]
+  },
+  {
+    "date": "2026-11-03",
+    "items": [
+      { "id": "vault-link-opens-on-homecoming", "type": "fix", "message": "Build links from Homecoming's Vault now open on Homecoming, whichever server you were last on. The link names no server, so it used to be read on whichever one happened to be loaded — on Thunderspy that quietly dropped a Symphony Control primary out of the build, and the shortened result replaced the Thunderspy build you had open. A /buildsave file could come from any server, so it still reads on the one you're on." }
     ]
   },
   {
@@ -95,7 +103,7 @@
     {
     "date": "2026-10-24",
     "items": [
-      { "id": "defense-debuff-resistance-enhancement", "type": "fix", "message": "Defense Debuff Resistance no longer grows when you slot Defense enhancement into the power that grants it. Powers like Granite Armor now show the correct number." }
+      { "id": "defense-debuff-resistance-enhancement", "type": "fix", "message": "Armour toggles like Granite Armor no longer grow their Defense Debuff Resistance when you slot Defense enhancement into them, which is what the game does with them." }
     ]
   },
 
