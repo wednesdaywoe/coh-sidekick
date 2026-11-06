@@ -625,6 +625,51 @@
       "id": "picker-category-list",
       "date": "2026-11-01",
       "preview": "On desktop, the enhancement picker lists set categories down its left side again"
+    },
+    {
+      "id": "debuff-resistance-enhancement",
+      "date": "2026-11-05",
+      "preview": "Debuff resistance now grows with the enhancement slotted in the power that grant"
+    },
+    {
+      "id": "vault-search",
+      "date": "2026-11-05",
+      "preview": "My Builds has a search box and filters, and they are remembered between visits."
+    },
+    {
+      "id": "veat-vault-import-names",
+      "date": "2026-11-05",
+      "preview": "Arachnos Widow, Arachnos Soldier and other branch-set builds opened from Homecom"
+    },
+    {
+      "id": "summoned-pet-resistance-and-damage",
+      "date": "2026-11-05",
+      "preview": "Powers that deal through a summoned entity now show what that entity actually do"
+    },
+    {
+      "id": "drag-preview-committed-size",
+      "date": "2026-11-05",
+      "preview": "A panel being resized now shows the size it will land on."
+    },
+    {
+      "id": "vault-import-phantom-picks",
+      "date": "2026-11-04",
+      "preview": "Builds imported from the Vault (or a /buildsave file) no longer count the powers"
+    },
+    {
+      "id": "inherent-panels",
+      "date": "2026-11-04",
+      "preview": " Fitness, Basic, Prestige, Archetype and Granted each have moveable, hideable pa"
+    },
+    {
+      "id": "vault-link-opens-on-homecoming",
+      "date": "2026-11-03",
+      "preview": "Build links from Homecoming's Vault now open on Homecoming, whichever server you"
+    },
+    {
+      "id": "reactive-defenses-scaling-cap",
+      "date": "2026-11-01",
+      "preview": "Reactive Defenses (Scaling Damage Resistance) now scales up to +13% resistance a"
     }
   ]
 }
