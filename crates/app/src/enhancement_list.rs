@@ -3,8 +3,8 @@
 //! A finished build is a plan to buy things. This is that plan: every slotted piece, grouped
 //! with its count, plus the two consumables the slotting implies — a Catalyst for each piece
 //! that has to be attuned, and an Enhancement Booster for each level a piece is boosted by.
-//! The beta's `EnhancementListModal`, less its auction-price column, which is Supabase and
-//! belongs with the rest of the cloud work.
+//! The beta's `EnhancementListModal`, with the auction-price column the beta built and never
+//! switched on.
 //!
 //! # What makes two pieces one row
 //!
@@ -41,17 +41,35 @@
 //! A tick is keyed by the piece as the file states it ([`purchase_key`]), not by its display
 //! name, because a build reopened from a file comes back with its display names empty.
 //!
+//! # Prices
+//!
+//! On a Homecoming build each row is priced from recent auction house sales
+//! ([`crate::cloud::auction`]), and the header totals what is still to buy. The auction house
+//! sells set pieces, catalysts and boosters under the keys the proxy reads, so those are what
+//! is priced; commons, origins and specials are not, and the hint says so rather than leaving
+//! a total that quietly means less than it looks.
+//!
+//! A set piece with no recent sales is not a zero. It is left out of the total and counted
+//! beside it, because a total that silently skips the rare pieces is lowest exactly where the
+//! build is most expensive.
+//!
+//! The request is keyed on the FULL list, not what is left of it, so ticking a row off reprices
+//! nothing — it moves a row's share from one side of the `remaining / total` to the other.
+//!
 //! The clipboard carries what is on screen, remaining counts and all. A copy button that
 //! silently exports the full list while the surface shows a half-finished one is a small lie of
 //! exactly the kind this codebase keeps paying for.
 
 use crate::build_session::BuildSession;
+use crate::cloud::account::Account;
+use crate::cloud::auction::{self, PriceRow};
 use crate::floating::FloatingPanel;
 use crate::naming;
 use crate::shell::Db;
+use coh_data::boost_index::BoostIndex;
 use coh_data::{CharacterState, Enhancement, EnhancementKind, PowerDatabase};
 use dioxus::prelude::*;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 
 // ============================================================
 // The list.
@@ -88,6 +106,10 @@ pub struct Item {
     /// by nature — and therefore whether it needs a Catalyst — cannot be answered. Surfaced
     /// rather than guessed either way (Rule 1).
     pub set_unresolved: bool,
+    /// What the auction house calls this piece, or `None` when it is not priced: not a set
+    /// piece, not a Homecoming build, or a piece the boost index cannot name
+    /// ([`auction::identifier_for`]).
+    pub auction_id: Option<String>,
 }
 
 impl Item {
@@ -117,6 +139,8 @@ pub struct ShoppingList {
     pub sections: Vec<Section>,
     /// Every slotted piece, counted once — the figure the header's `remaining/total` is out of.
     pub total_pieces: usize,
+    /// The build is on a dataset the auction house prices and the dataset can name its pieces.
+    pub priced: bool,
 }
 
 /// The axes that make two copies the same purchase. Ordering is the on-screen order, so the
@@ -149,11 +173,15 @@ impl ShoppingList {
         let mut groups: std::collections::BTreeMap<GroupKey, Item> =
             std::collections::BTreeMap::new();
         let mut total_pieces = 0;
+        let index = database
+            .boost_index
+            .as_ref()
+            .filter(|_| auction::prices_dataset(database.dataset_id()));
 
         for power in build.all_selected() {
             for enhancement in power.slots.iter().flatten() {
                 total_pieces += 1;
-                let (key, item) = describe(enhancement, database);
+                let (key, item) = describe(enhancement, database, index);
                 groups
                     .entry(key)
                     .and_modify(|existing| existing.count += 1)
@@ -175,6 +203,7 @@ impl ShoppingList {
         ShoppingList {
             sections,
             total_pieces,
+            priced: index.is_some(),
         }
     }
 
@@ -186,7 +215,11 @@ impl ShoppingList {
 }
 
 /// One slotted piece as its group key and the row it opens.
-fn describe(enhancement: &Enhancement, database: &PowerDatabase) -> (GroupKey, Item) {
+fn describe(
+    enhancement: &Enhancement,
+    database: &PowerDatabase,
+    index: Option<&BoostIndex>,
+) -> (GroupKey, Item) {
     let label = naming::enhancement_name(enhancement).to_string();
     let qualifiers = naming::enhancement_qualifiers(enhancement);
 
@@ -266,6 +299,8 @@ fn describe(enhancement: &Enhancement, database: &PowerDatabase) -> (GroupKey, I
         catalysts_each,
         boosters_each,
         set_unresolved,
+        auction_id: index
+            .and_then(|index| auction::identifier_for(enhancement, enhancement.level, index)),
     };
     (key, item)
 }
@@ -340,7 +375,7 @@ impl ShoppingList {
     /// The list as text, at the counts on screen. Finished rows are dropped rather than struck
     /// through: strikethrough is a mark this destination does not have, and a line that says
     /// `0x` reads as an item you need none of rather than one you already own.
-    fn to_text(&self, acquired: &Acquired) -> String {
+    fn to_text(&self, acquired: &Acquired, prices: Option<&Prices>) -> String {
         let mut lines: Vec<String> = Vec::new();
         for section in &self.sections {
             let live: Vec<(&Item, usize)> = section
@@ -354,7 +389,12 @@ impl ShoppingList {
             }
             lines.push(section.heading.clone());
             for (item, remaining) in live {
-                lines.push(format!("  {}", item.line(remaining)));
+                let mut line = format!("  {}", item.line(remaining));
+                if let Some(RowPrice::Each(each)) = prices.and_then(|prices| item.price(prices)) {
+                    let cost = auction::format_influence(each * remaining as i64);
+                    line.push_str(&format!(" — ~{cost}"));
+                }
+                lines.push(line);
             }
             lines.push(String::new());
         }
@@ -362,6 +402,17 @@ impl ShoppingList {
         let out = self.outstanding(acquired);
         lines.push(format!("Catalysts needed: {}", out.catalysts));
         lines.push(format!("Enhancement Boosters needed: {}", out.boosters));
+        if let Some(prices) = prices {
+            let cost = self.cost(acquired, prices);
+            let mut line = format!(
+                "Estimated influence: ~{}",
+                auction::format_influence(cost.remaining)
+            );
+            if cost.unpriced > 0 {
+                line.push_str(&format!(" (plus {} with no recent sales)", cost.unpriced));
+            }
+            lines.push(line);
+        }
         lines.join("\n")
     }
 }
@@ -374,6 +425,99 @@ fn acquired_count(acquired: &Acquired, item: &Item) -> usize {
         .get(&item.key)
         .map_or(0, |count| *count as usize)
         .min(item.count)
+}
+
+// ============================================================
+// What it costs.
+// ============================================================
+
+/// Recent-sales rows by auction identifier, as [`auction::fetch_prices`] answers them.
+type Prices = HashMap<String, Option<PriceRow>>;
+
+/// A row's price, as the row draws it.
+#[derive(Clone, Copy, PartialEq, Debug)]
+enum RowPrice {
+    /// One copy's estimate, in influence.
+    Each(i64),
+    /// The auction house sells this piece and has no recent sales of it to go on.
+    NoSales,
+}
+
+/// The influence still to spend and the whole build's worth, over everything that had a price.
+#[derive(Clone, Copy, PartialEq, Debug, Default)]
+struct Cost {
+    remaining: i64,
+    total: i64,
+    /// Outstanding pieces, catalysts and boosters left out of `remaining` for want of sales.
+    unpriced: usize,
+}
+
+fn unit_price(prices: &Prices, identifier: &str) -> Option<i64> {
+    prices
+        .get(identifier)
+        .and_then(Option::as_ref)
+        .and_then(PriceRow::estimate)
+}
+
+impl Item {
+    /// `None` for a row the auction house does not price at all, which draws nothing.
+    fn price(&self, prices: &Prices) -> Option<RowPrice> {
+        let identifier = self.auction_id.as_deref()?;
+        Some(unit_price(prices, identifier).map_or(RowPrice::NoSales, RowPrice::Each))
+    }
+}
+
+impl ShoppingList {
+    /// Everything to ask the auction house about: every priced piece, plus the two materials
+    /// when the build needs any. Read off the full list so a tick never changes the request.
+    fn auction_identifiers(&self) -> Vec<String> {
+        if !self.priced {
+            return Vec::new();
+        }
+        let full = self.outstanding(&Acquired::new());
+        let mut identifiers: Vec<String> = self
+            .items()
+            .filter_map(|item| item.auction_id.clone())
+            .collect();
+        if full.catalysts > 0 {
+            identifiers.push(auction::CATALYST_IDENTIFIER.to_string());
+        }
+        if full.boosters > 0 {
+            identifiers.push(auction::BOOSTER_IDENTIFIER.to_string());
+        }
+        identifiers
+    }
+
+    fn cost(&self, acquired: &Acquired, prices: &Prices) -> Cost {
+        let mut cost = Cost::default();
+        for item in self.items() {
+            let remaining = item.count - acquired_count(acquired, item);
+            match item.price(prices) {
+                Some(RowPrice::Each(each)) => {
+                    cost.remaining += each * remaining as i64;
+                    cost.total += each * item.count as i64;
+                }
+                Some(RowPrice::NoSales) => cost.unpriced += remaining,
+                None => {}
+            }
+        }
+
+        let out = self.outstanding(acquired);
+        let full = self.outstanding(&Acquired::new());
+        for (identifier, remaining, total) in [
+            (auction::CATALYST_IDENTIFIER, out.catalysts, full.catalysts),
+            (auction::BOOSTER_IDENTIFIER, out.boosters, full.boosters),
+        ] {
+            match unit_price(prices, identifier) {
+                Some(each) => {
+                    cost.remaining += each * remaining as i64;
+                    cost.total += each * total as i64;
+                }
+                None => cost.unpriced += remaining,
+            }
+        }
+        cost
+    }
 }
 
 // ============================================================
@@ -426,6 +570,31 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
     // a whole walk of the list, so it is memoized rather than recomputed per tally per render.
     let full = use_memo(move || list.read().outstanding(&Acquired::new()));
 
+    // Prices. A memo between the list and the request so the request re-runs only when the
+    // set of things to price changes, not on every tick or unrelated edit.
+    let account = use_context::<Account>();
+    let wanted = use_memo(move || list.read().auction_identifiers());
+    let prices = use_resource(move || {
+        let account = account.clone();
+        let wanted = wanted();
+        async move {
+            if wanted.is_empty() {
+                return Ok(None);
+            }
+            let cloud = account.prepared().await?;
+            auction::fetch_prices(&cloud, &wanted).await.map(Some)
+        }
+    });
+    let landed = move || -> Option<Prices> {
+        prices
+            .read()
+            .as_ref()
+            .and_then(|outcome| outcome.as_ref().ok())
+            .cloned()
+            .flatten()
+    };
+    let cost = use_memo(move || landed().map(|prices| list.read().cost(&acquired.read(), &prices)));
+
     if loading {
         return rsx! {
             div { class: "load-state", "Loading the dataset…" }
@@ -436,6 +605,8 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
             p { class: "enh-list__empty", "Nothing is slotted in this build yet." }
         };
     }
+    // Read once for every row below rather than once per row.
+    let shown_prices = landed();
 
     rsx! {
         div { class: "enh-list",
@@ -455,6 +626,31 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
                     remaining: out().boosters,
                     total: full().boosters,
                 }
+                if !wanted.read().is_empty() {
+                    div {
+                        class: "enh-list__tally",
+                        title: "Estimated from recent Homecoming auction house sales",
+                        span { class: "enh-list__tally-label", "Influence" }
+                        match (&*prices.read(), cost()) {
+                            (Some(Err(_)), _) => rsx! {
+                                span { class: "enh-list__tally-total", "unavailable" }
+                            },
+                            (Some(Ok(_)), Some(cost)) => rsx! {
+                                span { class: "enh-list__tally-value",
+                                    "{auction::format_influence(cost.remaining)}"
+                                }
+                                if cost.remaining != cost.total {
+                                    span { class: "enh-list__tally-total",
+                                        "/ {auction::format_influence(cost.total)}"
+                                    }
+                                }
+                            },
+                            _ => rsx! {
+                                span { class: "enh-list__tally-total", "pricing…" }
+                            },
+                        }
+                    }
+                }
                 div { class: "enh-list__actions",
                     button {
                         class: "seg",
@@ -470,7 +666,7 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
                         class: "seg is-primary",
                         r#type: "button",
                         onclick: move |_| async move {
-                            let text = list.read().to_text(&acquired.read());
+                            let text = list.read().to_text(&acquired.read(), landed().as_ref());
                             copied.set(Some(crate::clipboard::copy(&text).await));
                         },
                         "Copy the list"
@@ -481,6 +677,23 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
             p { class: "enh-list__hint",
                 "Click a row to mark one off; click a finished row to put it back. Ticks are "
                 "saved with the build."
+            }
+
+            if let Some(Err(error)) = &*prices.read() {
+                p { class: "enh-list__status is-error",
+                    "Auction prices could not be loaded: {error}."
+                }
+            }
+            if let Some(cost) = cost() {
+                p { class: "enh-list__hint",
+                    "Influence is estimated from recent auction house sales, and covers set pieces, "
+                    "catalysts and boosters."
+                    if cost.unpriced == 1 {
+                        " 1 item with no recent sales is not counted."
+                    } else if cost.unpriced > 1 {
+                        " {cost.unpriced} items with no recent sales are not counted."
+                    }
+                }
             }
 
             match copied() {
@@ -505,6 +718,7 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
                                     key: "{item.key}",
                                     item: item.clone(),
                                     acquired: acquired_count(&acquired.read(), item),
+                                    price: shown_prices.as_ref().and_then(|prices| item.price(prices)),
                                     on_tick: move |key: String| {
                                         session.commit(move |build| {
                                             *build.enhancement_acquired.entry(key).or_insert(0) += 1;
@@ -548,6 +762,7 @@ fn Tally(label: String, remaining: usize, total: usize) -> Element {
 fn ItemRow(
     item: Item,
     acquired: usize,
+    price: Option<RowPrice>,
     on_tick: EventHandler<String>,
     on_clear: EventHandler<String>,
 ) -> Element {
@@ -588,6 +803,21 @@ fn ItemRow(
                 if item.boosters_each > 0 && !done {
                     span { class: "enh-list__need",
                         "{remaining * item.boosters_each} boosters"
+                    }
+                }
+                if !done {
+                    match price {
+                        Some(RowPrice::Each(each)) => rsx! {
+                            span {
+                                class: "enh-list__price",
+                                title: "About {auction::format_influence(each)} each",
+                                "{auction::format_influence(each * remaining as i64)}"
+                            }
+                        },
+                        Some(RowPrice::NoSales) => rsx! {
+                            span { class: "enh-list__price is-unsold", "no recent sales" }
+                        },
+                        None => rsx! {},
                     }
                 }
                 if item.set_unresolved {
@@ -663,5 +893,93 @@ mod tests {
         let text = skif::encode(&picked, &database).expect("encodes");
         let reopened = skif::decode(&text, &database).expect("decodes").build;
         assert_eq!(keys(&reopened, &database), before);
+    }
+
+    fn row(estimate: Option<i64>) -> Option<PriceRow> {
+        Some(PriceRow {
+            raw_identifier: String::new(),
+            avg_price: estimate,
+            min_price: None,
+            max_price: None,
+            sample_count: None,
+            last_sale_at: None,
+            fetched_at: String::new(),
+            not_found: estimate.is_none(),
+        })
+    }
+
+    /// The set piece is priced under the key the export names it by, the two commons-and-origins
+    /// rows are not priced at all, and the booster its +2 implies is asked for alongside it.
+    #[test]
+    fn a_homecoming_build_asks_for_its_set_pieces_and_materials() {
+        let database = homecoming();
+        let build = skif::decode(FILE, &database).expect("decodes").build;
+        let list = ShoppingList::build(&build, &database);
+        assert!(list.priced);
+
+        let priced: Vec<&Item> = list.items().filter(|i| i.auction_id.is_some()).collect();
+        assert_eq!(priced.len(), 1, "only the set piece: {priced:?}");
+        let piece = priced[0].auction_id.clone().unwrap();
+        assert!(
+            piece.starts_with("5 Boosts.") && piece.ends_with(" 49"),
+            "{piece}"
+        );
+
+        assert_eq!(
+            list.auction_identifiers(),
+            vec![piece, auction::BOOSTER_IDENTIFIER.to_string()]
+        );
+    }
+
+    /// A tick moves a row's share out of what is left without repricing it, and a piece with no
+    /// sales is counted beside the total instead of as zero inside it.
+    #[test]
+    fn the_cost_follows_the_ticks_and_names_what_it_left_out() {
+        let database = homecoming();
+        let build = skif::decode(FILE, &database).expect("decodes").build;
+        let list = ShoppingList::build(&build, &database);
+        let piece = list.items().find_map(|i| i.auction_id.clone()).unwrap();
+        let key = list
+            .items()
+            .find(|i| i.auction_id.is_some())
+            .unwrap()
+            .key
+            .clone();
+
+        let mut prices: Prices = HashMap::new();
+        prices.insert(piece.clone(), row(Some(1_000_000)));
+        prices.insert(auction::BOOSTER_IDENTIFIER.to_string(), row(Some(100_000)));
+
+        let fresh = list.cost(&Acquired::new(), &prices);
+        assert_eq!(
+            fresh,
+            Cost {
+                remaining: 1_200_000,
+                total: 1_200_000,
+                unpriced: 0
+            }
+        );
+
+        let ticked: Acquired = [(key, 1)].into_iter().collect();
+        let after = list.cost(&ticked, &prices);
+        assert_eq!(
+            after,
+            Cost {
+                remaining: 0,
+                total: 1_200_000,
+                unpriced: 0
+            }
+        );
+
+        prices.insert(piece, row(None));
+        let unsold = list.cost(&Acquired::new(), &prices);
+        assert_eq!(
+            unsold,
+            Cost {
+                remaining: 200_000,
+                total: 200_000,
+                unpriced: 1
+            }
+        );
     }
 }

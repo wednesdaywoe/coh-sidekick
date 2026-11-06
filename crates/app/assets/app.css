@@ -7297,6 +7297,15 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 /* An unresolvable set is the one thing on the row that is a fault rather than a fact, so it
    is the one thing that gets a colour. */
 .enh-list__unresolved { flex: 0 0 auto; font-size: 11px; color: var(--action-danger); }
+/* What the outstanding copies cost, last on the row so the figures line up down the list. A
+   piece with no sales says so in words and in the faint tone, not a dash: a dash reads as
+   "free" as easily as "unknown". */
+.enh-list__price {
+  flex: 0 0 auto; min-width: 44px;
+  font-family: var(--font-data); font-size: 12px; text-align: right;
+  color: var(--text-dim); white-space: nowrap;
+}
+.enh-list__price.is-unsold { font-family: inherit; font-size: 11px; color: var(--text-faint); }
 
 /* A finished row stays in place rather than leaving the list: the list is the build's bill of
    materials, and a row that vanishes when you tick it takes with it the only evidence that you
