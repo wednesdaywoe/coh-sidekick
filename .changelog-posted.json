@@ -670,6 +670,11 @@
       "id": "reactive-defenses-scaling-cap",
       "date": "2026-11-01",
       "preview": "Reactive Defenses (Scaling Damage Resistance) now scales up to +13% resistance a"
+    },
+    {
+      "id": "auction-prices",
+      "date": "2026-11-06",
+      "preview": "The Enhancement List now shows what your Homecoming build costs: each set piece,"
     }
   ]
 }

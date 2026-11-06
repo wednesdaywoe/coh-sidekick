@@ -3,7 +3,7 @@
   {
     "date": "2026-11-06",
     "items": [
-      { "id": "auction-prices", "type": "feat", "message": "The Enhancement List now shows what your Homecoming build costs: each set piece, catalyst and booster is priced from recent auction house sales, with a running total of the influence you still need as you tick things off." }
+      { "id": "auction-prices", "type": "feat", "message": "The Enhancement List now shows what your Homecoming build costs: each set piece, catalyst and booster is priced from recent auction house sales, with a running total of the influence you still need as you check things off." }
     ]
   },
   {
