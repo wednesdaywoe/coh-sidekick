@@ -805,9 +805,12 @@ pub const TOPICS: &[Topic] = &[
         body: "Every piece the build is asking for, grouped by what you would actually buy — two \
                copies at different levels or different boosts are different purchases and get \
                their own lines. The catalysts and boosters the slotting implies are counted \
-               exactly, not estimated.",
+               exactly, not estimated. On Homecoming, set pieces, catalysts and boosters are \
+               priced from recent auction house sales, with a running total of the influence \
+               still to spend.",
         keywords: &[
             "shopping", "list", "buy", "acquire", "auction", "catalyst", "booster", "count",
+            "price", "influence", "inf", "cost",
         ],
     },
     Topic {

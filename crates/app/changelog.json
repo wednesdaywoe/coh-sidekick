@@ -1,6 +1,12 @@
 [
 
   {
+    "date": "2026-11-06",
+    "items": [
+      { "id": "auction-prices", "type": "feat", "message": "The Enhancement List now shows what your Homecoming build costs: each set piece, catalyst and booster is priced from recent auction house sales, with a running total of the influence you still need as you tick things off." }
+    ]
+  },
+  {
     "date": "2026-11-05",
     "items": [
       { "id": "debuff-resistance-enhancement", "type": "fix", "message": "Debuff resistance now grows with the enhancement slotted in the power that grants it, wherever the game allows it." },
