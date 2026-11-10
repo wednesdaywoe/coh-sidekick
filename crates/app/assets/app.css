@@ -1901,11 +1901,29 @@ button.power-pick--empty {
    and the refused ones recede. `touch-action:none` keeps a finger-drag from scrolling the panel. */
 .pick-grip { cursor: grab; touch-action: none; user-select: none; }
 .pick-grip:hover { color: var(--action-active); }
-.pick-cell { border-radius: 4px; outline: 1px dashed transparent; outline-offset: 1px; }
+.pick-cell { position: relative; border-radius: 4px; outline: 1px dashed transparent; outline-offset: 1px; }
 .pick-cell--source { opacity: 0.4; }
-.pick-cell--target { outline-color: var(--action-active); }
+.pick-cell--target { outline-color: color-mix(in srgb, var(--action-active) 55%, transparent); }
 .pick-cell--hover { background: color-mix(in srgb, var(--action-active) 14%, transparent); }
 .pick-cell--refused { opacity: 0.55; }
+/* Which of the two operations a release would do, shown on the cell itself: the middle third
+   outlines and fills the card to say "swap with this power", while the top and bottom thirds
+   draw a 2px insertion bar in the 3px seam before or after the card to say "insert between". */
+.pick-cell--swap { outline-color: var(--action-active); outline-style: dashed; }
+.pick-cell--insert-before::before,
+.pick-cell--insert-after::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--action-active);
+  pointer-events: none;
+  z-index: 2;
+}
+.pick-cell--insert-before::before { top: -2.5px; }
+.pick-cell--insert-after::after { bottom: -2.5px; }
 .pick-drag-status {
   margin-top: 6px;
   font-size: 11px;

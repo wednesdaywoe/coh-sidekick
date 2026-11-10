@@ -1,6 +1,12 @@
 [
 
   {
+    "date": "2026-11-10",
+    "items": [
+      { "id": "level-order-shift", "type": "feat", "message": "In the by-level Powers view, dragging a power onto another power's top or bottom edge inserts it before or after that power and slides everything in between along by one pick, while dropping on the middle swaps their two levels." }
+    ]
+  },
+  {
     "date": "2026-11-05",
     "items": [
       { "id": "debuff-resistance-enhancement", "type": "fix", "message": "Debuff resistance now grows with the enhancement slotted in the power that grants it, wherever the game allows it." },

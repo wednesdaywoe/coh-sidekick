@@ -676,7 +676,11 @@ pub const TOPICS: &[Topic] = &[
         body: "The Powers panel has a second arrangement: the same cards laid out over the levels \
                the game grants picks at, rather than grouped by the powerset they came from. It \
                is the view that answers whether a build is playable on the way up rather than \
-               only at the end. The levels come from the dataset's own schedule.",
+               only at the end. The levels come from the dataset's own schedule. Drag a power's \
+               level badge onto another power's middle to swap their levels, or onto its top or \
+               bottom edge to insert before or after it and slide everything in between one pick \
+               along. A drop is refused, and says why, when it would put a power below the level \
+               it unlocks at.",
         keywords: &[
             "by level",
             "order",
@@ -684,6 +688,13 @@ pub const TOPICS: &[Topic] = &[
             "levelling",
             "progression",
             "when",
+            "drag",
+            "move",
+            "swap",
+            "insert",
+            "reorder",
+            "earlier",
+            "shift",
         ],
     },
     Topic {
