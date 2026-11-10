@@ -31,26 +31,8 @@ use crate::shell::Db;
 use coh_data::InherentCategory;
 use dioxus::prelude::*;
 
-/// Whether a group's cards start folded.
-///
-/// Basic and Prestige hold the powers every character is handed and almost no build plans
-/// around — Brawl, Rest, the Sprints — so they open folded and give the room to the groups a
-/// build does work with. The archetype's own inherent and the fitness powers stay open: both
-/// carry powers a build plans around (fitness takes slots, the archetype inherent drives the
-/// AT's whole mechanic), and the beta's own bug report for folding those away was players
-/// concluding the power was missing entirely.
-///
-/// Exhaustive with no `_` arm, so a new [`InherentCategory`] has to state its own answer.
-fn group_starts_collapsed(group: InherentCategory) -> bool {
-    match group {
-        // Granted holds the pick-gated grants — the Kheldian form attacks a build slots and
-        // plans around, so it opens like the other two plannable groups.
-        InherentCategory::Archetype | InherentCategory::Granted | InherentCategory::Fitness => {
-            false
-        }
-        InherentCategory::Basic | InherentCategory::Prestige => true,
-    }
-}
+// Whether a group's cards start folded is [`crate::inherent_fold_store::default_folded`], the
+// same authored defaults the persisted fold seeds from — one answer, not two.
 
 /// One group's panel body: its cards, and the sentence a group with nothing to draw owes the
 /// reader.
@@ -85,6 +67,9 @@ pub fn InherentGroupPanel(database: Db, group: InherentCategory) -> Element {
     // the footer below rather than dropped: a hidden power is still in the build and still
     // contributing, so a panel that simply did not mention it would be the one place the user
     // could not find out that it was there.
+    // The fold this panel remembers. The map is shared by the five panels and persisted by the
+    // shell; a group the user has never touched keeps its authored default.
+    let folds = use_context::<crate::inherent_fold_store::InherentFolds>().0;
     let hidden = use_context::<crate::hidden_inherents_store::HiddenInherents>().0;
     let hidden_here: Vec<coh_data::SelectedPower> = powers
         .iter()
@@ -118,7 +103,7 @@ pub fn InherentGroupPanel(database: Db, group: InherentCategory) -> Element {
             PowerGroup {
                 title: crate::grid::model::inherent_group_title(group).to_string(),
                 count: shown.len(),
-                starts_collapsed: group_starts_collapsed(group),
+                fold: Some(crate::inherent_fold_store::InherentFold::new(folds, group)),
                 for (index, power) in shown.iter().enumerate() {
                     PickedPowerCard {
                         key: "inherent-{index}",

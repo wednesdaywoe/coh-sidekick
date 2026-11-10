@@ -663,9 +663,12 @@ pub const TOPICS: &[Topic] = &[
                (Fitness, Basic, Prestige, Archetype, Granted) is a panel of its own, so you can put \
                it where you want it: Fitness is on the grid already, and Archetype, Basic, \
                Prestige and Granted are a click away in the More menu. An inherent that takes no \
-               slots can be hidden from its own ⋮ menu, and the panel names what it is hiding.",
+               slots can be hidden from its own ⋮ menu, and the panel names what it is hiding. \
+               Each panel also remembers whether you left it open or folded — Basic and Prestige \
+               start folded, and the first time you open or fold one, that is how it stays.",
         keywords: &[
             "inherent", "brawl", "sprint", "rest", "prestige", "fitness", "stamina",
+            "fold", "collapse", "expand", "remember", "open",
         ],
     },
     Topic {

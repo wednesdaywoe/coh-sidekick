@@ -514,7 +514,7 @@ impl SelectedPower {
 // `Hash` because the grid keys its surfaces by `PanelKind`, and a granted-inherent group is
 // one of them (`PanelKind::Inherent`). The derive is here rather than on a wrapper in the app
 // so the two cannot disagree about which values are distinct.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum InherentCategory {
     Fitness,

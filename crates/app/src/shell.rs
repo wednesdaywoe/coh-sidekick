@@ -533,6 +533,28 @@ pub fn Shell() -> Element {
         }
         crate::hidden_inherents_store::persist(&hidden);
     });
+    // Whether each inherent panel's cards are open or folded — a preference, seeded with the
+    // authored defaults (Basic and Prestige folded, the rest open). Held here rather than in
+    // the panel because the five panels read it and any one of them writes it, and because a
+    // fold that reset on every reload read as the app forgetting the panel the user placed.
+    let inherent_folds =
+        use_signal(std::collections::BTreeMap::<coh_data::InherentCategory, bool>::new);
+    use_context_provider(|| crate::inherent_fold_store::InherentFolds(inherent_folds));
+    let mut inherent_folds_restored = use_signal(|| false);
+    use_future(move || async move {
+        let mut folds = inherent_folds;
+        if let Some(saved) = crate::inherent_fold_store::load().await {
+            folds.set(saved);
+        }
+        inherent_folds_restored.set(true);
+    });
+    use_effect(move || {
+        let folds = inherent_folds.read().clone();
+        if !*inherent_folds_restored.read() {
+            return;
+        }
+        crate::inherent_fold_store::persist(&folds);
+    });
     // Whether picked powers under the 95% hit cap are badged — an Options preference, off by
     // default.
     let hit_chance_alert = use_signal(|| false);
