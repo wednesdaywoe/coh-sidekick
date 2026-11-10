@@ -5,14 +5,16 @@
 //! `HC_AUCTION_API_KEY` and forwards to `hcvault.cityofheroes.dev/api/v1/auction/history/…`,
 //! so a price here is a summary of that item's recent sales and nothing this planner computes.
 //!
-//! # This ships dark
+//! # Where it renders
 //!
-//! Nothing renders it. [`crate::enhancement_list`] has been waiting for this column since
-//! 2026-08-08 and still is; what closes here is the CALL, so that every edge function in the
-//! beta's `supabase/functions/` is reached by this client. Lighting the column is a product
-//! decision, and the beta never made it either — `VITE_SHOW_AUCTION_PRICES` is set in no
-//! environment the deploy carries, so its three render branches have been dead for as long as
-//! they have existed. There is therefore no parity to regress and nothing to port.
+//! [`crate::enhancement_list`] prices every row it can and totals them under the header. It
+//! shipped dark from 2026-09-17 until Homecoming's Vault went live on 2026-11-06, and the beta
+//! never lit its own column either (`VITE_SHOW_AUCTION_PRICES` was set in no environment), so
+//! this is a first light rather than a port.
+//!
+//! Only a Homecoming build is priced ([`prices_dataset`]). The proxy reads one market, and
+//! pricing a Rebirth or Thunderspy build from it would answer a question about a server the
+//! user is not playing on.
 //!
 //! # The identifier is the export's, not ours to spell
 //!
@@ -56,27 +58,9 @@
 //! under it. The cap is above any real build's distinct-piece count, which makes this headroom
 //! rather than a live defect — and exactly the kind of headroom that stops being headroom quietly.
 
-// A dark module is dead code by definition, and this says so rather than letting nine warnings
-// train the eye to skip them. It covers exactly what the module ships today:
-// `MAX_IDENTIFIERS_PER_REQUEST`, `CATALYST_IDENTIFIER`, `BOOSTER_IDENTIFIER`, `PriceRow` and its
-// `estimate`, `PricesRequest`, `PricesResponse`, `identifier_for`, `identifier_from_record` and
-// `fetch_prices` — every item in the file.
-//
-// **This is module-wide, which is the shape RB4g deleted**, and the reason it is acceptable here
-// is the reason it was not there: `favorites` had a rendered surface, so an item under its allow
-// was a stranger by default and two of the three were. Nothing in this file is reachable yet, so
-// there is no such default and a per-item allow on all nine would be the same blanket with more
-// syntax.
-//
-// **The exit is the column, and it is the whole of it.** When the Enhancement List renders a
-// price, delete this line and rebuild: everything below should light up, and anything still
-// warning is a stranger that arrived while nobody could see it. That is RB4g's finding, kept
-// runnable rather than restated.
-#![allow(dead_code)]
-
 use super::{Cloud, CloudError};
 use coh_data::boost_index::{BoostEntry, BoostIndex};
-use coh_data::{Enhancement, EnhancementKind, Level};
+use coh_data::{DatasetId, Enhancement, EnhancementKind, Level};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -122,6 +106,35 @@ impl PriceRow {
             return None;
         }
         self.avg_price
+    }
+}
+
+/// Whether the market behind `auction-prices` is the one a build on `dataset` buys from. The
+/// proxy reads Homecoming's live auction house and nothing else; Brainstorm is a separate
+/// server with its own market, so its builds are not priced from this one either.
+pub fn prices_dataset(dataset: Option<DatasetId>) -> bool {
+    dataset == Some(DatasetId::Homecoming)
+}
+
+/// An influence figure the way players say it: `850`, `450K`, `1.2M`, `3.4B`. One decimal
+/// below ten of a unit and none above, because the figure is an average of recent sales and a
+/// third significant digit would claim a precision it does not have.
+pub fn format_influence(value: i64) -> String {
+    let scaled = |unit: f64, suffix: &str| {
+        let n = value as f64 / unit;
+        if n < 10.0 {
+            format!("{n:.1}{suffix}")
+        } else {
+            format!("{n:.0}{suffix}")
+        }
+    };
+    // The thresholds sit half a unit early so a figure that would round up to `1000K` reads as
+    // `1.0M` instead.
+    match value {
+        v if v >= 999_500_000 => scaled(1e9, "B"),
+        v if v >= 999_500 => scaled(1e6, "M"),
+        v if v >= 1_000 => format!("{}K", (value as f64 / 1e3).round() as i64),
+        v => v.to_string(),
     }
 }
 
@@ -213,4 +226,35 @@ pub async fn fetch_prices(
         }
     }
     Ok(prices)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn influence_reads_the_way_players_say_it() {
+        let cases = [
+            (0, "0"),
+            (850, "850"),
+            (1_000, "1K"),
+            (449_600, "450K"),
+            (999_700, "1.0M"),
+            (1_240_000, "1.2M"),
+            (12_600_000, "13M"),
+            (3_400_000_000, "3.4B"),
+            (42_000_000_000, "42B"),
+        ];
+        for (value, expected) in cases {
+            assert_eq!(format_influence(value), expected, "{value}");
+        }
+    }
+
+    #[test]
+    fn only_homecoming_is_priced() {
+        assert!(prices_dataset(Some(DatasetId::Homecoming)));
+        assert!(!prices_dataset(Some(DatasetId::Brainstorm)));
+        assert!(!prices_dataset(Some(DatasetId::Rebirth)));
+        assert!(!prices_dataset(None));
+    }
 }
