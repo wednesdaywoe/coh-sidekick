@@ -3,8 +3,9 @@
   {
     "date": "2026-11-10",
     "items": [
-      { "id": "level-order-shift", "type": "feat", "message": "In the by-level Powers view, dragging a power onto another power's top or bottom edge inserts it before or after that power and slides everything in between along by one pick, while dropping on the middle swaps their two levels." },
-      { "id": "inherent-fold-memory", "type": "feat", "message": "The inherent panels remember whether you left them open or folded. Basic and Prestige still start folded; the first time you open or fold one, that is how it stays." }
+      { "id": "level-order-shift", "type": "feat", "message": "Drag and drop to move powers around has been expanded to allow drag & drop between two powers. This moves the power by inserting it at the new level and makes powers after it to shuffle a level forward. Dragging a power on to another power will still swap the powers." },
+      { "id": "inherent-fold-memory", "type": "feat", "message": "The inherent panels remember whether you left them expanded or collapsed" },
+      { "id": "rarity-order", "type": "feat", "message": "The enhancement picker can order its IO sets by rarity, most common first or rarest first. Each rarity is a block of its own, named and counted, and inside a block the sets run in level order." }
     ]
   },
   {

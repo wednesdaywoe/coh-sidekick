@@ -4346,6 +4346,9 @@ fn EnhancementPickerModal(
                                 // An unknown majority marks nothing, rather than marking every row.
                                 let usual_size = io_catalog.most_common_piece_count();
                                 let visible = crate::picker_sets::offered_sets(&eligible, &facets, usual_size);
+                                // The rarity the row below starts, when the list is ordered by
+                                // rarity at all. Empty on every other sort.
+                                let chunk_headers = crate::picker_sets::chunk_headers(&visible, facets.sort);
                                 let type_counts = crate::picker_sets::set_type_counts(&eligible, &facets);
                                 let rarity_counts = crate::picker_sets::rarity_counts(&eligible, &facets);
                                 let size_counts = crate::picker_sets::size_counts(&eligible, &facets);
@@ -4522,16 +4525,28 @@ fn EnhancementPickerModal(
                                                 class: "select-compact picker-filter-select",
                                                 aria_label: "Sort the sets",
                                                 title: "Sort the sets",
-                                                value: if set_sort() == crate::picker_sets::SetSort::Level { "level" } else { "name" },
+                                                value: set_sort().token(),
                                                 onchange: move |evt: Event<FormData>| {
-                                                    set_sort.set(if evt.value() == "level" {
-                                                        crate::picker_sets::SetSort::Level
-                                                    } else {
-                                                        crate::picker_sets::SetSort::Name
-                                                    });
+                                                    set_sort.set(crate::picker_sets::SetSort::from_token(&evt.value()));
                                                 },
-                                                option { value: "name", selected: set_sort() == crate::picker_sets::SetSort::Name, "By name" }
-                                                option { value: "level", selected: set_sort() == crate::picker_sets::SetSort::Level, "By level" }
+                                                // Rarity gets both directions because either end
+                                                // of the ladder is a reasonable place to start
+                                                // reading from, and a single option could only
+                                                // pick one. Name and level have an obvious first
+                                                // row, so they do not.
+                                                for (token , text) in [
+                                                    (crate::picker_sets::SetSort::Name.token(), "By name"),
+                                                    (crate::picker_sets::SetSort::Level.token(), "By level"),
+                                                    (crate::picker_sets::SetSort::RarityCommonFirst.token(), "By rarity, common first"),
+                                                    (crate::picker_sets::SetSort::RarityRareFirst.token(), "By rarity, rare first"),
+                                                ] {
+                                                    option {
+                                                        key: "{token}",
+                                                        value: "{token}",
+                                                        selected: set_sort().token() == token,
+                                                        "{text}"
+                                                    }
+                                                }
                                             }
                                             if any_filter {
                                                 button {
@@ -4570,362 +4585,372 @@ fn EnhancementPickerModal(
                                                 }
                                             }
                                         }
-                                        for (offer, tracked_bonuses) in visible.into_iter().map(|offer| {
+                                        for ((offer, tracked_bonuses), header) in visible.into_iter().map(|offer| {
                                             let bonuses = crate::tracked_stats::set_tracked_bonuses(
                                                 offer.set, &chip_ids,
                                             );
                                             (offer, bonuses)
-                                        }) {
+                                        }).zip(chunk_headers) {
+                                            // One row of the list: the set, and above it the
+                                            // rarity run it opens when the list is sorted by
+                                            // rarity. One node, so a header and the sets under
+                                            // it are one item to the differ and to the key.
                                             div {
                                                 key: "{offer.id}",
-                                                class: "picker-set-group",
-                                                class: if !tracked_bonuses.is_empty() { "has-tracked-bonus" },
-                                                "data-set-id": "{offer.id}",
-                                                // The set the picker opened onto scrolls itself
-                                                // into view. Only the set being CHANGED carries
-                                                // this, so nothing scrolls on an ordinary open.
-                                                onmounted: {
-                                                    let mine = jump_to_set().as_deref() == Some(offer.id);
-                                                    let id = offer.id.to_string();
-                                                    move |_| {
-                                                        if mine {
-                                                            document::eval(&format!(
-                                                                "const el = document.querySelector('[data-set-id={id:?}]'); \
-                                                                 if (el) el.scrollIntoView({{ block: 'center' }});"
-                                                            ));
-                                                        }
-                                                    }
-                                                },
-                                                button {
-                                                    r#type: "button",
-                                                    class: "picker-set-name",
-                                                    aria_expanded: "{bonus_set().as_deref() == Some(offer.id)}",
-                                                    title: "Show this set's bonuses",
-                                                    onclick: {
+                                                class: "picker-set-entry",
+                                                if let Some(header) = header {
+                                                    div { class: "picker-set-chunk", "{header}" }
+                                                }
+                                                div {
+                                                    class: "picker-set-group",
+                                                    class: if !tracked_bonuses.is_empty() { "has-tracked-bonus" },
+                                                    "data-set-id": "{offer.id}",
+                                                    // The set the picker opened onto scrolls itself
+                                                    // into view. Only the set being CHANGED carries
+                                                    // this, so nothing scrolls on an ordinary open.
+                                                    onmounted: {
+                                                        let mine = jump_to_set().as_deref() == Some(offer.id);
                                                         let id = offer.id.to_string();
                                                         move |_| {
-                                                            let open = bonus_set.peek().as_deref() == Some(id.as_str());
-                                                            bonus_set.set((!open).then(|| id.clone()));
-                                                        }
-                                                    },
-                                                    // Only the minority size is marked, so a short
-                                                    // set is found by scanning for ink instead of
-                                                    // reading every name.
-                                                    if offer.off_size {
-                                                        span {
-                                                            class: "picker-set-size",
-                                                            title: "{offer.set.pieces.len()}-piece \
-                                                                    set, the full set fits in \
-                                                                    {offer.set.pieces.len()} slots",
-                                                            "{offer.set.pieces.len()}pc"
-                                                        }
-                                                    }
-                                                    "{offer.set.name}"
-                                                    span { class: "picker-set-meta", "{set_level_band(&offer.set)}" }
-                                                }
-                                                if !tracked_bonuses.is_empty() {
-                                                    TrackedBonusChips {
-                                                        bonuses: tracked_bonuses.clone(),
-                                                        tracking: totals.read().set_bonus_tracking.clone(),
-                                                    }
-                                                }
-                                                div { class: "picker-icon-row picker-set-row",
-                                                    // Legality per piece, computed once for the
-                                                    // whole strip: a single tile needs its own
-                                                    // answer to draw disabled, and a DRAG needs
-                                                    // every tile's, because a range sweeps past
-                                                    // pieces it never lands a pointer on.
-                                                    {
-                                                        // "Procs only" hides the set's other
-                                                        // pieces too, and a hidden piece counts
-                                                        // as unplaceable so a drag between two
-                                                        // procs can't queue what it skipped.
-                                                        let shown = |piece: &coh_data::IoSetPiece| !facets.procs_only || piece.proc;
-                                                        let placeable: Vec<bool> = offer.set.pieces
-                                                            .iter()
-                                                            .map(|piece| shown(piece) && coh_data::slotting_rules::piece_slottable_now(
-                                                                offer.id, piece, &slots, &unique_scope,
-                                                            ))
-                                                            .collect();
-                                                        let set_icon = crate::view::icons::io_set_icon_url(&offer.set.icon);
-                                                        rsx! {
-                                                    // The set's icon once, beside its pieces as
-                                                    // shorthand (`Acc/Dmg`). A tile per piece drew
-                                                    // one icon six times and cut every name to
-                                                    // "Accuracy/…". The overlay is the frame that
-                                                    // carries the rarity; without it a purple reads
-                                                    // like a common.
-                                                    if let Some(url) = &set_icon {
-                                                        span { class: "picker-enh-icon picker-set-icon", aria_hidden: "true",
-                                                            img { src: "{url}", alt: "" }
-                                                            img {
-                                                                src: crate::view::icons::io_set_overlay_url(
-                                                                    &offer.set.category, &offer.set.icon,
-                                                                    attuned_frame || offer.set.attuned_only,
-                                                                ),
-                                                                alt: "",
+                                                            if mine {
+                                                                document::eval(&format!(
+                                                                    "const el = document.querySelector('[data-set-id={id:?}]'); \
+                                                                     if (el) el.scrollIntoView({{ block: 'center' }});"
+                                                                ));
                                                             }
                                                         }
+                                                    },
+                                                    button {
+                                                        r#type: "button",
+                                                        class: "picker-set-name",
+                                                        aria_expanded: "{bonus_set().as_deref() == Some(offer.id)}",
+                                                        title: "Show this set's bonuses",
+                                                        onclick: {
+                                                            let id = offer.id.to_string();
+                                                            move |_| {
+                                                                let open = bonus_set.peek().as_deref() == Some(id.as_str());
+                                                                bonus_set.set((!open).then(|| id.clone()));
+                                                            }
+                                                        },
+                                                        // Only the minority size is marked, so a short
+                                                        // set is found by scanning for ink instead of
+                                                        // reading every name.
+                                                        if offer.off_size {
+                                                            span {
+                                                                class: "picker-set-size",
+                                                                title: "{offer.set.pieces.len()}-piece \
+                                                                        set, the full set fits in \
+                                                                        {offer.set.pieces.len()} slots",
+                                                                "{offer.set.pieces.len()}pc"
+                                                            }
+                                                        }
+                                                        "{offer.set.name}"
+                                                        span { class: "picker-set-meta", "{set_level_band(&offer.set)}" }
                                                     }
-                                                    div { class: "picker-piece-grid",
-                                                    for (piece_index, piece) in offer.set.pieces.iter().enumerate().filter(|(_, piece)| shown(piece)) {
+                                                    if !tracked_bonuses.is_empty() {
+                                                        TrackedBonusChips {
+                                                            bonuses: tracked_bonuses.clone(),
+                                                            tracking: totals.read().set_bonus_tracking.clone(),
+                                                        }
+                                                    }
+                                                    div { class: "picker-icon-row picker-set-row",
+                                                        // Legality per piece, computed once for the
+                                                        // whole strip: a single tile needs its own
+                                                        // answer to draw disabled, and a DRAG needs
+                                                        // every tile's, because a range sweeps past
+                                                        // pieces it never lands a pointer on.
                                                         {
-                                                            let pick = crate::picker_queue::QueuedPick::SetPiece {
-                                                                set_id: offer.id.to_string(),
-                                                                piece_index,
-                                                            };
-                                                            let queued_at = crate::picker_queue::badge(&queue.read(), &pick);
-                                                            let slottable = placeable[piece_index];
-                                                            // Inside the in-flight drag's span —
-                                                            // shown before the pointer comes up,
-                                                            // so a range is seen before it commits.
-                                                            let in_drag = drag()
-                                                                .is_some_and(|(set_id, from, to)| {
-                                                                    set_id == offer.id
-                                                                        && crate::picker_queue::drag_span(from, to)
-                                                                            .contains(&piece_index)
-                                                                });
-                                                            let label = piece_label(piece);
+                                                            // "Procs only" hides the set's other
+                                                            // pieces too, and a hidden piece counts
+                                                            // as unplaceable so a drag between two
+                                                            // procs can't queue what it skipped.
+                                                            let shown = |piece: &coh_data::IoSetPiece| !facets.procs_only || piece.proc;
+                                                            let placeable: Vec<bool> = offer.set.pieces
+                                                                .iter()
+                                                                .map(|piece| shown(piece) && coh_data::slotting_rules::piece_slottable_now(
+                                                                    offer.id, piece, &slots, &unique_scope,
+                                                                ))
+                                                                .collect();
+                                                            let set_icon = crate::view::icons::io_set_icon_url(&offer.set.icon);
                                                             rsx! {
-                                                                button {
-                                                                    key: "{piece_index}",
-                                                                    aria_label: "{label}",
-                                                                    class: "picker-set-piece",
-                                                                    class: if queued_at.is_some() { "is-queued" } else { "" },
-                                                                    class: if in_drag { "is-dragging" } else { "" },
-                                                                    disabled: !slottable,
-                                                                    // A disabled button gets no mouse events, so a
-                                                                    // refused piece keeps the native title saying why.
-                                                                    title: if !slottable {
-                                                                        format!("{} — {label}: already slotted, or a unique this build already holds", offer.set.name)
-                                                                    },
-                                                                    // Hover only for a mouse: a phone reports a
-                                                                    // tap as a hover too, which opened the
-                                                                    // tooltip over the list on every tap.
-                                                                    onpointerenter: {
-                                                                        let set_id = offer.id.to_string();
-                                                                        let pick = pick.clone();
-                                                                        let database = database.clone();
-                                                                        let powerset_id = powerset_id.clone();
-                                                                        let power_id = power_id.clone();
-                                                                        let slots = slots.clone();
-                                                                        move |evt: Event<PointerData>| {
+                                                        // The set's icon once, beside its pieces as
+                                                        // shorthand (`Acc/Dmg`). A tile per piece drew
+                                                        // one icon six times and cut every name to
+                                                        // "Accuracy/…". The overlay is the frame that
+                                                        // carries the rarity; without it a purple reads
+                                                        // like a common.
+                                                        if let Some(url) = &set_icon {
+                                                            span { class: "picker-enh-icon picker-set-icon", aria_hidden: "true",
+                                                                img { src: "{url}", alt: "" }
+                                                                img {
+                                                                    src: crate::view::icons::io_set_overlay_url(
+                                                                        &offer.set.category, &offer.set.icon,
+                                                                        attuned_frame || offer.set.attuned_only,
+                                                                    ),
+                                                                    alt: "",
+                                                                }
+                                                            }
+                                                        }
+                                                        div { class: "picker-piece-grid",
+                                                        for (piece_index, piece) in offer.set.pieces.iter().enumerate().filter(|(_, piece)| shown(piece)) {
+                                                            {
+                                                                let pick = crate::picker_queue::QueuedPick::SetPiece {
+                                                                    set_id: offer.id.to_string(),
+                                                                    piece_index,
+                                                                };
+                                                                let queued_at = crate::picker_queue::badge(&queue.read(), &pick);
+                                                                let slottable = placeable[piece_index];
+                                                                // Inside the in-flight drag's span —
+                                                                // shown before the pointer comes up,
+                                                                // so a range is seen before it commits.
+                                                                let in_drag = drag()
+                                                                    .is_some_and(|(set_id, from, to)| {
+                                                                        set_id == offer.id
+                                                                            && crate::picker_queue::drag_span(from, to)
+                                                                                .contains(&piece_index)
+                                                                    });
+                                                                let label = piece_label(piece);
+                                                                rsx! {
+                                                                    button {
+                                                                        key: "{piece_index}",
+                                                                        aria_label: "{label}",
+                                                                        class: "picker-set-piece",
+                                                                        class: if queued_at.is_some() { "is-queued" } else { "" },
+                                                                        class: if in_drag { "is-dragging" } else { "" },
+                                                                        disabled: !slottable,
+                                                                        // A disabled button gets no mouse events, so a
+                                                                        // refused piece keeps the native title saying why.
+                                                                        title: if !slottable {
+                                                                            format!("{} — {label}: already slotted, or a unique this build already holds", offer.set.name)
+                                                                        },
+                                                                        // Hover only for a mouse: a phone reports a
+                                                                        // tap as a hover too, which opened the
+                                                                        // tooltip over the list on every tap.
+                                                                        onpointerenter: {
+                                                                            let set_id = offer.id.to_string();
+                                                                            let pick = pick.clone();
+                                                                            let database = database.clone();
+                                                                            let powerset_id = powerset_id.clone();
+                                                                            let power_id = power_id.clone();
+                                                                            let slots = slots.clone();
+                                                                            move |evt: Event<PointerData>| {
+                                                                                if evt.pointer_type() == "mouse" {
+                                                                                    hovered.set(Some(pick.clone()));
+                                                                                    let hint = if marking() {
+                                                                                        "Click to mark · drag to mark several"
+                                                                                    } else {
+                                                                                        "Click to slot · drag to mark several"
+                                                                                    };
+                                                                                    let point = evt.client_coordinates();
+                                                                                    if let Some(target) = piece_tooltip(
+                                                                                        &database, &pick, defaults, &session,
+                                                                                        &powerset_id, &power_id, &slots,
+                                                                                        (point.x, point.y), hint,
+                                                                                    ) {
+                                                                                        tip.set(Some(target));
+                                                                                    }
+                                                                                }
+                                                                                let reaching = drag
+                                                                                    .peek()
+                                                                                    .clone()
+                                                                                    .filter(|(from_set, _, _)| from_set == &set_id);
+                                                                                if let Some((from_set, from, _)) = reaching {
+                                                                                    drag.set(Some((from_set, from, piece_index)));
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        onpointerleave: move |evt: Event<PointerData>| {
                                                                             if evt.pointer_type() == "mouse" {
-                                                                                hovered.set(Some(pick.clone()));
-                                                                                let hint = if marking() {
-                                                                                    "Click to mark · drag to mark several"
-                                                                                } else {
-                                                                                    "Click to slot · drag to mark several"
-                                                                                };
+                                                                                tip.set(None);
+                                                                                hovered.set(None);
+                                                                            }
+                                                                        },
+                                                                        onpointerdown: {
+                                                                            let set_id = offer.id.to_string();
+                                                                            let pick = pick.clone();
+                                                                            let database = database.clone();
+                                                                            let powerset_id = powerset_id.clone();
+                                                                            let power_id = power_id.clone();
+                                                                            let slots = slots.clone();
+                                                                            move |evt: Event<PointerData>| {
+                                                                                // Shift is a per-piece mark, so it arms no
+                                                                                // drag. Select mode does: a drag marks a
+                                                                                // range in either mode, and only what the
+                                                                                // single click does differs.
+                                                                                if evt.modifiers().shift() {
+                                                                                    return;
+                                                                                }
+                                                                                drag.set(Some((set_id.clone(), piece_index, piece_index)));
+                                                                                if evt.pointer_type() != "touch" {
+                                                                                    return;
+                                                                                }
+                                                                                // A finger still on this piece after the
+                                                                                // pause opens the tooltip. A scroll cancels
+                                                                                // the press and a sweep moves the drag on,
+                                                                                // so either one leaves it shut.
+                                                                                let id = presses.peek().wrapping_add(1);
+                                                                                presses.set(id);
+                                                                                held.set(Some(id));
+                                                                                peeked.set(false);
                                                                                 let point = evt.client_coordinates();
-                                                                                if let Some(target) = piece_tooltip(
+                                                                                let target = piece_tooltip(
                                                                                     &database, &pick, defaults, &session,
                                                                                     &powerset_id, &power_id, &slots,
-                                                                                    (point.x, point.y), hint,
-                                                                                ) {
-                                                                                    tip.set(Some(target));
-                                                                                }
+                                                                                    (point.x, point.y), "Let go to close",
+                                                                                );
+                                                                                let held_pick = pick.clone();
+                                                                                spawn(async move {
+                                                                                    let _ = document::eval(&format!(
+                                                                                        "await new Promise(done => setTimeout(done, {LONG_PRESS_MS})); return true;"
+                                                                                    ))
+                                                                                    .await;
+                                                                                    let still_here = *held.peek() == Some(id)
+                                                                                        && drag.peek().as_ref().is_some_and(|(_, from, to)| from == to);
+                                                                                    if let (true, Some(target)) = (still_here, target) {
+                                                                                        drag.set(None);
+                                                                                        peeked.set(true);
+                                                                                        tip.set(Some(target));
+                                                                                        hovered.set(Some(held_pick));
+                                                                                    }
+                                                                                });
                                                                             }
-                                                                            let reaching = drag
-                                                                                .peek()
-                                                                                .clone()
-                                                                                .filter(|(from_set, _, _)| from_set == &set_id);
-                                                                            if let Some((from_set, from, _)) = reaching {
-                                                                                drag.set(Some((from_set, from, piece_index)));
+                                                                        },
+                                                                        // Android reads a long press as a right-click.
+                                                                        // Here it's the tooltip's, so no menu.
+                                                                        oncontextmenu: move |evt: Event<MouseData>| {
+                                                                            if held.peek().is_some() || *peeked.peek() {
+                                                                                evt.prevent_default();
                                                                             }
-                                                                        }
-                                                                    },
-                                                                    onpointerleave: move |evt: Event<PointerData>| {
-                                                                        if evt.pointer_type() == "mouse" {
-                                                                            tip.set(None);
-                                                                            hovered.set(None);
-                                                                        }
-                                                                    },
-                                                                    onpointerdown: {
-                                                                        let set_id = offer.id.to_string();
-                                                                        let pick = pick.clone();
-                                                                        let database = database.clone();
-                                                                        let powerset_id = powerset_id.clone();
-                                                                        let power_id = power_id.clone();
-                                                                        let slots = slots.clone();
-                                                                        move |evt: Event<PointerData>| {
-                                                                            // Shift is a per-piece mark, so it arms no
-                                                                            // drag. Select mode does: a drag marks a
-                                                                            // range in either mode, and only what the
-                                                                            // single click does differs.
-                                                                            if evt.modifiers().shift() {
-                                                                                return;
-                                                                            }
-                                                                            drag.set(Some((set_id.clone(), piece_index, piece_index)));
-                                                                            if evt.pointer_type() != "touch" {
-                                                                                return;
-                                                                            }
-                                                                            // A finger still on this piece after the
-                                                                            // pause opens the tooltip. A scroll cancels
-                                                                            // the press and a sweep moves the drag on,
-                                                                            // so either one leaves it shut.
-                                                                            let id = presses.peek().wrapping_add(1);
-                                                                            presses.set(id);
-                                                                            held.set(Some(id));
-                                                                            peeked.set(false);
-                                                                            let point = evt.client_coordinates();
-                                                                            let target = piece_tooltip(
-                                                                                &database, &pick, defaults, &session,
-                                                                                &powerset_id, &power_id, &slots,
-                                                                                (point.x, point.y), "Let go to close",
-                                                                            );
-                                                                            let held_pick = pick.clone();
-                                                                            spawn(async move {
-                                                                                let _ = document::eval(&format!(
-                                                                                    "await new Promise(done => setTimeout(done, {LONG_PRESS_MS})); return true;"
-                                                                                ))
-                                                                                .await;
-                                                                                let still_here = *held.peek() == Some(id)
-                                                                                    && drag.peek().as_ref().is_some_and(|(_, from, to)| from == to);
-                                                                                if let (true, Some(target)) = (still_here, target) {
-                                                                                    drag.set(None);
-                                                                                    peeked.set(true);
-                                                                                    tip.set(Some(target));
-                                                                                    hovered.set(Some(held_pick));
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    },
-                                                                    // Android reads a long press as a right-click.
-                                                                    // Here it's the tooltip's, so no menu.
-                                                                    oncontextmenu: move |evt: Event<MouseData>| {
-                                                                        if held.peek().is_some() || *peeked.peek() {
-                                                                            evt.prevent_default();
-                                                                        }
-                                                                    },
-                                                                    // A touch that turns into a scroll is
-                                                                    // cancelled by the browser rather than
-                                                                    // completed, so the gesture that would
-                                                                    // otherwise slot a piece under a moving
-                                                                    // thumb never reaches the `up` arm.
-                                                                    onpointercancel: move |_| {
-                                                                        drag.set(None);
-                                                                        held.set(None);
-                                                                        if *peeked.peek() {
-                                                                            peeked.set(false);
-                                                                            tip.set(None);
-                                                                            hovered.set(None);
-                                                                        }
-                                                                    },
-                                                                    onpointerup: {
-                                                                        let set_id = offer.id.to_string();
-                                                                        let pick = pick.clone();
-                                                                        let database = database.clone();
-                                                                        let powerset_id = powerset_id.clone();
-                                                                        let power_id = power_id.clone();
-                                                                        let placeable = placeable.clone();
-                                                                        move |evt: Event<PointerData>| {
+                                                                        },
+                                                                        // A touch that turns into a scroll is
+                                                                        // cancelled by the browser rather than
+                                                                        // completed, so the gesture that would
+                                                                        // otherwise slot a piece under a moving
+                                                                        // thumb never reaches the `up` arm.
+                                                                        onpointercancel: move |_| {
+                                                                            drag.set(None);
                                                                             held.set(None);
-                                                                            // A hold that showed the tooltip ends
-                                                                            // there; letting go slots nothing.
                                                                             if *peeked.peek() {
                                                                                 peeked.set(false);
                                                                                 tip.set(None);
                                                                                 hovered.set(None);
-                                                                                return;
                                                                             }
-                                                                            let span = drag.peek().clone();
-                                                                            drag.set(None);
-                                                                            match span {
-                                                                                // A drag that covered more than
-                                                                                // its origin MARKS the range and
-                                                                                // shows the bar, rather than
-                                                                                // writing the slots outright.
-                                                                                // Six slots is too much to spend
-                                                                                // on a gesture that cannot be
-                                                                                // seen before it lands — the
-                                                                                // same call the pool picker
-                                                                                // made about taking a power.
-                                                                                Some((from_set, from, to))
-                                                                                    if from_set == set_id && from != to =>
-                                                                                {
-                                                                                    let mut queue = queue.write();
-                                                                                    for index in crate::picker_queue::drag_span(from, to) {
-                                                                                        // The range sweeps pieces the
-                                                                                        // pointer never stopped on,
-                                                                                        // including the refused ones
-                                                                                        // drawn between its endpoints.
-                                                                                        // Marking those put a badge on
-                                                                                        // a tile that cannot be spent.
-                                                                                        if !placeable.get(index).copied().unwrap_or(false) {
-                                                                                            continue;
+                                                                        },
+                                                                        onpointerup: {
+                                                                            let set_id = offer.id.to_string();
+                                                                            let pick = pick.clone();
+                                                                            let database = database.clone();
+                                                                            let powerset_id = powerset_id.clone();
+                                                                            let power_id = power_id.clone();
+                                                                            let placeable = placeable.clone();
+                                                                            move |evt: Event<PointerData>| {
+                                                                                held.set(None);
+                                                                                // A hold that showed the tooltip ends
+                                                                                // there; letting go slots nothing.
+                                                                                if *peeked.peek() {
+                                                                                    peeked.set(false);
+                                                                                    tip.set(None);
+                                                                                    hovered.set(None);
+                                                                                    return;
+                                                                                }
+                                                                                let span = drag.peek().clone();
+                                                                                drag.set(None);
+                                                                                match span {
+                                                                                    // A drag that covered more than
+                                                                                    // its origin MARKS the range and
+                                                                                    // shows the bar, rather than
+                                                                                    // writing the slots outright.
+                                                                                    // Six slots is too much to spend
+                                                                                    // on a gesture that cannot be
+                                                                                    // seen before it lands — the
+                                                                                    // same call the pool picker
+                                                                                    // made about taking a power.
+                                                                                    Some((from_set, from, to))
+                                                                                        if from_set == set_id && from != to =>
+                                                                                    {
+                                                                                        let mut queue = queue.write();
+                                                                                        for index in crate::picker_queue::drag_span(from, to) {
+                                                                                            // The range sweeps pieces the
+                                                                                            // pointer never stopped on,
+                                                                                            // including the refused ones
+                                                                                            // drawn between its endpoints.
+                                                                                            // Marking those put a badge on
+                                                                                            // a tile that cannot be spent.
+                                                                                            if !placeable.get(index).copied().unwrap_or(false) {
+                                                                                                continue;
+                                                                                            }
+                                                                                            crate::picker_queue::mark(
+                                                                                                &mut queue,
+                                                                                                crate::picker_queue::QueuedPick::SetPiece {
+                                                                                                    set_id: set_id.clone(),
+                                                                                                    piece_index: index,
+                                                                                                },
+                                                                                            );
                                                                                         }
-                                                                                        crate::picker_queue::mark(
-                                                                                            &mut queue,
-                                                                                            crate::picker_queue::QueuedPick::SetPiece {
-                                                                                                set_id: set_id.clone(),
-                                                                                                piece_index: index,
-                                                                                            },
-                                                                                        );
                                                                                     }
-                                                                                }
-                                                                                // A single click while marking
-                                                                                // toggles this piece's mark.
-                                                                                _ if evt.modifiers().shift() || marking() => {
-                                                                                    crate::picker_queue::toggle(&mut queue.write(), pick.clone());
-                                                                                }
-                                                                                // A plain click still slots one
-                                                                                // piece and closes — the single
-                                                                                // pick stays one action.
-                                                                                _ => {
-                                                                                    if let Some(enhancement) = build_queued_pick(
-                                                                                        &database, &pick, defaults, &session,
-                                                                                    ) {
-                                                                                        place_pick(
-                                                                                            session, compare, &database, destination,
-                                                                                            &powerset_id, &power_id,
-                                                                                            slot_index as usize, enhancement,
-                                                                                        );
-                                                                                        on_close.call(());
+                                                                                    // A single click while marking
+                                                                                    // toggles this piece's mark.
+                                                                                    _ if evt.modifiers().shift() || marking() => {
+                                                                                        crate::picker_queue::toggle(&mut queue.write(), pick.clone());
+                                                                                    }
+                                                                                    // A plain click still slots one
+                                                                                    // piece and closes — the single
+                                                                                    // pick stays one action.
+                                                                                    _ => {
+                                                                                        if let Some(enhancement) = build_queued_pick(
+                                                                                            &database, &pick, defaults, &session,
+                                                                                        ) {
+                                                                                            place_pick(
+                                                                                                session, compare, &database, destination,
+                                                                                                &powerset_id, &power_id,
+                                                                                                slot_index as usize, enhancement,
+                                                                                            );
+                                                                                            on_close.call(());
+                                                                                        }
                                                                                     }
                                                                                 }
                                                                             }
+                                                                        },
+                                                                        "{breakable_at_slashes(&piece_short_label(&label))}"
+                                                                        if let Some(at) = &queued_at {
+                                                                            // Which empty slot this mark will land
+                                                                            // in, shown before it is spent.
+                                                                            span { class: "picker-queue-badge", "{at}" }
                                                                         }
-                                                                    },
-                                                                    "{breakable_at_slashes(&piece_short_label(&label))}"
-                                                                    if let Some(at) = &queued_at {
-                                                                        // Which empty slot this mark will land
-                                                                        // in, shown before it is spent.
-                                                                        span { class: "picker-queue-badge", "{at}" }
                                                                     }
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                    }
+                                                        }
+                                                            }
                                                         }
                                                     }
-                                                }
-                                                // The unfolded bonus ladder, graded against the
-                                                // destination's own slots: a Compare row's tiers
-                                                // are that row's. Its Rule-of-5 counts are the
-                                                // build's, so a Compare row shows the tiers alone.
-                                                if bonus_set().as_deref() == Some(offer.id) {
-                                                    div { class: "picker-set-bonuses",
-                                                        match build.selected_power(&powerset_id, &power_id) {
-                                                            Some(power) => {
-                                                                let mut power = power.clone();
-                                                                power.slots = slots.clone();
-                                                                let tracking = match destination {
-                                                                    PickerDestination::Build => totals.read().set_bonus_tracking.clone(),
-                                                                    PickerDestination::CompareCopy { .. } => Vec::new(),
-                                                                };
-                                                                let block = build_set_bonus_block(offer.set, &power, offer.id, &tracking);
-                                                                rsx! {
-                                                                    div { class: "slot-tooltip-bonuses-head",
-                                                                        "Set Bonuses ({block.slotted}/{block.total_pieces} slotted in this power)"
+                                                    // The unfolded bonus ladder, graded against the
+                                                    // destination's own slots: a Compare row's tiers
+                                                    // are that row's. Its Rule-of-5 counts are the
+                                                    // build's, so a Compare row shows the tiers alone.
+                                                    if bonus_set().as_deref() == Some(offer.id) {
+                                                        div { class: "picker-set-bonuses",
+                                                            match build.selected_power(&powerset_id, &power_id) {
+                                                                Some(power) => {
+                                                                    let mut power = power.clone();
+                                                                    power.slots = slots.clone();
+                                                                    let tracking = match destination {
+                                                                        PickerDestination::Build => totals.read().set_bonus_tracking.clone(),
+                                                                        PickerDestination::CompareCopy { .. } => Vec::new(),
+                                                                    };
+                                                                    let block = build_set_bonus_block(offer.set, &power, offer.id, &tracking);
+                                                                    rsx! {
+                                                                        div { class: "slot-tooltip-bonuses-head",
+                                                                            "Set Bonuses ({block.slotted}/{block.total_pieces} slotted in this power)"
+                                                                        }
+                                                                        SetBonusTierList { tiers: block.tiers }
                                                                     }
-                                                                    SetBonusTierList { tiers: block.tiers }
                                                                 }
+                                                                None => rsx! {
+                                                                    div { class: "picker-error", "This power is not in the build, so its set bonuses can't be read." }
+                                                                },
                                                             }
-                                                            None => rsx! {
-                                                                div { class: "picker-error", "This power is not in the build, so its set bonuses can't be read." }
-                                                            },
                                                         }
                                                     }
                                                 }

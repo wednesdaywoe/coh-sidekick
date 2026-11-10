@@ -4227,6 +4227,29 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 }
 
 .picker-set-group { display: flex; flex-direction: column; gap: 1px; margin-bottom: 6px; }
+/* One row of the set list: the set, and above it the rarity run it opens when the list is
+   sorted by rarity. The wrapper is what lets a header travel with its set — down the list,
+   through the diff and under one key — instead of becoming a sibling that shifts on every
+   filter change. With no sort by rarity it holds exactly one child and changes nothing. */
+.picker-set-entry { display: flex; flex-direction: column; }
+/* The run's name, once, above the sets that share it. The same voice as a set's own name
+   line — small, uppercase, faint — but ruled, because it governs the rows under it rather
+   than describing one of them. */
+.picker-set-chunk {
+  margin: 0 0 3px;
+  padding: 0 4px 2px;
+  border-bottom: 1px solid var(--seam-raised);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+/* A new run opens with air above it, so the chunks read as blocks and not as one long
+   column of rules. The first row needs none: the list's own padding is already above it. */
+.picker-set-entry:not(:first-child) .picker-set-chunk { margin-top: 14px; }
 /* A set with a bonus for a tracked stat: a tint and an edge, plus chips naming the bonuses. */
 .picker-set-group.has-tracked-bonus {
   background: color-mix(in srgb, var(--selected) 10%, transparent);
