@@ -7841,6 +7841,22 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .build-bar__budget.is-low { border-color: var(--heat); }
 .build-bar__budget.is-low .build-bar__value { color: var(--heat); }
 .build-bar__budget.is-unavailable .build-bar__value { color: var(--text-faint); }
+/* The build's name, a full row of its own. Unstarted, it takes the action colour, since it is
+   where a new build begins. */
+.build-bar__identity {
+  flex: 1 0 100%; min-width: 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  min-height: 36px; padding: 4px 10px;
+  font: 600 13px var(--font-chrome);
+  color: var(--text);
+  background: var(--surface-raised);
+  border: 1px solid var(--seam-raised);
+  border-radius: var(--r);
+  cursor: pointer;
+}
+.build-bar__identity:disabled { color: var(--text-faint); cursor: default; }
+.build-bar__identity.is-unstarted { color: var(--action-active); border-color: var(--action-active); }
+.build-bar__identity-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 @media (min-width: 900px) {
   .build-bar { display: none; }

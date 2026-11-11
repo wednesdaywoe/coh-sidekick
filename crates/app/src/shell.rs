@@ -196,6 +196,9 @@ pub fn Shell() -> Element {
     // Provided so a picked-power card sets the Info panel's target on hover (PC7); the Info panel
     // reads the same signal, keeping one power's projection identical across surfaces.
     use_context_provider(|| PowerSelection(selection));
+    // The phone's open sheet: the bottom nav's tabs and the build bar's identity button both
+    // open one, so it lives above both.
+    use_context_provider(|| crate::mobile_nav::OpenSheet(Signal::new(None)));
     let info_lock: Signal<Selection> = use_signal(|| None);
     let info_lock = use_context_provider(|| InfoLock(info_lock));
     let db = use_resource(move || async move { data_source::load(dataset()).await });
@@ -1785,10 +1788,9 @@ fn ExemplarBanner() -> Element {
 /// legible without opening anything; the panel holds the same form the Identity surface did,
 /// and the dataset switcher that used to sit with the reader's preferences.
 ///
-/// `pub(crate)` because the mobile bottom nav ([`crate::mobile_nav`]) re-renders this same
-/// popover as one of its tabs — a second seat for the same control, not a copy.
+/// Phones get the same form on its own sheet, opened from the build bar.
 #[component]
-pub(crate) fn IdentityPopover(database: Db, dataset: Signal<DatasetId>) -> Element {
+fn IdentityPopover(database: Db, dataset: Signal<DatasetId>) -> Element {
     let session = use_context::<BuildSession>();
     let label = identity_label(&session.build.read(), &database);
 
@@ -1855,7 +1857,7 @@ fn dataset_note(id: DatasetId) -> &'static str {
 /// other name comes from [`crate::naming`], which resolves it from the id rather than reading
 /// the selection's stored `name` — see that module for why a stored name is blank on every
 /// build that arrived from a file.
-fn identity_label(build: &CharacterState, database: &PowerDatabase) -> String {
+pub(crate) fn identity_label(build: &CharacterState, database: &PowerDatabase) -> String {
     let mut parts = Vec::new();
     if !build.name.is_empty() {
         parts.push(build.name.clone());
@@ -1888,8 +1890,7 @@ fn identity_label(build: &CharacterState, database: &PowerDatabase) -> String {
 /// controls away for the one moment the app looks unresponsive. The derived caster-state
 /// sections simply aren't there yet.
 ///
-/// `pub(crate)` for the same reason as [`IdentityPopover`]: the mobile bottom nav re-renders
-/// this popover as one of its tabs.
+/// `pub(crate)` because the mobile bottom nav re-renders this popover on its Options sheet.
 #[component]
 pub(crate) fn CombatPopover(database: Option<Db>) -> Element {
     let session = use_context::<BuildSession>();

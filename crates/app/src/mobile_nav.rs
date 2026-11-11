@@ -8,6 +8,10 @@
 //! the top — the beta's "back to the planner", which needs no second meaning while nothing
 //! covers the planner.
 //!
+//! Build Identity is a fourth sheet with no tab: the build bar at the top of the stack opens it
+//! (see [`crate::build_bar`]), because the build's name belongs where it can be read, and a first
+//! visit has to find where a build starts without opening the Options tab to look.
+//!
 //! The sheets hold no menus of their own. They list the header's popovers under
 //! [`PopoverInline`], which makes each one draw its body in place under its title, so every
 //! entry here is the desktop's entry and a fix to one is a fix to both.
@@ -18,20 +22,26 @@ use crate::panels::dashboards::{surfaces, title_of, DashboardConfig};
 use crate::panels::incarnate_picker::IncarnatePickerOpen;
 use crate::popover::PopoverInline;
 use crate::quickbar::{model::QuickBarItem, DisplayMenu, ToolsMenu};
-use crate::shell::{CombatPopover, Db, IdentityPopover};
+use crate::shell::{CombatPopover, Db};
 use crate::view::marks;
 use dioxus::prelude::*;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum Sheet {
+pub(crate) enum Sheet {
+    Identity,
     Dashboard,
     Options,
     Menu,
 }
 
+/// Which sheet is open, shared by the shell so the build bar can open one too.
+#[derive(Clone, Copy)]
+pub(crate) struct OpenSheet(pub Signal<Option<Sheet>>);
+
 impl Sheet {
     fn title(self) -> &'static str {
         match self {
+            Sheet::Identity => "Build Identity",
             Sheet::Dashboard => "Dashboard",
             Sheet::Options => "Options",
             Sheet::Menu => "Menu",
@@ -48,7 +58,7 @@ pub fn MobileNav(
     reorder_open: Signal<bool>,
     reset_confirm_open: Signal<bool>,
 ) -> Element {
-    let mut sheet = use_signal(|| None::<Sheet>);
+    let mut sheet = use_context::<OpenSheet>().0;
     let mut incarnate = use_context::<IncarnatePickerOpen>().0;
     // The picker opens on its first tab; it has the slot tabs to move between the rest. `None`
     // while the bundle loads or on a dataset with no incarnates, and the tab is disabled then.
@@ -79,11 +89,17 @@ pub fn MobileNav(
             if let Some(open) = sheet() {
                 MobileSheet { key: "{open.title()}", sheet, title: open.title(),
                     match open {
+                        // The form itself rather than its popover: a popover drawn inline
+                        // would repeat the sheet's title as its own heading.
+                        Sheet::Identity => rsx! {
+                            if let Some(database) = database.clone() {
+                                div { class: "mobile-sheet__panel",
+                                    crate::panels::identity::IdentityPanel { database, dataset }
+                                }
+                            }
+                        },
                         Sheet::Dashboard => rsx! { DashboardSheet {} },
                         Sheet::Options => rsx! {
-                            if let Some(database) = database.clone() {
-                                IdentityPopover { database, dataset }
-                            }
                             CombatPopover { database: database.clone() }
                             DisplayMenu { pins, layout, reorder_open, reset_confirm_open }
                         },
