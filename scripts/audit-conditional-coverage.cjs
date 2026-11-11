@@ -350,7 +350,20 @@ const EXPECTED = {
   // 11/539 -> 10/535 with Homecoming, above: the literal-`0` gate is no toggle.
   // 535 -> 556 with Homecoming, above: Attune's bonus rows.
   // 556 -> 605 with Homecoming, above: the fired powers' gated groups.
-  brainstorm: { pool: 10, epic: 7, powerset: 605 },
+  //
+  // 605 -> 606 on the 2026-11-03 open-beta re-export, which is the first Brainstorm corpus this
+  // fork has read since the Sonic Melee rework. Diffed entry by entry between the two exports'
+  // generated trees rather than taken on the delta's word: sixteen conditionals arrive, fifteen
+  // leave. Attune stops gating its CASTER and starts gating its TARGET — `sonicatuneself` falls
+  // 23 -> 8, the fifteen being one entry each on Earsplitter, Sandman's Whisper, Sonic Thrust and
+  // Strident Echo across Brute, Scrapper and Tanker and three of those four on Stalker — and in
+  // its place come `sonicatunefoe` on Attune in all four ATs, `sonicatune1foe` on Brute and Tanker
+  // where the single-target form exists, and `smattune` on the Stalker's Assassin's Resonance.
+  // Two sets that had nothing to gate now do: Rad Melee's Contaminated hit reaches Atom Smasher
+  // in five more places (17 -> 22, four ATs plus the Dominator's radioactive snipe) and the new
+  // Spines set gives Ripper a `poisoned` gate on all four. Sonic Thrust and Strident Echo leave
+  // the bin outright, so their four entries go with them instead of re-keying.
+  brainstorm: { pool: 10, epic: 7, powerset: 606 },
 };
 
 /**
