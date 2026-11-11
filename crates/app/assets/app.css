@@ -4718,7 +4718,9 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    1.5 keeps a label/value pair reading as its own line without the 1.8 that had each row
    claiming half a row of the grid it sits in. */
 .stat-row {
-  display: flex; justify-content: space-between; gap: 8px;
+  /* Wraps so a value too wide to share the line with the label's floor (Regen's
+     "+356% · 21.66 HP/s" in a two-column panel) drops below it instead of erasing the label. */
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 8px;
   font-size: 12px; line-height: 1.5;
   /* A grid item floors at its content width by default, so one long label would widen its
      whole column and push the other one out of the body. */
@@ -4730,9 +4732,10 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    just a wrong number. Which is why the value below never shrinks. */
 .stat-label {
   color: var(--text-dim);
-  /* Shrinks (to its ellipsis) but never GROWS: the slack belongs to the leader beside it, and a
-     label that absorbed it would put the rule back to zero width and the void back in the row. */
-  flex: 0 1 auto;
+  /* Grows only to its full name (max-content); the 1000:1 grow against the leader means the
+     label is filled first and the rule takes the rest. The 4.5em basis is the floor the row
+     wraps at, so a wide value drops a line rather than squeezing the label to zero. */
+  flex: 1000 1 4.5em; max-width: max-content;
   min-width: 0;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
@@ -4746,6 +4749,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
      different one — so the label absorbs every squeeze and this box keeps its digits, its
      cap underline, and its `sim` tag whole. */
   flex: 0 0 auto;
+  /* Right-aligned when it has wrapped onto a line of its own. */
+  margin-left: auto;
 }
 /* At or above its ceiling. Underlined rather than recoloured, so the value keeps its family
    hue — recolouring would make a capped defense stop looking like a defense number. */
