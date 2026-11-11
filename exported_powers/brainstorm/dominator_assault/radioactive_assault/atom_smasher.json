@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Atom Smasher",
   "display_fullname": "Dominator Assault Radioactive Assault Atom Smasher",
-  "display_help": "You charge up a dangerously unstable amount of radioactive energy into a single fist before driving it into the ground and causing a small explosion. Foes caught in the blast will suffer High Energy and Toxic damage and have their defense reduced. Enemies also have a moderate chance to be disoriented for a short time. Affected enemies have a small chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radioactive Assault powers cause a small burst of damage to foes near the target.<br><br><color #fcfc95>Damage: Moderate.</color><br><color #fcfc95>Recharge: Slow.</color>",
+  "display_help": "You charge up a dangerously unstable amount of radioactive energy into a single fist before driving it into the ground and causing a small explosion. Foes caught in the blast will suffer High Energy and Toxic damage and have their defense reduced. Enemies also have a moderate chance to be disoriented for a short time. Affected enemies have a small chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radioactive Assault powers causes a small burst of damage to foes near the target.<br><br>Atom Smasher also causes a weaker burst of damage around Contaminated targets.<br><br><color #fcfc95>Damage: Moderate.</color><br><color #fcfc95>Recharge: Slow.</color>",
   "display_short_help": "PBAoE, Moderate DMG(Energy/Toxic), Foe -Def, Disorient, Special",
   "icon": "radioactiveassault_atomsmasher.png",
   "auto_issue": false,
@@ -18,8 +18,8 @@
   "arc": 0.0,
   "range": 0.0,
   "range_secondary": 0.0,
-  "activation_time": 2.93,
-  "time_to_root": 2.93,
+  "activation_time": 2.8,
+  "time_to_root": 2.8,
   "recharge_time": 22.0,
   "activate_period": 0.0,
   "endurance_cost": 20.176,
@@ -175,7 +175,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_PvPDamage",
-          "scale": 0.3357,
+          "scale": 0.3265,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -208,7 +208,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_PvPDamage",
-          "scale": 1.0,
+          "scale": 0.9727,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -508,6 +508,94 @@
             "IgnoreResistance"
           ],
           "flags_raw": 1072
+        },
+        {
+          "attribs": [
+            "Null"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "PFX2",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags_raw": 1280
+        }
+      ]
+    },
+    {
+      "chance": 1.0,
+      "ppm": 0.0,
+      "delay": 0.0,
+      "radius_inner": -1.0,
+      "radius_outer": -1.0,
+      "requires_expression": [
+        "Temporary_Powers.Temporary_Powers.Radiation_Melee_Contaminated",
+        "target.ownPower?"
+      ],
+      "tags": [],
+      "flags": [],
+      "is_pvp": "EITHER",
+      "requires_pv": "EITHER",
+      "requires_default": "UNSATISFIED",
+      "eval_flags": 0,
+      "templates": [
+        {
+          "attribs": [
+            "Execute_Power"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Strength",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "0 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Stack",
+          "stack_limit": 2,
+          "stack_key": null,
+          "params": {
+            "power_names": [
+              "Redirects.Rad_Melee.Atom_Smasher_AoE"
+            ],
+            "count": 1,
+            "type": "Power"
+          },
+          "flags": [
+            "CopyBoosts"
+          ],
+          "flags_raw": 1280,
+          "flags2_raw": 4
         }
       ]
     }

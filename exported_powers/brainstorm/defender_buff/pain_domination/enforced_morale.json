@@ -279,7 +279,7 @@
         "target>",
         "0.9",
         "<",
-        "Cur.kHitPoints",
+        "cur.kHitPoints",
         "target>",
         "Max.kHitPoints",
         "target>",
@@ -314,7 +314,7 @@
             "target>",
             "0.9",
             "*",
-            "Cur.kHitPoints",
+            "cur.kHitPoints",
             "target>",
             "-"
           ],

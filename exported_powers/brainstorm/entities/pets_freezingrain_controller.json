@@ -14,16 +14,13 @@
     "display_class_name": "",
     "power_full_names": [
       "Pets.ResistAll.ResistAll",
-      "Pets.FreezingRain_Controller.FreezingRain",
-      "Pets.FreezingRain_Controller.Avoid"
+      "Pets.FreezingRain_Controller.FreezingRain"
     ],
     "power_display_names": [
       "ResistAll",
-      "FreezingRain",
-      "Avoid"
+      "FreezingRain"
     ],
     "power_levels": [
-      0,
       0,
       0
     ],

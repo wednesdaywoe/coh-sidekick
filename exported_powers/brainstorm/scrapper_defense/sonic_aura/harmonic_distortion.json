@@ -220,7 +220,7 @@
           "aspect": "Resistance",
           "target": "Self",
           "table": "Melee_Ones",
-          "scale": 0.0,
+          "scale": 1.0,
           "duration": "0.75 seconds",
           "magnitude": 1.0,
           "delay": 0.0,

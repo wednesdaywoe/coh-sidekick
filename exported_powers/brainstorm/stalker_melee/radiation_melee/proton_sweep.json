@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Proton Sweep",
   "display_fullname": "Stalker Melee Radiation Melee Proton Sweep",
-  "display_help": "You release a cloud of deadly radioactive particles in front of you inflicting Moderate Energy and Toxic damage over a short time as well as reducing the targets' defense. Affected enemies have a moderate chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radiation Melee powers cause a small burst of damage to foes near the target.",
+  "display_help": "You release a cloud of deadly radioactive particles in front of you inflicting Moderate Energy and Toxic damage over a short time as well as reducing the targets' defense. Affected enemies have a very high chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radiation Melee powers causes a small burst of damage around the target.",
   "display_short_help": "Melee Cone, DoT(Energy/Toxic), Foe -Def, Special",
   "icon": "radiationmelee_protonsweep.png",
   "auto_issue": false,
@@ -595,7 +595,7 @@
       ]
     },
     {
-      "chance": 0.20999999344348907,
+      "chance": 0.699999988079071,
       "ppm": 0.0,
       "delay": 0.0,
       "radius_inner": -1.0,
@@ -653,6 +653,38 @@
             "IgnoreResistance"
           ],
           "flags_raw": 1072
+        },
+        {
+          "attribs": [
+            "Null"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "PFX2",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags_raw": 1280
         }
       ]
     },

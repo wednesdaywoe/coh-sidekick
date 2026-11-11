@@ -6,7 +6,7 @@
   "display_name": "Somatic Aura",
   "display_fullname": "Tanker Defense Sonic Aura Noise Cancellation",
   "display_help": "Your control of sonic waves extends to nearby allies. Any teammates who remain nearby gain a bonus to their resistance. While this power is active, the sonic waves will bounce back to you like sonar, granting some resistance to ToHit and Perception debuffs, as well as increased perception.",
-  "display_short_help": "PBAoE Team +RES(All), Self +RES(Defense Debuff, ToHit, Perception) +Perception",
+  "display_short_help": "PBAoE Team +RES(All), Self +RES(ToHit, Perception) +Perception",
   "icon": "sonicaura_somaticaura",
   "auto_issue": false,
   "auto_issue_keeps_level": false,

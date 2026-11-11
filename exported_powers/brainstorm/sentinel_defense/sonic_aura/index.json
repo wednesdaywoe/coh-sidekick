@@ -44,7 +44,7 @@
     "Toggle: Self +Res(Psi, All DMG; Knockback, Sleep, Disorient, Hold, Immobilize)",
     "Toggle: Proc, Foe -Res(All)",
     "Auto: Self +Recharge, +SPD, +Rec, Res (Slow, Rec)",
-    "PBAoE Team +RES(All), Self +RES(Defense Debuff, ToHit, Perception) +Perception",
+    "PBAoE Team +RES(All), Self +RES(ToHit, Perception) +Perception",
     "PBAoE Moderate DMG(Energy), Foe Knockdown; Self/Foe Teleport",
     "Self +Res(All DMG, Knock Back, Repel, Stun, Hold, Sleep, Immobilize), +DEF(All DMG), +Recovery, Heal over Time"
   ],

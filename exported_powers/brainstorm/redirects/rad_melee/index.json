@@ -8,25 +8,29 @@
     "Redirects.Rad_Melee.Contaminated_Strike_AoE",
     "Redirects.Rad_Melee.Radioactive_Smash_AoE",
     "Redirects.Rad_Melee.Radiation_Siphon_AoE",
-    "Redirects.Rad_Melee.Devastating_Blow_AoE"
+    "Redirects.Rad_Melee.Devastating_Blow_AoE",
+    "Redirects.Rad_Melee.Atom_Smasher_AoE"
   ],
   "available_level": [
     0,
     1,
     15,
-    34
+    34,
+    0
   ],
   "power_display_names": [
     "Contaminated Strike",
     "Radioactive Smash",
     "Radiation Siphon",
-    "Devastating Blow"
+    "Devastating Blow",
+    "Atom Smasher"
   ],
   "power_short_helps": [
     "Melee, Light DMG(Energy/Smash), Foe -Def, -Res(All), Special",
     "Melee, Moderate DMG(Energy/Smash), Foe -Def, Knockdown, Special",
-    "Melee, Minor DMG(Energy/Smash), Foe, -Def, -Contaminated, Special",
-    "Melee, Minor DMG(Energy/Smash), Foe -Def, Disorient, Special"
+    "Melee, DMG(Energy/Smash), Foe, -Def, -Regen, -Contaminated, Special",
+    "Melee, Minor DMG(Energy/Smash), Foe -Def, Disorient, Special",
+    "PBAoE, DMG(Energy/Toxic), Foe -Def, Disorient, Special"
   ],
   "buy_requires": [],
   "buy_requires_failed": "",

@@ -119,7 +119,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Incarnate.Alpha_Silent.Defense_Debuff_Half"
+              "Incarnate.Alpha_Silent.Defense_DeBuff_Half"
             ],
             "count": 1,
             "type": "Power"
@@ -267,7 +267,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Incarnate.Alpha_Silent.Defense_Debuff_Half"
+              "Incarnate.Alpha_Silent.Defense_DeBuff_Half"
             ],
             "count": 1,
             "type": "Power"

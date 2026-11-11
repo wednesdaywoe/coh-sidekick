@@ -20,7 +20,7 @@
   "range_secondary": 0.0,
   "activation_time": 1.0,
   "time_to_root": 1.0,
-  "recharge_time": 90.0,
+  "recharge_time": 75.0,
   "activate_period": 0.0,
   "endurance_cost": 13.52,
   "interrupt_time": 0.0,
@@ -187,7 +187,7 @@
       ]
     }
   ],
-  "procs_allowed": false,
+  "area_factor_override": 3.25,
   "modes_disallowed": [
     "Disable_All"
   ],

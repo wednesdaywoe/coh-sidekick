@@ -14,16 +14,13 @@
     "display_class_name": "",
     "power_full_names": [
       "Pets.ResistAll.ResistAll",
-      "Pets.Whirlpool_Corruptor.Whirlpool",
-      "Pets.Whirlpool_Corruptor.Avoid"
+      "Pets.Whirlpool_Corruptor.Whirlpool"
     ],
     "power_display_names": [
       "ResistAll",
-      "Whirlpool",
-      "Avoid"
+      "Whirlpool"
     ],
     "power_levels": [
-      0,
       0,
       0
     ],

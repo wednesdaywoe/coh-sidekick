@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Electron Haze",
   "display_fullname": "Dominator Assault Radioactive Assault Electron Haze",
-  "display_help": "A short range conical blast of free electrons. This attack can bypass some of a target's defenses and reduce the target's Defense. It can also knock some targets down. Affected enemies have a small chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radioactive Assault powers cause a small burst of damage to foes near the target.<br><br><color #fcfc95>Damage: Moderate.</color><br><color #fcfc95>Recharge: Slow.</color>",
+  "display_help": "A short range conical blast of free electrons. This attack can bypass some of a target's defenses and reduce the target's Defense. It can also knock some targets down. Affected enemies have a high chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radioactive Assault powers cause a small burst of damage to foes near the target.<br><br><color #fcfc95>Damage: Moderate.</color><br><color #fcfc95>Recharge: Slow.</color>",
   "display_short_help": "Close, Moderate Moderate DMG(Energy), Foe -DEF, Knockback",
   "icon": "radioactiveassault_electronhaze",
   "auto_issue": false,
@@ -18,8 +18,8 @@
   "arc": 0.5235987901687622,
   "range": 40.0,
   "range_secondary": 0.0,
-  "activation_time": 2.37,
-  "time_to_root": 2.37,
+  "activation_time": 2.17,
+  "time_to_root": 2.17,
   "recharge_time": 16.0,
   "activate_period": 0.0,
   "endurance_cost": 15.184,
@@ -163,7 +163,7 @@
       ]
     },
     {
-      "chance": 0.25,
+      "chance": 0.5,
       "ppm": 0.0,
       "delay": 0.0,
       "radius_inner": -1.0,
@@ -189,8 +189,8 @@
           "application_type": "OnTick",
           "aspect": "Current",
           "target": "AnyAffected",
-          "table": "Ranged_Knockback",
-          "scale": 1.0,
+          "table": "Ranged_Ones",
+          "scale": 0.67,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -217,7 +217,7 @@
       ]
     },
     {
-      "chance": 0.25,
+      "chance": 0.5,
       "ppm": 0.0,
       "delay": 0.0,
       "radius_inner": -1.0,
@@ -243,8 +243,8 @@
           "application_type": "OnTick",
           "aspect": "Current",
           "target": "AnyAffected",
-          "table": "Ranged_Knockback",
-          "scale": 1.0,
+          "table": "Ranged_Ones",
+          "scale": 0.67,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -306,7 +306,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Ranged_PvPDamage",
-          "scale": 1.25,
+          "scale": 1.1852,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -333,7 +333,7 @@
       ]
     },
     {
-      "chance": 0.3400000035762787,
+      "chance": 0.5,
       "ppm": 0.0,
       "delay": 0.0,
       "radius_inner": -1.0,
@@ -399,6 +399,38 @@
             "IgnoreResistance"
           ],
           "flags_raw": 1072
+        },
+        {
+          "attribs": [
+            "Null"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "PFX2",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags_raw": 1280
         }
       ]
     }

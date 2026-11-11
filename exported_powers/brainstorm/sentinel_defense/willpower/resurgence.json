@@ -56,7 +56,7 @@
     {
       "name": "Redirects.Willpower.Resurgence_Concious",
       "condition_expression": [
-        "Cur.kHitPoints",
+        "cur.kHitPoints",
         "source>",
         "0",
         ">"

@@ -44,7 +44,7 @@
     "Melee, DMG(Smashing, Energy)",
     "Self +DMG, +To Hit",
     "Ranged, Foe Placate, Self Stealth/Hide",
-    "Melee, DMG(Energy/Smash), Foe, -Def, -Contaminated, Special",
+    "Melee, DMG(Energy/Smash), Foe, -Def, -Regen, -Contaminated, Special",
     "Melee, DMG(Energy/Smash), Foe -Def, Disorient, Special",
     "PBAoE, DMG(Energy/Toxic), Foe -Def, Disorient, Special"
   ],

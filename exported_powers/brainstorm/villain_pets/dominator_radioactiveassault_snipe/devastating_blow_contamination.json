@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Devastating Blow",
   "display_fullname": "Villain Pets Dominator RadioactiveAssault Snipe Devastating Blow Contamination",
-  "display_help": "You hammer your foe with a brutal smashing attack charged with a lethal dose of radiation. Your target will suffer Extreme Energy and Smashing damage, will have its defense reduced and will be disoriented for a short time. Devastating Blow has an increased change to critically hit. Affected enemies will be affected by the Contaminated effect. Hitting Contaminated foes with single target Radioactive Assault powers cause a small burst of damage to foes near the target.<br><br><color #fcfc95>Damage: Minor.</color>",
+  "display_help": "You hammer your foe with a brutal smashing attack charged with a lethal dose of radiation. Your target will suffer Extreme Energy and Smashing damage, will have its defense reduced and will be disoriented for a short time. Affected enemies will be affected by the Contaminated effect. <br><br>Devastating Blow will create a more powerful burst compared to other single target Radiation Assault powers when hitting Contaminated Foes, affecting more foes over a wider area.<br><br><color #fcfc95>Damage: Minor.</color>",
   "display_short_help": "Melee, Minor DMG(Energy/Smash), Foe -Def, Disorient, Special",
   "icon": "radioactiveassault_devastatingblow.png",
   "auto_issue": false,
@@ -13,8 +13,8 @@
   "free": false,
   "accuracy": 1.0,
   "effect_area": "Sphere",
-  "max_targets_hit": 5,
-  "radius": 8.0,
+  "max_targets_hit": 11,
+  "radius": 15.0,
   "arc": 0.0,
   "range": 7.0,
   "range_secondary": 0.0,
@@ -80,7 +80,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_Damage",
-          "scale": 0.648,
+          "scale": 0.712,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -137,7 +137,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_PvPDamage",
-          "scale": 0.5986,
+          "scale": 0.5898,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -163,6 +163,156 @@
             "DelayEval"
           ],
           "flags_raw": 34048
+        }
+      ]
+    },
+    {
+      "chance": 1.0,
+      "ppm": 0.0,
+      "delay": 0.0,
+      "radius_inner": -1.0,
+      "radius_outer": -1.0,
+      "requires_expression": [],
+      "tags": [],
+      "flags": [],
+      "is_pvp": "EITHER",
+      "requires_pv": "EITHER",
+      "requires_default": "SATISFIED",
+      "eval_flags": 0,
+      "templates": [
+        {
+          "attribs": [
+            "Null"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "1.5 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "PFX",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags_raw": 1280
+        }
+      ]
+    },
+    {
+      "chance": 0.5,
+      "ppm": 0.0,
+      "delay": 0.0,
+      "radius_inner": -1.0,
+      "radius_outer": -1.0,
+      "requires_expression": [
+        "Temporary_Powers.Temporary_Powers.Radiation_Melee_Contaminated",
+        "target.ownPower?",
+        "!",
+        "Temporary_Powers.Temporary_Powers.Radiation_Melee_Contaminated_Imunity",
+        "target.ownPower?",
+        "!",
+        "&&"
+      ],
+      "tags": [
+        "Contaminated"
+      ],
+      "flags": [],
+      "is_pvp": "EITHER",
+      "requires_pv": "EITHER",
+      "requires_default": "SATISFIED",
+      "eval_flags": 0,
+      "templates": [
+        {
+          "attribs": [
+            "Grant_Power"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Absolute",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 1.0,
+          "duration": "0 seconds",
+          "magnitude": 1.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "params": {
+            "power_names": [
+              "Temporary_Powers.Temporary_Powers.Radiation_Melee_Contaminated"
+            ],
+            "count": 1,
+            "type": "Power"
+          },
+          "messages": {
+            "display_attacker_hit": "You contaminate {PlayerDest}!",
+            "display_victim_hit": "{PlayerSource} has contaminated you.",
+            "display_float": "Contaminated!",
+            "display_attrib_defense_float": null,
+            "display_info": null
+          },
+          "flags": [
+            "IgnoreStrength",
+            "IgnoreResistance"
+          ],
+          "flags_raw": 1072
+        },
+        {
+          "attribs": [
+            "Null"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "PFX2",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags_raw": 1280
         }
       ]
     }

@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Assassin's Impaler",
   "display_fullname": "Stalker Melee Spines Assassins Impaler",
-  "display_help": "A signature Stalker attack. This attack does superior lethal damage on its own as a frontal attack and cannot be interrupted. However, if it is executed while you are Hidden, this attack will do tremendous damage, as you impale your unsuspecting foe. This attack may be interrupted if you move or are attacked while executing this power and are hidden. Using this power while not hidden has a chance to critically hit equal to 33.3% times the number of stacks of Assassin's Focus. Using Assassin's Strike when not hidden will remove all stacks of Assassin's Focus regardless if you critically hit or not.",
+  "display_help": "A signature Stalker attack. This attack does superior lethal damage on its own as a frontal attack and cannot be interrupted. However, if it is executed while you are Hidden, this attack will do tremendous damage, as you impale your unsuspecting foe. This attack may be interrupted if you move or are attacked while executing this power and are hidden. Using this power while not hidden has a chance to critically hit equal to 33.3% times the number of stacks of Assassin's Focus. Using Assassin's Strike when not hidden will remove all stacks of Assassin's Focus regardless if you critically hit or not. <br><br>Spine poison deals additional Toxic damage and Slows affected foes. The more the poison stacks, the stonger it becomes. <br><br>Assassin's Impaler will inflict six times the amount of poison of other powers if performed while hidden.",
   "display_short_help": "Melee, DMG(Lethal)",
   "icon": "quills_assassinstrike.png",
   "auto_issue": false,
@@ -33,6 +33,7 @@
     "Foe"
   ],
   "boosts_allowed": [
+    "Slow",
     "EnduranceDiscount",
     "Recharge",
     "Damage",
@@ -40,6 +41,7 @@
   ],
   "allowed_set_categories": [
     "Melee Damage",
+    "Slow Movement",
     "Stalker Archetype Sets",
     "Universal Damage Sets"
   ],

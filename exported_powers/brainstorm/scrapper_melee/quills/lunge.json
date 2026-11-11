@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Lunge",
   "display_fullname": "Scrapper Melee Quills Lunge",
-  "display_help": "You can lunge forward, stabbing and poisoning a foe with the large Spine on your arm. Lunge deals moderate damage. Spine poison deals additional Toxic damage and Slows affected foes.<br><br>Hitting with this power will invigorate you and increase the potency of your poison damage over time for a while. This power will be highlighted when you no longer have this buff.",
+  "display_help": "You can lunge forward, stabbing and poisoning a foe with the large Spine on your arm. Lunge deals moderate damage.<br><br>Spine poison deals additional Toxic damage and Slows affected foes. The more the poison stacks, the stonger it becomes.",
   "display_short_help": "Melee, DMG(Lethal), DoT(Toxic) -SPD, -Recharge",
   "icon": "quills_lunge.png",
   "auto_issue": false,
@@ -20,9 +20,9 @@
   "range_secondary": 0.0,
   "activation_time": 1.33,
   "time_to_root": 1.33,
-  "recharge_time": 5.0,
+  "recharge_time": 6.0,
   "activate_period": 0.0,
-  "endurance_cost": 6.032,
+  "endurance_cost": 6.864,
   "interrupt_time": 0.0,
   "target_type": "Foe",
   "target_type_secondary": "None",
@@ -88,7 +88,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_Damage",
-          "scale": 1.08,
+          "scale": 1.32,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -147,74 +147,6 @@
             "CancelOnMiss"
           ],
           "flags_raw": 2564
-        },
-        {
-          "attribs": [
-            "Global_Chance_Mod"
-          ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Current",
-          "target": "Self",
-          "table": "Melee_Ones",
-          "scale": 0.15,
-          "duration": "16 seconds",
-          "magnitude": 1.0,
-          "delay": 0.0,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Replace",
-          "stack_limit": 2,
-          "stack_key": null,
-          "params": {
-            "tags": [
-              "SpinePoison"
-            ],
-            "type": "EffectFilter"
-          },
-          "flags": [
-            "IgnoreStrength",
-            "IgnoreResistance"
-          ],
-          "flags_raw": 1072
-        },
-        {
-          "attribs": [
-            "Set_Mode"
-          ],
-          "type": "Constant",
-          "application_type": "OnTick",
-          "aspect": "Current",
-          "target": "Self",
-          "table": "Melee_Ones",
-          "scale": 1.0,
-          "duration": "14 seconds",
-          "magnitude": 57.0,
-          "delay": 0.0,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Replace",
-          "stack_limit": 2,
-          "stack_key": null,
-          "flags": [
-            "IgnoreStrength",
-            "IgnoreResistance",
-            "IgnoreCombatMods"
-          ],
-          "flags_raw": 112,
-          "mode_name": "DD_StatusMode_1"
         }
       ]
     },
@@ -319,42 +251,120 @@
             "IgnoreStrength"
           ],
           "flags_raw": 1296
-        },
+        }
+      ],
+      "child_effects": [
         {
-          "attribs": [
-            "Toxic_Dmg"
+          "chance": 1.0,
+          "ppm": 0.0,
+          "delay": 0.0,
+          "radius_inner": -1.0,
+          "radius_outer": -1.0,
+          "requires_expression": [],
+          "tags": [
+            "Poison DoT"
           ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Absolute",
-          "target": "AnyAffected",
-          "table": "Melee_Damage",
-          "scale": 0.1,
-          "duration": "6.1 seconds",
-          "magnitude": 1.0,
-          "delay": 0.5,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 1.0,
-          "tick_chance": 0.800000011920929,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Stack",
-          "stack_limit": 2,
-          "stack_key": null,
-          "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Toxic damage over time.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Toxic damage over time.",
-            "display_float": null,
-            "display_attrib_defense_float": null,
-            "display_info": null
-          },
-          "flags": [
-            "CancelOnMiss"
+          "flags": [],
+          "is_pvp": "EITHER",
+          "requires_pv": "EITHER",
+          "requires_default": "SATISFIED",
+          "eval_flags": 0,
+          "templates": [
+            {
+              "attribs": [
+                "Execute_Power"
+              ],
+              "type": "Magnitude",
+              "application_type": "OnTick",
+              "aspect": "Strength",
+              "target": "AnyAffected",
+              "table": "Melee_Ones",
+              "scale": 0.0,
+              "duration": "0 seconds",
+              "magnitude": 0.0,
+              "delay": 0.0,
+              "duration_expression": [],
+              "magnitude_expression": [],
+              "application_period": 0.0,
+              "tick_chance": 1.0,
+              "tick_mag_multiplier": 1.0,
+              "tick_mag_additive": 0.0,
+              "jit_requires": [],
+              "caster_stack": "Individual",
+              "stack": "Stack",
+              "stack_limit": 2,
+              "stack_key": null,
+              "params": {
+                "power_names": [
+                  "Redirects.Spines.SpinePoison"
+                ],
+                "count": 1,
+                "type": "Power"
+              },
+              "flags": [
+                "CopyBoosts"
+              ],
+              "flags_raw": 1280,
+              "flags2_raw": 4
+            }
           ],
-          "flags_raw": 1284
+          "child_effects": [
+            {
+              "chance": 1.0,
+              "ppm": 0.0,
+              "delay": 0.0,
+              "radius_inner": -1.0,
+              "radius_outer": -1.0,
+              "requires_expression": [
+                "Temporary_Powers.Temporary_Powers.Poison",
+                "target.ownPowerNum?",
+                "10",
+                "=="
+              ],
+              "tags": [
+                "Ripper"
+              ],
+              "flags": [],
+              "is_pvp": "EITHER",
+              "requires_pv": "EITHER",
+              "requires_default": "UNSATISFIED",
+              "eval_flags": 0,
+              "templates": [
+                {
+                  "attribs": [
+                    "Set_Mode"
+                  ],
+                  "type": "Constant",
+                  "application_type": "OnTick",
+                  "aspect": "Current",
+                  "target": "Self",
+                  "table": "Melee_Ones",
+                  "scale": 1.0,
+                  "duration": "3 seconds",
+                  "magnitude": 57.0,
+                  "delay": 0.0,
+                  "duration_expression": [],
+                  "magnitude_expression": [],
+                  "application_period": 0.0,
+                  "tick_chance": 1.0,
+                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_additive": 0.0,
+                  "jit_requires": [],
+                  "caster_stack": "Individual",
+                  "stack": "Replace",
+                  "stack_limit": 2,
+                  "stack_key": null,
+                  "flags": [
+                    "IgnoreStrength",
+                    "IgnoreResistance",
+                    "IgnoreCombatMods"
+                  ],
+                  "flags_raw": 112,
+                  "mode_name": "DD_StatusMode_1"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -454,7 +464,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_PvPDamage",
-          "scale": 1.531,
+          "scale": 1.571,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -511,7 +521,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_PvPDamage",
-          "scale": 1.531,
+          "scale": 1.571,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -583,7 +593,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_InherentDamage",
-          "scale": 1.08,
+          "scale": 1.32,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -661,7 +671,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_InherentDamage",
-          "scale": 1.08,
+          "scale": 1.32,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -712,7 +722,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_Damage",
-          "scale": 0.522,
+          "scale": 0.594,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,

@@ -6,31 +6,27 @@
   "icon": "sonic_manipulation_set.ico",
   "powers": [
     "Redirects.Sonic_Melee.Attune",
-    "Redirects.Sonic_Melee.Sonic_Thrust",
-    "Redirects.Sonic_Melee.Strident_Echo",
     "Redirects.Sonic_Melee.Sonic_Clap",
-    "Redirects.Sonic_Melee.Deafening_Wave"
+    "Redirects.Sonic_Melee.Deafening_Wave",
+    "Redirects.Sonic_Melee.Assassins_Whisper"
   ],
   "available_level": [
     0,
-    0,
-    0,
     7,
-    7
+    7,
+    0
   ],
   "power_display_names": [
     "Attune",
-    "Sonic Thrust",
-    "Strident Echo",
     "Sonic Clap",
-    "Deafening Wave"
+    "Deafening Wave",
+    "Assassin's Whisper"
   ],
   "power_short_helps": [
     "Melee, DMG(Energy), Foe DOT(Energy), Special",
-    "Melee, DMG(Energy/Smash), Foe Knockback, -Res(Debuffs)",
-    "Melee, DMG(Energy/Smash), Foe -Res(Debuffs), Chance for Hold",
     "Melee (Cone), Foe Disorient, Knockdown",
-    "Melee (Cone), Foe Disorient, Knockdown"
+    "Melee (Cone), Foe Disorient, Knockdown",
+    "Melee, DMG(Energy/Smashing), Sleep, -Res(DMG)"
   ],
   "buy_requires": [],
   "buy_requires_failed": "",

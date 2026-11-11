@@ -38,14 +38,14 @@
     "Earsplitter"
   ],
   "power_short_helps": [
-    "Melee, DMG(Energy/Smash), Foe Knockback, -Res(Debuffs)",
+    "Melee, DMG(Energy/Smash), Foe Knockdown, -Res(Debuffs)",
     "Melee, DMG(Energy/Smash), Foe -Res(Debuffs), Chance for Hold",
     "Melee Toggle, Foe DOT(Energy), Foe -Res(DMG, Debuffs), Special",
     "Ranged (Targeted AoE), Foe Taunt",
-    "Melee (Cone), Foe Disorient, Knockdown",
+    "Melee (Cone), Foe Disorient, Knockdown, -Res(Debuffs)",
     "Self +DMG, +To Hit, +Special",
-    "Melee, DMG(Smashing/Energy), Foe Sleep, -Res(DMG)",
-    "PBAoE Melee, DMG(Energy/Smash), Foe Chance for Hold",
+    "Melee, DMG(Smashing/Energy), Foe Sleep, -Res(DMG, Debuffs)",
+    "PBAoE Melee, DMG(Energy/Smash), Foe Chance for Hold, -Res(Debuffs)",
     "Melee, DMG(Energy/Smash),\u00a0Foe -Res(Debuffs), Chance for Hold"
   ],
   "buy_requires": [],

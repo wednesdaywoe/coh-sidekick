@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Strident Echo",
   "display_fullname": "Stalker Melee Sonic Melee Strident Echo",
-  "display_help": "Strident Echo deals minor damage over time. It has a low chance of causing a migraine, leaving the target shaking in pain and helpless. This power will inflict a strong additional damage over time effect against Attuned targets.",
+  "display_help": "Strident Echo deals minor damage over time. It has a low chance of causing a migraine, leaving the target shaking in pain and helpless. <br><br>When hitting <color #fcfc95>Attuned</color> targets, this power will briefly speed up and increase the damage of Attune.",
   "display_short_help": "Melee, DMG(Energy/Smash), -Res(Debuffs), Foe Chance for Hold",
   "icon": "sonicmanipulation_stridentecho",
   "auto_issue": false,
@@ -309,65 +309,6 @@
               ]
             },
             {
-              "chance": 1.0,
-              "ppm": 0.0,
-              "delay": 0.0,
-              "radius_inner": -1.0,
-              "radius_outer": -1.0,
-              "requires_expression": [],
-              "tags": [],
-              "flags": [],
-              "is_pvp": "EITHER",
-              "requires_pv": "EITHER",
-              "requires_default": "SATISFIED",
-              "eval_flags": 0,
-              "templates": [
-                {
-                  "attribs": [
-                    "Base_Defense",
-                    "Endurance",
-                    "ToHit",
-                    "RunningSpeed",
-                    "FlyingSpeed",
-                    "JumpingSpeed",
-                    "Regeneration",
-                    "Recovery",
-                    "RechargeTime"
-                  ],
-                  "type": "Magnitude",
-                  "application_type": "OnTick",
-                  "aspect": "Resistance",
-                  "target": "AnyAffected",
-                  "table": "Melee_Debuff_Res_Dmg",
-                  "scale": -1.0,
-                  "duration": "15 seconds",
-                  "magnitude": 1.0,
-                  "delay": 0.0,
-                  "duration_expression": [],
-                  "magnitude_expression": [],
-                  "application_period": 0.0,
-                  "tick_chance": 1.0,
-                  "tick_mag_multiplier": 1.0,
-                  "tick_mag_additive": 0.0,
-                  "jit_requires": [],
-                  "caster_stack": "Individual",
-                  "stack": "Replace",
-                  "stack_limit": 2,
-                  "stack_key": null,
-                  "fx": {
-                    "continuing_bits": [],
-                    "continuing_fx": "GENERICCONTINUING/DAMAGERESISTANCE/DEBUFFDEBUFFRESCONTINUING.FX",
-                    "conditional_bits": [],
-                    "conditional_fx": null
-                  },
-                  "flags": [
-                    "IgnoreStrength"
-                  ],
-                  "flags_raw": 1296
-                }
-              ]
-            },
-            {
               "chance": 0.20000000298023224,
               "ppm": 0.0,
               "delay": 0.0,
@@ -651,65 +592,6 @@
               ]
             },
             {
-              "chance": 1.0,
-              "ppm": 0.0,
-              "delay": 0.0,
-              "radius_inner": -1.0,
-              "radius_outer": -1.0,
-              "requires_expression": [],
-              "tags": [],
-              "flags": [],
-              "is_pvp": "EITHER",
-              "requires_pv": "EITHER",
-              "requires_default": "SATISFIED",
-              "eval_flags": 0,
-              "templates": [
-                {
-                  "attribs": [
-                    "Base_Defense",
-                    "Endurance",
-                    "ToHit",
-                    "RunningSpeed",
-                    "FlyingSpeed",
-                    "JumpingSpeed",
-                    "Regeneration",
-                    "Recovery",
-                    "RechargeTime"
-                  ],
-                  "type": "Magnitude",
-                  "application_type": "OnTick",
-                  "aspect": "Resistance",
-                  "target": "AnyAffected",
-                  "table": "Melee_Debuff_Res_Dmg",
-                  "scale": -1.0,
-                  "duration": "15 seconds",
-                  "magnitude": 1.0,
-                  "delay": 0.0,
-                  "duration_expression": [],
-                  "magnitude_expression": [],
-                  "application_period": 0.0,
-                  "tick_chance": 1.0,
-                  "tick_mag_multiplier": 1.0,
-                  "tick_mag_additive": 0.0,
-                  "jit_requires": [],
-                  "caster_stack": "Individual",
-                  "stack": "Replace",
-                  "stack_limit": 2,
-                  "stack_key": null,
-                  "fx": {
-                    "continuing_bits": [],
-                    "continuing_fx": "GENERICCONTINUING/DAMAGERESISTANCE/DEBUFFDEBUFFRESCONTINUING.FX",
-                    "conditional_bits": [],
-                    "conditional_fx": null
-                  },
-                  "flags": [
-                    "IgnoreStrength"
-                  ],
-                  "flags_raw": 1296
-                }
-              ]
-            },
-            {
               "chance": 0.20000000298023224,
               "ppm": 0.0,
               "delay": 0.0,
@@ -803,243 +685,6 @@
           ]
         },
         {
-          "chance": 1.0,
-          "ppm": 0.0,
-          "delay": 0.0,
-          "radius_inner": -1.0,
-          "radius_outer": -1.0,
-          "requires_expression": [],
-          "tags": [
-            "AttuneBonus"
-          ],
-          "flags": [],
-          "is_pvp": "EITHER",
-          "requires_pv": "EITHER",
-          "requires_default": "SATISFIED",
-          "eval_flags": 0,
-          "templates": [
-            {
-              "attribs": [
-                "Set_Mode"
-              ],
-              "type": "Constant",
-              "application_type": "OnTick",
-              "aspect": "Current",
-              "target": "AnyAffected",
-              "table": "Melee_Ones",
-              "scale": 1.0,
-              "duration": "26 seconds",
-              "magnitude": 206.0,
-              "delay": 0.0,
-              "duration_expression": [],
-              "magnitude_expression": [],
-              "application_period": 0.0,
-              "tick_chance": 1.0,
-              "tick_mag_multiplier": 1.0,
-              "tick_mag_additive": 0.0,
-              "jit_requires": [],
-              "caster_stack": "Individual",
-              "stack": "Replace",
-              "stack_limit": 2,
-              "stack_key": null,
-              "flags": [
-                "IgnoreStrength",
-                "IgnoreResistance",
-                "IgnoreCombatMods"
-              ],
-              "flags_raw": 112,
-              "mode_name": "SonicAtune2Foe"
-            },
-            {
-              "attribs": [
-                "Set_Mode"
-              ],
-              "type": "Constant",
-              "application_type": "OnTick",
-              "aspect": "Current",
-              "target": "Self",
-              "table": "Melee_Ones",
-              "scale": 1.0,
-              "duration": "24.25 seconds",
-              "magnitude": 211.0,
-              "delay": 0.0,
-              "duration_expression": [],
-              "magnitude_expression": [],
-              "application_period": 0.0,
-              "tick_chance": 1.0,
-              "tick_mag_multiplier": 1.0,
-              "tick_mag_additive": 0.0,
-              "jit_requires": [],
-              "caster_stack": "Individual",
-              "stack": "Replace",
-              "stack_limit": 2,
-              "stack_key": null,
-              "flags": [
-                "IgnoreStrength",
-                "IgnoreResistance",
-                "IgnoreCombatMods"
-              ],
-              "flags_raw": 112,
-              "mode_name": "SonicAtune2Self"
-            }
-          ]
-        },
-        {
-          "chance": 0.0,
-          "ppm": 0.0,
-          "delay": 0.0,
-          "radius_inner": -1.0,
-          "radius_outer": -1.0,
-          "requires_expression": [
-            "kSonicAtuneSelf",
-            "Source.Mode?",
-            "kSonicAtuneFoe",
-            "target.mode?",
-            "&&"
-          ],
-          "tags": [
-            "SMAttune"
-          ],
-          "flags": [],
-          "is_pvp": "EITHER",
-          "requires_pv": "EITHER",
-          "requires_default": "UNSATISFIED",
-          "eval_flags": 0,
-          "templates": [],
-          "child_effects": [
-            {
-              "chance": 1.0,
-              "ppm": 0.0,
-              "delay": 0.0,
-              "radius_inner": -1.0,
-              "radius_outer": -1.0,
-              "requires_expression": [
-                "enttype",
-                "target>",
-                "critter",
-                "eq"
-              ],
-              "tags": [],
-              "flags": [],
-              "is_pvp": "EITHER",
-              "requires_pv": "PVE_ONLY",
-              "requires_default": "SATISFIED",
-              "eval_flags": 0,
-              "templates": [
-                {
-                  "attribs": [
-                    "Execute_Power"
-                  ],
-                  "type": "Magnitude",
-                  "application_type": "OnTick",
-                  "aspect": "Strength",
-                  "target": "AnyAffected",
-                  "table": "Melee_Ones",
-                  "scale": 0.0,
-                  "duration": "0 seconds",
-                  "magnitude": 0.0,
-                  "delay": 0.0,
-                  "duration_expression": [],
-                  "magnitude_expression": [],
-                  "application_period": 0.0,
-                  "tick_chance": 1.0,
-                  "tick_mag_multiplier": 1.0,
-                  "tick_mag_additive": 0.0,
-                  "jit_requires": [],
-                  "caster_stack": "Individual",
-                  "stack": "Stack",
-                  "stack_limit": 2,
-                  "stack_key": null,
-                  "params": {
-                    "power_names": [
-                      "Redirects.Sonic_Melee.Strident_Echo"
-                    ],
-                    "count": 1,
-                    "type": "Power"
-                  },
-                  "flags": [
-                    "NoHitDelay",
-                    "NoProjectileDelay",
-                    "CopyBoosts"
-                  ],
-                  "flags_raw": 197888,
-                  "flags2_raw": 4
-                }
-              ]
-            },
-            {
-              "chance": 1.0,
-              "ppm": 0.0,
-              "delay": 0.0,
-              "radius_inner": -1.0,
-              "radius_outer": -1.0,
-              "requires_expression": [
-                "enttype",
-                "target>",
-                "player",
-                "eq"
-              ],
-              "tags": [
-                "SMAttune"
-              ],
-              "flags": [],
-              "is_pvp": "EITHER",
-              "requires_pv": "PVP_ONLY",
-              "requires_default": "UNSATISFIED",
-              "eval_flags": 0,
-              "templates": [
-                {
-                  "attribs": [
-                    "Energy_Dmg"
-                  ],
-                  "type": "Magnitude",
-                  "application_type": "OnTick",
-                  "aspect": "Absolute",
-                  "target": "AnyAffected",
-                  "table": "Melee_PvPDamage",
-                  "scale": 0.2,
-                  "duration": "25.8 seconds",
-                  "magnitude": 1.0,
-                  "delay": 0.0,
-                  "duration_expression": [],
-                  "magnitude_expression": [],
-                  "application_period": 2.0,
-                  "tick_chance": -0.800000011920929,
-                  "tick_mag_multiplier": 1.0,
-                  "tick_mag_additive": 0.0,
-                  "jit_requires": [],
-                  "caster_stack": "Individual",
-                  "stack": "Suppress",
-                  "stack_limit": 2,
-                  "stack_key": null,
-                  "messages": {
-                    "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage over time (CRITICAL).",
-                    "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage over time (CRITICAL).",
-                    "display_float": "CRITICAL",
-                    "display_attrib_defense_float": null,
-                    "display_info": "Y8F62HTXP3DFYTZC8PAT73XUB3"
-                  },
-                  "required_events": [
-                    {
-                      "event": "Held",
-                      "event_id": 25,
-                      "duration": 0.0,
-                      "always": 0
-                    },
-                    {
-                      "event": "Sleep",
-                      "event_id": 26,
-                      "duration": 0.0,
-                      "always": 0
-                    }
-                  ],
-                  "flags_raw": 1280
-                }
-              ]
-            }
-          ]
-        },
-        {
           "chance": 0.800000011920929,
           "ppm": 0.0,
           "delay": 0.0,
@@ -1100,6 +745,120 @@
               "flags_raw": 1072
             }
           ]
+        }
+      ]
+    },
+    {
+      "chance": 0.0,
+      "ppm": 0.0,
+      "delay": 0.0,
+      "radius_inner": -1.0,
+      "radius_outer": -1.0,
+      "requires_expression": [],
+      "tags": [
+        "SMAttune"
+      ],
+      "flags": [],
+      "is_pvp": "EITHER",
+      "requires_pv": "EITHER",
+      "requires_default": "SATISFIED",
+      "eval_flags": 0,
+      "templates": [
+        {
+          "attribs": [
+            "Execute_Power"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Strength",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "0 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "params": {
+            "power_names": [
+              "Redirects.Sonic_Melee.Attune"
+            ],
+            "count": 1,
+            "type": "Power"
+          },
+          "flags": [
+            "CopyBoosts"
+          ],
+          "flags_raw": 1280,
+          "flags2_raw": 4
+        }
+      ]
+    },
+    {
+      "chance": 1.0,
+      "ppm": 0.0,
+      "delay": 0.0,
+      "radius_inner": -1.0,
+      "radius_outer": -1.0,
+      "requires_expression": [],
+      "tags": [],
+      "flags": [],
+      "is_pvp": "EITHER",
+      "requires_pv": "EITHER",
+      "requires_default": "SATISFIED",
+      "eval_flags": 0,
+      "templates": [
+        {
+          "attribs": [
+            "Base_Defense",
+            "Endurance",
+            "ToHit",
+            "RunningSpeed",
+            "FlyingSpeed",
+            "JumpingSpeed",
+            "Regeneration",
+            "Recovery",
+            "RechargeTime"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Resistance",
+          "target": "AnyAffected",
+          "table": "Melee_Debuff_Res_Dmg",
+          "scale": -1.6,
+          "duration": "15 seconds",
+          "magnitude": 1.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "GENERICCONTINUING/DAMAGERESISTANCE/DEBUFFDEBUFFRESCONTINUING.FX",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags": [
+            "IgnoreStrength"
+          ],
+          "flags_raw": 1296
         }
       ]
     }

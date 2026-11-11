@@ -13,7 +13,7 @@
   "free": false,
   "accuracy": 1.0,
   "effect_area": "Sphere",
-  "max_targets_hit": 10,
+  "max_targets_hit": 16,
   "radius": 15.0,
   "arc": 0.0,
   "range": 0.0,
@@ -38,9 +38,7 @@
     "Knockback",
     "Accuracy"
   ],
-  "allowed_set_categories": [
-    "Knockback"
-  ],
+  "allowed_set_categories": null,
   "cast_through": [],
   "toggle_ignore": [],
   "num_allowed": 1,
@@ -144,6 +142,7 @@
       ]
     }
   ],
+  "procs_allowed": false,
   "modes_disallowed": [
     "Disable_All"
   ],

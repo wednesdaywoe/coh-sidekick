@@ -5,8 +5,8 @@
   "type": "Click",
   "display_name": "Earsplitter",
   "display_fullname": "Stalker Melee Sonic Melee Earsplitter",
-  "display_help": "You generate an earsplitting sound wave right in the face of your foe, inflicting great damage. It has a good chance of causing a migraine, leaving them shaking in pain and helpless. This power will inflict 20% bonus damage against Attuned targets.",
-  "display_short_help": "Melee, DMG(Energy/Smash), Foe Chance for Hold",
+  "display_help": "You generate an earsplitting sound wave right in the face of your foe, inflicting great damage. It has a good chance of causing a migraine, leaving them shaking in pain and helpless. <br><br>When hitting <color #fcfc95>Attuned</color> targets, this power will briefly speed up and increase the damage of Attune.",
+  "display_short_help": "Melee, DMG(Energy/Smash),\u00a0Foe -Res(Debuffs), Chance for Hold",
   "icon": "sonicmanipulation_earsplitter",
   "auto_issue": false,
   "auto_issue_keeps_level": false,
@@ -105,479 +105,18 @@
               "requires_pv": "EITHER",
               "requires_default": "SATISFIED",
               "eval_flags": 0,
-              "templates": [],
-              "child_effects": [
-                {
-                  "chance": 1.0,
-                  "ppm": 0.0,
-                  "delay": 0.0,
-                  "radius_inner": -1.0,
-                  "radius_outer": -1.0,
-                  "requires_expression": [],
-                  "tags": [],
-                  "flags": [],
-                  "is_pvp": "EITHER",
-                  "requires_pv": "EITHER",
-                  "requires_default": "SATISFIED",
-                  "eval_flags": 0,
-                  "templates": [],
-                  "child_effects": [
-                    {
-                      "chance": 1.0,
-                      "ppm": 0.0,
-                      "delay": 0.0,
-                      "radius_inner": -1.0,
-                      "radius_outer": -1.0,
-                      "requires_expression": [],
-                      "tags": [],
-                      "flags": [],
-                      "is_pvp": "EITHER",
-                      "requires_pv": "EITHER",
-                      "requires_default": "SATISFIED",
-                      "eval_flags": 0,
-                      "templates": [
-                        {
-                          "attribs": [
-                            "Smashing_Dmg"
-                          ],
-                          "type": "Magnitude",
-                          "application_type": "OnTick",
-                          "aspect": "Absolute",
-                          "target": "AnyAffected",
-                          "table": "Melee_Damage",
-                          "scale": 1.3,
-                          "duration": "0 seconds",
-                          "magnitude": 1.0,
-                          "delay": 0.0,
-                          "duration_expression": [],
-                          "magnitude_expression": [],
-                          "application_period": 0.0,
-                          "tick_chance": 1.0,
-                          "tick_mag_multiplier": 1.0,
-                          "tick_mag_additive": 0.0,
-                          "jit_requires": [],
-                          "caster_stack": "Individual",
-                          "stack": "Stack",
-                          "stack_limit": 2,
-                          "stack_key": null,
-                          "messages": {
-                            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Smashing damage.",
-                            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Smashing damage.",
-                            "display_float": null,
-                            "display_attrib_defense_float": null,
-                            "display_info": null
-                          },
-                          "flags_raw": 1280
-                        },
-                        {
-                          "attribs": [
-                            "Energy_Dmg"
-                          ],
-                          "type": "Magnitude",
-                          "application_type": "OnTick",
-                          "aspect": "Absolute",
-                          "target": "AnyAffected",
-                          "table": "Melee_Damage",
-                          "scale": 1.3,
-                          "duration": "0 seconds",
-                          "magnitude": 1.0,
-                          "delay": 0.0,
-                          "duration_expression": [],
-                          "magnitude_expression": [],
-                          "application_period": 0.0,
-                          "tick_chance": 1.0,
-                          "tick_mag_multiplier": 1.0,
-                          "tick_mag_additive": 0.0,
-                          "jit_requires": [],
-                          "caster_stack": "Individual",
-                          "stack": "Stack",
-                          "stack_limit": 2,
-                          "stack_key": null,
-                          "messages": {
-                            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage.",
-                            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage.",
-                            "display_float": null,
-                            "display_attrib_defense_float": null,
-                            "display_info": null
-                          },
-                          "flags_raw": 1280
-                        }
-                      ]
-                    },
-                    {
-                      "chance": 1.0,
-                      "ppm": 0.0,
-                      "delay": 0.0,
-                      "radius_inner": -1.0,
-                      "radius_outer": -1.0,
-                      "requires_expression": [
-                        "kMeter",
-                        "source>",
-                        "0",
-                        ">"
-                      ],
-                      "tags": [
-                        "StealthCrit"
-                      ],
-                      "flags": [],
-                      "is_pvp": "EITHER",
-                      "requires_pv": "EITHER",
-                      "requires_default": "UNSATISFIED",
-                      "eval_flags": 0,
-                      "templates": [
-                        {
-                          "attribs": [
-                            "Energy_Dmg"
-                          ],
-                          "type": "Magnitude",
-                          "application_type": "OnTick",
-                          "aspect": "Absolute",
-                          "target": "AnyAffected",
-                          "table": "Melee_InherentDamage",
-                          "scale": 2.6,
-                          "duration": "0 seconds",
-                          "magnitude": 1.0,
-                          "delay": 0.0,
-                          "duration_expression": [],
-                          "magnitude_expression": [],
-                          "application_period": 0.0,
-                          "tick_chance": 1.0,
-                          "tick_mag_multiplier": 1.0,
-                          "tick_mag_additive": 0.0,
-                          "jit_requires": [],
-                          "caster_stack": "Individual",
-                          "stack": "Stack",
-                          "stack_limit": 2,
-                          "stack_key": null,
-                          "messages": {
-                            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
-                            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
-                            "display_float": "CRITICAL",
-                            "display_attrib_defense_float": null,
-                            "display_info": null
-                          },
-                          "flags_raw": 1280
-                        }
-                      ]
-                    },
-                    {
-                      "chance": 0.07000000029802322,
-                      "ppm": 0.0,
-                      "delay": 0.0,
-                      "radius_inner": -1.0,
-                      "radius_outer": -1.0,
-                      "requires_expression": [
-                        "kMeter",
-                        "source>",
-                        ".9",
-                        "<"
-                      ],
-                      "tags": [
-                        "ASTeamCrit"
-                      ],
-                      "flags": [],
-                      "is_pvp": "EITHER",
-                      "requires_pv": "EITHER",
-                      "requires_default": "SATISFIED",
-                      "eval_flags": 0,
-                      "templates": [
-                        {
-                          "attribs": [
-                            "Energy_Dmg"
-                          ],
-                          "type": "Magnitude",
-                          "application_type": "OnTick",
-                          "aspect": "Absolute",
-                          "target": "AnyAffected",
-                          "table": "Melee_InherentDamage",
-                          "scale": 2.6,
-                          "duration": "0 seconds",
-                          "magnitude": 1.0,
-                          "delay": 0.0,
-                          "duration_expression": [],
-                          "magnitude_expression": [],
-                          "application_period": 0.0,
-                          "tick_chance": 1.0,
-                          "tick_mag_multiplier": 1.0,
-                          "tick_mag_additive": 0.0,
-                          "jit_requires": [],
-                          "caster_stack": "Individual",
-                          "stack": "Stack",
-                          "stack_limit": 2,
-                          "stack_key": null,
-                          "messages": {
-                            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
-                            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
-                            "display_float": "CRITICAL",
-                            "display_attrib_defense_float": null,
-                            "display_info": null
-                          },
-                          "flags": [
-                            "HideZero"
-                          ],
-                          "flags_raw": 9472
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "chance": 0.0,
-                  "ppm": 0.0,
-                  "delay": 0.0,
-                  "radius_inner": -1.0,
-                  "radius_outer": -1.0,
-                  "requires_expression": [
-                    "kSonicAtuneSelf",
-                    "Source.Mode?",
-                    "kSonicAtuneFoe",
-                    "target.mode?",
-                    "&&"
-                  ],
-                  "tags": [
-                    "SMAttune"
-                  ],
-                  "flags": [],
-                  "is_pvp": "EITHER",
-                  "requires_pv": "EITHER",
-                  "requires_default": "UNSATISFIED",
-                  "eval_flags": 0,
-                  "templates": [],
-                  "child_effects": [
-                    {
-                      "chance": 1.0,
-                      "ppm": 0.0,
-                      "delay": 0.0,
-                      "radius_inner": -1.0,
-                      "radius_outer": -1.0,
-                      "requires_expression": [],
-                      "tags": [],
-                      "flags": [],
-                      "is_pvp": "EITHER",
-                      "requires_pv": "EITHER",
-                      "requires_default": "SATISFIED",
-                      "eval_flags": 0,
-                      "templates": [
-                        {
-                          "attribs": [
-                            "Smashing_Dmg"
-                          ],
-                          "type": "Magnitude",
-                          "application_type": "OnTick",
-                          "aspect": "Absolute",
-                          "target": "AnyAffected",
-                          "table": "Melee_Damage",
-                          "scale": 1.56,
-                          "duration": "0 seconds",
-                          "magnitude": 1.0,
-                          "delay": 0.0,
-                          "duration_expression": [],
-                          "magnitude_expression": [],
-                          "application_period": 0.0,
-                          "tick_chance": 1.0,
-                          "tick_mag_multiplier": 1.0,
-                          "tick_mag_additive": 0.0,
-                          "jit_requires": [],
-                          "caster_stack": "Individual",
-                          "stack": "Stack",
-                          "stack_limit": 2,
-                          "stack_key": null,
-                          "messages": {
-                            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Smashing damage.",
-                            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Smashing damage.",
-                            "display_float": null,
-                            "display_attrib_defense_float": null,
-                            "display_info": null
-                          },
-                          "flags_raw": 1280
-                        },
-                        {
-                          "attribs": [
-                            "Energy_Dmg"
-                          ],
-                          "type": "Magnitude",
-                          "application_type": "OnTick",
-                          "aspect": "Absolute",
-                          "target": "AnyAffected",
-                          "table": "Melee_Damage",
-                          "scale": 1.56,
-                          "duration": "0 seconds",
-                          "magnitude": 1.0,
-                          "delay": 0.0,
-                          "duration_expression": [],
-                          "magnitude_expression": [],
-                          "application_period": 0.0,
-                          "tick_chance": 1.0,
-                          "tick_mag_multiplier": 1.0,
-                          "tick_mag_additive": 0.0,
-                          "jit_requires": [],
-                          "caster_stack": "Individual",
-                          "stack": "Stack",
-                          "stack_limit": 2,
-                          "stack_key": null,
-                          "messages": {
-                            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage.",
-                            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage.",
-                            "display_float": null,
-                            "display_attrib_defense_float": null,
-                            "display_info": null
-                          },
-                          "flags_raw": 1280
-                        }
-                      ]
-                    },
-                    {
-                      "chance": 1.0,
-                      "ppm": 0.0,
-                      "delay": 0.0,
-                      "radius_inner": -1.0,
-                      "radius_outer": -1.0,
-                      "requires_expression": [
-                        "kMeter",
-                        "source>",
-                        "0",
-                        ">"
-                      ],
-                      "tags": [
-                        "StealthCrit"
-                      ],
-                      "flags": [],
-                      "is_pvp": "EITHER",
-                      "requires_pv": "EITHER",
-                      "requires_default": "UNSATISFIED",
-                      "eval_flags": 0,
-                      "templates": [
-                        {
-                          "attribs": [
-                            "Energy_Dmg"
-                          ],
-                          "type": "Magnitude",
-                          "application_type": "OnTick",
-                          "aspect": "Absolute",
-                          "target": "AnyAffected",
-                          "table": "Melee_InherentDamage",
-                          "scale": 3.12,
-                          "duration": "0 seconds",
-                          "magnitude": 1.0,
-                          "delay": 0.0,
-                          "duration_expression": [],
-                          "magnitude_expression": [],
-                          "application_period": 0.0,
-                          "tick_chance": 1.0,
-                          "tick_mag_multiplier": 1.0,
-                          "tick_mag_additive": 0.0,
-                          "jit_requires": [],
-                          "caster_stack": "Individual",
-                          "stack": "Stack",
-                          "stack_limit": 2,
-                          "stack_key": null,
-                          "messages": {
-                            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
-                            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
-                            "display_float": "CRITICAL",
-                            "display_attrib_defense_float": null,
-                            "display_info": null
-                          },
-                          "flags_raw": 1280
-                        }
-                      ]
-                    },
-                    {
-                      "chance": 0.07000000029802322,
-                      "ppm": 0.0,
-                      "delay": 0.0,
-                      "radius_inner": -1.0,
-                      "radius_outer": -1.0,
-                      "requires_expression": [
-                        "kMeter",
-                        "source>",
-                        ".9",
-                        "<"
-                      ],
-                      "tags": [
-                        "ASTeamCrit"
-                      ],
-                      "flags": [],
-                      "is_pvp": "EITHER",
-                      "requires_pv": "EITHER",
-                      "requires_default": "SATISFIED",
-                      "eval_flags": 0,
-                      "templates": [
-                        {
-                          "attribs": [
-                            "Energy_Dmg"
-                          ],
-                          "type": "Magnitude",
-                          "application_type": "OnTick",
-                          "aspect": "Absolute",
-                          "target": "AnyAffected",
-                          "table": "Melee_InherentDamage",
-                          "scale": 3.12,
-                          "duration": "0 seconds",
-                          "magnitude": 1.0,
-                          "delay": 0.0,
-                          "duration_expression": [],
-                          "magnitude_expression": [],
-                          "application_period": 0.0,
-                          "tick_chance": 1.0,
-                          "tick_mag_multiplier": 1.0,
-                          "tick_mag_additive": 0.0,
-                          "jit_requires": [],
-                          "caster_stack": "Individual",
-                          "stack": "Stack",
-                          "stack_limit": 2,
-                          "stack_key": null,
-                          "messages": {
-                            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
-                            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
-                            "display_float": "CRITICAL",
-                            "display_attrib_defense_float": null,
-                            "display_info": null
-                          },
-                          "flags": [
-                            "HideZero"
-                          ],
-                          "flags_raw": 9472
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "chance": 1.0,
-              "ppm": 0.0,
-              "delay": 0.0,
-              "radius_inner": -1.0,
-              "radius_outer": -1.0,
-              "requires_expression": [],
-              "tags": [],
-              "flags": [],
-              "is_pvp": "EITHER",
-              "requires_pv": "EITHER",
-              "requires_default": "SATISFIED",
-              "eval_flags": 0,
               "templates": [
                 {
                   "attribs": [
-                    "Base_Defense",
-                    "Endurance",
-                    "ToHit",
-                    "RunningSpeed",
-                    "FlyingSpeed",
-                    "JumpingSpeed",
-                    "Regeneration",
-                    "Recovery",
-                    "RechargeTime"
+                    "Smashing_Dmg"
                   ],
                   "type": "Magnitude",
                   "application_type": "OnTick",
-                  "aspect": "Resistance",
+                  "aspect": "Absolute",
                   "target": "AnyAffected",
-                  "table": "Melee_Debuff_Res_Dmg",
-                  "scale": -1.0,
-                  "duration": "15 seconds",
+                  "table": "Melee_Damage",
+                  "scale": 1.3,
+                  "duration": "0 seconds",
                   "magnitude": 1.0,
                   "delay": 0.0,
                   "duration_expression": [],
@@ -588,19 +127,165 @@
                   "tick_mag_additive": 0.0,
                   "jit_requires": [],
                   "caster_stack": "Individual",
-                  "stack": "Replace",
+                  "stack": "Stack",
                   "stack_limit": 2,
                   "stack_key": null,
-                  "fx": {
-                    "continuing_bits": [],
-                    "continuing_fx": "GENERICCONTINUING/DAMAGERESISTANCE/DEBUFFDEBUFFRESCONTINUING.FX",
-                    "conditional_bits": [],
-                    "conditional_fx": null
+                  "messages": {
+                    "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Smashing damage.",
+                    "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Smashing damage.",
+                    "display_float": null,
+                    "display_attrib_defense_float": null,
+                    "display_info": null
+                  },
+                  "flags_raw": 1280
+                },
+                {
+                  "attribs": [
+                    "Energy_Dmg"
+                  ],
+                  "type": "Magnitude",
+                  "application_type": "OnTick",
+                  "aspect": "Absolute",
+                  "target": "AnyAffected",
+                  "table": "Melee_Damage",
+                  "scale": 1.3,
+                  "duration": "0 seconds",
+                  "magnitude": 1.0,
+                  "delay": 0.0,
+                  "duration_expression": [],
+                  "magnitude_expression": [],
+                  "application_period": 0.0,
+                  "tick_chance": 1.0,
+                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_additive": 0.0,
+                  "jit_requires": [],
+                  "caster_stack": "Individual",
+                  "stack": "Stack",
+                  "stack_limit": 2,
+                  "stack_key": null,
+                  "messages": {
+                    "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage.",
+                    "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage.",
+                    "display_float": null,
+                    "display_attrib_defense_float": null,
+                    "display_info": null
+                  },
+                  "flags_raw": 1280
+                }
+              ]
+            },
+            {
+              "chance": 1.0,
+              "ppm": 0.0,
+              "delay": 0.0,
+              "radius_inner": -1.0,
+              "radius_outer": -1.0,
+              "requires_expression": [
+                "kMeter",
+                "source>",
+                "0",
+                ">"
+              ],
+              "tags": [
+                "StealthCrit"
+              ],
+              "flags": [],
+              "is_pvp": "EITHER",
+              "requires_pv": "EITHER",
+              "requires_default": "UNSATISFIED",
+              "eval_flags": 0,
+              "templates": [
+                {
+                  "attribs": [
+                    "Energy_Dmg"
+                  ],
+                  "type": "Magnitude",
+                  "application_type": "OnTick",
+                  "aspect": "Absolute",
+                  "target": "AnyAffected",
+                  "table": "Melee_InherentDamage",
+                  "scale": 2.6,
+                  "duration": "0 seconds",
+                  "magnitude": 1.0,
+                  "delay": 0.0,
+                  "duration_expression": [],
+                  "magnitude_expression": [],
+                  "application_period": 0.0,
+                  "tick_chance": 1.0,
+                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_additive": 0.0,
+                  "jit_requires": [],
+                  "caster_stack": "Individual",
+                  "stack": "Stack",
+                  "stack_limit": 2,
+                  "stack_key": null,
+                  "messages": {
+                    "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+                    "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+                    "display_float": "CRITICAL",
+                    "display_attrib_defense_float": null,
+                    "display_info": null
+                  },
+                  "flags_raw": 1280
+                }
+              ]
+            },
+            {
+              "chance": 0.07000000029802322,
+              "ppm": 0.0,
+              "delay": 0.0,
+              "radius_inner": -1.0,
+              "radius_outer": -1.0,
+              "requires_expression": [
+                "kMeter",
+                "source>",
+                ".9",
+                "<"
+              ],
+              "tags": [
+                "ASTeamCrit"
+              ],
+              "flags": [],
+              "is_pvp": "EITHER",
+              "requires_pv": "EITHER",
+              "requires_default": "SATISFIED",
+              "eval_flags": 0,
+              "templates": [
+                {
+                  "attribs": [
+                    "Energy_Dmg"
+                  ],
+                  "type": "Magnitude",
+                  "application_type": "OnTick",
+                  "aspect": "Absolute",
+                  "target": "AnyAffected",
+                  "table": "Melee_InherentDamage",
+                  "scale": 2.6,
+                  "duration": "0 seconds",
+                  "magnitude": 1.0,
+                  "delay": 0.0,
+                  "duration_expression": [],
+                  "magnitude_expression": [],
+                  "application_period": 0.0,
+                  "tick_chance": 1.0,
+                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_additive": 0.0,
+                  "jit_requires": [],
+                  "caster_stack": "Individual",
+                  "stack": "Stack",
+                  "stack_limit": 2,
+                  "stack_key": null,
+                  "messages": {
+                    "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+                    "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+                    "display_float": "CRITICAL",
+                    "display_attrib_defense_float": null,
+                    "display_info": null
                   },
                   "flags": [
-                    "IgnoreStrength"
+                    "HideZero"
                   ],
-                  "flags_raw": 1296
+                  "flags_raw": 9472
                 }
               ]
             },
@@ -709,63 +394,6 @@
                     "conditional_fx": "PFX"
                   },
                   "flags_raw": 2560
-                }
-              ]
-            },
-            {
-              "chance": 0.0,
-              "ppm": 0.0,
-              "delay": 0.0,
-              "radius_inner": -1.0,
-              "radius_outer": -1.0,
-              "requires_expression": [],
-              "tags": [
-                "FieryEmbrace"
-              ],
-              "flags": [],
-              "is_pvp": "EITHER",
-              "requires_pv": "EITHER",
-              "requires_default": "SATISFIED",
-              "eval_flags": 0,
-              "templates": [
-                {
-                  "attribs": [
-                    "Fire_Dmg"
-                  ],
-                  "type": "Magnitude",
-                  "application_type": "OnTick",
-                  "aspect": "Absolute",
-                  "target": "AnyAffected",
-                  "table": "Melee_Damage",
-                  "scale": 1.17,
-                  "duration": "0 seconds",
-                  "magnitude": 1.0,
-                  "delay": 0.0,
-                  "duration_expression": [],
-                  "magnitude_expression": [],
-                  "application_period": 0.0,
-                  "tick_chance": 1.0,
-                  "tick_mag_multiplier": 1.0,
-                  "tick_mag_additive": 0.0,
-                  "jit_requires": [],
-                  "caster_stack": "Individual",
-                  "stack": "Stack",
-                  "stack_limit": 2,
-                  "stack_key": null,
-                  "messages": {
-                    "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Fire damage.",
-                    "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Fire damage.",
-                    "display_float": null,
-                    "display_attrib_defense_float": null,
-                    "display_info": null
-                  },
-                  "fx": {
-                    "continuing_bits": [],
-                    "continuing_fx": "POWERS/FIRECONTROL/CINDERSHIT.FX",
-                    "conditional_bits": [],
-                    "conditional_fx": null
-                  },
-                  "flags_raw": 1280
                 }
               ]
             }
@@ -994,65 +622,6 @@
               ]
             },
             {
-              "chance": 1.0,
-              "ppm": 0.0,
-              "delay": 0.0,
-              "radius_inner": -1.0,
-              "radius_outer": -1.0,
-              "requires_expression": [],
-              "tags": [],
-              "flags": [],
-              "is_pvp": "EITHER",
-              "requires_pv": "EITHER",
-              "requires_default": "SATISFIED",
-              "eval_flags": 0,
-              "templates": [
-                {
-                  "attribs": [
-                    "Base_Defense",
-                    "Endurance",
-                    "ToHit",
-                    "RunningSpeed",
-                    "FlyingSpeed",
-                    "JumpingSpeed",
-                    "Regeneration",
-                    "Recovery",
-                    "RechargeTime"
-                  ],
-                  "type": "Magnitude",
-                  "application_type": "OnTick",
-                  "aspect": "Resistance",
-                  "target": "AnyAffected",
-                  "table": "Melee_Debuff_Res_Dmg",
-                  "scale": -1.0,
-                  "duration": "15 seconds",
-                  "magnitude": 1.0,
-                  "delay": 0.0,
-                  "duration_expression": [],
-                  "magnitude_expression": [],
-                  "application_period": 0.0,
-                  "tick_chance": 1.0,
-                  "tick_mag_multiplier": 1.0,
-                  "tick_mag_additive": 0.0,
-                  "jit_requires": [],
-                  "caster_stack": "Individual",
-                  "stack": "Replace",
-                  "stack_limit": 2,
-                  "stack_key": null,
-                  "fx": {
-                    "continuing_bits": [],
-                    "continuing_fx": "GENERICCONTINUING/DAMAGERESISTANCE/DEBUFFDEBUFFRESCONTINUING.FX",
-                    "conditional_bits": [],
-                    "conditional_fx": null
-                  },
-                  "flags": [
-                    "IgnoreStrength"
-                  ],
-                  "flags_raw": 1296
-                }
-              ]
-            },
-            {
               "chance": 0.75,
               "ppm": 0.0,
               "delay": 0.0,
@@ -1206,6 +775,120 @@
               "flags_raw": 1072
             }
           ]
+        }
+      ]
+    },
+    {
+      "chance": 1.0,
+      "ppm": 0.0,
+      "delay": 0.0,
+      "radius_inner": -1.0,
+      "radius_outer": -1.0,
+      "requires_expression": [],
+      "tags": [],
+      "flags": [],
+      "is_pvp": "EITHER",
+      "requires_pv": "EITHER",
+      "requires_default": "SATISFIED",
+      "eval_flags": 0,
+      "templates": [
+        {
+          "attribs": [
+            "Base_Defense",
+            "Endurance",
+            "ToHit",
+            "RunningSpeed",
+            "FlyingSpeed",
+            "JumpingSpeed",
+            "Regeneration",
+            "Recovery",
+            "RechargeTime"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Resistance",
+          "target": "AnyAffected",
+          "table": "Melee_Debuff_Res_Dmg",
+          "scale": -1.6,
+          "duration": "15 seconds",
+          "magnitude": 1.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "GENERICCONTINUING/DAMAGERESISTANCE/DEBUFFDEBUFFRESCONTINUING.FX",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags": [
+            "IgnoreStrength"
+          ],
+          "flags_raw": 1296
+        }
+      ]
+    },
+    {
+      "chance": 0.0,
+      "ppm": 0.0,
+      "delay": 0.0,
+      "radius_inner": -1.0,
+      "radius_outer": -1.0,
+      "requires_expression": [],
+      "tags": [
+        "SMAttune"
+      ],
+      "flags": [],
+      "is_pvp": "EITHER",
+      "requires_pv": "EITHER",
+      "requires_default": "SATISFIED",
+      "eval_flags": 0,
+      "templates": [
+        {
+          "attribs": [
+            "Execute_Power"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Strength",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "0 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "params": {
+            "power_names": [
+              "Redirects.Sonic_Melee.Attune"
+            ],
+            "count": 1,
+            "type": "Power"
+          },
+          "flags": [
+            "CopyBoosts"
+          ],
+          "flags_raw": 1280,
+          "flags2_raw": 4
         }
       ]
     }

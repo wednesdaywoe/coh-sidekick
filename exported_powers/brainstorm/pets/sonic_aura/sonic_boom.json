@@ -13,14 +13,14 @@
   "free": false,
   "accuracy": 1.0,
   "effect_area": "Sphere",
-  "max_targets_hit": 10,
-  "radius": 8.0,
+  "max_targets_hit": 16,
+  "radius": 15.0,
   "arc": 0.0,
   "range": 0.0,
   "range_secondary": 0.0,
   "activation_time": 0.0,
   "recharge_time": 0.0,
-  "activate_period": 100.0,
+  "activate_period": 75.0,
   "endurance_cost": 0.0,
   "interrupt_time": 0.0,
   "target_type": "Self",
@@ -33,10 +33,14 @@
   ],
   "boosts_allowed": [
     "Taunt",
+    "Recharge",
+    "Knockback",
     "Damage",
     "Accuracy"
   ],
-  "allowed_set_categories": null,
+  "allowed_set_categories": [
+    "Knockback"
+  ],
   "cast_through": [],
   "toggle_ignore": [],
   "num_allowed": 1,

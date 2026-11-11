@@ -1,52 +1,52 @@
 {
   "schema": "bin-crawler-export-manifest/3",
   "note": "salvage_fingerprint is the sha256 of the salvage exporter (every .py in bin_crawler) at export time. If it disagrees with the current committed exporter source, THIS salvage.json is stale \u2014 re-run export_salvage and commit. Guarded by audit:export-integrity (staleness). `source` names the assets shard the bytes were read from; guarded by audit:export-integrity (provenance). `content_digest` is the sha256 of the bytes this export WROTE; guarded by audit:export-integrity (contents).",
-  "salvage_fingerprint": "a3935ddbb467983b773c22642b0fa78685d007e33f4d2e5f70e809f73d2bc625",
+  "salvage_fingerprint": "ad1b643f763549365d8b050ee61e39cbbf9d34e9f6995365a7b81cb94a50c1aa",
   "source": {
     "assets_dir": "/home/jiiwii/.wine/drive_c/Games/Homecoming/assets/beta",
     "shard": "beta",
     "sources": [
       {
         "name": "bin.pigg",
-        "bytes": 11351569,
-        "modified": "2026-09-28T13:49:57Z",
-        "sha256": "0b0cca9fb6a84aa959efcddba97d7c1be4b4569165d95c308fe8af9c33df1f5c"
+        "bytes": 11370957,
+        "modified": "2026-11-03T18:14:05Z",
+        "sha256": "36ccd0364c5b6e6c27063f7e1b10f88cc27b0067f213ede69e82d876ee33ecb3"
       },
       {
         "name": "bin_fxinfo.pigg",
-        "bytes": 3760626,
-        "modified": "2026-09-28T13:49:57Z",
-        "sha256": "8f2a4365e50dd02ade081b90da8091226d4632f14583950c4180dde62ec72f4e"
+        "bytes": 3767444,
+        "modified": "2026-11-03T18:14:06Z",
+        "sha256": "5c9e31edab55d699701330138243e6361ae088fc6de8cbabbf866e5ca611671c"
       },
       {
         "name": "bin_minimap.pigg",
-        "bytes": 2614699,
-        "modified": "2026-08-28T15:35:43Z",
-        "sha256": "2182c4a4ba7cb7c7e4ebf282425fb6b97b452aa1e81e84ff6ccdcac0236d604b"
+        "bytes": 2631156,
+        "modified": "2026-11-03T18:14:09Z",
+        "sha256": "8eec6803c4121a78da6e8371e7d40752af9ff240a0906a296e37cfb1721ad7ac"
       },
       {
         "name": "bin_particles.pigg",
-        "bytes": 2223545,
-        "modified": "2026-09-15T17:38:58Z",
-        "sha256": "aa30d62f00400ddb68cb4ed82f51051653245b24fbc5c9378d66c7f44d3eb4e7"
+        "bytes": 2230581,
+        "modified": "2026-11-03T18:14:10Z",
+        "sha256": "681fbe48bf3664a840d47ff45390a18a61a2865f6e14da4da888bf5af95974bd"
       },
       {
         "name": "bin_powers.pigg",
-        "bytes": 5375652,
-        "modified": "2026-09-28T13:49:57Z",
-        "sha256": "659136b7c3d64312fa38a9597dcaf1975fcce97e6beb7230fb79f4e7532dbd08"
+        "bytes": 5411023,
+        "modified": "2026-11-03T18:14:07Z",
+        "sha256": "26c58790228b59d5e4b64dd1b2d5322f8033fe2d487430da75bb7065207fb7d2"
       },
       {
         "name": "bin_sequencers.pigg",
-        "bytes": 5205668,
-        "modified": "2026-08-28T15:35:45Z",
-        "sha256": "c9039defc913a1248e89d7692f2e238f5ea6ec8feff6feec88231bbaaceaf3a8"
+        "bytes": 5206951,
+        "modified": "2026-11-03T18:14:08Z",
+        "sha256": "7e521062ecdc2791dc240608be2aa09077e8175a65321da3ad55234885dc1a0a"
       },
       {
         "name": "bin_villaincostume.pigg",
-        "bytes": 1416882,
-        "modified": "2026-09-15T17:38:58Z",
-        "sha256": "b9c53287cc34623feaffe5a959c0f724f9954883b12d22fd07c05fbb1771c754"
+        "bytes": 1417038,
+        "modified": "2026-11-03T18:14:05Z",
+        "sha256": "9899302f05d950bf7c3c02865df81bae3d41f5695b2e64c0305854de16c2ea63"
       }
     ]
   },

@@ -80,7 +80,7 @@
           "duration_expression": [],
           "magnitude_expression": [
             "@StdResult",
-            "Cur.kHitPoints",
+            "cur.kHitPoints",
             "target>",
             "Max.kHitPoints",
             "target>",

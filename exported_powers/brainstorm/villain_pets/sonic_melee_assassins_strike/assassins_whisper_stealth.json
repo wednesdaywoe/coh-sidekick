@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Assassin's Whisper",
   "display_fullname": "Villain Pets Sonic Melee Assassins Strike Assassins Whisper Stealth",
-  "display_help": "A signature Stalker attack. This attack does superior energy and smashing damage on its own as a frontal attack and cannot be interrupted. However, if it is executed while you are Hidden, this attack will do tremendous damage, as you whisper at your unsuspecting foe. This attack may be interrupted if you move or are attacked while executing this power and are hidden. Using this power while not hidden has a chance to critically hit equal to 33.3% times the number of stacks of Assassin's Focus. Using Assassin's Strike when not hidden will remove all stacks of Assassin's Focus regardless if you critically hit or not.",
+  "display_help": "A signature Stalker attack. This attack does superior energy and smashing damage on its own as a frontal attack and cannot be interrupted. However, if it is executed while you are Hidden, this attack will do tremendous damage, as you whisper at your unsuspecting foe. Affected target is likely to fall asleep and have their damage resistances lowered. This attack may be interrupted if you move or are attacked while executing this power and are hidden. Using this power while not hidden has a chance to critically hit equal to 33.3% times the number of stacks of Assassin's Focus. Using Assassin's Strike when not hidden will remove all stacks of Assassin's Focus regardless if you critically hit or not.<br><br>When hitting <color #fcfc95>Attuned</color> targets, this power will briefly speed up and increase the damage of Attune.<br><br>While Attune is active and you are <color #fcfc95>hidden</color>, hitting will also moderately increase the duration of mez effects and the chance for Sound Manipulation powers to induce migraines.",
   "display_short_help": "Melee, DMG(Energy/Smashing), Sleep, -Res(DMG)",
   "icon": "sonicmanipulation_assassins",
   "auto_issue": false,
@@ -170,6 +170,49 @@
         },
         {
           "attribs": [
+            "Base_Defense",
+            "Endurance",
+            "ToHit",
+            "RunningSpeed",
+            "FlyingSpeed",
+            "JumpingSpeed",
+            "Regeneration",
+            "Recovery",
+            "RechargeTime"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Resistance",
+          "target": "AnyAffected",
+          "table": "Melee_Debuff_Res_Dmg",
+          "scale": -1.6,
+          "duration": "15 seconds",
+          "magnitude": 1.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "GENERICCONTINUING/DAMAGERESISTANCE/DEBUFFDEBUFFRESCONTINUING.FX",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags": [
+            "IgnoreStrength"
+          ],
+          "flags_raw": 1296
+        },
+        {
+          "attribs": [
             "Smashing_Dmg",
             "Lethal_Dmg",
             "Fire_Dmg",
@@ -184,7 +227,7 @@
           "aspect": "Resistance",
           "target": "AnyAffected",
           "table": "Melee_Debuff_Res_Dmg",
-          "scale": -1.2,
+          "scale": -1.3333,
           "duration": "15 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -211,143 +254,145 @@
           ],
           "flags_raw": 263440
         }
-      ]
-    },
-    {
-      "chance": 1.0,
-      "ppm": 0.0,
-      "delay": 0.0,
-      "radius_inner": -1.0,
-      "radius_outer": -1.0,
-      "requires_expression": [
-        "enttype",
-        "target>",
-        "critter",
-        "eq",
-        "kMeter",
-        "source>",
-        "0",
-        ">",
-        "&&"
       ],
-      "tags": [],
-      "flags": [],
-      "is_pvp": "EITHER",
-      "requires_pv": "PVE_ONLY",
-      "requires_default": "UNSATISFIED",
-      "eval_flags": 0,
-      "templates": [
+      "child_effects": [
         {
-          "attribs": [
-            "Energy_Dmg"
-          ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Absolute",
-          "target": "AnyAffected",
-          "table": "Melee_Damage",
-          "scale": 6.0,
-          "duration": "0 seconds",
-          "magnitude": 1.0,
+          "chance": 1.0,
+          "ppm": 0.0,
           "delay": 0.0,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Stack",
-          "stack_limit": 2,
-          "stack_key": null,
-          "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (ASSASSIN STRIKE).",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (ASSASSIN STRIKE).",
-            "display_float": "ASSASSIN STRIKE",
-            "display_attrib_defense_float": null,
-            "display_info": null
-          },
-          "flags_raw": 1280
-        },
-        {
-          "attribs": [
-            "Grant_Power"
+          "radius_inner": -1.0,
+          "radius_outer": -1.0,
+          "requires_expression": [
+            "enttype",
+            "target>",
+            "critter",
+            "eq",
+            "kMeter",
+            "source>",
+            "0",
+            ">",
+            "&&"
           ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Absolute",
-          "target": "AnyAffected",
-          "table": "Melee_Ones",
-          "scale": 1.0,
-          "duration": "0 seconds",
-          "magnitude": 1.0,
-          "delay": 0.0,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Ignore",
-          "stack_limit": 2,
-          "stack_key": null,
-          "params": {
-            "power_names": [
-              "Temporary_Powers.Temporary_Powers.Demoralized"
-            ],
-            "count": 1,
-            "type": "Power"
-          },
-          "flags": [
-            "IgnoreStrength",
-            "IgnoreResistance",
-            "IgnoreCombatMods"
-          ],
-          "flags_raw": 112
-        },
-        {
-          "attribs": [
-            "Sleep"
-          ],
-          "type": "Duration",
-          "application_type": "OnTick",
-          "aspect": "Current",
-          "target": "AnyAffected",
-          "table": "Melee_Sleep",
-          "scale": 15.0,
-          "duration": "0 seconds",
-          "magnitude": 5.0,
-          "delay": 0.25,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Stack",
-          "stack_limit": 2,
-          "stack_key": null,
-          "messages": {
-            "display_attacker_hit": "You Sleep {PlayerDest} with your {PowerName}.",
-            "display_victim_hit": "{PlayerSource} Sleeps you with their {PowerName}.",
-            "display_float": null,
-            "display_attrib_defense_float": null,
-            "display_info": null
-          },
-          "fx": {
-            "continuing_bits": [],
-            "continuing_fx": null,
-            "conditional_bits": [
-              284
-            ],
-            "conditional_fx": "GENERICCONTINUING/SLEEPCONTINUING.FX"
-          },
-          "flags_raw": 2560
+          "tags": [],
+          "flags": [],
+          "is_pvp": "EITHER",
+          "requires_pv": "PVE_ONLY",
+          "requires_default": "UNSATISFIED",
+          "eval_flags": 0,
+          "templates": [
+            {
+              "attribs": [
+                "Energy_Dmg"
+              ],
+              "type": "Magnitude",
+              "application_type": "OnTick",
+              "aspect": "Absolute",
+              "target": "AnyAffected",
+              "table": "Melee_Damage",
+              "scale": 6.0,
+              "duration": "0 seconds",
+              "magnitude": 1.0,
+              "delay": 0.0,
+              "duration_expression": [],
+              "magnitude_expression": [],
+              "application_period": 0.0,
+              "tick_chance": 1.0,
+              "tick_mag_multiplier": 1.0,
+              "tick_mag_additive": 0.0,
+              "jit_requires": [],
+              "caster_stack": "Individual",
+              "stack": "Stack",
+              "stack_limit": 2,
+              "stack_key": null,
+              "messages": {
+                "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (ASSASSIN STRIKE).",
+                "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (ASSASSIN STRIKE).",
+                "display_float": "ASSASSIN STRIKE",
+                "display_attrib_defense_float": null,
+                "display_info": null
+              },
+              "flags_raw": 1280
+            },
+            {
+              "attribs": [
+                "Grant_Power"
+              ],
+              "type": "Magnitude",
+              "application_type": "OnTick",
+              "aspect": "Absolute",
+              "target": "AnyAffected",
+              "table": "Melee_Ones",
+              "scale": 1.0,
+              "duration": "0 seconds",
+              "magnitude": 1.0,
+              "delay": 0.0,
+              "duration_expression": [],
+              "magnitude_expression": [],
+              "application_period": 0.0,
+              "tick_chance": 1.0,
+              "tick_mag_multiplier": 1.0,
+              "tick_mag_additive": 0.0,
+              "jit_requires": [],
+              "caster_stack": "Individual",
+              "stack": "Ignore",
+              "stack_limit": 2,
+              "stack_key": null,
+              "params": {
+                "power_names": [
+                  "Temporary_Powers.Temporary_Powers.Demoralized"
+                ],
+                "count": 1,
+                "type": "Power"
+              },
+              "flags": [
+                "IgnoreStrength",
+                "IgnoreResistance",
+                "IgnoreCombatMods"
+              ],
+              "flags_raw": 112
+            },
+            {
+              "attribs": [
+                "Sleep"
+              ],
+              "type": "Duration",
+              "application_type": "OnTick",
+              "aspect": "Current",
+              "target": "AnyAffected",
+              "table": "Melee_Sleep",
+              "scale": 15.0,
+              "duration": "0 seconds",
+              "magnitude": 5.0,
+              "delay": 0.25,
+              "duration_expression": [],
+              "magnitude_expression": [],
+              "application_period": 0.0,
+              "tick_chance": 1.0,
+              "tick_mag_multiplier": 1.0,
+              "tick_mag_additive": 0.0,
+              "jit_requires": [],
+              "caster_stack": "Individual",
+              "stack": "Stack",
+              "stack_limit": 2,
+              "stack_key": null,
+              "messages": {
+                "display_attacker_hit": "You Sleep {PlayerDest} with your {PowerName}.",
+                "display_victim_hit": "{PlayerSource} Sleeps you with their {PowerName}.",
+                "display_float": null,
+                "display_attrib_defense_float": null,
+                "display_info": null
+              },
+              "fx": {
+                "continuing_bits": [],
+                "continuing_fx": null,
+                "conditional_bits": [
+                  284
+                ],
+                "conditional_fx": "GENERICCONTINUING/SLEEPCONTINUING.FX"
+              },
+              "flags_raw": 2560
+            }
+          ]
         }
       ]
     },
@@ -481,6 +526,98 @@
             }
           ],
           "flags_raw": 2560
+        }
+      ]
+    },
+    {
+      "chance": 0.0,
+      "ppm": 0.0,
+      "delay": 0.0,
+      "radius_inner": -1.0,
+      "radius_outer": -1.0,
+      "requires_expression": [],
+      "tags": [
+        "SMAttune"
+      ],
+      "flags": [],
+      "is_pvp": "EITHER",
+      "requires_pv": "EITHER",
+      "requires_default": "SATISFIED",
+      "eval_flags": 0,
+      "templates": [
+        {
+          "attribs": [
+            "Execute_Power"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Strength",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "0 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "params": {
+            "power_names": [
+              "Redirects.Sonic_Melee.Attune"
+            ],
+            "count": 1,
+            "type": "Power"
+          },
+          "flags": [
+            "CopyBoosts"
+          ],
+          "flags_raw": 1280,
+          "flags2_raw": 4
+        },
+        {
+          "attribs": [
+            "Execute_Power"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Strength",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "0 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Stack",
+          "stack_limit": 2,
+          "stack_key": null,
+          "params": {
+            "power_names": [
+              "Redirects.Sonic_Melee.Assassins_Whisper"
+            ],
+            "count": 1,
+            "type": "Power"
+          },
+          "flags": [
+            "CopyBoosts"
+          ],
+          "flags_raw": 1280,
+          "flags2_raw": 4
         }
       ]
     }

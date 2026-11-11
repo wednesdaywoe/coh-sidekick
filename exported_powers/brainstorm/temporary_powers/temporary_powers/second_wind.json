@@ -76,7 +76,7 @@
           "tick_mag_multiplier": 1.0,
           "tick_mag_additive": 0.0,
           "jit_requires": [
-            "Cur.kHitPoints",
+            "cur.kHitPoints",
             "source>",
             "0",
             "=="
@@ -121,7 +121,7 @@
           "tick_mag_multiplier": 1.0,
           "tick_mag_additive": 0.0,
           "jit_requires": [
-            "Cur.kHitPoints",
+            "cur.kHitPoints",
             "source>",
             "0",
             "=="
@@ -172,7 +172,7 @@
           "tick_mag_multiplier": 1.0,
           "tick_mag_additive": 0.0,
           "jit_requires": [
-            "Cur.kHitPoints",
+            "cur.kHitPoints",
             "source>",
             "0",
             "=="
@@ -223,7 +223,7 @@
           "tick_mag_multiplier": 1.0,
           "tick_mag_additive": 0.0,
           "jit_requires": [
-            "Cur.kHitPoints",
+            "cur.kHitPoints",
             "source>",
             "0",
             "=="

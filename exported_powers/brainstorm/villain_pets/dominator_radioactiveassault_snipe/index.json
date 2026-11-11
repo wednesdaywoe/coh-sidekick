@@ -13,7 +13,8 @@
     "Villain_Pets.Dominator_RadioactiveAssault_Snipe.Radiation_Siphon_Contamination",
     "Villain_Pets.Dominator_RadioactiveAssault_Snipe.Devastating_Blow_Contamination",
     "Villain_Pets.Dominator_RadioactiveAssault_Snipe.Proton_Volley_Quick_Contamination",
-    "Villain_Pets.Dominator_RadioactiveAssault_Snipe.Proton_Volley_Normal_Contamination"
+    "Villain_Pets.Dominator_RadioactiveAssault_Snipe.Proton_Volley_Normal_Contamination",
+    "Villain_Pets.Dominator_RadioactiveAssault_Snipe.Atom_Smasher_AoE"
   ],
   "available_level": [
     27,
@@ -24,7 +25,8 @@
     19,
     37,
     34,
-    34
+    34,
+    0
   ],
   "power_display_names": [
     "Proton Volley",
@@ -35,7 +37,8 @@
     "Radiation Siphon",
     "Devastating Blow",
     "Proton Volley",
-    "Proton Volley"
+    "Proton Volley",
+    "Atom Smasher"
   ],
   "power_short_helps": [
     "Sniper, Extreme DMG(Energy), Foe -DEF",
@@ -46,7 +49,8 @@
     "Melee, Minor DMG(Energy/Smash), Foe, -Def, -Contaminated, Special",
     "Melee, Minor DMG(Energy/Smash), Foe -Def, Disorient, Special",
     "Sniper, Minor DMG(Energy), Foe -DEF",
-    "Sniper, Light DMG(Energy), Foe -DEF"
+    "Sniper, Light DMG(Energy), Foe -DEF",
+    "PBAoE, Moderate DMG(Energy/Toxic), Foe -Def, Disorient, Special"
   ],
   "buy_requires": [],
   "buy_requires_failed": "",

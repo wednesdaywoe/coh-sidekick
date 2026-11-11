@@ -61,7 +61,7 @@
     {
       "name": "Redirects.Fiery_Aura.Phoenix_Rising_Concious",
       "condition_expression": [
-        "Cur.kHitPoints",
+        "cur.kHitPoints",
         "source>",
         "0",
         ">"

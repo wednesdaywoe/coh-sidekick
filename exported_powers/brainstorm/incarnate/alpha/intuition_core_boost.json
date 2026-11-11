@@ -119,7 +119,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Incarnate.Alpha_Silent.Defense_Debuff_Uncommon"
+              "Incarnate.Alpha_Silent.Defense_DeBuff_Uncommon"
             ],
             "count": 1,
             "type": "Power"
@@ -193,7 +193,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Incarnate.Alpha_Silent.Defense_Debuff_Uncommon"
+              "Incarnate.Alpha_Silent.Defense_DeBuff_Uncommon"
             ],
             "count": 1,
             "type": "Power"

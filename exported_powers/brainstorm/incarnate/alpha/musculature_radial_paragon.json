@@ -156,7 +156,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Incarnate.Alpha_Silent.Defense_Debuff_Very_Rare"
+              "Incarnate.Alpha_Silent.Defense_DeBuff_Very_Rare"
             ],
             "count": 1,
             "type": "Power"
@@ -230,7 +230,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Incarnate.Alpha_Silent.ToHit_Debuff_Very_Rare"
+              "Incarnate.Alpha_Silent.ToHit_DeBuff_Very_Rare"
             ],
             "count": 1,
             "type": "Power"
@@ -378,7 +378,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Incarnate.Alpha_Silent.Defense_Debuff_Very_Rare"
+              "Incarnate.Alpha_Silent.Defense_DeBuff_Very_Rare"
             ],
             "count": 1,
             "type": "Power"
@@ -452,7 +452,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Incarnate.Alpha_Silent.ToHit_Debuff_Very_Rare"
+              "Incarnate.Alpha_Silent.ToHit_DeBuff_Very_Rare"
             ],
             "count": 1,
             "type": "Power"

@@ -42,7 +42,7 @@
     "Melee, DMG(Energy/Smash), Foe -Def, Knockdown, Special",
     "Melee Cone, DoT(Energy/Toxic), Foe -Def, Special",
     "Ranged (Targeted AoE), Foe Taunt",
-    "Melee, DMG(Energy/Smash), Foe, -Def, -Contaminated, Special",
+    "Melee, DMG(Energy/Smash), Foe, -Def, -Regen, -Contaminated, Special",
     "Self +DMG, +To Hit, Special",
     "Toggle, DoT(Toxic) Patch, Foe -Def, Special",
     "Melee, DMG(Energy/Smash), Foe -Def, Disorient, Special",

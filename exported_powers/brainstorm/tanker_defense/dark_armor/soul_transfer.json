@@ -65,7 +65,7 @@
     {
       "name": "Redirects.Dark_Armor.Soul_Transfer",
       "condition_expression": [
-        "Cur.kHitPoints",
+        "cur.kHitPoints",
         "source>",
         "0",
         ">"

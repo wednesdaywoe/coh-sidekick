@@ -54,7 +54,7 @@
     {
       "name": "Redirects.Regeneration.Second_Wind_Defeated",
       "condition_expression": [
-        "Cur.kHitPoints",
+        "cur.kHitPoints",
         "source>",
         "0",
         "=="

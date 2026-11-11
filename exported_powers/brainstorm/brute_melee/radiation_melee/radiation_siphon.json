@@ -5,8 +5,8 @@
   "type": "Click",
   "display_name": "Radiation Siphon",
   "display_fullname": "Brute Melee Radiation Melee Radiation Siphon",
-  "display_help": "You pummel your foe with a deadly smashing attack dealing High Energy and Smashing damage and reducing their defense. Hitting Contaminated targets will also heal you for a large amount of health over 3 seconds and remove the Contaminated effect from the target. However, uncontaminated targets have a moderate chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radiation Melee powers cause a small burst of damage to foes near the target.",
-  "display_short_help": "Melee, DMG(Energy/Smash), Foe, -Def, -Contaminated, Special",
+  "display_help": "You pummel your foe with a deadly smashing attack dealing High Energy and Smashing damage and reducing their defense and health regeneration. Hitting Contaminated targets will also heal you for a large amount of health over 3 seconds and reduce their regeneration even further. However, uncontaminated targets have a moderate chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radiation Melee powers causes a small burst of damage around the target.",
+  "display_short_help": "Melee, DMG(Energy/Smash), Foe, -Def, -Regen, -Contaminated, Special",
   "icon": "radiationmelee_radiationsiphon.png",
   "auto_issue": false,
   "auto_issue_keeps_level": false,
@@ -18,8 +18,8 @@
   "arc": 0.0,
   "range": 7.0,
   "range_secondary": 0.0,
-  "activation_time": 2.23,
-  "time_to_root": 2.23,
+  "activation_time": 1.93,
+  "time_to_root": 1.93,
   "recharge_time": 10.0,
   "activate_period": 0.0,
   "endurance_cost": 10.192,
@@ -178,7 +178,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_PvPDamage",
-          "scale": 0.5902,
+          "scale": 0.5377,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -211,7 +211,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_PvPDamage",
-          "scale": 1.7707,
+          "scale": 1.6132,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -285,6 +285,41 @@
             "CancelOnMiss"
           ],
           "flags_raw": 1284
+        },
+        {
+          "attribs": [
+            "Regeneration"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": -1.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "GENERICCONTINUING/DEBUFFMAXHPCONTINUING.FX",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags": [
+            "IgnoreStrength"
+          ],
+          "flags_raw": 1296
         }
       ]
     },
@@ -355,6 +390,38 @@
             "IgnoreResistance"
           ],
           "flags_raw": 1072
+        },
+        {
+          "attribs": [
+            "Null"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "PFX2",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags_raw": 1280
         }
       ]
     },
@@ -375,50 +442,6 @@
       "requires_default": "UNSATISFIED",
       "eval_flags": 0,
       "templates": [
-        {
-          "attribs": [
-            "Revoke_Power"
-          ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Absolute",
-          "target": "AnyAffected",
-          "table": "Melee_Ones",
-          "scale": 1.0,
-          "duration": "0 seconds",
-          "magnitude": 1.0,
-          "delay": 0.1,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Replace",
-          "stack_limit": 2,
-          "stack_key": null,
-          "params": {
-            "power_names": [
-              "Temporary_Powers.Temporary_Powers.Radiation_Melee_Contaminated"
-            ],
-            "count": 1,
-            "type": "Power"
-          },
-          "messages": {
-            "display_attacker_hit": "Your absorb the radioactive contamination from {PlayerDest}!",
-            "display_victim_hit": "{PlayerSource} draws the radioactive contamination from you to heal themselves.",
-            "display_float": null,
-            "display_attrib_defense_float": null,
-            "display_info": null
-          },
-          "flags": [
-            "IgnoreStrength",
-            "IgnoreResistance"
-          ],
-          "flags_raw": 1072
-        },
         {
           "attribs": [
             "Heal_Dmg"
@@ -497,6 +520,35 @@
           ],
           "flags_raw": 1280,
           "flags2_raw": 4
+        },
+        {
+          "attribs": [
+            "Regeneration"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": -1.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "flags": [
+            "IgnoreStrength"
+          ],
+          "flags_raw": 1296
         }
       ]
     },

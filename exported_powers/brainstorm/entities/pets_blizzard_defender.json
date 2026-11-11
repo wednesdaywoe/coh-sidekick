@@ -15,17 +15,14 @@
     "power_full_names": [
       "Pets.ResistAll.ResistAll",
       "Pets.Defender_Blizzard.Blizzard",
-      "Pets.Defender_Blizzard.Avoid",
       "Pets.Defender_Blizzard.Snow"
     ],
     "power_display_names": [
       "ResistAll",
       "Blizzard",
-      "Avoid",
       "Snow"
     ],
     "power_levels": [
-      0,
       0,
       0,
       0

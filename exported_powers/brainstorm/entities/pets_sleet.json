@@ -14,16 +14,13 @@
     "display_class_name": "",
     "power_full_names": [
       "Pets.ResistAll.ResistAll",
-      "Villain_Pets.Sleet.Sleet",
-      "Villain_Pets.Sleet.Avoid"
+      "Villain_Pets.Sleet.Sleet"
     ],
     "power_display_names": [
       "ResistAll",
-      "Sleet",
-      "Avoid"
+      "Sleet"
     ],
     "power_levels": [
-      0,
       0,
       0
     ],

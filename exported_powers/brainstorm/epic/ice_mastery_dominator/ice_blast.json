@@ -103,8 +103,7 @@
             "display_name": "Sleet",
             "priority_list": "PL_StaticObject",
             "redirects": [
-              "Pets.Sleet_Epic.Sleet",
-              "Pets.Sleet_Epic.Avoid"
+              "Pets.Sleet_Epic.Sleet"
             ],
             "type": "EntCreate"
           },

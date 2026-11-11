@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Throw Spines",
   "display_fullname": "Tanker Melee Spines Throw Spines",
-  "display_help": "You can throw dozens of Spines in a wide cone in front of you, impaling foes caught within the range. Spine throwing deals moderate damage, and poisons any targets it hits. Spine poison deals additional Toxic damage and Slows affected foes.",
+  "display_help": "You can throw dozens of Spines in a wide cone in front of you, impaling foes caught within the range. Spine throwing deals moderate damage, and poisons any targets it hits.<br><br>Spine poison deals additional Toxic damage and Slows affected foes. The more the poison stacks, the stonger it becomes.",
   "display_short_help": "Ranged (Cone), DMG(Lethal), DoT(Toxic), -SPD, -Recharge",
   "icon": "quills_quillthrowing.png",
   "auto_issue": false,
@@ -161,42 +161,120 @@
             "IgnoreStrength"
           ],
           "flags_raw": 1296
-        },
+        }
+      ],
+      "child_effects": [
         {
-          "attribs": [
-            "Toxic_Dmg"
+          "chance": 1.0,
+          "ppm": 0.0,
+          "delay": 0.0,
+          "radius_inner": -1.0,
+          "radius_outer": -1.0,
+          "requires_expression": [],
+          "tags": [
+            "Poison DoT"
           ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Absolute",
-          "target": "AnyAffected",
-          "table": "Melee_Damage",
-          "scale": 0.1,
-          "duration": "7.1 seconds",
-          "magnitude": 1.0,
-          "delay": 0.5,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 1.0,
-          "tick_chance": 0.800000011920929,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Stack",
-          "stack_limit": 2,
-          "stack_key": null,
-          "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Toxic damage over time.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Toxic damage over time.",
-            "display_float": null,
-            "display_attrib_defense_float": null,
-            "display_info": null
-          },
-          "flags": [
-            "CancelOnMiss"
+          "flags": [],
+          "is_pvp": "EITHER",
+          "requires_pv": "EITHER",
+          "requires_default": "SATISFIED",
+          "eval_flags": 0,
+          "templates": [
+            {
+              "attribs": [
+                "Execute_Power"
+              ],
+              "type": "Magnitude",
+              "application_type": "OnTick",
+              "aspect": "Strength",
+              "target": "AnyAffected",
+              "table": "Melee_Ones",
+              "scale": 0.0,
+              "duration": "0 seconds",
+              "magnitude": 0.0,
+              "delay": 0.0,
+              "duration_expression": [],
+              "magnitude_expression": [],
+              "application_period": 0.0,
+              "tick_chance": 1.0,
+              "tick_mag_multiplier": 1.0,
+              "tick_mag_additive": 0.0,
+              "jit_requires": [],
+              "caster_stack": "Individual",
+              "stack": "Stack",
+              "stack_limit": 2,
+              "stack_key": null,
+              "params": {
+                "power_names": [
+                  "Redirects.Spines.SpinePoison"
+                ],
+                "count": 1,
+                "type": "Power"
+              },
+              "flags": [
+                "CopyBoosts"
+              ],
+              "flags_raw": 1280,
+              "flags2_raw": 4
+            }
           ],
-          "flags_raw": 1284
+          "child_effects": [
+            {
+              "chance": 1.0,
+              "ppm": 0.0,
+              "delay": 0.0,
+              "radius_inner": -1.0,
+              "radius_outer": -1.0,
+              "requires_expression": [
+                "Temporary_Powers.Temporary_Powers.Poison",
+                "target.ownPowerNum?",
+                "10",
+                "=="
+              ],
+              "tags": [
+                "Ripper"
+              ],
+              "flags": [],
+              "is_pvp": "EITHER",
+              "requires_pv": "EITHER",
+              "requires_default": "UNSATISFIED",
+              "eval_flags": 0,
+              "templates": [
+                {
+                  "attribs": [
+                    "Set_Mode"
+                  ],
+                  "type": "Constant",
+                  "application_type": "OnTick",
+                  "aspect": "Current",
+                  "target": "Self",
+                  "table": "Melee_Ones",
+                  "scale": 1.0,
+                  "duration": "3 seconds",
+                  "magnitude": 57.0,
+                  "delay": 0.0,
+                  "duration_expression": [],
+                  "magnitude_expression": [],
+                  "application_period": 0.0,
+                  "tick_chance": 1.0,
+                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_additive": 0.0,
+                  "jit_requires": [],
+                  "caster_stack": "Individual",
+                  "stack": "Replace",
+                  "stack_limit": 2,
+                  "stack_key": null,
+                  "flags": [
+                    "IgnoreStrength",
+                    "IgnoreResistance",
+                    "IgnoreCombatMods"
+                  ],
+                  "flags_raw": 112,
+                  "mode_name": "DD_StatusMode_1"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -228,7 +306,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_Damage",
-          "scale": 1.09,
+          "scale": 0.901,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,

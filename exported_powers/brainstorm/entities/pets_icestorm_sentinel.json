@@ -14,16 +14,13 @@
     "display_class_name": "",
     "power_full_names": [
       "Pets.ResistAll.ResistAll",
-      "Pets.IceStorm_Sentinel.IceStorm",
-      "Pets.IceStorm_Sentinel.Avoid"
+      "Pets.IceStorm_Sentinel.IceStorm"
     ],
     "power_display_names": [
       "ResistAll",
-      "IceStorm",
-      "Avoid"
+      "IceStorm"
     ],
     "power_levels": [
-      0,
       0,
       0
     ],

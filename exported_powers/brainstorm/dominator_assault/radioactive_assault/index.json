@@ -43,7 +43,7 @@
     "Ranged, Superior DMG(Energy), Foe -DEF",
     "Close, Moderate Moderate DMG(Energy), Foe -DEF, Knockback",
     "Self +DMG, +To Hit, Special",
-    "Melee, Superior DMG(Energy/Smash), Foe, -Def, -Contaminated, Special",
+    "Melee, Superior DMG(Energy/Smash), Foe, -Def, -Regen, -Contaminated, Special",
     "PBAoE, Moderate DMG(Energy/Toxic), Foe -Def, Disorient, Special",
     "Sniper, Extreme DMG(Energy), Foe -DEF",
     "Melee, Extreme DMG(Energy/Smash), Foe -Def, Disorient, Special"

@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Ripper",
   "display_fullname": "Stalker Melee Spines Ripper",
-  "display_help": "You can unleash a spectacular slashing maneuver that attacks all foes in a wide arc in front of you. Ripper deals massive lethal damage and poisons multiple targets. It can even knock foes down. Spine poison Slows affected targets and deals additional Toxic damage. If executed while hidden, all affected targets have a chance to be hit with a Critical Hit for extra damage.",
+  "display_help": "You can unleash a spectacular slashing maneuver that attacks all villains in a wide arc in front of you. Ripper deals massive damage and poisons multiple targets. It can even knock foes down. <br><br>Ripper will also cause much more toxic damage based on the amount of poison coursing through your opponent. You will gain a highlight ring when attacking a target with maximum poison.<br><br>Spine poison deals additional Toxic damage and Slows affected foes. The more the poison stacks, the stonger it becomes. Ripper inflicts poison at twice the rate of other powers.",
   "display_short_help": "Melee (Cone), DMG(Lethal), DoT(Toxic), Knockback, -SPD, -Recharge",
   "icon": "quills_bonesword.png",
   "auto_issue": false,
@@ -834,21 +834,21 @@
         },
         {
           "attribs": [
-            "Toxic_Dmg"
+            "Grant_Power"
           ],
           "type": "Magnitude",
           "application_type": "OnTick",
           "aspect": "Absolute",
           "target": "AnyAffected",
-          "table": "Melee_Damage",
-          "scale": 0.2,
-          "duration": "7.1 seconds",
+          "table": "Ranged_Ones",
+          "scale": 1.0,
+          "duration": "0 seconds",
           "magnitude": 1.0,
-          "delay": 0.5,
+          "delay": 0.0,
           "duration_expression": [],
           "magnitude_expression": [],
-          "application_period": 1.0,
-          "tick_chance": 0.800000011920929,
+          "application_period": 0.0,
+          "tick_chance": 1.0,
           "tick_mag_multiplier": 1.0,
           "tick_mag_additive": 0.0,
           "jit_requires": [],
@@ -856,17 +856,195 @@
           "stack": "Stack",
           "stack_limit": 2,
           "stack_key": null,
-          "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Toxic damage over time.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Toxic damage over time.",
-            "display_float": null,
-            "display_attrib_defense_float": null,
-            "display_info": null
+          "params": {
+            "power_names": [
+              "Temporary_Powers.Temporary_Powers.Poison"
+            ],
+            "count": 1,
+            "type": "Power"
           },
           "flags": [
-            "CancelOnMiss"
+            "IgnoreStrength",
+            "IgnoreResistance",
+            "NoHitDelay",
+            "NoProjectileDelay"
           ],
-          "flags_raw": 1284
+          "flags_raw": 197680
+        }
+      ],
+      "child_effects": [
+        {
+          "chance": 1.0,
+          "ppm": 0.0,
+          "delay": 0.0,
+          "radius_inner": -1.0,
+          "radius_outer": -1.0,
+          "requires_expression": [],
+          "tags": [
+            "Poison DoT"
+          ],
+          "flags": [],
+          "is_pvp": "EITHER",
+          "requires_pv": "EITHER",
+          "requires_default": "SATISFIED",
+          "eval_flags": 0,
+          "templates": [
+            {
+              "attribs": [
+                "Execute_Power"
+              ],
+              "type": "Magnitude",
+              "application_type": "OnTick",
+              "aspect": "Strength",
+              "target": "AnyAffected",
+              "table": "Melee_Ones",
+              "scale": 0.0,
+              "duration": "0 seconds",
+              "magnitude": 0.0,
+              "delay": 0.0,
+              "duration_expression": [],
+              "magnitude_expression": [],
+              "application_period": 0.0,
+              "tick_chance": 1.0,
+              "tick_mag_multiplier": 1.0,
+              "tick_mag_additive": 0.0,
+              "jit_requires": [],
+              "caster_stack": "Individual",
+              "stack": "Stack",
+              "stack_limit": 2,
+              "stack_key": null,
+              "params": {
+                "power_names": [
+                  "Redirects.Spines.SpinePoison"
+                ],
+                "count": 1,
+                "type": "Power"
+              },
+              "flags": [
+                "CopyBoosts"
+              ],
+              "flags_raw": 1280,
+              "flags2_raw": 4
+            }
+          ],
+          "child_effects": [
+            {
+              "chance": 1.0,
+              "ppm": 0.0,
+              "delay": 0.0,
+              "radius_inner": -1.0,
+              "radius_outer": -1.0,
+              "requires_expression": [
+                "Temporary_Powers.Temporary_Powers.Poison",
+                "target.ownPowerNum?",
+                "10",
+                "=="
+              ],
+              "tags": [
+                "Ripper"
+              ],
+              "flags": [],
+              "is_pvp": "EITHER",
+              "requires_pv": "EITHER",
+              "requires_default": "UNSATISFIED",
+              "eval_flags": 0,
+              "templates": [
+                {
+                  "attribs": [
+                    "Set_Mode"
+                  ],
+                  "type": "Constant",
+                  "application_type": "OnTick",
+                  "aspect": "Current",
+                  "target": "Self",
+                  "table": "Melee_Ones",
+                  "scale": 1.0,
+                  "duration": "3 seconds",
+                  "magnitude": 57.0,
+                  "delay": 0.0,
+                  "duration_expression": [],
+                  "magnitude_expression": [],
+                  "application_period": 0.0,
+                  "tick_chance": 1.0,
+                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_additive": 0.0,
+                  "jit_requires": [],
+                  "caster_stack": "Individual",
+                  "stack": "Replace",
+                  "stack_limit": 2,
+                  "stack_key": null,
+                  "flags": [
+                    "IgnoreStrength",
+                    "IgnoreResistance",
+                    "IgnoreCombatMods"
+                  ],
+                  "flags_raw": 112,
+                  "mode_name": "DD_StatusMode_1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "chance": 1.0,
+          "ppm": 0.0,
+          "delay": 0.0,
+          "radius_inner": -1.0,
+          "radius_outer": -1.0,
+          "requires_expression": [
+            "kPoisoned",
+            "target.mode?"
+          ],
+          "tags": [],
+          "flags": [],
+          "is_pvp": "EITHER",
+          "requires_pv": "EITHER",
+          "requires_default": "UNSATISFIED",
+          "eval_flags": 4,
+          "templates": [
+            {
+              "attribs": [
+                "Toxic_Dmg"
+              ],
+              "type": "Expression",
+              "application_type": "OnTick",
+              "aspect": "Absolute",
+              "target": "AnyAffected",
+              "table": "Melee_Damage",
+              "scale": 0.05,
+              "duration": "0 seconds",
+              "magnitude": 1.0,
+              "delay": 0.0,
+              "duration_expression": [],
+              "magnitude_expression": [
+                "Temporary_Powers.Temporary_Powers.Poison",
+                "target.ownPowerNum?",
+                "1.6",
+                "*",
+                "1",
+                "+",
+                "@StdResult",
+                "*"
+              ],
+              "application_period": 0.0,
+              "tick_chance": 1.0,
+              "tick_mag_multiplier": 1.0,
+              "tick_mag_additive": 0.0,
+              "jit_requires": [],
+              "caster_stack": "Individual",
+              "stack": "Stack",
+              "stack_limit": 2,
+              "stack_key": null,
+              "messages": {
+                "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Toxic damage.",
+                "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Toxic damage.",
+                "display_float": null,
+                "display_attrib_defense_float": null,
+                "display_info": null
+              },
+              "flags_raw": 1280
+            }
+          ]
         }
       ]
     },

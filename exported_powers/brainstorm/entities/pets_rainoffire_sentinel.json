@@ -14,16 +14,13 @@
     "display_class_name": "",
     "power_full_names": [
       "Pets.ResistAll.ResistAll",
-      "Pets.RainofFire_Sentinel.RainofFire",
-      "Pets.RainofFire_Sentinel.Avoid"
+      "Pets.RainofFire_Sentinel.RainofFire"
     ],
     "power_display_names": [
       "ResistAll",
-      "RainofFire",
-      "Avoid"
+      "RainofFire"
     ],
     "power_levels": [
-      0,
       0,
       0
     ],

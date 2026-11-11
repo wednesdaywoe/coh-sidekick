@@ -55,7 +55,7 @@
     {
       "name": "Redirects.Empathy.Adrenaline_Boost_Heal",
       "condition_expression": [
-        "Cur.kHitPoints",
+        "cur.kHitPoints",
         "target>",
         "0",
         ">"

@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Devastating Blow",
   "display_fullname": "Tanker Melee Radiation Melee Devastating Blow",
-  "display_help": "You hammer your foe with a brutal smashing attack charged with a lethal dose of radiation. Your target will suffer Extreme Energy and Smashing damage, will have its defense reduced and will be disoriented for a short time. Affected enemies will be affected by the Contaminated effect. Hitting Contaminated foes with single target Radiation Melee powers cause a small burst of damage to foes near the target.",
+  "display_help": "You hammer your foe with a brutal smashing attack charged with a lethal dose of radiation. Your target will suffer Extreme Energy and Smashing damage, will have its defense reduced and will be disoriented for a short time. Affected enemies will be affected by the Contaminated effect. <br><br>Devastating Blow will create a more powerful burst compared to other single target Radiation Melee powers when hitting Contaminated Foes, affecting more foes over a wider area.",
   "display_short_help": "Melee, DMG(Energy/Smash), Foe -Def, Disorient, Special",
   "icon": "radiationmelee_devastatingblow.png",
   "auto_issue": false,
@@ -354,6 +354,38 @@
             "IgnoreResistance"
           ],
           "flags_raw": 1072
+        },
+        {
+          "attribs": [
+            "Null"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "PFX2",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags_raw": 1280
         }
       ]
     },
@@ -613,7 +645,7 @@
           "stack_key": null,
           "params": {
             "power_names": [
-              "Redirects.Rad_Melee.Radioactive_Smash_AoE"
+              "Redirects.Rad_Melee.Devastating_Blow_AoE"
             ],
             "count": 1,
             "type": "Power"

@@ -44,9 +44,9 @@
     "Melee, DMG(Energy/Smashing), Sleep, -Res(DMG)",
     "Self +DMG, +To Hit",
     "Ranged, Foe Placate, Self Stealth/Hide",
-    "Melee (Cone), Foe Disorient, Knockdown",
-    "PBAoE Melee, DMG(Energy/Smash), Foe Chance for Hold",
-    "Melee, DMG(Energy/Smash), Foe Chance for Hold"
+    "Melee (Cone), Foe Disorient, Knockdown, -Res(Debuffs)",
+    "PBAoE Melee, DMG(Energy/Smash), Foe Chance for Hold, -Res(Debuffs)",
+    "Melee, DMG(Energy/Smash),\u00a0Foe -Res(Debuffs), Chance for Hold"
   ],
   "buy_requires": [],
   "buy_requires_failed": "",

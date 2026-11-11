@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Sonic Clap",
   "display_fullname": "Redirects Sonic Melee Sonic Clap",
-  "display_help": "You generate a powerful sonic wave that damage foes in front of you with a decent chance to stun and knock them down. This power will inflict 10% bonus damage against Attuned targets as well as trigger a dot effect on enemies around that target.",
+  "display_help": "You generate a powerful sonic wave that damages foes in front of you with a decent chance to stun and knock them down. <br><br>This power will echo damage over time in a large area when hitting <color #fcfc95>Attuned</color> targets.",
   "display_short_help": "Melee (Cone), Foe Disorient, Knockdown",
   "icon": "sonicmanipulation_sonicclap",
   "auto_issue": false,
@@ -14,7 +14,7 @@
   "accuracy": 1.0,
   "effect_area": "Sphere",
   "max_targets_hit": 5,
-  "radius": 8.0,
+  "radius": 15.0,
   "arc": 3.1415927410125732,
   "range": 1000.0,
   "range_secondary": 0.0,
@@ -23,10 +23,10 @@
   "activate_period": 0.0,
   "endurance_cost": 0.0,
   "interrupt_time": 0.0,
-  "target_type": "Foe",
+  "target_type": "DeadOrAliveFoe",
   "target_type_secondary": "None",
   "targets_autohit": [
-    "Foe"
+    "None"
   ],
   "targets_affected": [
     "Foe"
@@ -96,15 +96,15 @@
               "aspect": "Absolute",
               "target": "AnyAffected",
               "table": "Melee_Damage",
-              "scale": 0.1,
-              "duration": "15.8 seconds",
+              "scale": 0.2162,
+              "duration": "2.1 seconds",
               "magnitude": 1.0,
-              "delay": 0.0,
+              "delay": 1.0,
               "duration_expression": [],
               "magnitude_expression": [],
-              "application_period": 2.0,
+              "application_period": 1.0,
               "tick_chance": 1.0,
-              "tick_mag_multiplier": 1.0,
+              "tick_mag_multiplier": 0.5,
               "tick_mag_additive": 0.0,
               "jit_requires": [],
               "caster_stack": "Individual",
@@ -177,15 +177,15 @@
                   "aspect": "Absolute",
                   "target": "AnyAffected",
                   "table": "Melee_InherentDamage",
-                  "scale": 0.1,
-                  "duration": "15.8 seconds",
+                  "scale": 0.2162,
+                  "duration": "2.1 seconds",
                   "magnitude": 1.0,
-                  "delay": 0.0,
+                  "delay": 1.0,
                   "duration_expression": [],
                   "magnitude_expression": [],
-                  "application_period": 2.0,
+                  "application_period": 1.0,
                   "tick_chance": -0.9300000071525574,
-                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_multiplier": 0.5,
                   "tick_mag_additive": 0.0,
                   "jit_requires": [],
                   "caster_stack": "Individual",
@@ -233,15 +233,15 @@
                   "aspect": "Absolute",
                   "target": "AnyAffected",
                   "table": "Melee_PvPDamage",
-                  "scale": 0.1,
-                  "duration": "15.8 seconds",
+                  "scale": 0.2162,
+                  "duration": "2.1 seconds",
                   "magnitude": 1.0,
-                  "delay": 0.0,
+                  "delay": 1.0,
                   "duration_expression": [],
                   "magnitude_expression": [],
-                  "application_period": 2.0,
+                  "application_period": 1.0,
                   "tick_chance": -0.800000011920929,
-                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_multiplier": 0.5,
                   "tick_mag_additive": 0.0,
                   "jit_requires": [],
                   "caster_stack": "Individual",
@@ -255,20 +255,6 @@
                     "display_attrib_defense_float": null,
                     "display_info": "On a 8ft radius around an attuned target."
                   },
-                  "required_events": [
-                    {
-                      "event": "Held",
-                      "event_id": 25,
-                      "duration": 0.0,
-                      "always": 0
-                    },
-                    {
-                      "event": "Sleep",
-                      "event_id": 26,
-                      "duration": 0.0,
-                      "always": 0
-                    }
-                  ],
                   "flags_raw": 1280
                 }
               ]
@@ -343,15 +329,15 @@
                   "aspect": "Absolute",
                   "target": "AnyAffected",
                   "table": "Melee_InherentDamage",
-                  "scale": 0.1,
-                  "duration": "15.8 seconds",
+                  "scale": 0.2162,
+                  "duration": "2.1 seconds",
                   "magnitude": 1.0,
-                  "delay": 0.0,
+                  "delay": 1.0,
                   "duration_expression": [],
                   "magnitude_expression": [],
-                  "application_period": 2.0,
+                  "application_period": 1.0,
                   "tick_chance": -0.949999988079071,
-                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_multiplier": 0.5,
                   "tick_mag_additive": 0.0,
                   "jit_requires": [],
                   "caster_stack": "Individual",
@@ -420,15 +406,15 @@
                   "aspect": "Absolute",
                   "target": "AnyAffected",
                   "table": "Melee_InherentDamage",
-                  "scale": 0.1,
-                  "duration": "15.8 seconds",
+                  "scale": 0.2162,
+                  "duration": "2.1 seconds",
                   "magnitude": 1.0,
-                  "delay": 0.0,
+                  "delay": 1.0,
                   "duration_expression": [],
                   "magnitude_expression": [],
-                  "application_period": 2.0,
+                  "application_period": 1.0,
                   "tick_chance": -0.8999999761581421,
-                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_multiplier": 0.5,
                   "tick_mag_additive": 0.0,
                   "jit_requires": [],
                   "caster_stack": "Individual",
@@ -476,15 +462,15 @@
                   "aspect": "Absolute",
                   "target": "AnyAffected",
                   "table": "Melee_PvPDamage",
-                  "scale": 0.1,
-                  "duration": "15.8 seconds",
+                  "scale": 0.2162,
+                  "duration": "2.1 seconds",
                   "magnitude": 1.0,
-                  "delay": 0.0,
+                  "delay": 1.0,
                   "duration_expression": [],
                   "magnitude_expression": [],
-                  "application_period": 2.0,
+                  "application_period": 1.0,
                   "tick_chance": -0.949999988079071,
-                  "tick_mag_multiplier": 1.0,
+                  "tick_mag_multiplier": 0.5,
                   "tick_mag_additive": 0.0,
                   "jit_requires": [],
                   "caster_stack": "Individual",
@@ -503,56 +489,6 @@
               ]
             }
           ]
-        },
-        {
-          "chance": 1.0,
-          "ppm": 0.0,
-          "delay": 0.0,
-          "radius_inner": -1.0,
-          "radius_outer": -1.0,
-          "requires_expression": [],
-          "tags": [
-            "AttuneBonus"
-          ],
-          "flags": [],
-          "is_pvp": "EITHER",
-          "requires_pv": "EITHER",
-          "requires_default": "SATISFIED",
-          "eval_flags": 0,
-          "templates": [
-            {
-              "attribs": [
-                "Set_Mode"
-              ],
-              "type": "Constant",
-              "application_type": "OnTick",
-              "aspect": "Current",
-              "target": "Self",
-              "table": "Melee_Ones",
-              "scale": 1.0,
-              "duration": "14.25 seconds",
-              "magnitude": 212.0,
-              "delay": 0.0,
-              "duration_expression": [],
-              "magnitude_expression": [],
-              "application_period": 0.0,
-              "tick_chance": 1.0,
-              "tick_mag_multiplier": 1.0,
-              "tick_mag_additive": 0.0,
-              "jit_requires": [],
-              "caster_stack": "Individual",
-              "stack": "Replace",
-              "stack_limit": 2,
-              "stack_key": null,
-              "flags": [
-                "IgnoreStrength",
-                "IgnoreResistance",
-                "IgnoreCombatMods"
-              ],
-              "flags_raw": 112,
-              "mode_name": "SonicAtuneAoE1Self"
-            }
-          ]
         }
       ]
     }
@@ -561,6 +497,7 @@
   "strengths_disallowed": [
     "Range"
   ],
+  "anim_main_target_only": true,
   "modes_disallowed": [
     "Disable_All"
   ],

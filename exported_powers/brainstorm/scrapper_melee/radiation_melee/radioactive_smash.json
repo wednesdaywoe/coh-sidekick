@@ -5,7 +5,7 @@
   "type": "Click",
   "display_name": "Radioactive Smash",
   "display_fullname": "Scrapper Melee Radiation Melee Radioactive Smash",
-  "display_help": "You channel a greater amount of radiation into your fists and deliver a hard hitting blow that deals Moderate Energy and Smashing damage to the target as well as reducing their Defense for a short time. Affected targets also have a chance to be knocked down and have a moderate chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radiation Melee powers cause a small burst of damage to foes near the target.",
+  "display_help": "You channel a greater amount of radiation into your fists and deliver a hard hitting blow that deals Moderate Energy and Smashing damage to the target as well as reducing their Defense for a short time. Affected targets also have a chance to be knocked down and have a moderate chance to be affected by the Contaminated effect. Hitting Contaminated foes with single target Radiation Melee powers cause a small burst of damage around the target.",
   "display_short_help": "Melee, DMG(Energy/Smash), Foe -Def, Knockdown, Special",
   "icon": "radiationmelee_radioactivesmash.png",
   "auto_issue": false,
@@ -352,6 +352,38 @@
             "IgnoreResistance"
           ],
           "flags_raw": 1072
+        },
+        {
+          "attribs": [
+            "Null"
+          ],
+          "type": "Magnitude",
+          "application_type": "OnTick",
+          "aspect": "Current",
+          "target": "AnyAffected",
+          "table": "Melee_Ones",
+          "scale": 0.0,
+          "duration": "10 seconds",
+          "magnitude": 0.0,
+          "delay": 0.0,
+          "duration_expression": [],
+          "magnitude_expression": [],
+          "application_period": 0.0,
+          "tick_chance": 1.0,
+          "tick_mag_multiplier": 1.0,
+          "tick_mag_additive": 0.0,
+          "jit_requires": [],
+          "caster_stack": "Individual",
+          "stack": "Replace",
+          "stack_limit": 2,
+          "stack_key": null,
+          "fx": {
+            "continuing_bits": [],
+            "continuing_fx": "PFX2",
+            "conditional_bits": [],
+            "conditional_fx": null
+          },
+          "flags_raw": 1280
         }
       ]
     },
@@ -608,39 +640,6 @@
       "templates": [
         {
           "attribs": [
-            "Smashing_Dmg"
-          ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Absolute",
-          "target": "AnyAffected",
-          "table": "Melee_PvPDamage",
-          "scale": 0.4325,
-          "duration": "0 seconds",
-          "magnitude": 1.0,
-          "delay": 0.0,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Stack",
-          "stack_limit": 2,
-          "stack_key": null,
-          "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Smashing damage.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Smashing damage.",
-            "display_float": null,
-            "display_attrib_defense_float": null,
-            "display_info": null
-          },
-          "flags_raw": 1280
-        },
-        {
-          "attribs": [
             "Energy_Dmg"
           ],
           "type": "Magnitude",
@@ -648,7 +647,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_PvPDamage",
-          "scale": 1.2975,
+          "scale": 1.73,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -664,9 +663,9 @@
           "stack_limit": 2,
           "stack_key": null,
           "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage.",
-            "display_float": null,
+            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+            "display_float": "CRITICAL",
             "display_attrib_defense_float": null,
             "display_info": null
           },
@@ -713,39 +712,6 @@
       "templates": [
         {
           "attribs": [
-            "Smashing_Dmg"
-          ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Absolute",
-          "target": "AnyAffected",
-          "table": "Melee_Damage",
-          "scale": 0.37,
-          "duration": "0 seconds",
-          "magnitude": 1.0,
-          "delay": 0.0,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Stack",
-          "stack_limit": 2,
-          "stack_key": null,
-          "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Smashing damage.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Smashing damage.",
-            "display_float": null,
-            "display_attrib_defense_float": null,
-            "display_info": null
-          },
-          "flags_raw": 1280
-        },
-        {
-          "attribs": [
             "Energy_Dmg"
           ],
           "type": "Magnitude",
@@ -753,7 +719,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_Damage",
-          "scale": 1.11,
+          "scale": 1.48,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -769,9 +735,9 @@
           "stack_limit": 2,
           "stack_key": null,
           "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage.",
-            "display_float": null,
+            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+            "display_float": "CRITICAL",
             "display_attrib_defense_float": null,
             "display_info": null
           },
@@ -824,39 +790,6 @@
       "templates": [
         {
           "attribs": [
-            "Smashing_Dmg"
-          ],
-          "type": "Magnitude",
-          "application_type": "OnTick",
-          "aspect": "Absolute",
-          "target": "AnyAffected",
-          "table": "Melee_Damage",
-          "scale": 0.37,
-          "duration": "0 seconds",
-          "magnitude": 1.0,
-          "delay": 0.0,
-          "duration_expression": [],
-          "magnitude_expression": [],
-          "application_period": 0.0,
-          "tick_chance": 1.0,
-          "tick_mag_multiplier": 1.0,
-          "tick_mag_additive": 0.0,
-          "jit_requires": [],
-          "caster_stack": "Individual",
-          "stack": "Stack",
-          "stack_limit": 2,
-          "stack_key": null,
-          "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Smashing damage.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Smashing damage.",
-            "display_float": null,
-            "display_attrib_defense_float": null,
-            "display_info": null
-          },
-          "flags_raw": 1280
-        },
-        {
-          "attribs": [
             "Energy_Dmg"
           ],
           "type": "Magnitude",
@@ -864,7 +797,7 @@
           "aspect": "Absolute",
           "target": "AnyAffected",
           "table": "Melee_Damage",
-          "scale": 1.11,
+          "scale": 1.48,
           "duration": "0 seconds",
           "magnitude": 1.0,
           "delay": 0.0,
@@ -880,9 +813,9 @@
           "stack_limit": 2,
           "stack_key": null,
           "messages": {
-            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage.",
-            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage.",
-            "display_float": null,
+            "display_attacker_hit": "You hit {PlayerDest} with your {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+            "display_victim_hit": "{PlayerSource} hits you with their {PowerName} for {Damage} points of Energy damage (CRITICAL).",
+            "display_float": "CRITICAL",
             "display_attrib_defense_float": null,
             "display_info": null
           },

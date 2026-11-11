@@ -42,10 +42,10 @@
     "Melee, DMG(Energy/Smash), Foe -Res(Debuffs), Chance for Hold",
     "Melee Toggle, Foe DOT(Energy), Foe -Res(DMG, Debuffs), Special",
     "Self +DMG, +To Hit, +Special",
-    "Melee (Cone), Foe Disorient, Knockdown",
+    "Melee (Cone), Foe Disorient, Knockdown, -Res(Debuffs)",
     "Ranged (Targeted AoE), Foe Taunt",
-    "Melee, DMG(Smashing/Energy), Foe Sleep, -Res(DMG)",
-    "PBAoE Melee, DMG(Energy/Smash), Foe Chance for Hold",
+    "Melee, DMG(Smashing/Energy), Foe Sleep, -Res(DMG, Debuffs)",
+    "PBAoE Melee, DMG(Energy/Smash), Foe Chance for Hold, -Res(Debuffs)",
     "Melee, DMG(Energy/Smash),\u00a0Foe -Res(Debuffs), Chance for Hold"
   ],
   "buy_requires": [],

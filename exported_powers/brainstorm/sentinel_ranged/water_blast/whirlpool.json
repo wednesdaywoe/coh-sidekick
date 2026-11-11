@@ -142,7 +142,6 @@
             "display_name": "Whirlpool",
             "priority_list": "PL_StaticObject",
             "redirects": [
-              "Pets.Whirlpool_Sentinel.Avoid",
               "Pets.Whirlpool_Sentinel.Whirlpool"
             ],
             "type": "EntCreate"
