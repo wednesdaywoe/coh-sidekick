@@ -134,10 +134,17 @@ def census(powers):
     return pk, ek, amk, amb, blk
 
 
+# The forks live in a subdirectory named for themselves; Homecoming is the flat
+# root. Same list as tools/export-integrity.py. Skipping only two of the three let
+# Brainstorm's copy of a power overwrite Homecoming's by full_name, so this
+# HC-only gate graded the HC defs against the Brainstorm export.
+FORKS = ("brainstorm", "rebirth", "thunderspy")
+
+
 def load_export_index():
     idx = {}
     for p in glob.glob(f"{EXPROOT}/**/*.json", recursive=True):
-        if "/thunderspy/" in p or "/rebirth/" in p:
+        if os.path.relpath(p, EXPROOT).split(os.sep)[0] in FORKS:
             continue
         if os.path.basename(p) in ("salvage.json", "_export_manifest.json"):
             continue
