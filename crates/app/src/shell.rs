@@ -1135,7 +1135,7 @@ pub fn Shell() -> Element {
             // they are not: nineteen rows in a `max-height: 70vh` panel, under a webview whose
             // scrollbars stay hidden until a scroll begins. `Options` and `Help` now sit at the
             // trailing edge beside Tools and Display, because those are the controls about the
-            // workspace and the app rather than about this build. The mobile nav's Menu tab
+            // workspace and the app rather than about this build. The mobile nav's More tab
             // lists all three on one sheet — see `mobile_nav`.
             crate::main_menu::FileMenu {
                 database: match &*db.read() {
@@ -1362,9 +1362,8 @@ pub fn Shell() -> Element {
             }
         }
 
-        // The fixed bottom nav, mobile only (hidden ≥900px in app.css): the beta's
-        // `MobileBottomNav` tabs, re-rendering the row-1 popovers with their panels opening
-        // upward. Mounted outside both layout roots, like the other fixed chrome.
+        // The fixed bottom nav, mobile only (hidden ≥900px in app.css): Build, Stats and More,
+        // the last two re-rendering the header's popovers on full-screen sheets. Mounted outside both layout roots, like the other fixed chrome.
         MobileNav {
             database: match &*db.read() {
                 Some(Ok(database)) => Some(Db(database.clone())),

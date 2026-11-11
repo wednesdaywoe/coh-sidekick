@@ -72,7 +72,7 @@ const LINKS: [Unbuilt; 1] = [Unbuilt {
           planner reads that format without yet writing it",
 }];
 
-/// The three groups the header's menus are built from, and the one menu the mobile nav still
+/// The three groups the header's menus are built from, and the More sheet the mobile nav
 /// carries — F36 found the switch, HM8 is why the menu was split.
 ///
 /// **HM1 put all of this in one ☰ and ordered it by consequence rather than by category**:
@@ -92,7 +92,7 @@ const LINKS: [Unbuilt; 1] = [Unbuilt {
 /// menus instead of once down a list nobody can see the end of.
 ///
 /// The groups are components rather than inline markup because they are composed twice: three
-/// popovers on the desktop header, and one ☰ in the mobile nav, where a row of three menus would
+/// popovers on the desktop header, and one list on the mobile nav's More sheet, where a row of three menus would
 /// cost more than a scroll does.
 #[allow(non_snake_case)]
 #[component]

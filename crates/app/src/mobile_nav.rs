@@ -1,16 +1,14 @@
-//! Mobile bottom nav — the fixed <900px tab bar (beta `MobileBottomNav`).
+//! Mobile bottom nav — the fixed <900px tab bar.
 //!
-//! Five tabs, a mark over a word each: Home, Dashboard, Options, Incarnate, Menu. The beta had
-//! Incarnate before Options; Options is opened far more, and incarnates only matter at 50. Dashboard,
-//! Options and Menu open a full-screen sheet that stops at the bar's top edge, so the bar stays
-//! on screen and switching tabs is one tap. Incarnate opens the incarnate picker, which is a
-//! modal already. Home closes whatever is open, and when nothing is, scrolls the stack back to
-//! the top — the beta's "back to the planner", which needs no second meaning while nothing
-//! covers the planner.
+//! Three tabs: Build, Stats, More (the phone-build-flow plan). Build is the planner itself; it
+//! closes whatever is open, and when nothing is, scrolls back to the top. Stats and More open a
+//! full-screen sheet that stops at the bar's top edge, so switching tabs is one tap. Stats holds
+//! the dashboard's stat panels; More holds every menu and setting, plus the incarnate picker,
+//! which only matters at 50 and so lost its own tab.
 //!
-//! Build Identity is a fourth sheet with no tab: the build bar at the top of the stack opens it
+//! Build Identity is a third sheet with no tab: the build bar at the top of the stack opens it
 //! (see [`crate::build_bar`]), because the build's name belongs where it can be read, and a first
-//! visit has to find where a build starts without opening the Options tab to look.
+//! visit has to find where a build starts without opening More to look.
 //!
 //! The sheets hold no menus of their own. They list the header's popovers under
 //! [`PopoverInline`], which makes each one draw its body in place under its title, so every
@@ -29,9 +27,8 @@ use dioxus::prelude::*;
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Sheet {
     Identity,
-    Dashboard,
-    Options,
-    Menu,
+    Stats,
+    More,
 }
 
 /// Which sheet is open, shared by the shell so the build bar can open one too.
@@ -42,9 +39,8 @@ impl Sheet {
     fn title(self) -> &'static str {
         match self {
             Sheet::Identity => "Build Identity",
-            Sheet::Dashboard => "Dashboard",
-            Sheet::Options => "Options",
-            Sheet::Menu => "Menu",
+            Sheet::Stats => "Stats",
+            Sheet::More => "More",
         }
     }
 }
@@ -61,7 +57,7 @@ pub fn MobileNav(
     let mut sheet = use_context::<OpenSheet>().0;
     let mut incarnate = use_context::<IncarnatePickerOpen>().0;
     // The picker opens on its first tab; it has the slot tabs to move between the rest. `None`
-    // while the bundle loads or on a dataset with no incarnates, and the tab is disabled then.
+    // while the bundle loads or on a dataset with no incarnates, and More's entry is disabled then.
     let first_slot = database.as_ref().and_then(|db| {
         db.offered_incarnate_slots()
             .first()
@@ -76,14 +72,13 @@ pub fn MobileNav(
             Some(next)
         });
     };
-    let home_active = sheet().is_none() && incarnate().is_none();
+    let build_active = sheet().is_none() && incarnate().is_none();
 
     rsx! {
         nav {
-            // Raised over the modal layer while the incarnate picker is open, so the tab that
-            // opened it can close it and the others can switch away — the beta's bar stayed live
-            // over its incarnate modal. Only for that picker: any other modal is a task the bar
-            // has no part in.
+            // Raised over the modal layer while the incarnate picker is open, so the bar stays
+            // live over it and any tab closes it — the beta's bar did the same over its incarnate
+            // modal. Only for that picker: any other modal is a task the bar has no part in.
             class: if incarnate().is_some() { "mobile-nav mobile-nav--over-modal" } else { "mobile-nav" },
             "aria-label": "Mobile",
             if let Some(open) = sheet() {
@@ -98,13 +93,12 @@ pub fn MobileNav(
                                 }
                             }
                         },
-                        Sheet::Dashboard => rsx! { DashboardSheet {} },
-                        Sheet::Options => rsx! {
+                        Sheet::Stats => rsx! { StatsSheet {} },
+                        Sheet::More => rsx! {
+                            FileMenu { database: database.clone(), dataset }
                             CombatPopover { database: database.clone() }
                             DisplayMenu { pins, layout, reorder_open, reset_confirm_open }
-                        },
-                        Sheet::Menu => rsx! {
-                            FileMenu { database: database.clone(), dataset }
+                            IncarnateEntry { first_slot: first_slot.clone(), sheet }
                             ToolsMenu { pins, layout, database: database.clone() }
                             OptionsMenu {}
                             HelpMenu {}
@@ -113,10 +107,10 @@ pub fn MobileNav(
                 }
             }
             NavTab {
-                label: "Home",
-                active: home_active,
+                label: "Build",
+                active: build_active,
                 onclick: move |_| {
-                    if home_active {
+                    if build_active {
                         let _ = document::eval("window.scrollTo({ top: 0, behavior: 'smooth' });");
                     }
                     sheet.set(None);
@@ -125,32 +119,45 @@ pub fn MobileNav(
                 {marks::home()}
             }
             NavTab {
-                label: "Dashboard",
-                active: sheet() == Some(Sheet::Dashboard),
-                onclick: move |_| switch_to(Sheet::Dashboard),
+                label: "Stats",
+                active: sheet() == Some(Sheet::Stats),
+                onclick: move |_| switch_to(Sheet::Stats),
                 {marks::dashboard()}
             }
             NavTab {
-                label: "Options",
-                active: sheet() == Some(Sheet::Options),
-                onclick: move |_| switch_to(Sheet::Options),
-                {marks::sliders()}
+                label: "More",
+                // The incarnate picker is reached from More, so More stays lit while it is open.
+                active: sheet() == Some(Sheet::More) || incarnate().is_some(),
+                onclick: move |_| switch_to(Sheet::More),
+                {marks::more()}
             }
-            NavTab {
-                label: "Incarnate",
-                active: incarnate().is_some(),
-                disabled: first_slot.is_none(),
-                onclick: move |_| {
-                    sheet.set(None);
-                    incarnate.set(if incarnate().is_some() { None } else { first_slot.clone() });
-                },
-                {marks::incarnate()}
-            }
-            NavTab {
-                label: "Menu",
-                active: sheet() == Some(Sheet::Menu),
-                onclick: move |_| switch_to(Sheet::Menu),
-                {marks::menu()}
+        }
+    }
+}
+
+/// More's way into the incarnate picker. It closes the sheet first, so the picker (a modal)
+/// is not opened behind it.
+#[component]
+fn IncarnateEntry(first_slot: Option<String>, sheet: Signal<Option<Sheet>>) -> Element {
+    let mut incarnate = use_context::<IncarnatePickerOpen>().0;
+    let disabled = first_slot.is_none();
+    rsx! {
+        section { class: "mobile-sheet__panel",
+            h3 { class: "popover-inline__title", "Incarnate" }
+            div { class: "main-menu",
+                button {
+                    class: "main-menu__item",
+                    r#type: "button",
+                    disabled,
+                    onclick: move |_| {
+                        sheet.set(None);
+                        incarnate.set(first_slot.clone());
+                    },
+                    span { class: "main-menu__label", "Incarnate powers…" }
+                    span { class: "main-menu__hint",
+                        if disabled { "This server has no incarnate powers" } else { "Alpha, Judgement, Interface and the rest" }
+                    }
+                }
             }
         }
     }
@@ -228,7 +235,7 @@ fn MobileSheet(sheet: Signal<Option<Sheet>>, title: &'static str, children: Elem
 /// stack — this tab is where the numbers are read, so a panel hidden to shorten the stack is
 /// still one tap away.
 #[component]
-fn DashboardSheet() -> Element {
+fn StatsSheet() -> Element {
     let config = use_context::<DashboardConfig>().0;
     let panels: Vec<(String, PanelKind)> = surfaces(&config.read())
         .into_iter()

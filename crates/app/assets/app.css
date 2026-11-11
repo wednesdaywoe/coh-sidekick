@@ -7952,8 +7952,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   background: var(--surface-panel);
   padding-bottom: env(safe-area-inset-bottom);
 }
-/* A mark over a word, the beta's shape. The word stays at 10.5px rather than the 10px floor,
-   because five of them share a 360px phone and each has the whole fifth to sit in. */
+/* A mark over a word, the beta's shape. The word stays at 10.5px rather than the 10px floor;
+   three share a 360px phone, so each has room to spare. */
 .mobile-nav__tab {
   position: relative;
   flex: 1 1 0; min-width: 0;

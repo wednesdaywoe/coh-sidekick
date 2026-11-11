@@ -292,23 +292,6 @@ pub fn pin(pinned: bool) -> Element {
     }
 }
 
-/// The main menu's trigger: three rules. The only mark in the header that stands for a MENU
-/// rather than for a thing, and the one shape a reader arrives already knowing — which is the
-/// whole argument for it over anything more descriptive. Nothing else in this app draws
-/// parallel full-width rules, so it cannot be confused with [`list`], whose rules are shorter
-/// and carry leading dots.
-pub fn menu() -> Element {
-    rsx! {
-        svg {
-            class: "panel-icon",
-            view_box: "0 0 12 12",
-            "aria-hidden": "true",
-            "focusable": "false",
-            path { d: "M2 3.4 H10 M2 6 H10 M2 8.6 H10" }
-        }
-    }
-}
-
 /// The pop-out control's mark: a box with its top-right corner opened, and an arrow leaving
 /// through the gap.
 ///
@@ -366,9 +349,25 @@ pub fn pop_in() -> Element {
 }
 
 /* ---- the mobile nav's tab marks ----
-The bottom bar's five tabs each carry a mark over a word, the beta's `MobileBottomNav` shape.
-Options borrows [`sliders`] and Menu borrows [`menu`]; these three are the ones nothing else in
-the app already drew. Same 12-unit box, same stroke, so the bar sizes them as one set. */
+The bottom bar's tabs each carry a mark over a word, the beta's `MobileBottomNav` shape: Build is
+[`home`], Stats is [`dashboard`], More is [`more`]. Same 12-unit box, same stroke, so the bar
+sizes them as one set. Incarnate had a tab and a bolt mark of its own until it moved into More. */
+
+/// More: three dots in a row — "the rest is in here", the phone's usual overflow sign.
+pub fn more() -> Element {
+    rsx! {
+        svg {
+            class: "panel-icon",
+            view_box: "0 0 12 12",
+            "aria-hidden": "true",
+            "focusable": "false",
+            // Filled discs: a stroked zero-length dot drew too faint to read at 20px.
+            circle { cx: "2.4", cy: "6", r: "1", fill: "currentColor", stroke: "none" }
+            circle { cx: "6", cy: "6", r: "1", fill: "currentColor", stroke: "none" }
+            circle { cx: "9.6", cy: "6", r: "1", fill: "currentColor", stroke: "none" }
+        }
+    }
+}
 
 /// Home: a house — a roof peak over a walled box with a door gap in its floor line.
 pub fn home() -> Element {
@@ -393,19 +392,6 @@ pub fn dashboard() -> Element {
             "aria-hidden": "true",
             "focusable": "false",
             path { d: "M1.5 10.5 H10.5 M3.5 10.5 V6.5 M6 10.5 V2.5 M8.5 10.5 V5" }
-        }
-    }
-}
-
-/// Incarnate: a lightning bolt, the beta's mark for the same tab.
-pub fn incarnate() -> Element {
-    rsx! {
-        svg {
-            class: "panel-icon",
-            view_box: "0 0 12 12",
-            "aria-hidden": "true",
-            "focusable": "false",
-            path { d: "M7 1.2 L2.8 6.8 H6 L5 10.8 L9.2 5.2 H6 Z" }
         }
     }
 }
