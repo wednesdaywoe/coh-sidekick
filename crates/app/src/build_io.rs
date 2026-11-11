@@ -1335,9 +1335,16 @@ mod tests {
     fn a_vault_link_leaves_for_homecoming_from_any_other_server() {
         let text = vault_link();
         for loaded in DatasetId::ALL {
+            // Exhaustive, not `_ =>`: the roster audit reads a wildcard arm over DatasetId as
+            // the shape that silently hands a future dataset another server's answer. Here the
+            // rule under test IS the partition — Homecoming reads its own link, everyone else
+            // is sent to Homecoming — so each arm names its side and a new variant breaks the
+            // compile instead of inheriting this one silently.
             let expected = match loaded {
                 DatasetId::Homecoming => OpenRoute::DecodeUnstamped,
-                _ => OpenRoute::MoveTo(DatasetId::Homecoming),
+                DatasetId::Rebirth
+                | DatasetId::Thunderspy
+                | DatasetId::Brainstorm => OpenRoute::MoveTo(DatasetId::Homecoming),
             };
             assert_eq!(open_route(&text, loaded), expected, "{loaded:?}");
         }
