@@ -1796,7 +1796,24 @@
           2,
           null,
           null,
-          1
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "IncreaseStormStrength"
          ],
          [
           "Damage",
@@ -2191,7 +2208,7 @@
           null,
           null,
           null,
-          null,
+          "IncreaseStormStrength",
           null,
           null,
           [
@@ -2231,7 +2248,7 @@
           null,
           null,
           null,
-          null,
+          "IncreaseStormStrength",
           null,
           null,
           [
@@ -2271,7 +2288,7 @@
           null,
           null,
           null,
-          null,
+          "IncreaseStormStrength",
           null,
           "null",
           [
@@ -2334,7 +2351,7 @@
           null,
           null,
           null,
-          null,
+          "IncreaseStormStrength",
           null,
           null,
           [
@@ -2378,7 +2395,7 @@
           null,
           null,
           null,
-          null,
+          "IncreaseStormStrength",
           null,
           "set_mode",
           [
@@ -2422,7 +2439,7 @@
           null,
           null,
           null,
-          null,
+          "IncreaseStormStrength",
           null,
           null,
           [
@@ -2466,7 +2483,7 @@
           null,
           null,
           null,
-          null,
+          "IncreaseStormStrength",
           null,
           null,
           [
@@ -2861,7 +2878,7 @@
           null,
           null,
           null,
-          null,
+          "IncreaseStormStrength",
           null,
           "grant_boosted_power"
          ]

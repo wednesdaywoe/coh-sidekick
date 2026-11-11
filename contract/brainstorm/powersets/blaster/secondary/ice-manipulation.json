@@ -2244,7 +2244,24 @@
      2,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Sustain"
     ],
     [
      "Recovery",
@@ -2262,7 +2279,24 @@
      2,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Sustain"
     ],
     [
      "Absorb",
@@ -2291,7 +2325,17 @@
       "@CustomFX",
       "ShowFloaters",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Sustain"
     ],
     [
      "Recovery",
@@ -2320,7 +2364,17 @@
       "@CustomFX",
       "ShowFloaters",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Sustain"
     ]
    ]
   },

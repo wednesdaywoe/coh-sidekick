@@ -3670,7 +3670,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3703,7 +3712,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3736,7 +3754,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3769,7 +3796,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3802,7 +3838,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3835,7 +3880,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3868,7 +3922,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3901,7 +3964,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3934,7 +4006,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -3967,7 +4048,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -4000,7 +4090,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Regeneration",
@@ -4039,7 +4138,10 @@
      null,
      null,
      null,
-     "Stunned"
+     "Stunned",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4078,7 +4180,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4117,7 +4222,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4156,7 +4264,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4195,7 +4306,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4234,7 +4348,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4273,7 +4390,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4312,7 +4432,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4351,7 +4474,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Defense",
@@ -4390,7 +4516,10 @@
      null,
      null,
      null,
-     "Held"
+     "Held",
+     null,
+     null,
+     "Display"
     ],
     [
      "ToHit",
@@ -4429,7 +4558,10 @@
      null,
      null,
      null,
-     "Terrorized"
+     "Terrorized",
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -4464,7 +4596,14 @@
      ],
      true,
      null,
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Regeneration",
@@ -4503,7 +4642,10 @@
      null,
      null,
      null,
-     "Stunned"
+     "Stunned",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4542,7 +4684,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4581,7 +4726,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4620,7 +4768,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4659,7 +4810,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4698,7 +4852,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4737,7 +4894,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4776,7 +4936,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4815,7 +4978,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Defense",
@@ -4854,7 +5020,10 @@
      null,
      null,
      null,
-     "Held"
+     "Held",
+     null,
+     null,
+     "Display"
     ],
     [
      "ToHit",
@@ -4893,7 +5062,10 @@
      null,
      null,
      null,
-     "Terrorized"
+     "Terrorized",
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -4928,7 +5100,14 @@
      ],
      true,
      null,
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Regeneration",
@@ -4967,7 +5146,10 @@
      null,
      null,
      null,
-     "Stunned"
+     "Stunned",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5006,7 +5188,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5045,7 +5230,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5084,7 +5272,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5123,7 +5314,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5162,7 +5356,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5201,7 +5398,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5240,7 +5440,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5279,7 +5482,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Defense",
@@ -5318,7 +5524,10 @@
      null,
      null,
      null,
-     "Held"
+     "Held",
+     null,
+     null,
+     "Display"
     ],
     [
      "ToHit",
@@ -5357,7 +5566,10 @@
      null,
      null,
      null,
-     "Terrorized"
+     "Terrorized",
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -5390,7 +5602,16 @@
       "0",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Regeneration",
@@ -5429,7 +5650,10 @@
      null,
      null,
      null,
-     "Stunned"
+     "Stunned",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5468,7 +5692,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5507,7 +5734,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5546,7 +5776,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5585,7 +5818,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5624,7 +5860,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5663,7 +5902,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5702,7 +5944,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5741,7 +5986,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Defense",
@@ -5780,7 +6028,10 @@
      null,
      null,
      null,
-     "Held"
+     "Held",
+     null,
+     null,
+     "Display"
     ],
     [
      "ToHit",
@@ -5819,7 +6070,10 @@
      null,
      null,
      null,
-     "Terrorized"
+     "Terrorized",
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",
@@ -5854,7 +6108,14 @@
      ],
      true,
      null,
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Regeneration",
@@ -5893,7 +6154,10 @@
      null,
      null,
      null,
-     "Stunned"
+     "Stunned",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5932,7 +6196,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -5971,7 +6238,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -6010,7 +6280,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -6049,7 +6322,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -6088,7 +6364,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -6127,7 +6406,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -6166,7 +6448,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -6205,7 +6490,10 @@
      null,
      null,
      null,
-     "Sleep"
+     "Sleep",
+     null,
+     null,
+     "Display"
     ],
     [
      "Defense",
@@ -6244,7 +6532,10 @@
      null,
      null,
      null,
-     "Held"
+     "Held",
+     null,
+     null,
+     "Display"
     ],
     [
      "ToHit",
@@ -6283,7 +6574,10 @@
      null,
      null,
      null,
-     "Terrorized"
+     "Terrorized",
+     null,
+     null,
+     "Display"
     ],
     [
      "Mez",

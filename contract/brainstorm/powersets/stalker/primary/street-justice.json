@@ -233,7 +233,17 @@
       "source.ownPower?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Damage",
@@ -475,7 +485,16 @@
       "Temporary_Powers.Temporary_Powers.Combo_Level_1",
       "source.ownPower?"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Meta",
@@ -513,7 +532,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -553,7 +572,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -587,7 +606,16 @@
       "source.ownPower?",
       "||"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ]
    ],
    "specialEffects": [
@@ -906,7 +934,17 @@
       "source.ownPower?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Damage",
@@ -1148,7 +1186,16 @@
       "Temporary_Powers.Temporary_Powers.Combo_Level_1",
       "source.ownPower?"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Meta",
@@ -1186,7 +1233,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -1226,7 +1273,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -1260,7 +1307,16 @@
       "source.ownPower?",
       "||"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ]
    ],
    "specialEffects": [
@@ -1477,7 +1533,17 @@
       "!",
       "&&",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo0"
     ],
     [
      "Damage",
@@ -1519,7 +1585,17 @@
       "!",
       "&&",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo0"
     ],
     [
      "Damage",
@@ -1714,7 +1790,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo1"
     ],
     [
      "Damage",
@@ -1748,7 +1833,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo1"
     ],
     [
      "Mez",
@@ -1782,7 +1876,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo2"
     ],
     [
      "Damage",
@@ -1816,7 +1919,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo2"
     ],
     [
      "Mez",
@@ -1850,7 +1962,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Mez",
@@ -1884,7 +2005,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Damage",
@@ -1918,7 +2048,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Damage",
@@ -2011,7 +2150,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo0"
     ],
     [
      "Damage",
@@ -2054,7 +2202,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo0"
     ],
     [
      "Mez",
@@ -2088,7 +2245,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo1"
     ],
     [
      "Damage",
@@ -2122,7 +2288,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo1"
     ],
     [
      "Mez",
@@ -2156,7 +2331,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo2"
     ],
     [
      "Damage",
@@ -2190,7 +2374,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo2"
     ],
     [
      "Mez",
@@ -2224,7 +2417,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Mez",
@@ -2258,7 +2460,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Damage",
@@ -2292,7 +2503,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Damage",
@@ -2752,7 +2972,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      null,
      [
@@ -2946,7 +3166,17 @@
         "source.ownPower?",
         "!",
         "&&"
-       ]
+       ],
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "ComboBuild"
       ],
       [
        "Stealth",
@@ -3332,7 +3562,7 @@
        null,
        null,
        null,
-       null,
+       "ComboBuild",
        null,
        "revoke_power"
       ],
@@ -3363,7 +3593,16 @@
         "Temporary_Powers.Temporary_Powers.Combo_Level_1",
         "source.ownPower?"
        ],
-       true
+       true,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "ComboBuild"
       ],
       [
        "Meta",
@@ -3401,7 +3640,7 @@
        null,
        null,
        null,
-       null,
+       "ComboBuild",
        null,
        "revoke_power"
       ],
@@ -3432,7 +3671,16 @@
         "Temporary_Powers.Temporary_Powers.Combo_Level_2",
         "source.ownPower?"
        ],
-       true
+       true,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "ComboBuild"
       ]
      ]
     },
@@ -3620,7 +3868,17 @@
         "source.ownPower?",
         "!",
         "&&"
-       ]
+       ],
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "ComboBuild"
       ],
       [
        "Stealth",
@@ -4006,7 +4264,7 @@
        null,
        null,
        null,
-       null,
+       "ComboBuild",
        null,
        "revoke_power"
       ],
@@ -4037,7 +4295,16 @@
         "Temporary_Powers.Temporary_Powers.Combo_Level_1",
         "source.ownPower?"
        ],
-       true
+       true,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "ComboBuild"
       ],
       [
        "Meta",
@@ -4075,7 +4342,7 @@
        null,
        null,
        null,
-       null,
+       "ComboBuild",
        null,
        "revoke_power"
       ],
@@ -4106,7 +4373,16 @@
         "Temporary_Powers.Temporary_Powers.Combo_Level_2",
         "source.ownPower?"
        ],
-       true
+       true,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "ComboBuild"
       ]
      ]
     }
@@ -4888,7 +5164,7 @@
      null,
      null,
      null,
-     null,
+     "Combo0",
      null,
      null,
      null,
@@ -4934,7 +5210,17 @@
       "!",
       "&&",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo0"
     ],
     [
      "Damage",
@@ -5133,7 +5419,7 @@
      null,
      null,
      null,
-     null,
+     "Combo1",
      null,
      null,
      null,
@@ -5171,7 +5457,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo1"
     ],
     [
      "Mez",
@@ -5214,7 +5509,7 @@
      null,
      null,
      null,
-     null,
+     "Combo2",
      null,
      null,
      null,
@@ -5252,7 +5547,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo2"
     ],
     [
      "Mez",
@@ -5295,7 +5599,7 @@
      null,
      null,
      null,
-     null,
+     "Combo3",
      null,
      null,
      null,
@@ -5333,7 +5637,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Damage",
@@ -5367,7 +5680,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Damage",
@@ -5464,7 +5786,7 @@
      null,
      null,
      null,
-     null,
+     "Combo0",
      null,
      null,
      null,
@@ -5511,7 +5833,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo0"
     ],
     [
      "Mez",
@@ -5554,7 +5885,7 @@
      null,
      null,
      null,
-     null,
+     "Combo1",
      null,
      null,
      null,
@@ -5592,7 +5923,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo1"
     ],
     [
      "Mez",
@@ -5635,7 +5975,7 @@
      null,
      null,
      null,
-     null,
+     "Combo2",
      null,
      null,
      null,
@@ -5673,7 +6013,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo2"
     ],
     [
      "Mez",
@@ -5716,7 +6065,7 @@
      null,
      null,
      null,
-     null,
+     "Combo3",
      null,
      null,
      null,
@@ -5754,7 +6103,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Damage",
@@ -5788,7 +6146,16 @@
       "source.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Combo3"
     ],
     [
      "Damage",
@@ -6273,7 +6640,17 @@
       "source.ownPower?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Damage",
@@ -6484,7 +6861,16 @@
       "Temporary_Powers.Temporary_Powers.Combo_Level_1",
       "source.ownPower?"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Meta",
@@ -6522,7 +6908,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -6562,7 +6948,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -6596,7 +6982,16 @@
       "source.ownPower?",
       "||"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ]
    ],
    "specialEffects": [

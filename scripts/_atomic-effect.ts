@@ -278,7 +278,9 @@ export interface AtomicEffect {
    * archetype hit-time forks tag themselves (`ScrapperCrit_ST` / `ScrapperCrit_AoE`,
    * `SentCrit`, `StealthCrit`, `ASTeamCrit`, `Containment`, `PvPCrit`), and
    * `FieryEmbrace` names the buff that wakes a dormant component — the thing an atom
-   * with `baseProbability: 0` otherwise leaves unsaid.
+   * with `baseProbability: 0` otherwise leaves unsaid. An untagged group wears its
+   * nearest tagged ancestor's list, within one power (Brainstorm nests SpinePoison's
+   * Toxic one group below the tag).
    *
    * A parser field, NOT a converter verdict. HOMECOMING ONLY, and that is a schema
    * fact rather than a parse gap: Parse6 (Rebirth, Thunderspy) stores AttribMods flat

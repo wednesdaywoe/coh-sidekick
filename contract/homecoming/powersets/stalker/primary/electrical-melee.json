@@ -4670,7 +4670,17 @@
       "<",
       "&&",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ASTeamCrit"
     ],
     [
      "Damage",
@@ -4710,7 +4720,17 @@
       "<",
       "&&",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ASTeamCrit"
     ],
     [
      "Damage",
@@ -4971,7 +4991,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "StealthCrit"
     ],
     [
      "Damage",
@@ -5012,7 +5041,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "StealthCrit"
     ],
     [
      "Damage",
@@ -5115,7 +5153,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "StealthCrit"
     ],
     [
      "Damage",
@@ -5156,7 +5203,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "StealthCrit"
     ],
     [
      "Damage",

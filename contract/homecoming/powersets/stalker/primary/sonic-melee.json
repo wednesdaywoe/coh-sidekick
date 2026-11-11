@@ -99,7 +99,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Unattuned"
     ],
     [
      "Damage",
@@ -129,7 +139,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Unattuned"
     ],
     [
      "Damage",
@@ -1162,7 +1182,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      null,
@@ -1228,7 +1248,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      [
@@ -1518,7 +1538,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Unattuned"
     ],
     [
      "Damage",
@@ -1548,7 +1578,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Unattuned"
     ],
     [
      "Damage",
@@ -2581,7 +2621,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      null,
@@ -2647,7 +2687,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      [
@@ -7087,7 +7127,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      null,
@@ -7150,7 +7190,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      null,
@@ -7616,7 +7656,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      [
@@ -8556,7 +8596,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      null,
@@ -8619,7 +8659,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      null,
@@ -9045,7 +9085,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      [
@@ -10278,7 +10318,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      null,
@@ -10341,7 +10381,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      null,

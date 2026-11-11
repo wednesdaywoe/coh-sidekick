@@ -123,3 +123,32 @@ fn homecoming_spines_counts_no_stacks() {
     );
     assert_eq!(toxic(DatasetId::Homecoming, &db, Some(4)), unsaid);
 }
+
+/// The poison row names its mechanic on both servers. Brainstorm tags the group one level
+/// above the Toxic damage, so the name only arrives if an untagged group wears its parent's.
+#[test]
+fn spine_poison_row_is_named_on_both_servers() {
+    for dataset in [DatasetId::Homecoming, DatasetId::Brainstorm] {
+        let db = load(dataset);
+        let totals = coh_math::recalculate(&build(dataset, &db, None), &db);
+        let swipe = totals
+            .power_projection
+            .iter()
+            .find(|p| p.power_internal_name == "Barb_Swipe")
+            .expect("Barb Swipe projected");
+        let toxic: Vec<_> = swipe
+            .damage
+            .components
+            .iter()
+            .filter(|c| c.damage_type == "Toxic")
+            .collect();
+        assert!(!toxic.is_empty(), "{dataset:?}: no Toxic row");
+        for row in toxic {
+            assert!(
+                row.tags.iter().any(|t| t == "SpinePoison"),
+                "{dataset:?}: Toxic row tags {:?}",
+                row.tags
+            );
+        }
+    }
+}

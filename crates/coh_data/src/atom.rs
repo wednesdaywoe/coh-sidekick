@@ -558,6 +558,7 @@ pub struct AtomicEffect {
     /// archetype hit-time forks tag themselves (`ScrapperCrit_ST`/`ScrapperCrit_AoE`,
     /// `SentCrit`, `StealthCrit`, `ASTeamCrit`, `Containment`, `PvPCrit`), and
     /// `FieryEmbrace` names the buff that wakes a component sitting at probability 0.
+    /// An untagged group wears its nearest tagged ancestor's list, within one power.
     ///
     /// Carried by all three forks. Parse6 (Rebirth, Thunderspy) has no EffectGroup wrapper,
     /// but the vocabulary is there under other names — Rebirth's per-AttribMod leading string

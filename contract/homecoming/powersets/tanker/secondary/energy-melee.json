@@ -1345,7 +1345,16 @@
       "eq",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "EnergyRelease"
     ]
    ],
    "conditionalEffects": [

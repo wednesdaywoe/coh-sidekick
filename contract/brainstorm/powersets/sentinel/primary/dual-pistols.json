@@ -17774,7 +17774,9 @@
      null,
      null,
      null,
-     0.6
+     0.6,
+     null,
+     "SentCrit,SentCritAoE"
     ],
     [
      "Damage",
@@ -19665,7 +19667,16 @@
       "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ToxicDamage"
     ],
     [
      "DamageBuff",
@@ -19699,7 +19710,16 @@
       "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ToxicDamage"
     ],
     [
      "DamageBuff",
@@ -19733,7 +19753,16 @@
       "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ToxicDamage"
     ],
     [
      "DamageBuff",
@@ -19767,7 +19796,16 @@
       "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ToxicDamage"
     ],
     [
      "DamageBuff",
@@ -19801,7 +19839,16 @@
       "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ToxicDamage"
     ],
     [
      "DamageBuff",
@@ -19835,7 +19882,16 @@
       "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ToxicDamage"
     ],
     [
      "DamageBuff",
@@ -19869,7 +19925,16 @@
       "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ToxicDamage"
     ],
     [
      "DamageBuff",
@@ -19903,7 +19968,16 @@
       "Source.Mode?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ToxicDamage"
     ],
     [
      "Mez",

@@ -621,7 +621,16 @@
       "target.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Disintegrate Bonus"
     ],
     [
      "Damage",
@@ -838,7 +847,16 @@
       "target.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Disintegrate Bonus"
     ],
     [
      "Damage",
@@ -2335,7 +2353,16 @@
       "target.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Disintegrate Bonus"
     ],
     [
      "Damage",
@@ -2412,7 +2439,16 @@
       "target.ownPower?",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Disintegrate Bonus"
     ],
     [
      "Damage",

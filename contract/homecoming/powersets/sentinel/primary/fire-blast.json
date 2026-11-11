@@ -1816,7 +1816,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "FireBlastBonusDoT"
     ],
     [
      "Damage",
@@ -2019,7 +2029,16 @@
       "player",
       "eq"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "FireBlastBonusDoT"
     ],
     [
      "Damage",

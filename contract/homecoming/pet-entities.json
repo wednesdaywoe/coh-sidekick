@@ -206789,7 +206789,17 @@
         "Power_DisallowSpeedBoost",
         "target.TokenOwned?",
         "!"
-       ]
+       ],
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TBomb"
       ],
       [
        "Movement",
@@ -206818,7 +206828,17 @@
         "Power_DisallowSpeedBoost",
         "target.TokenOwned?",
         "!"
-       ]
+       ],
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TBomb"
       ],
       [
        "RechargeTime",
@@ -206838,7 +206858,22 @@
        null,
        1,
        null,
-       true
+       true,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TBomb"
       ],
       [
        "Recovery",
@@ -206856,7 +206891,24 @@
        2,
        null,
        null,
-       1
+       1,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TBomb"
       ]
      ],
      "recharge": 0,
@@ -207961,7 +208013,17 @@
         "Power_DisallowSpeedBoost",
         "target.TokenOwned?",
         "!"
-       ]
+       ],
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TBomb"
       ],
       [
        "Movement",
@@ -207990,7 +208052,17 @@
         "Power_DisallowSpeedBoost",
         "target.TokenOwned?",
         "!"
-       ]
+       ],
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TBomb"
       ],
       [
        "RechargeTime",
@@ -208010,7 +208082,22 @@
        null,
        1,
        null,
-       true
+       true,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TBomb"
       ],
       [
        "Recovery",
@@ -208028,7 +208115,24 @@
        2,
        null,
        null,
-       1
+       1,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TBomb"
       ]
      ],
      "recharge": 0,

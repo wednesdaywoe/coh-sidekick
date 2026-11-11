@@ -2543,7 +2543,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Splash"
     ],
     [
      "DamageBuff",
@@ -3018,7 +3028,16 @@
       "player",
       "eq"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Splash"
     ],
     [
      "GrantPower",

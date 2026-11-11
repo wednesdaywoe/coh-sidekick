@@ -198,7 +198,17 @@
       "source.ownPower?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Damage",
@@ -289,7 +299,16 @@
       "Temporary_Powers.Temporary_Powers.Combo_Level_1",
       "source.ownPower?"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Meta",
@@ -327,7 +346,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -367,7 +386,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -401,7 +420,16 @@
       "source.ownPower?",
       "||"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ]
    ],
    "specialEffects": [
@@ -662,7 +690,17 @@
       "source.ownPower?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Damage",
@@ -753,7 +791,16 @@
       "Temporary_Powers.Temporary_Powers.Combo_Level_1",
       "source.ownPower?"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Meta",
@@ -791,7 +838,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -831,7 +878,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -865,7 +912,16 @@
       "source.ownPower?",
       "||"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ]
    ],
    "specialEffects": [
@@ -3013,7 +3069,17 @@
       "source.ownPower?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Damage",
@@ -3569,7 +3635,16 @@
       "Temporary_Powers.Temporary_Powers.Combo_Level_1",
       "source.ownPower?"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Meta",
@@ -3607,7 +3682,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -3647,7 +3722,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -3681,7 +3756,16 @@
       "source.ownPower?",
       "||"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ]
    ],
    "grantEdges": [
@@ -5175,7 +5259,17 @@
       "source.ownPower?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Damage",
@@ -5235,7 +5329,16 @@
       "Temporary_Powers.Temporary_Powers.Combo_Level_1",
       "source.ownPower?"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ],
     [
      "Meta",
@@ -5273,7 +5376,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -5313,7 +5416,7 @@
      null,
      null,
      null,
-     null,
+     "ComboBuild",
      null,
      "revoke_power"
     ],
@@ -5347,7 +5450,16 @@
       "source.ownPower?",
       "||"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "ComboBuild"
     ]
    ],
    "grantEdges": [

@@ -2214,7 +2214,17 @@
       "eq",
       "||",
       "!"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Sustain"
     ],
     [
      "Absorb",
@@ -2247,7 +2257,17 @@
       "ShowFloatersDark",
       "eq",
       "||"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Sustain"
     ]
    ]
   },

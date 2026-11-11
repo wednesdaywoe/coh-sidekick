@@ -7046,7 +7046,7 @@
       null,
       null,
       null,
-      null,
+      "StalkerOnly",
       "Class_Stalker"
      ],
      [
@@ -9927,7 +9927,24 @@
       2,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "FieryEmbrace"
      ],
      [
       "Damage",
@@ -9968,7 +9985,11 @@
        "-",
        "@StdResult",
        "*"
-      ]
+      ],
+      null,
+      null,
+      null,
+      "FieryEmbrace"
      ],
      [
       "Meta",
@@ -19260,7 +19281,17 @@
        "target>",
        "critter",
        "eq"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Endurance",
@@ -19455,7 +19486,16 @@
        "player",
        "eq"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ]
     ]
    },
@@ -28311,7 +28351,7 @@
       null,
       null,
       null,
-      null,
+      "CorruptorOnly",
       "Class_Corruptor"
      ],
      [
@@ -28375,7 +28415,7 @@
       null,
       null,
       null,
-      null,
+      "CorruptorOnly",
       "Class_Corruptor"
      ]
     ]
@@ -29473,7 +29513,7 @@
       null,
       null,
       null,
-      null,
+      "CorruptorOnly",
       "Class_Corruptor"
      ],
      [
@@ -29537,7 +29577,7 @@
       null,
       null,
       null,
-      null,
+      "CorruptorOnly",
       "Class_Corruptor"
      ]
     ]
@@ -54153,7 +54193,17 @@
        "target>",
        "critter",
        "eq"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Damage",
@@ -54261,7 +54311,16 @@
        "&&",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Endurance",
@@ -54510,7 +54569,16 @@
        "player",
        "eq"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Damage",
@@ -54564,7 +54632,16 @@
        "&&",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ]
     ]
    },
@@ -55207,7 +55284,7 @@
       null,
       null,
       null,
-      null,
+      "CorruptorOnly",
       "Class_Corruptor"
      ],
      [
@@ -55276,7 +55353,7 @@
       null,
       null,
       null,
-      null,
+      "CorruptorOnly",
       "Class_Corruptor"
      ]
     ]
@@ -55916,7 +55993,24 @@
       2,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "FieryEmbrace"
      ],
      [
       "Damage",
@@ -55957,7 +56051,11 @@
        "-",
        "@StdResult",
        "*"
-      ]
+      ],
+      null,
+      null,
+      null,
+      "FieryEmbrace"
      ],
      [
       "Damage",
@@ -56954,7 +57052,24 @@
       2,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "FieryEmbrace"
      ],
      [
       "Damage",
@@ -56995,7 +57110,11 @@
        "-",
        "@StdResult",
        "*"
-      ]
+      ],
+      null,
+      null,
+      null,
+      "FieryEmbrace"
      ],
      [
       "Damage",
@@ -77972,7 +78091,17 @@
        "target>",
        "critter",
        "eq"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Endurance",
@@ -78167,7 +78296,16 @@
        "player",
        "eq"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ]
     ]
    },
@@ -93253,7 +93391,10 @@
        "distance",
        "-"
       ],
-      "Immobilized"
+      "Immobilized",
+      null,
+      null,
+      "Telekinesis"
      ],
      [
       "Mez",
@@ -93285,7 +93426,14 @@
       ],
       true,
       null,
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Telekinesis"
      ],
      [
       "Mez",
@@ -93325,7 +93473,10 @@
        "60",
        "-"
       ],
-      "Immobilized"
+      "Immobilized",
+      null,
+      null,
+      "Telekinesis"
      ],
      [
       "Mez",
@@ -93357,7 +93508,14 @@
       ],
       true,
       null,
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Telekinesis"
      ],
      [
       "Mez",
@@ -93389,7 +93547,10 @@
       null,
       null,
       null,
-      "Immobilized"
+      "Immobilized",
+      null,
+      null,
+      "Telekinesis"
      ],
      [
       "Movement",
@@ -108651,7 +108812,17 @@
        "target>",
        "critter",
        "eq"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Damage",
@@ -108681,7 +108852,17 @@
        "target>",
        "critter",
        "eq"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Damage",
@@ -108916,7 +109097,16 @@
        "player",
        "eq"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Damage",
@@ -108947,7 +109137,16 @@
        "player",
        "eq"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Splash"
      ],
      [
       "Damage",
@@ -123270,7 +123469,7 @@
       null,
       null,
       null,
-      null,
+      "StalkerOnly",
       "Class_Stalker"
      ],
      [
@@ -124658,7 +124857,7 @@
       null,
       null,
       null,
-      null,
+      "StalkerOnly",
       "Class_Stalker"
      ],
      [
@@ -136163,7 +136362,16 @@
        "eq",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "StalkerOnly"
      ],
      [
       "Damage",
@@ -136214,7 +136422,16 @@
        "eq",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "StalkerOnly"
      ],
      [
       "Damage",
@@ -136255,7 +136472,16 @@
        "eq",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "StalkerOnly"
      ]
     ]
    },
@@ -136556,7 +136782,16 @@
        "eq",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "StalkerOnly"
      ],
      [
       "Damage",
@@ -136597,7 +136832,16 @@
        "eq",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "StalkerOnly"
      ],
      [
       "Damage",
@@ -136638,7 +136882,16 @@
        "eq",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "StalkerOnly"
      ]
     ]
    },

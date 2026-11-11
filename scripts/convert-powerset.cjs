@@ -953,8 +953,24 @@ function _tagGroupContext(template, effect, ancestorRequires = [], ancestorArche
     template._groupRequires = _composeRequires(ancestorRequires, effect.requires_expression);
   }
   if (template._groupTags === undefined) template._groupTags = effect.tags || [];
+  if (template._wornTags === undefined) template._wornTags = _wornTags(effect);
   if (template._casterArchetypes === undefined) {
     template._casterArchetypes = _childArchetypes(ancestorArchetypes, effect);
+  }
+}
+
+// The tags a group wears: its own, or else its nearest tagged ancestor's. Authors tag a
+// parent and nest the rows under it (Brainstorm's SpinePoison Toxic), so the name reaches
+// the atom. Stops at a redirect: its top groups start clean, since its tags are its own.
+// Variant gating still reads `_groupTags`, the group's own list.
+function _wornTags(effect) {
+  return effect.tags?.length ? effect.tags : (effect._parentTags || []);
+}
+
+function _passTagsDown(effect) {
+  const worn = _wornTags(effect);
+  for (const child of effect.child_effects || []) {
+    if (child._parentTags === undefined) child._parentTags = worn;
   }
 }
 
@@ -1255,6 +1271,7 @@ function collectTemplatesDeep(effects, visited = new Set(), depth = 0, parentCom
 
     // Recurse into child_effects
     if (effect.child_effects && effect.child_effects.length > 0) {
+      _passTagsDown(effect);
       templates.push(...collectTemplatesDeep(
         effect.child_effects, visited, depth, combatGated, childRequires, childArchetypes,
         childDelay
@@ -5676,6 +5693,7 @@ function collectAllTemplates(effects, parentCombatGated = false, ancestorRequire
 
     // Recurse into child_effects
     if (effect.child_effects && effect.child_effects.length > 0) {
+      _passTagsDown(effect);
       templates.push(...collectAllTemplates(effect.child_effects, combatGated, childRequires,
                                             childArchetypes, childDelay));
     }
@@ -5777,6 +5795,7 @@ function collectAtomTemplates(effects, parentCombatGated = false, ancestorRequir
       }
     }
     if (effect.child_effects && effect.child_effects.length > 0) {
+      _passTagsDown(effect);
       templates.push(...collectAtomTemplates(
         effect.child_effects, combatGated, _childRequires(ancestorRequires, effect),
         _childArchetypes(ancestorArchetypes, effect), _childDelay(ancestorDelay, effect), visited,
@@ -6397,7 +6416,7 @@ function templatesToAtoms(templates) {
       procsPerMinute: t._groupPpm > 0 ? t._groupPpm : undefined,
       requiresExpression: groupRequires?.length ? groupRequires : undefined,
       specialCase: t._combatGated ? 'OutOfCombat' : undefined,
-      tags: mapGroupTags(t._groupTags),
+      tags: mapGroupTags(t._wornTags),
       // The group chain's Delay; `ingestTemplate` adds the template's own.
       delay: t._groupDelay || undefined,
     });

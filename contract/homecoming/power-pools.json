@@ -2789,7 +2789,17 @@
        "critter",
        "eq",
        "&&"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyStun"
      ],
      [
       "Mez",
@@ -2819,7 +2829,17 @@
        "target>",
        "critter",
        "eq"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyStun"
      ],
      [
       "Damage",
@@ -3564,7 +3584,16 @@
        "eq",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyStun"
      ],
      [
       "Mez",
@@ -3595,7 +3624,16 @@
        "player",
        "eq"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyStun"
      ],
      [
       "Endurance",
@@ -3924,7 +3962,17 @@
        "critter",
        "eq",
        "&&"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyKD"
      ],
      [
       "Mez",
@@ -3954,7 +4002,17 @@
        "target>",
        "critter",
        "eq"
-      ]
+      ],
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyKD"
      ],
      [
       "Damage",
@@ -4699,7 +4757,16 @@
        "eq",
        "&&"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyKD"
      ],
      [
       "Mez",
@@ -4730,7 +4797,16 @@
        "player",
        "eq"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyKD"
      ],
      [
       "Endurance",
@@ -6021,7 +6097,11 @@
        "source.ownPowerNum?",
        "+",
        "*"
-      ]
+      ],
+      null,
+      null,
+      null,
+      "SynergyBonus"
      ],
      [
       "ToHit",
@@ -6060,7 +6140,11 @@
        "source.ownPowerNum?",
        "+",
        "*"
-      ]
+      ],
+      null,
+      null,
+      null,
+      "SynergyBonus"
      ],
      [
       "Damage",
@@ -7018,7 +7102,16 @@
       [
        "0"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyBonus"
      ],
      [
       "ToHit",
@@ -7046,7 +7139,16 @@
       [
        "0"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "SynergyBonus"
      ]
     ],
     "conditionalEffects": [
@@ -11349,7 +11451,7 @@
       null,
       null,
       null,
-      null,
+      "FlightActive",
       null,
       null,
       null,
@@ -11398,7 +11500,7 @@
       null,
       null,
       null,
-      null,
+      "FlightActive",
       null,
       null,
       null,
@@ -11447,7 +11549,7 @@
       null,
       null,
       null,
-      null,
+      "FlightActive",
       null,
       null,
       null,
@@ -11487,7 +11589,16 @@
        "kFlightActive",
        "Source.Mode?"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "FlightActive"
      ],
      [
       "MezResist",
@@ -11516,7 +11627,16 @@
        "kFlightActive",
        "Source.Mode?"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "FlightActive"
      ],
      [
       "MezResist",
@@ -11545,7 +11665,16 @@
        "kFlightActive",
        "Source.Mode?"
       ],
-      true
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "FlightActive"
      ],
      [
       "Movement",
@@ -33273,7 +33402,7 @@
       null,
       null,
       null,
-      null,
+      "Stalker",
       "Class_Stalker"
      ],
      [
@@ -33334,7 +33463,7 @@
       null,
       null,
       null,
-      null,
+      "Stalker",
       "Class_Stalker"
      ],
      [
@@ -33757,7 +33886,7 @@
       null,
       null,
       null,
-      null,
+      "Stalker",
       "Class_Stalker"
      ],
      [
@@ -33818,7 +33947,7 @@
       null,
       null,
       null,
-      null,
+      "Stalker",
       "Class_Stalker"
      ],
      [
@@ -38929,7 +39058,14 @@
         ],
         null,
         null,
-        true
+        true,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "TeleHover"
        ],
        [
         "GlobalChanceMod",
@@ -38968,7 +39104,7 @@
         null,
         null,
         null,
-        null,
+        "TeleHover",
         null,
         null,
         null,
@@ -39011,7 +39147,7 @@
         null,
         0,
         null,
-        null,
+        "TeleHover",
         null,
         null,
         null,
@@ -39054,7 +39190,7 @@
         null,
         null,
         null,
-        null,
+        "TeleHover",
         null,
         "designer_status",
         null,
@@ -39867,7 +40003,7 @@
       null,
       null,
       null,
-      null,
+      "TeleHover",
       null,
       null,
       [
@@ -39911,7 +40047,7 @@
       null,
       null,
       null,
-      null,
+      "TeleHover",
       null,
       null,
       [
@@ -39956,7 +40092,7 @@
       null,
       0,
       null,
-      null,
+      "TeleHover",
       null,
       null,
       [
@@ -40001,7 +40137,7 @@
       null,
       null,
       null,
-      null,
+      "TeleHover",
       null,
       "designer_status",
       [

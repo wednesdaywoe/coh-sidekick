@@ -96,7 +96,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Unattuned"
     ],
     [
      "Damage",
@@ -126,7 +136,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Unattuned"
     ],
     [
      "Mez",
@@ -857,7 +877,7 @@
      null,
      null,
      null,
-     null,
+     "AttuneBonus",
      null,
      "set_mode",
      [
@@ -901,7 +921,7 @@
      null,
      null,
      null,
-     null,
+     "AttuneBonus",
      null,
      "set_mode",
      [
@@ -1052,7 +1072,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Unattuned"
     ],
     [
      "Damage",
@@ -1082,7 +1112,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Unattuned"
     ],
     [
      "Mez",
@@ -1813,7 +1853,7 @@
      null,
      null,
      null,
-     null,
+     "AttuneBonus",
      null,
      "set_mode",
      [
@@ -1857,7 +1897,7 @@
      null,
      null,
      null,
-     null,
+     "AttuneBonus",
      null,
      "set_mode",
      [
@@ -2069,7 +2109,16 @@
       "eq",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Damage",
@@ -2113,7 +2162,16 @@
       "||",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Display"
     ],
     [
      "Resistance",
@@ -4493,7 +4551,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      [
@@ -6163,7 +6221,7 @@
      null,
      null,
      null,
-     null,
+     "AttuneBonus",
      null,
      "set_mode",
      [
@@ -6207,7 +6265,7 @@
      null,
      null,
      null,
-     null,
+     "AttuneBonus",
      null,
      "set_mode",
      [
@@ -6896,7 +6954,7 @@
      null,
      null,
      null,
-     null,
+     "SMAttune",
      null,
      null,
      [
@@ -8234,7 +8292,7 @@
      null,
      null,
      null,
-     null,
+     "AttuneBonus",
      null,
      "set_mode",
      [
@@ -8278,7 +8336,7 @@
      null,
      null,
      null,
-     null,
+     "AttuneBonus",
      null,
      "set_mode",
      [

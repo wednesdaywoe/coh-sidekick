@@ -1547,7 +1547,17 @@
       "critter",
       "eq",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Taunt"
     ],
     [
      "Mez",
@@ -1735,7 +1745,16 @@
       "<",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Taunt"
     ],
     [
      "ExecutePower",

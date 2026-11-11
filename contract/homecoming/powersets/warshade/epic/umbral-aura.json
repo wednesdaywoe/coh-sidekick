@@ -881,7 +881,7 @@
      null,
      null,
      null,
-     null,
+     "TeleHover",
      null,
      null,
      [
@@ -925,7 +925,7 @@
      null,
      null,
      null,
-     null,
+     "TeleHover",
      null,
      null,
      [
@@ -970,7 +970,7 @@
      null,
      0,
      null,
-     null,
+     "TeleHover",
      null,
      null,
      [
@@ -1015,7 +1015,7 @@
      null,
      null,
      null,
-     null,
+     "TeleHover",
      null,
      "designer_status",
      [
@@ -1926,7 +1926,14 @@
        ],
        null,
        null,
-       true
+       true,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "TeleHover"
       ],
       [
        "GlobalChanceMod",
@@ -1965,7 +1972,7 @@
        null,
        null,
        null,
-       null,
+       "TeleHover",
        null,
        null,
        null,
@@ -2008,7 +2015,7 @@
        null,
        0,
        null,
-       null,
+       "TeleHover",
        null,
        null,
        null,
@@ -2051,7 +2058,7 @@
        null,
        null,
        null,
-       null,
+       "TeleHover",
        null,
        "designer_status",
        null,
@@ -6190,7 +6197,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Mez",
@@ -6224,7 +6241,17 @@
       "target.HasTag?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Movement",
@@ -6358,7 +6385,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Damage",
@@ -6469,7 +6505,16 @@
       "player",
       "eq"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ]
    ],
    "specialEffects": [
@@ -6661,7 +6706,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Mez",
@@ -6691,7 +6746,17 @@
       "target>",
       "critter",
       "eq"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Mez",
@@ -6725,7 +6790,17 @@
       "target.HasTag?",
       "!",
       "&&"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Movement",
@@ -6877,7 +6952,16 @@
       "&&",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Damage",
@@ -6988,7 +7072,16 @@
       "player",
       "eq"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Mez",
@@ -7019,7 +7112,16 @@
       "player",
       "eq"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ]
    ],
    "specialEffects": [
@@ -7471,7 +7573,17 @@
       "Raid",
       "target.HasTag?",
       "!"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ],
     [
      "Movement",
@@ -7681,7 +7793,16 @@
       "<",
       "&&"
      ],
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "SSDamage"
     ]
    ],
    "requires": [

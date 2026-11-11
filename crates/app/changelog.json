@@ -3,7 +3,8 @@
   {
     "date": "2026-11-11",
     "items": [
-      { "id": "unfiled-107", "type": "feat", "message": "On the Brainstorm beta, Spines attacks count their poison again. A slider beside the attack, and in Build Settings, sets how many Poison stacks the target already carries (0 to 10), and the poison's damage grows with it." }
+      { "id": "unfiled-107", "type": "feat", "message": "On the Brainstorm beta, Spines attacks count their poison again. A slider beside the attack, and in Build Settings, sets how many Poison stacks the target already carries (0 to 10), and the poison's damage grows with it." },
+      { "id": "unfiled-108", "type": "fix", "message": "Damage rows name their mechanic more often. Brainstorm's Spines poison reads SpinePoison again, and rows such as Sonic Melee's attuned damage, Brawling's combo hits and Sentinel crits now carry the name the game gives them." }
     ]
   },
   {
