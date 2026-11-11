@@ -11,9 +11,17 @@ HC added 6 extra fields not present in Parse6:
 Parse6 retains fields 53-56 (confirm dialog fields) in all records.
 Parse6 has 8 bytes of box data (2×f4) instead of Parse7's 24 bytes (2×f4×3).
 
-Post-2026 HC patch added 8 bytes before chain_delay (field 41b):
-  - 41b: AreaFactor override (f4, 0 = none) + PPMMod (f4, default 1.0)
-Auto-detected via _detect_format.
+Post-2026 HC patches grew the block between arc and chain_delay twice:
+  - 41b: AreaFactor override (f4, 0 = none) + PPMMod (f4, default 1.0),
+    inserted before chain_delay.
+  - 41a: one further f4, inserted BEFORE that pair. Undecoded — it is 0.0 on
+    all 26,740 records of the Nov-3 open-beta bin, and 5.0 on exactly one power
+    (Blaster_Ranged.Archery.Ranged_Shot) of the Oct-27 closed-beta bin, so it is
+    authored but carries no value we can yet name. Read into `_field41a` and
+    never exported: see the census at its declaration in _dataclasses.py.
+Both are auto-detected via _detect_format. live (the 2026-10-17 build) is still
+the 3-word block; 41a is in every build measured after it, so live picks it up
+at its next patch.
 """
 
 import struct
@@ -223,22 +231,52 @@ def _note_chances(full_name: str, group_chance: float, templates) -> None:
             f"{full_name or '<unknown power>'} ({where} chance {value})")
 
 
-def _detect_format(r: BinReader) -> tuple[bool, bool, bool, bool]:
+def _detect_format(r: BinReader) -> tuple[bool, bool, bool, bool, bool]:
     """Detect Parse7 powers.bin layout variant.
 
-    Tests the first 20 records across HC's 4 combinations of (has_41b, has_45b),
-    Thunderspy's Parse6-derived layout, and Veracity's variant. Wrong layout
-    shifts reads by 4+ bytes, producing implausible numeric values. Returns
-    (has_field_41b, has_field_45b, is_thunderspy, is_veracity). is_thunderspy /
-    is_veracity are mutually exclusive with the HC flags and each other; when
-    either is True, the HC flags are False.
+    Tests the first 20 records across HC's layout combinations — (has_41b,
+    has_41a) × has_45b, `has_41a` only meaning anything with `has_41b` — plus
+    Thunderspy's Parse6-derived layout and Veracity's variant. Returns
+    (has_field_41b, has_field_41a, has_field_45b, is_thunderspy, is_veracity).
+    is_thunderspy / is_veracity are mutually exclusive with the HC flags and each
+    other; when either is True, the HC flags are False.
+
+    The score is a TRIPLE, and its last two numbers are not refinements of the
+    first — they are the only things that can see the width of the field-41 block.
+    A block read one word short leaves the ChainEff count in place, and that count
+    is 0.0 = 0x00000000 on every power with no chain delay, so the four arrays
+    after it consume each other's counts, get zero, and the read arrives at
+    box_offset one word early — where a `has_field_45b` read absorbs the spare word
+    and the whole tail lines up again. Measured on the 2026-11-03 open-beta bin:
+    reading its four-word block as three and turning 45b on scores 20/20 on
+    plausibility, exactly the same as reading it correctly, because every field the
+    plausibility test checks sits past the compensation point. That tie is what
+    cost a month of correct Brainstorm data.
+
+    The two defaults break it, because they are values known before the bin is
+    read and sit on opposite sides of the two places a read can go wrong:
+
+      PPMMod is 1.0 on all but one record of every bin measured — 26,739 of the
+      open-beta bin's 26,740 records, the exception being the Sonic Boom pet's 2.0.
+      One word early it becomes the AreaFactor override (0.0 on nearly everything);
+      one word late, the chain delay (sub-second, or 0.0). So it sees the WIDTH of
+      the block.
+
+      MaxBoosts is 6 on nearly every power, and it lives in the tail, past the box
+      block — so it sees the COMPENSATION. A read that borrowed 45b to get there is
+      one word off by the time it arrives, and reads 9 of 20 rather than 20.
+
+    Scored this way, all four shards on this machine have a unique winner, and the
+    two four-word builds stop reporting a 45b that was never in them.
     """
     save_pos = r.pos
 
-    def _score(parser) -> int:
+    def _score(parser) -> tuple[int, int, int]:
         global _probing
         r._pos = save_pos
-        score = 0
+        plausible = 0
+        ppm_at_default = 0
+        boosts_at_default = 0
         _probing = True
         try:
             for _ in range(20):
@@ -250,34 +288,41 @@ def _detect_format(r: BinReader) -> tuple[bool, bool, bool, bool]:
                             and 0 <= pw.recharge_time <= 3600
                             and 0 <= pw.endurance_cost <= 500
                             and 0 <= pw.time_to_activate <= 30):
-                        score += 1
+                        plausible += 1
+                        if pw.ppm_mod == 1.0:
+                            ppm_at_default += 1
+                        if pw.max_boosts == 6:
+                            boosts_at_default += 1
                 except Exception:
                     pass
                 r.skip(rec_len)
         finally:
             _probing = False
-        return score
+        return (plausible, ppm_at_default, boosts_at_default)
 
-    best = (False, False, False, False)
-    best_score = -1
-    # Try the 4 HC combos
+    best = (False, False, False, False, False)
+    best_score = (-1, -1, -1)
+    # Try the HC combos. has_field_41a only exists inside the 41b block, so a bin
+    # without 41b has one fewer variant to try.
     for has_41b in (False, True):
         for has_45b in (False, True):
-            score = _score(lambda sub, a=has_45b, b=has_41b:
-                           _parse_power(sub, has_field_45b=a, has_field_41b=b))
-            if score > best_score:
-                best_score = score
-                best = (has_41b, has_45b, False, False)
+            for has_41a in ((False,) if not has_41b else (False, True)):
+                score = _score(lambda sub, a=has_45b, b=has_41b, c=has_41a:
+                               _parse_power(sub, has_field_45b=a, has_field_41b=b,
+                                            has_field_41a=c))
+                if score > best_score:
+                    best_score = score
+                    best = (has_41b, has_41a, has_45b, False, False)
     # Try Thunderspy layout
     score = _score(lambda sub: _parse_power_parse6(sub, thunderspy=True))
     if score > best_score:
         best_score = score
-        best = (False, False, True, False)
+        best = (False, False, False, True, False)
     # Try Veracity layout
     score = _score(lambda sub: _parse_power_parse6(sub, veracity=True))
     if score > best_score:
         best_score = score
-        best = (False, False, False, True)
+        best = (False, False, False, False, True)
     r._pos = save_pos
     return best
 
@@ -297,7 +342,7 @@ def detect_dataset_flavor(bin_path_or_data) -> str:
         return "rebirth"
     r.read_u4()  # block size
     r.read_u4()  # record count
-    _, _, is_thunderspy, is_veracity = _detect_format(r)
+    _, _, _, is_thunderspy, is_veracity = _detect_format(r)
     if is_thunderspy:
         return "thunderspy"
     if is_veracity:
@@ -318,12 +363,17 @@ def parse_powers(bin_path_or_data, *, player_classes=()) -> list[PowerRecord]:
         parser = lambda sub: _parse_power_parse6(sub, player_classes=player_classes)
         is_thunderspy = is_veracity = False
     else:
-        # Auto-detect HC format version by testing the first few records.
-        # Two known post-release additions that shift subsequent field offsets:
-        #   - field 45b (u4 between box_size and range) added in a past HC patch
-        #   - field 41b (8 bytes before chain_delay) added in a 2026 patch
-        # Wrong layout produces implausible values (negative range, huge recharge).
-        has_41b, has_45b, is_thunderspy, is_veracity = _detect_format(r)
+        # Auto-detect the HC format version by testing the first few records.
+        # Known post-release additions that shift subsequent field offsets:
+        #   - field 41b (two f4s before chain_delay) and, after it, field 41a
+        #     (one more f4 ahead of those two) — see the module docstring
+        #   - field 45b (u4 between box_size and range)
+        # "Wrong layout produces implausible values" is what this comment used to
+        # assert, and for the field-41 block it is false: a short read there is
+        # compensated by the 45b read and the tail comes out aligned, so every
+        # field this could check was plausible. That is why _detect_format now
+        # scores documented defaults as well as plausibility.
+        has_41b, has_41a, has_45b, is_thunderspy, is_veracity = _detect_format(r)
         if is_thunderspy:
             # Thunderspy: Parse7 wrapper, Parse6-derived schema with HC-style
             # box (24 bytes) and no field 43b. Reuses _parse_power_parse6.
@@ -336,6 +386,7 @@ def parse_powers(bin_path_or_data, *, player_classes=()) -> list[PowerRecord]:
                                                      player_classes=player_classes)
         else:
             parser = lambda sub: _parse_power(sub, has_field_45b=has_45b, has_field_41b=has_41b,
+                                              has_field_41a=has_41a,
                                               player_classes=player_classes)
 
     global _undecoded_message_fx_tails, _undecoded_params_tails, _undecoded_parse6_tails
@@ -2026,7 +2077,7 @@ def _parse_power_tail_parse6(
 
 
 def _parse_power(r: BinReader, *, has_field_45b: bool = True, has_field_41b: bool = False,
-                 player_classes=()) -> PowerRecord:
+                 has_field_41a: bool = False, player_classes=()) -> PowerRecord:
     """Parse a single power record (HC Parse7 layout)."""
 
     # 1. key (string) — full_name
@@ -2131,12 +2182,38 @@ def _parse_power(r: BinReader, *, has_field_45b: bool = True, has_field_41b: boo
     # an area-factor override (0 = compute from geometry; Sonic_Boom 3.25,
     # Hypnotizing_Lights 1.0, Traps Trip_Mine 2.8) and PPMMod, a multiplier on
     # the PPM of procs rolled in this power (1.0 everywhere but the Sonic Aura
-    # Sonic_Boom pseudo-pet's 2.0). Reading ChainDelay first labelled the
-    # override as the delay and skipped the real one: on the live bin the third
-    # word is the one carrying Chain_Lightning 0.3 / Tesla_Cage 0.5.
+    # Sonic_Boom pseudo-pet's 2.0). The word AFTER the pair is ChainDelay, not the
+    # first one: reading delay-first labelled the override as the delay and skipped
+    # the real one. Both blocks are read on every build that has them; probe_field_41a.py
+    # checks the result against the `.powers` ChainDelay oracle (Chain_Lightning 0.3,
+    # Tesla_Cage 0.5).
+    # 41a. A further patch inserted a THIRD f4 ahead of that pair, so the block is
+    # four words wide on every build measured from 2026-10-27 on (open beta
+    # 2026-11-03 and closed beta 2026-10-27 are four words; live 2026-10-17 and the
+    # 2026-09-29 closed-beta shard are three, so live takes the change at its next
+    # patch). Read as three, the record does NOT come apart, and that is how this
+    # hid for five weeks: the word left behind is the ChainEff count, which on a
+    # power with no chain delay is 0.0 = 0x00000000, so this field and the three
+    # arrays after it each read the NEXT field's count, get zero, and the read
+    # arrives at box_offset exactly one word early — where the `has_field_45b` read
+    # the layout probe had chosen in 41a's place absorbs the extra word and the rest
+    # of the record lines up again. range, recharge, endurance and every effect past
+    # them therefore read correctly, and nothing that looks only at those can see
+    # the width. What IS wrong is the four values here (on the 2026-11-03 open-beta
+    # bin, `ppm_mod` read 0.0 on all 26,740 records and `chain_delay` read the
+    # PPMMod default 1.0 on 26,739 of them, while the real chain delays — 89
+    # records, 0.1 to 1.8 — went unread) plus the four arrays, which lose their
+    # contents to each other's counts. Those 89 are exactly the records that failed
+    # to parse under the short read: a delay of 0.3 is 0x3E99999A, and the ChainEff
+    # array reads that as its element count. See _detect_format for why the probe
+    # cannot see the width from plausibility either, and probe_field_41a.py to
+    # re-measure a shard.
     area_factor_override = 0.0
     ppm_mod = 1.0
+    field41a = 0.0
     if has_field_41b:
+        if has_field_41a:
+            field41a = r.read_f4()
         area_factor_override = r.read_f4()
         ppm_mod = r.read_f4()
     chain_delay = r.read_f4()
@@ -2163,7 +2240,14 @@ def _parse_power(r: BinReader, *, has_field_45b: bool = True, has_field_41b: boo
     r.skip(12)
     # 45. box_size (f4 × 3)
     r.skip(12)
-    # 45b. HC extra field added in ~2025 patch (u4)
+    # 45b. HC extra field (u4) — a variant the probe can select, but no build on
+    # this machine has: measured 2026-11-10 across live (2026-10-17), the
+    # 2026-09-29 closed-beta shard, experimental (2026-10-27) and open beta
+    # (2026-11-03), every one of them parses aligned with this word NOT read, and
+    # on the two four-word builds reading it was only ever the compensation for the
+    # missing 41a word above (it costs MaxBoosts: 9 of 20 records at their default
+    # instead of 20 — see _detect_format). Kept because a build may still grow the
+    # field, and the probe now tells the two apart.
     if has_field_45b:
         r.read_u4()
     # 46. range (f4)
@@ -2389,6 +2473,7 @@ def _parse_power(r: BinReader, *, has_field_45b: bool = True, has_field_41b: boo
         show_in_manage=tail.show_in_manage,
         show_in_info=tail.show_in_info,
         _field43_str=field43_str,
+        _field41a=field41a,
         effects=effects,
         activation_effects=activation_effects,
         redirects=redirects,

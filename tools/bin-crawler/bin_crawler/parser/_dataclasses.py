@@ -335,6 +335,20 @@ class PowerRecord:
     # never emitted to the export (leading underscore + repr=False). See HOMECOMING_PARSER.
     _field43_str: str = field(default="", repr=False)
 
+    # Parse7/HC diagnostic scratch — the f4 the Oct-2026 patch inserted ahead of the
+    # field-41b pair (AreaFactor override / PPMMod). It is a real authored field, but
+    # nothing names it: read the other two through it and their own values move with
+    # it, so the only evidence of what it holds is its own census, and that census is
+    # empty — f4 0.0 on all 26,740 records of the 2026-11-03 open-beta bin, and on
+    # exactly ONE record of the 2026-10-27 closed-beta bin does it carry anything
+    # (5.0 on Blaster_Ranged.Archery.Ranged_Shot, a value the open-beta build has
+    # dropped). The `.powers` snapshot cannot name it either: it predates even the
+    # 41b pair — no AreaFactor or PPMMod keyword appears in any of its 4,943 defs —
+    # so there is no honest label here. Kept rather than named, and never exported.
+    # Re-run tools/bin-crawler/probe_field_41a.py against a fresh shard when one
+    # shows a value worth naming.
+    _field41a: float = field(default=0.0, repr=False)
+
     # Effect data — the binary stores two parallel struct_arrays:
     # - `Effect` blocks (main effects) go into `effects`
     # - `ActivationEffect` blocks (self-buff/redirect sources for toggles &
