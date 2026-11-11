@@ -2078,6 +2078,45 @@ function stampPhaseCycleStats(powerJson) {
 }
 
 /**
+ * The stacks of another power a TARGET carries that this power's atoms count —
+ * `<path> target.ownPowerNum?` in a gate or a magnitude program. Brainstorm's Spines poison
+ * reads `Temporary_Powers.Temporary_Powers.Poison` this way. The planner answers the count
+ * from a player-set slider; its top end is the counted record's own `num_allowed`, which only
+ * the converter can read. Scans the finished power, so it sees redirect payloads too.
+ * A counted record the export lacks throws: a slider with an invented range is worse than none.
+ */
+function extractTargetStacks(power) {
+  const paths = new Map();
+  const scan = (value) => {
+    if (Array.isArray(value)) {
+      value.forEach((token, i) => {
+        if (typeof token === 'string' && token.toLowerCase() === 'target.ownpowernum?'
+            && typeof value[i - 1] === 'string') {
+          const key = value[i - 1].toLowerCase();
+          if (!paths.has(key)) paths.set(key, value[i - 1]);
+        } else {
+          scan(token);
+        }
+      });
+    } else if (value && typeof value === 'object') {
+      for (const child of Object.values(value)) scan(child);
+    }
+  };
+  scan(power);
+  if (!paths.size) return null;
+  return [...paths.values()].sort().map((countedPath) => {
+    const filePath = resolveRedirectPath(countedPath);
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`${power.name}: counts ${countedPath} on its target, which the export lacks`);
+    }
+    const record = _readPowerFile(filePath);
+    const stack = { path: countedPath, name: record.display_name || record.name };
+    if (record.num_allowed) stack.maxCount = record.num_allowed;
+    return stack;
+  });
+}
+
+/**
  * The grant → banked-charge → spender edges as data — `power.grantEdges`, the caster-state
  * changes CASTING this power applies (RB5-d, re-filed from DATA-GAP-REGISTER CHAIN-1).
  *
@@ -10402,6 +10441,9 @@ function convertPower(powerJson, availableLevel, archetypeId, powerType, provena
     guardThunderspyAppliedMez(power, powerJson.targets_affected, effectsRef);
   }
 
+  const targetStacks = extractTargetStacks(power);
+  if (targetStacks) power.targetStacks = targetStacks;
+
   return power;
 }
 
@@ -10706,6 +10748,7 @@ module.exports = {
   extractModeVariants,
   extractFormVariants,
   extractGrantEdges,
+  extractTargetStacks,
   findFastFormRedirect,
   extractQuickSnipeData,
   extractSnipeBaseTiming,

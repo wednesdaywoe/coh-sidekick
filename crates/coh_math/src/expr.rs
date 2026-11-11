@@ -1037,6 +1037,11 @@ pub struct TargetIdentity {
     /// the reader stays Indeterminate — a foe nobody has held may still be stunned or asleep,
     /// and every target-mez gate is an `||` that a `false` here would wrongly close.
     pub held: bool,
+    /// `<path> target.ownPowerNum?`: how many of a power the target carries, keyed by
+    /// [`normalize_power_path`]. `Some` is a projection the player can state counts for, where
+    /// an absent path is zero — a fresh target, the first hit (the Spines poison slider).
+    /// `None` leaves the reader Indeterminate: the totals pass has no one target to count on.
+    pub stacks: Option<HashMap<String, u32>>,
 }
 
 impl EvalContext for SourceContext {
@@ -1110,6 +1115,15 @@ impl EvalContext for SourceContext {
                     _ => indeterminate(),
                 }
             }
+            "target.ownPowerNum?" => match self.target.as_ref().and_then(|t| t.stacks.as_ref()) {
+                Some(stacks) => Ok(Value::Number(f64::from(
+                    stacks
+                        .get(&normalize_power_path(&name(0)?))
+                        .copied()
+                        .unwrap_or(0),
+                ))),
+                None => indeterminate(),
+            },
             "isPVPMap?" => self
                 .is_pvp_map
                 .map(boolean)

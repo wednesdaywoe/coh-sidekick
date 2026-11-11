@@ -406,6 +406,7 @@ pub fn active_conditional_powers(
             entity_type: target_entity.to_string(),
             modes: HashSet::new(),
             held: false,
+            stacks: None,
         }),
         ..Default::default()
     };

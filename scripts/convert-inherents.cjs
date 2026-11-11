@@ -42,6 +42,7 @@ const {
   extractEffects,
   extractDamage,
   extractGrantEdges,
+  extractTargetStacks,
   normalizeIconPath,
   collectBaseTemplates,
   collectAtomTemplates,
@@ -263,6 +264,10 @@ function convertInherentPower(rawJson) {
     guardThunderspyAppliedMez(power, rawJson.targets_affected, effects);
   }
 
+
+  // Target-side stack counters (Spines' poison) — same stamp as convert-powerset.cjs.
+  const targetStacks = extractTargetStacks(power);
+  if (targetStacks) power.targetStacks = targetStacks;
   return power;
 }
 

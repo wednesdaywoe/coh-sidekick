@@ -1145,6 +1145,13 @@ pub struct CombatContext {
     /// input like [`Self::target_class`]; a pre-field saved build loads unstated.
     #[serde(default)]
     pub target_held: bool,
+    /// How many of another power the target carries, keyed by that power's dotted path
+    /// (`Temporary_Powers.Temporary_Powers.Poison`) — the `target.ownPowerNum?` a Spines hit's
+    /// poison scales by. Which paths a build can set is read from the export
+    /// ([`crate::target_stacks`]). An absent path is zero: a fresh target, the first hit. A
+    /// live dashboard input like [`Self::target_held`]; a pre-field saved build loads empty.
+    #[serde(default)]
+    pub target_stacks: BTreeMap<String, u32>,
     /// The what-if TEAM-BUFF layer: how much of each stat to pretend a teammate is handing the
     /// build, keyed by the `GlobalBonuses` field name the buff lands in
     /// (`"damage"`, `"toHit"`, `"recharge"`, …) and valued in that field's own units.
@@ -1192,6 +1199,7 @@ impl Default for CombatContext {
             target_class: None,
             target_is_player: false,
             target_held: false,
+            target_stacks: BTreeMap::new(),
             what_if_buffs: BTreeMap::new(),
         }
     }

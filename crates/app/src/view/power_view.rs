@@ -193,6 +193,10 @@ pub struct DamageView {
     /// How many components are in the hit only because the target is said to be held. With
     /// [`Self::waiting_on_held`], whether the held switch moves this power at all.
     pub held_counted: usize,
+    /// The stacks of another power on the target this power's damage counts (Spines' Poison),
+    /// each offered as a slider beside the hit. `Err` when the converter field is malformed
+    /// (Rule 1: rendered as a visible marker).
+    pub target_stacks: Result<Vec<coh_data::target_stacks::TargetStack>, String>,
     /// The certain rows summed, three-tier. `None` when there is nothing to sum: no certain
     /// component at all, or exactly one — whose own row already is the total.
     pub total: Option<EffectRow>,
@@ -527,6 +531,7 @@ impl PowerView {
                     if view.types.is_empty() {
                         view.types = damage_types.clone().unwrap_or_default();
                     }
+                    view.target_stacks = coh_data::target_stacks::target_stacks(power);
                     view
                 }),
             damage_types,
@@ -818,6 +823,7 @@ fn damage_view(
             .filter(|unresolved| unresolved.waits_on_held && unresolved.if_it_lands.is_some())
             .count(),
         held_counted: damage.held_counted,
+        target_stacks: Ok(Vec::new()),
         unresolved: damage
             .unresolved
             .iter()

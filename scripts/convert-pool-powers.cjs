@@ -23,6 +23,7 @@ const {
   extractModeVariants,
   extractFormVariants,
   extractGrantEdges,
+  extractTargetStacks,
   extractQuickSnipeData,
   extractSnipeBaseTiming,
   assignModes,
@@ -481,6 +482,10 @@ function convertPoolPower(rawJson, rank, availableLevel) {
     guardThunderspyAppliedMez(power, rawJson.targets_affected, effects);
   }
 
+
+  // Target-side stack counters (Spines' poison) — same stamp as convert-powerset.cjs.
+  const targetStacks = extractTargetStacks(power);
+  if (targetStacks) power.targetStacks = targetStacks;
   return power;
 }
 

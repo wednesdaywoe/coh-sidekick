@@ -872,6 +872,13 @@
    "requires": [
     "Stalker_Defense.Shield_Defense",
     "!"
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -1735,6 +1742,13 @@
    "requires": [
     "Stalker_Defense.Shield_Defense",
     "!"
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -2566,6 +2580,13 @@
      "count": 1,
      "expires": 10,
      "maxCount": 3
+    }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
     }
    ]
   },
@@ -5088,6 +5109,13 @@
       ]
      ]
     }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -6699,6 +6727,13 @@
      "expires": 10,
      "maxCount": 3
     }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -7779,6 +7814,13 @@
      "expires": 10,
      "maxCount": 3
     }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -8682,6 +8724,13 @@
      "count": 1,
      "expires": 10,
      "maxCount": 3
+    }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
     }
    ]
   }

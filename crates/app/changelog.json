@@ -1,6 +1,12 @@
 [
 
   {
+    "date": "2026-11-11",
+    "items": [
+      { "id": "unfiled-107", "type": "feat", "message": "On the Brainstorm beta, Spines attacks count their poison again. A slider beside the attack, and in Build Settings, sets how many Poison stacks the target already carries (0 to 10), and the poison's damage grows with it." }
+    ]
+  },
+  {
     "date": "2026-11-10",
     "items": [
       { "id": "level-order-shift", "type": "feat", "message": "Drag and drop to move powers around has been expanded to allow drag & drop between two powers. This moves the power by inserting it at the new level and makes powers after it to shuffle a level forward. Dragging a power on to another power will still swap the powers." },

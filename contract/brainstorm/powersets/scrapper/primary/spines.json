@@ -822,6 +822,13 @@
    "requires": [
     "Scrapper_Defense.Shield_Defense",
     "!"
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -1635,6 +1642,13 @@
    "requires": [
     "Scrapper_Defense.Shield_Defense",
     "!"
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -2402,6 +2416,13 @@
      "kind": "effect-proc",
      "chance": 0.10000000149011612,
      "label": "Lethal_Dmg"
+    }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
     }
    ]
   },
@@ -3530,6 +3551,13 @@
      "kind": "effect-proc",
      "chance": 0.10000000149011612,
      "label": "Lethal_Dmg"
+    }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
     }
    ]
   },
@@ -5154,6 +5182,13 @@
      "chance": 0.10000000149011612,
      "label": "Lethal_Dmg"
     }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -6008,6 +6043,13 @@
      "kind": "effect-proc",
      "chance": 0.10000000149011612,
      "label": "Lethal_Dmg"
+    }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
     }
    ]
   }

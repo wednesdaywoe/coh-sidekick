@@ -39,6 +39,7 @@ fn damage(db: &PowerDatabase, held: bool, impact_on: bool) -> PowerDamage {
             entity_type: "critter".to_string(),
             modes: Default::default(),
             held,
+            stacks: None,
         }),
         caster_class: db.class_name_of("controller").map(str::to_string),
         target_alive: true,

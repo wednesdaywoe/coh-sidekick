@@ -656,6 +656,13 @@
    "requires": [
     "Brute_Defense.Shield_Defense",
     "!"
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -1303,6 +1310,13 @@
    "requires": [
     "Brute_Defense.Shield_Defense",
     "!"
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -1905,6 +1919,13 @@
      ],
      true
     ]
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -2867,6 +2888,13 @@
      null,
      "set_mode"
     ]
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -4341,6 +4369,13 @@
      "chance": 0.5,
      "label": "Immobilized"
     }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
+    }
    ]
   },
   {
@@ -5031,6 +5066,13 @@
      "kind": "effect-proc",
      "chance": 0.5,
      "label": "Immobilized"
+    }
+   ],
+   "targetStacks": [
+    {
+     "path": "Temporary_Powers.Temporary_Powers.Poison",
+     "name": "Poison",
+     "maxCount": 10
     }
    ]
   }

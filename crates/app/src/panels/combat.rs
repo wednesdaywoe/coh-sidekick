@@ -99,6 +99,45 @@ pub fn target_options(database: &PowerDatabase) -> Vec<TargetOption> {
         .collect()
 }
 
+/// One counted power's stacks on the target, as a slider. Writes
+/// [`CombatContext::target_stacks`]; zero clears the entry, since an absent path already is zero.
+#[component]
+fn StacksRow(stack: coh_data::target_stacks::TargetStack, count: u32) -> Element {
+    let session = use_context::<BuildSession>();
+    let path = stack.path.clone();
+    rsx! {
+        div {
+            class: "combat-row",
+            title: "How many {stack.name} stacks the target already carries. Each of your hits adds one.",
+            span { class: "combat-label", "{stack.name} stacks on target" }
+            div { class: "slider combat-slider",
+                input {
+                    r#type: "range",
+                    min: "0",
+                    max: stack.max_count.map(|max| max.to_string()).unwrap_or_default(),
+                    step: "1",
+                    value: "{count}",
+                    "aria-label": "{stack.name} stacks on target",
+                    onchange: move |evt: Event<FormData>| {
+                        let Ok(count) = evt.value().parse::<u32>() else {
+                            return;
+                        };
+                        let path = path.clone();
+                        session.commit(move |s| {
+                            if count == 0 {
+                                s.combat.target_stacks.remove(&path);
+                            } else {
+                                s.combat.target_stacks.insert(path.clone(), count);
+                            }
+                        });
+                    },
+                }
+                span { class: "combat-value mono", "{count}" }
+            }
+        }
+    }
+}
+
 /// The reader-facing name for a stored target class token, or the token itself when this
 /// dataset's gates do not name it (a build carried across forks — rule 8's retain-and-report).
 pub fn target_label(database: &PowerDatabase, class: &str) -> String {
@@ -154,6 +193,7 @@ pub fn Combat(database: Option<Db>) -> Element {
         target_class,
         target_is_player,
         target_held,
+        target_stacks,
         pvp,
         // The what-if team-buff layer has its own modal ([`crate::panels::what_if`]) — it is a
         // whole vocabulary of controls rather than one, and keeping it out of this panel is
@@ -180,6 +220,14 @@ pub fn Combat(database: Option<Db>) -> Element {
             .as_ref()
             .map(|database| target_options(&database.0))
             .unwrap_or_default()
+    }));
+
+    // The stacks of another power the build's own attacks count on their target (Spines'
+    // Poison), read from the export. A build whose powers count none gets no row.
+    let stack_counters = use_memo(use_reactive!(|database| {
+        database.as_ref().map_or(Ok(Vec::new()), |database| {
+            coh_data::target_stacks::build_target_stacks(&session.build.read(), &database.0)
+        })
     }));
 
     // Whether the Hidden control appears at all — the same data-derived predicate the calc
@@ -454,6 +502,24 @@ pub fn Combat(database: Option<Db>) -> Element {
                     }
                     span { class: "switch-track" }
                 }
+            }
+
+            // How many of a counted power the target already carries — damage like Spines'
+            // poison grows with it. Unset is a fresh target. The same setting as the slider
+            // beside the attack in the power card.
+            match stack_counters() {
+                Ok(counters) => rsx! {
+                    for stack in counters {
+                        StacksRow {
+                            key: "{stack.path}",
+                            count: target_stacks.get(&stack.path).copied().unwrap_or(0),
+                            stack,
+                        }
+                    }
+                },
+                Err(e) => rsx! {
+                    div { class: "load-state error", "{e}" }
+                },
             }
 
             // On a PvP map — the `isPVPMap?` a set-bonus tier's `Requires` asks about, and a
@@ -888,6 +954,9 @@ pub fn drift_summary(combat: &CombatContext) -> Vec<String> {
     }
     if combat.target_held != default.target_held {
         parts.push("Held target".to_string());
+    }
+    if combat.target_stacks != default.target_stacks {
+        parts.push("Target stacks".to_string());
     }
 
     parts

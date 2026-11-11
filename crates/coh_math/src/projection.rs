@@ -336,6 +336,16 @@ fn reachable_global_range(power: &Power, global_range: f64) -> f64 {
     global_range
 }
 
+/// The target stack counts the player stated, keyed the way the expression VM asks for them.
+pub(crate) fn stated_stacks(state: &CharacterState) -> HashMap<String, u32> {
+    state
+        .combat
+        .target_stacks
+        .iter()
+        .map(|(path, count)| (crate::expr::normalize_power_path(path), *count))
+        .collect()
+}
+
 /// The context a build-relative gate is evaluated in — a damage atom's `requires`, and the
 /// fast-form condition [`crate::effective`] reads. The build's chosen target answers the
 /// target-side readers, the modes it satisfies answer the source-side ones (the same set
@@ -418,6 +428,7 @@ fn gate_context(
             entity_type: target_entity.to_string(),
             modes: target_modes.clone(),
             held: state.combat.target_held,
+            stacks: Some(crate::projection::stated_stacks(state)),
         }),
         source_modes: crate::gather::live_modes(source_modes, state.combat.in_combat),
         source_attributes,

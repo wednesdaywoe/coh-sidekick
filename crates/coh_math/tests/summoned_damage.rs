@@ -34,6 +34,7 @@ fn damage(db: &PowerDatabase, archetype: &str, power: &Power) -> PowerDamage {
             entity_type: "critter".to_string(),
             modes: Default::default(),
             held: false,
+            stacks: None,
         }),
         caster_class: db.class_name_of(archetype).map(str::to_string),
         ..Default::default()

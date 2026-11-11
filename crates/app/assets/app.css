@@ -5915,6 +5915,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .slider input[type="range"] { flex: 1; max-width: 130px; }
 /* In a combat row the slider takes the width the label leaves and pins its readout right. */
 .combat-slider { flex: 1; justify-content: flex-end; }
+/* Same in the power card's target-stacks prompt (Spines' Poison). */
+.info-stacks__slider { flex: 1; justify-content: flex-end; }
 
 /* Switch — the boolean inputs (the combat popover's in-combat and exemplar, the info
    panel's per-power adjusters). Native checkbox hidden, the sibling track styled as a

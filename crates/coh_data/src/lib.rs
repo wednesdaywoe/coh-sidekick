@@ -59,6 +59,7 @@ pub mod slot_levels;
 pub mod slot_value;
 pub mod slotting_rules;
 pub mod target_classes;
+pub mod target_stacks;
 
 pub use accolades::{AccoladeFaction, AccoladeToggle, ACCOLADE_CATEGORY};
 pub use archetype_stats::{

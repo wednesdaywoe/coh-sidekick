@@ -1621,6 +1621,7 @@ fn held_settles(atom: &AtomicEffect, context: &SourceContext) -> bool {
     let held = SourceContext {
         target: Some(crate::expr::TargetIdentity {
             held: true,
+            stacks: None,
             ..target.clone()
         }),
         ..context.clone()
@@ -1636,6 +1637,7 @@ fn held_was_needed(atom: &AtomicEffect, context: &SourceContext) -> bool {
     let unstated = SourceContext {
         target: Some(crate::expr::TargetIdentity {
             held: false,
+            stacks: None,
             ..target.clone()
         }),
         ..context.clone()

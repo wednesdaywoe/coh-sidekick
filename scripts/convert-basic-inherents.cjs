@@ -56,6 +56,7 @@ const {
   BIN_BOOST_MAP,
   RAW_DATA_PATH,
   extractGrantEdges,
+  extractTargetStacks,
   _readPowerFile,
 } = require('./convert-powerset.cjs');
 const { displayText, helpText } = require('./_display-text.cjs');
@@ -440,6 +441,10 @@ function convertBasicInherent(rawJson, entry, granter) {
     guardThunderspyAppliedMez(power, rawJson.targets_affected, guardBag);
   }
 
+
+  // Target-side stack counters (Spines' poison) — same stamp as convert-powerset.cjs.
+  const targetStacks = extractTargetStacks(power);
+  if (targetStacks) power.targetStacks = targetStacks;
   return power;
 }
 

@@ -52,6 +52,7 @@ const {
   RAW_DATA_PATH,
   assignModes,
   extractGrantEdges,
+  extractTargetStacks,
 } = require('./convert-powerset.cjs');
 const { parseDatasetArg, pipelinePath } = require('./_dataset-paths.cjs');
 const { helpText } = require('./_display-text.cjs');
@@ -214,6 +215,10 @@ function convertAccoladePower(rawJson) {
     guardThunderspyAppliedMez(power, rawJson.targets_affected, guardBag);
   }
 
+
+  // Target-side stack counters (Spines' poison) — same stamp as convert-powerset.cjs.
+  const targetStacks = extractTargetStacks(power);
+  if (targetStacks) power.targetStacks = targetStacks;
   return power;
 }
 

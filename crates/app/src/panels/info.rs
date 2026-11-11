@@ -561,6 +561,16 @@ fn DamageBlock(
             if damage.waiting_on_held > 0 || damage.held_counted > 0 {
                 HeldPrompt { held: target_held }
             }
+            match &damage.target_stacks {
+                Ok(stacks) => rsx! {
+                    for stack in stacks.iter() {
+                        StacksPrompt { key: "{stack.path}", stack: stack.clone() }
+                    }
+                },
+                Err(e) => rsx! {
+                    div { class: "load-state error", "{e}" }
+                },
+            }
             if damage.waiting_on_rank > 0 {
                 RankPrompt {
                     count: damage.waiting_on_rank,
@@ -593,6 +603,54 @@ fn HeldPrompt(held: bool) -> Element {
                 },
             }
             span { "Count it as if the target is held (Containment)" }
+        }
+    }
+}
+
+/// How many of a counted power the target carries, for damage that grows with it (Spines'
+/// Poison). Reads and writes [`coh_data::CombatContext::target_stacks`], the same setting as the
+/// Combat panel's row.
+#[component]
+pub fn StacksPrompt(stack: coh_data::target_stacks::TargetStack) -> Element {
+    let session = use_context::<crate::build_session::BuildSession>();
+    let count = session
+        .build
+        .read()
+        .combat
+        .target_stacks
+        .get(&stack.path)
+        .copied()
+        .unwrap_or(0);
+    let path = stack.path.clone();
+    rsx! {
+        label {
+            class: "info-rank info-stacks",
+            title: "How many {stack.name} stacks the target already carries. Each of your hits adds one. Also in the Combat panel.",
+            span { "{stack.name} stacks on the target" }
+            div { class: "slider info-stacks__slider",
+                input {
+                    r#type: "range",
+                    min: "0",
+                    max: stack.max_count.map(|max| max.to_string()).unwrap_or_default(),
+                    step: "1",
+                    value: "{count}",
+                    "aria-label": "{stack.name} stacks on the target",
+                    onchange: move |evt: Event<FormData>| {
+                        let Ok(count) = evt.value().parse::<u32>() else {
+                            return;
+                        };
+                        let path = path.clone();
+                        session.commit(move |s| {
+                            if count == 0 {
+                                s.combat.target_stacks.remove(&path);
+                            } else {
+                                s.combat.target_stacks.insert(path.clone(), count);
+                            }
+                        });
+                    },
+                }
+                span { class: "combat-value mono", "{count}" }
+            }
         }
     }
 }
