@@ -1342,9 +1342,9 @@ mod tests {
             // compile instead of inheriting this one silently.
             let expected = match loaded {
                 DatasetId::Homecoming => OpenRoute::DecodeUnstamped,
-                DatasetId::Rebirth
-                | DatasetId::Thunderspy
-                | DatasetId::Brainstorm => OpenRoute::MoveTo(DatasetId::Homecoming),
+                DatasetId::Rebirth | DatasetId::Thunderspy | DatasetId::Brainstorm => {
+                    OpenRoute::MoveTo(DatasetId::Homecoming)
+                }
             };
             assert_eq!(open_route(&text, loaded), expected, "{loaded:?}");
         }
