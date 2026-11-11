@@ -85,7 +85,7 @@
      null,
      [
       "@StdResult",
-      "Cur.kHitPoints",
+      "cur.kHitPoints",
       "target>",
       "Max.kHitPoints",
       "target>",
@@ -190,7 +190,7 @@
      null,
      [
       "@StdResult",
-      "Cur.kHitPoints",
+      "cur.kHitPoints",
       "target>",
       "Max.kHitPoints",
       "target>",
@@ -302,7 +302,7 @@
      null,
      [
       "@StdResult",
-      "Cur.kHitPoints",
+      "cur.kHitPoints",
       "target>",
       "Max.kHitPoints",
       "target>",

@@ -2124,7 +2124,6 @@
     "duration": 15,
     "isPseudoPet": true,
     "powers": [
-     "Pets.IceStorm_Sentinel.Avoid",
      "Pets.IceStorm_Sentinel.IceStorm"
     ],
     "resolvedEntities": [

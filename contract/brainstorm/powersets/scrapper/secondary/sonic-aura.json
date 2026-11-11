@@ -882,7 +882,7 @@
     [
      "MezResist",
      "Knockup",
-     0,
+     1,
      1,
      0.75,
      "Melee_Ones",
@@ -902,7 +902,7 @@
     [
      "MezResist",
      "Knockback",
-     0,
+     1,
      1,
      0.75,
      "Melee_Ones",
@@ -2425,28 +2425,7 @@
    "powerType": "Click",
    "targetType": "Teleport",
    "effectArea": "Location",
-   "procsAllowed": false,
-   "procRollSites": [
-    {
-     "power": "Pets.Sonic_Aura.Sonic_Boom_Teleport",
-     "boostsAllowed": [
-      "Range",
-      "Recharge",
-      "Knockback",
-      "Accuracy"
-     ],
-     "radius": 15,
-     "arc": 0,
-     "effectArea": "Sphere",
-     "maxTargets": 10,
-     "targetsAffected": [
-      "Foe"
-     ],
-     "targetsAutoHit": [
-      "None"
-     ]
-    }
-   ],
+   "areaFactorOverride": 3.25,
    "targetsAffected": [
     "Self"
    ],
@@ -2456,7 +2435,7 @@
    "stats": {
     "accuracy": 1,
     "range": 200,
-    "recharge": 90,
+    "recharge": 75,
     "endurance": 13.52,
     "castTime": 1
    },
@@ -2503,13 +2482,13 @@
         ],
         "recharge": 0,
         "castTime": 0,
-        "activatePeriod": 100,
+        "activatePeriod": 75,
         "effectArea": "Sphere",
         "targetsAffected": [
          "Foe"
         ],
-        "radius": 8,
-        "maxTargets": 10,
+        "radius": 15,
+        "maxTargets": 16,
         "ppmMod": 2,
         "redirectAtoms": [
          [

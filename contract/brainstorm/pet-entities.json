@@ -272026,79 +272026,6 @@
        ]
       ],
       [
-       "MaxHP",
-       null,
-       -2.5,
-       1,
-       0.5,
-       "Ranged_Heal",
-       "Max",
-       "Magnitude",
-       "Target",
-       "Any",
-       true,
-       "Replace",
-       2,
-       null,
-       null,
-       1,
-       null,
-       null,
-       null,
-       null,
-       null,
-       null,
-       [
-        "enttype",
-        "target>",
-        "critter",
-        "eq"
-       ]
-      ],
-      [
-       "MaxHP",
-       null,
-       -1,
-       1,
-       0.5,
-       "Ranged_Heal",
-       "Max",
-       "Expression",
-       "Target",
-       "Any",
-       true,
-       "Replace",
-       2,
-       null,
-       null,
-       1,
-       null,
-       null,
-       null,
-       null,
-       null,
-       null,
-       [
-        "enttype",
-        "target>",
-        "player",
-        "eq"
-       ],
-       null,
-       null,
-       null,
-       null,
-       null,
-       [
-        "Max.kHitPoints",
-        "target>",
-        "-0.08",
-        "*",
-        "@Strength",
-        "*"
-       ]
-      ],
-      [
        "Defense",
        "All",
        2.856,
@@ -272355,6 +272282,36 @@
        ]
       ],
       [
+       "MaxHP",
+       null,
+       -2.5,
+       1,
+       30,
+       "Ranged_Heal",
+       "Max",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "critter",
+        "eq"
+       ]
+      ],
+      [
        "Mez",
        "Held",
        1,
@@ -272382,6 +272339,49 @@
         "target>",
         "player",
         "eq"
+       ]
+      ],
+      [
+       "MaxHP",
+       null,
+       -1,
+       1,
+       30,
+       "Ranged_Heal",
+       "Max",
+       "Expression",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       [
+        "enttype",
+        "target>",
+        "player",
+        "eq"
+       ],
+       null,
+       null,
+       null,
+       null,
+       null,
+       [
+        "Max.kHitPoints",
+        "target>",
+        "-0.08",
+        "*",
+        "@Strength",
+        "*"
        ]
       ]
      ],
@@ -318211,25 +318211,36 @@
      "type": "Auto",
      "damage": [
       {
-       "damageType": "Fire",
+       "damageType": "Toxic",
        "scale": 0.1238,
        "table": "Melee_Damage"
       },
       {
-       "damageType": "Fire",
+       "damageType": "Toxic",
        "scale": 0.1238,
        "table": "Melee_InherentDamage",
        "chance": 0.10000000149011612
       },
       {
-       "damageType": "Fire",
+       "damageType": "Toxic",
        "scale": 0.1045,
        "table": "Melee_Damage"
       },
       {
-       "damageType": "Fire",
+       "damageType": "Toxic",
        "scale": 0.0825,
        "table": "Melee_Damage"
+      },
+      {
+       "damageType": "Toxic",
+       "scale": 0.1099,
+       "table": "Melee_Damage"
+      },
+      {
+       "damageType": "Toxic",
+       "scale": 0.1099,
+       "table": "Melee_InherentDamage",
+       "chance": 0.10000000149011612
       }
      ],
      "effects": [
@@ -318242,7 +318253,7 @@
      "atoms": [
       [
        "Damage",
-       "Fire",
+       "Toxic",
        0.1238,
        1,
        0,
@@ -318272,7 +318283,7 @@
       ],
       [
        "Damage",
-       "Fire",
+       "Toxic",
        0.1238,
        1,
        0,
@@ -318302,7 +318313,7 @@
       ],
       [
        "Damage",
-       "Fire",
+       "Toxic",
        0.1045,
        1,
        0,
@@ -318332,7 +318343,7 @@
       ],
       [
        "Damage",
-       "Fire",
+       "Toxic",
        0.0825,
        1,
        0,
@@ -318409,6 +318420,111 @@
         "target.ownPower?",
         "!",
         "&&"
+       ]
+      ],
+      [
+       "Meta",
+       null,
+       0,
+       0,
+       10,
+       "Melee_Ones",
+       "Cur",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Replace",
+       2,
+       null,
+       null,
+       0.10000000149011612,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       [
+        "Temporary_Powers.Temporary_Powers.Radiation_Melee_Contaminated",
+        "target.ownPower?",
+        "!",
+        "Temporary_Powers.Temporary_Powers.Radiation_Melee_Contaminated_Imunity",
+        "target.ownPower?",
+        "!",
+        "&&"
+       ],
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "null"
+      ],
+      [
+       "Damage",
+       "Toxic",
+       0.1099,
+       1,
+       0,
+       "Melee_Damage",
+       "Abs",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Stack",
+       2,
+       null,
+       null,
+       1,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       [
+        "arch",
+        "source.owner>",
+        "Class_Stalker",
+        "eq"
+       ]
+      ],
+      [
+       "Damage",
+       "Toxic",
+       0.1099,
+       1,
+       0,
+       "Melee_InherentDamage",
+       "Abs",
+       "Magnitude",
+       "Target",
+       "Any",
+       true,
+       "Stack",
+       2,
+       null,
+       null,
+       0.10000000149011612,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       [
+        "arch",
+        "source.owner>",
+        "Class_Stalker",
+        "eq"
        ]
       ]
      ],
@@ -379111,7 +379227,9 @@
        "table": "Melee_Ones",
        "mezTypes": [
         "Fear",
-        "Sleep"
+        "Sleep",
+        "Knockup",
+        "Knockback"
        ],
        "ignoreStrength": true
       },
@@ -379147,26 +379265,15 @@
        "scale": 0.2,
        "table": "Melee_Ones",
        "resistanceTypes": [
+        "smashing",
         "lethal",
-        "cold"
+        "fire",
+        "cold",
+        "energy",
+        "negative",
+        "psionic",
+        "toxic"
        ]
-      },
-      {
-       "type": "SelfResistance",
-       "scale": 0.3,
-       "table": "Melee_Ones",
-       "resistanceTypes": [
-        "psionic"
-       ]
-      },
-      {
-       "type": "SelfResistance",
-       "scale": -0.2,
-       "table": "Melee_Ones",
-       "resistanceTypes": [
-        "energy"
-       ],
-       "ignoreStrength": true
       },
       {
        "type": "SelfMezResistance",
@@ -379211,6 +379318,46 @@
       [
        "Mez",
        "Sleep",
+       -4,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Cur",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Mez",
+       "Knockup",
+       -4,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Cur",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1,
+       null,
+       true
+      ],
+      [
+       "Mez",
+       "Knockback",
        -4,
        1,
        10.3,
@@ -379310,7 +379457,43 @@
       ],
       [
        "Resistance",
+       "Smashing",
+       0.2,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Res",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1
+      ],
+      [
+       "Resistance",
        "Lethal",
+       0.2,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Res",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1
+      ],
+      [
+       "Resistance",
+       "Fire",
        0.2,
        1,
        10.3,
@@ -379346,8 +379529,8 @@
       ],
       [
        "Resistance",
-       "Psionic",
-       0.3,
+       "Energy",
+       0.2,
        1,
        10.3,
        "Melee_Ones",
@@ -379364,8 +379547,8 @@
       ],
       [
        "Resistance",
-       "Energy",
-       -0.2,
+       "Negative",
+       0.2,
        1,
        10.3,
        "Melee_Ones",
@@ -379378,9 +379561,43 @@
        2,
        null,
        null,
+       1
+      ],
+      [
+       "Resistance",
+       "Psionic",
+       0.2,
        1,
+       10.3,
+       "Melee_Ones",
+       "Res",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
        null,
-       true
+       null,
+       1
+      ],
+      [
+       "Resistance",
+       "Toxic",
+       0.2,
+       1,
+       10.3,
+       "Melee_Ones",
+       "Res",
+       "Magnitude",
+       "Self",
+       "Any",
+       false,
+       "Replace",
+       2,
+       null,
+       null,
+       1
       ],
       [
        "MezResist",

@@ -1765,8 +1765,7 @@
     "duration": 15,
     "isPseudoPet": true,
     "powers": [
-     "Pets.Freezing_Rain.FreezingRain",
-     "Pets.Freezing_Rain.Avoid"
+     "Pets.Freezing_Rain.FreezingRain"
     ],
     "resolvedEntities": [
      {

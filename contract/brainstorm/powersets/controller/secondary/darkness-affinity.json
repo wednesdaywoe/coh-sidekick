@@ -2733,7 +2733,7 @@
      null,
      null,
      [
-      "Cur.kHitPoints",
+      "cur.kHitPoints",
       "target>",
       "0",
       ">"

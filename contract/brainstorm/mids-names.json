@@ -104,14 +104,6 @@
   "epic.sentinel_leviathan_mastery": {
    "chum_spray": "Arctic_Breath"
   },
-  "incarnate.alpha_silent": {
-   "defense_debuff_half": "Defense_Debuff_Half",
-   "defense_debuff_rare": "Defense_Debuff_Rare",
-   "defense_debuff_uncommon": "Defense_Debuff_Uncommon",
-   "defense_debuff_very_rare": "Defense_Debuff_Very_Rare",
-   "tohit_debuff_rare": "ToHit_Debuff_Rare",
-   "tohit_debuff_very_rare": "ToHit_Debuff_Very_Rare"
-  },
   "mastermind_buff.kinetics": {
    "kinetic_transfer": "Fulcrum_Shift"
   },
@@ -370,14 +362,6 @@
   },
   "epic.sentinel_leviathan_mastery": {
    "arctic_breath": "Chum_Spray"
-  },
-  "incarnate.alpha_silent": {
-   "defense_debuff_half": "Defense_DeBuff_Half",
-   "defense_debuff_rare": "Defense_DeBuff_Rare",
-   "defense_debuff_uncommon": "Defense_DeBuff_Uncommon",
-   "defense_debuff_very_rare": "Defense_DeBuff_Very_Rare",
-   "tohit_debuff_rare": "ToHit_DeBuff_Rare",
-   "tohit_debuff_very_rare": "ToHit_DeBuff_Very_Rare"
   },
   "mastermind_buff.kinetics": {
    "fulcrum_shift": "Kinetic_Transfer"

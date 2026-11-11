@@ -2881,7 +2881,7 @@
     "radius": 10,
     "recharge": 22,
     "endurance": 20.176,
-    "castTime": 2.93,
+    "castTime": 2.8,
     "maxTargets": 10
    },
    "allowedEnhancements": [
@@ -3369,7 +3369,7 @@
     [
      "Damage",
      "Energy",
-     0.3331,
+     0.324,
      1,
      0,
      "Melee_PvPDamage",
@@ -3400,7 +3400,7 @@
     [
      "Damage",
      "Toxic",
-     0.9992,
+     0.9719,
      1,
      0,
      "Melee_PvPDamage",

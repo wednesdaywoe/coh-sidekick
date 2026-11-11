@@ -5752,11 +5752,6 @@
    "powerType": "Toggle",
    "targetType": "Ally (Alive)",
    "effectArea": "AoE",
-   "toggleIgnoreMez": [
-    "hold",
-    "sleep",
-    "stun"
-   ],
    "procsOnlyOnMainTarget": true,
    "targetsAffected": [
     "Friend"

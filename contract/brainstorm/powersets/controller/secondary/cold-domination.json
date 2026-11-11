@@ -2884,8 +2884,7 @@
     "duration": 15,
     "isPseudoPet": true,
     "powers": [
-     "Pets.Sleet.Sleet",
-     "Pets.Sleet.Avoid"
+     "Pets.Sleet.Sleet"
     ],
     "resolvedEntities": [
      {
