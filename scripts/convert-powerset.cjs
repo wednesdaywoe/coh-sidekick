@@ -1819,6 +1819,12 @@ function stampConditionalRedirectStats(power, powerJson) {
 function extractFormVariants(powerJson, archetypeId, powerType) {
   const entries = powerJson.redirect || [];
   if (entries.length < 2) return null;
+  // Precedence above every detector: a two-click PHASE table (Temporal Bomb's place/detonate
+  // pair) is not a set of alternatives the redirector picks between — the power itself flips
+  // the mode its branches select on, so the branches are the sequential halves of one cast
+  // cycle. Swapping the record would show the place phase and hide the detonation the player
+  // is planning around; the base union record IS the card. See phaseCycleTable.
+  if (phaseCycleTable(powerJson)) return null;
   // Precedence. Each of these claims the same table for a mechanism that models its forms
   // differently, and two transforms writing one power's cast would fight.
   //
@@ -1900,6 +1906,175 @@ function extractFormVariants(powerJson, archetypeId, powerType) {
     variants.push(variant);
   }
   return variants.length ? variants : null;
+}
+
+/**
+ * The never-fires display record's condition (`Remote_Bomb_Info`): the game's own constant-false
+ * program, the mirror of [`isAlwaysCondition`]'s `1`. Such a record exists to SHOW a number, and
+ * it states stats no executing branch would (`range: 7` on a power that is placed at the feet),
+ * so it is excluded wherever the executing branches decide something.
+ */
+const isNeverCondition = (condition) => {
+  const tokens = gateTokens(condition);
+  return tokens.length === 1 && tokens[0] === '0';
+};
+
+/**
+ * The single caster mode a redirect branch selects on, as `kX Source.Mode?` (positive) or
+ * `kX Source.Mode? !` (negated) — or null for a branch that reads anything wider. The exact
+ * two-shape vocabulary only; a compound like Suppressive Fire's
+ * `kIceAmmo … || kToxicAmmo … || !` reads null and is nobody's pair.
+ */
+const phaseBranchMode = (condition) => {
+  const tokens = gateTokens(condition);
+  if (tokens.length < 2 || tokens.length > 3) return null;
+  if (!/^k\w+$/.test(tokens[0]) || !MODE_READER.test(tokens[1])) return null;
+  if (tokens.length === 3 && tokens[2] !== '!') return null;
+  return tokens[0];
+};
+
+/**
+ * The caster modes PUBLISHED through this power's own grant chain — a `Set_Mode` template on
+ * the power itself, on the default redirect's record, or on a record its `Grant_Power`
+ * templates hand out (Temporal Bomb grants the bomb marker, whose activation sets
+ * `RemoteBomb`). This is what separates a PHASE table from a form table: when the mode a
+ * complementary pair selects on is flipped by the power's own grant, the branches are the
+ * sequential halves of one cast cycle rather than the alternatives a redirector picks between.
+ * The Kheldian form pairs (Gleaming Bolt and kin) select on modes the shapeshift powers set —
+ * nothing this power grants — and so stay form variants.
+ */
+function grantedPublishedModes(powerJson) {
+  const modes = new Set();
+  const readModes = (record) => {
+    for (const group of record.effects || []) {
+      for (const template of group.templates || []) {
+        const attribs = (template.attribs || []).map((a) => String(a).toLowerCase());
+        if (attribs.includes('set_mode') && template.mode_name) modes.add(template.mode_name);
+      }
+    }
+  };
+  const grantTargets = (record, out) => {
+    for (const group of record.effects || []) {
+      for (const template of group.templates || []) {
+        const attribs = (template.attribs || []).map((a) => String(a).toLowerCase());
+        if (!attribs.includes('grant_power')) continue;
+        for (const name of template.params?.power_names ?? []) {
+          const path = resolveRedirectPath(name);
+          if (!fs.existsSync(path)) continue;
+          try {
+            out.push(_readPowerFile(path));
+          } catch {
+            // An unreadable grant target says nothing about a mode; the walk continues with
+            // what it can read rather than failing the whole table over one record.
+          }
+        }
+      }
+    }
+  };
+  const roots = [powerJson];
+  const defaultRecord = defaultRedirectRecord(powerJson);
+  if (defaultRecord) roots.push(defaultRecord);
+  const granted = [];
+  for (const root of roots) {
+    readModes(root);
+    grantTargets(root, granted);
+  }
+  for (const record of granted) readModes(record);
+  return modes;
+}
+
+/**
+ * The mode a two-click PHASE table selects on — `kX Source.Mode?` beside `kX Source.Mode? !`
+ * (the place and detonate halves of one cycle), where X is a mode a power THIS power grants
+ * publishes via `Set_Mode`. Null for every other table, which is what leaves the Kheldian form
+ * pairs, the meter tables and the Energy Transfer pairs with the detectors that serve them.
+ *
+ * The never-fires display record and the dead-caster record take no side in the question and
+ * are skipped before it.
+ */
+function phaseCycleTable(powerJson) {
+  const entries = (powerJson.redirect || []).filter((entry) => (
+    !isAlwaysCondition(entry.condition_expression)
+    && !isNeverCondition(entry.condition_expression)
+    && !isDeadStateBranch(entry.condition_expression)
+  ));
+  if (entries.length < 2) return null;
+  const pairs = new Map();
+  for (const entry of entries) {
+    const mode = phaseBranchMode(entry.condition_expression);
+    if (!mode) continue;
+    const slot = pairs.get(mode) ?? {};
+    slot[entry.condition_expression.length === 3 ? 'neg' : 'pos'] = entry.name;
+    pairs.set(mode, slot);
+  }
+  const complementary = [...pairs.entries()].filter(([, slot]) => slot.pos && slot.neg);
+  if (!complementary.length) return null;
+  // The gate token spells the mode with the game's `k` prefix; `Set_Mode`'s `mode_name`
+  // publishes it bare. Compare through the prefix.
+  const published = grantedPublishedModes(powerJson);
+  const attributed = (mode) => {
+    if (published.has(mode)) return mode;
+    const bare = mode.startsWith('k') ? mode.slice(1) : mode;
+    return published.has(bare) ? bare : null;
+  };
+  const claimed = complementary
+    .map(([mode, slot]) => [attributed(mode), slot])
+    .filter(([mode]) => mode);
+  if (!claimed.length) return null;
+  // A table that pairs a claimed phase mode with an unattributed one is a shape the corpus
+  // does not hold; claiming only the claimed pair would half-read the table (Rule 1), so it
+  // is reported and left to the detectors it has today.
+  if (claimed.length !== complementary.length) {
+    console.warn(
+      `  [phase-cycle] ${powerJson.name}: mode pair(s) `
+      + `${complementary.map(([m]) => m).join(', ')} but only ${claimed.join(', ')} `
+      + 'is published by a power it grants — left to extractFormVariants',
+    );
+    return null;
+  }
+  return claimed[0][0];
+}
+
+/**
+ * The cycle's costs, stated branch by branch on records the base shell leaves unset: the place
+ * branches carry the cast time and endurance (2.77s / 26 on Temporal Bomb), the detonate branch
+ * the recharge (150s traps, 360s blaster — each record's own number). The base record states
+ * only accuracy, so the card had no recharge at all and no cast/endurance of its own.
+ *
+ * The union of the EXECUTING branches only — the never-fires display record is excluded on
+ * principle, because the union answers what a cast pays and a record that never fires pays
+ * nothing. (Its own stats — accuracy 2, range 7, endurance 26, castTime 2.77 — are a subset
+ * of the executing branches' union either way; the attach reach of 7ft rides in on the
+ * Remote_Bomb_Target branch, which does fire.) Two branches stating one key differently is
+ * not a union: the regen throws, because guessing a tiebreak would ship a number nobody
+ * authored.
+ */
+function stampPhaseCycleStats(powerJson) {
+  if (!phaseCycleTable(powerJson)) return null;
+  const merged = {};
+  for (const entry of powerJson.redirect || []) {
+    if (
+      isAlwaysCondition(entry.condition_expression)
+      || isNeverCondition(entry.condition_expression)
+      || isDeadStateBranch(entry.condition_expression)
+    ) continue;
+    const branchPath = resolveRedirectPath(entry.name);
+    if (!fs.existsSync(branchPath)) {
+      console.warn(`  [phase-cycle] ${powerJson.name}: ${entry.name} has no exported record`);
+      continue;
+    }
+    for (const [key, value] of Object.entries(powerStats(_readPowerFile(branchPath)))) {
+      if (!value) continue;
+      if (merged[key] !== undefined && merged[key] !== value) {
+        throw new Error(
+          `phase-cycle stats: ${powerJson.name}: its branches state ${key} as both `
+          + `${merged[key]} and ${value} — no union exists`,
+        );
+      }
+      merged[key] = value;
+    }
+  }
+  return Object.keys(merged).length ? merged : null;
 }
 
 /**
@@ -10144,7 +10319,26 @@ function convertPower(powerJson, availableLevel, archetypeId, powerType, provena
     power.modeVariants = modeVariants;
   }
 
-  // Alternate records the redirect table selects by a condition the engine evaluates — the
+  // A two-click PHASE power (Temporal Bomb) ships no formVariants and needs the pass below to
+  // know why: its table is the sequential halves of one cast cycle, not alternatives. Its
+  // phases state the costs the shell record leaves unset — the place branches carry cast and
+  // endurance, the detonate branch the recharge — so they are stamped onto the base's own
+  // stats here, before stampConditionalRedirectStats diffs against what the card shows. See
+  // stampPhaseCycleStats.
+  const phaseStats = stampPhaseCycleStats(powerJson);
+  if (phaseStats) {
+    for (const [key, value] of Object.entries(phaseStats)) {
+      if (power.stats[key] && power.stats[key] !== value) {
+        throw new Error(
+          `phase-cycle stats: ${powerJson.name}: the base record states ${key} `
+          + `${power.stats[key]} while its branches state ${value} — no union exists`,
+        );
+      }
+      power.stats[key] = value;
+    }
+  }
+
+  // Alternate records the redirect table selects by a condition the ENGINE evaluates — the
   // tables neither of the two detectors above can read (Energy Transfer's complementary pair,
   // Water Jet's and Rending Flurry's stack gates, the Crab/Bane weapon forks). See
   // extractFormVariants.
