@@ -252,5 +252,6 @@ fn StatsSheet() -> Element {
                 }
             }
         }
+        crate::key_stats::KeyStatChooser {}
     }
 }

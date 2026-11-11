@@ -83,6 +83,7 @@ pub fn BuildBar(database: Option<Db>) -> Element {
                 DashCounter { label: "Pwr" }
                 DashCounter { label: "Slot" }
             }
+            crate::key_stats::KeyStatStrip {}
         }
     }
 }

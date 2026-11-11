@@ -40,6 +40,7 @@ mod hit_chance_alert_store;
 mod icon_select;
 mod inherent_fold_store;
 mod inherents;
+mod key_stats;
 mod layout_store;
 mod layout_sync;
 mod level_control;

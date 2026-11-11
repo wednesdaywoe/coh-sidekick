@@ -299,6 +299,7 @@ pub fn Shell() -> Element {
     // The stats the user is chasing with set bonuses: click a dashboard row to track it. After
     // the alert above, whose mez opt-out the auto-tracking reads.
     crate::tracked_stats::use_tracked_stats_provider();
+    crate::key_stats::use_key_stats_provider();
     // The detailed stat sheet, hosted below both layout roots for the same containment reason.
     let detailed_totals_open = use_signal(|| false);
     use_context_provider(|| panels::detailed_totals::DetailedTotalsOpen(detailed_totals_open));

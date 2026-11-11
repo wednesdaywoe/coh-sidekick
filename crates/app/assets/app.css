@@ -7858,6 +7858,36 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .build-bar__identity.is-unstarted { color: var(--action-active); border-color: var(--action-active); }
 .build-bar__identity-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* ---- key stats (key_stats.rs) ----
+   Four numbers under the build's name, a full row of the bar. Each is a button into the
+   Stats sheet; the value carries its stat's colour, the label stays quiet. */
+.key-stats {
+  flex: 1 0 100%;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px;
+}
+.key-stats__cell {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;
+  gap: 1px; min-width: 0;
+  min-height: 44px; padding: 4px 6px;
+  background: var(--surface-raised);
+  border: 1px solid var(--seam-raised);
+  border-radius: var(--r);
+  font-family: var(--font-chrome);
+  cursor: pointer; text-align: left;
+}
+/* A long label ("Def Smashing") wraps to a second line rather than losing its end on a
+   360-390px phone; the cells share a height, so the values still line up along the bottom. */
+.key-stats__label {
+  max-width: 100%; overflow-wrap: anywhere; line-height: 1.15;
+  font-size: 11px; font-weight: 600;
+  color: var(--text-dim);
+}
+.key-stats__value { font-size: 14px; font-weight: 700; white-space: nowrap; }
+.key-stats-chooser__note { margin: 0 0 8px; font-size: 12px; color: var(--text-dim); }
+.key-stats-chooser__row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.key-stats-chooser__place { width: 16px; color: var(--text-faint); font-weight: 700; }
+.key-stats-chooser__select { flex: 1 1 auto; min-width: 0; min-height: 40px; }
+
 @media (min-width: 900px) {
   .build-bar { display: none; }
 }
@@ -7866,7 +7896,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    and the three that are not (level, Level Up, undo/redo) ride the build bar above. Drawing the
    header and the quickbar as well spent half a phone's first screen on a second copy of the same
    controls. The quickbar's two app actions with no menu row elsewhere — What's new and Discord —
-   are rows in the Help menu, which the Menu sheet lists. */
+   are rows in the Help menu, which the More sheet lists. */
 @media (max-width: 899.98px) {
   .shell-header,
   .quickbar { display: none; }
