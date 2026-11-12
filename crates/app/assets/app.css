@@ -7960,6 +7960,21 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   white-space: normal;
 }
 .pick-sheet__pools { margin-top: 16px; }
+/* The Slots pass: a row per power with a stepper at its end. The dots are the power's room,
+   filled for the slots it has. */
+.phone-pick--slots { cursor: default; }
+.phone-pick--slots .phone-pick__slots { margin-top: 4px; }
+.phone-pick__dot.is-off { background: none; box-shadow: inset 0 0 0 1px var(--text-faint); }
+.phone-stepper { display: flex; align-items: center; gap: 6px; }
+.phone-stepper__step {
+  width: 44px; height: 44px;
+  border: 1px solid var(--seam-raised); border-radius: var(--r);
+  background: var(--surface-raised); color: var(--text);
+  font: 700 20px var(--font-chrome);
+  cursor: pointer;
+}
+.phone-stepper__step:disabled { color: var(--text-faint); opacity: 0.5; cursor: default; }
+.phone-stepper__count { min-width: 14px; text-align: center; font-weight: 700; }
 
 /* ---- pinned powers (beta `PinnedPowersBar`) ----
    The tracked powers, each with the perma number the engine's own projection row

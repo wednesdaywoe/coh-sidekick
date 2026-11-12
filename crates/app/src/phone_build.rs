@@ -9,9 +9,12 @@
 use crate::build_session::BuildSession;
 use crate::level_control::TargetSlot;
 use crate::mobile_nav::{OpenSheet, Sheet};
-use crate::panels::powers::{BuildBudget, PickSheetLevel};
+use crate::panels::powers::{
+    add_slot_to_power, remove_slot_from_power, slot_room, BuildBudget, PickSheetLevel,
+};
 use crate::panels::powers_by_level::{deal_picks, PickCell};
 use crate::shell::Db;
+use crate::view::power_view::resolve_power_def;
 use dioxus::prelude::*;
 
 /// The three passes. Powers first, since nothing else can start until a power is chosen.
@@ -63,6 +66,22 @@ fn set_label(database: &Db, set_id: &str) -> String {
         .unwrap_or_else(|| crate::naming::pool_name(set_id, database))
 }
 
+/// The powers the Slots and Enhance passes list: the picks in level order, then the granted
+/// inherents that take enhancements (Health, Stamina, Sprint and the like), which players slot
+/// too. Grants that take none (the archetype inherents) have nothing to do on either pass.
+pub(crate) fn slotting_powers<'a>(
+    database: &Db,
+    build: &'a coh_data::CharacterState,
+) -> Vec<&'a coh_data::SelectedPower> {
+    let mut picks: Vec<&coh_data::SelectedPower> = build.picked_powers().collect();
+    picks.sort_by_key(|power| power.level);
+    let inherents = build.inherents.iter().filter(|power| {
+        resolve_power_def(database, &power.powerset, &power.internal_name)
+            .is_some_and(|def| def.accepts_enhancements())
+    });
+    picks.into_iter().chain(inherents).collect()
+}
+
 /// The switch: three buttons, each with how far that pass has got.
 #[component]
 pub fn JobSwitch(database: Option<Db>) -> Element {
@@ -76,14 +95,16 @@ pub fn JobSwitch(database: Option<Db>) -> Element {
             .and_then(|db| db.leveling_schedule.as_ref())
             .map(|schedule| schedule.total_power_picks_at_level(build.level));
         let picks = build.picked_powers().count();
-        let (filled, total) = build
-            .picked_powers()
-            .fold((0, 0), |(filled, total), power| {
-                (
-                    filled + power.slots.iter().filter(|slot| slot.is_some()).count(),
-                    total + power.slots.len(),
-                )
-            });
+        let listed = database
+            .as_ref()
+            .map(|db| slotting_powers(db, &build))
+            .unwrap_or_default();
+        let (filled, total) = listed.iter().fold((0, 0), |(filled, total), power| {
+            (
+                filled + power.slots.iter().filter(|slot| slot.is_some()).count(),
+                total + power.slots.len(),
+            )
+        });
         (pick_budget.map(|budget| (picks, budget)), (filled, total))
     };
     let slots = slot_budget();
@@ -271,6 +292,135 @@ pub fn PickSheet(level: u8, database: Db) -> Element {
             crate::panels::powers::AvailablePanel { database: database.clone(), picks_only: true }
             h3 { class: "popover-inline__title pick-sheet__pools", "Power pools" }
             crate::panels::powers::PoolsPanel { database }
+        }
+    }
+}
+
+/// The Slots pass: each power with its slot count and a minus and plus button, under how many
+/// slots are left to place. The buttons' limits are the power card's own ([`slot_room`]).
+#[component]
+pub fn SlotsJob(database: Db) -> Element {
+    let session = use_context::<BuildSession>();
+    let level_up = *use_context::<crate::level_control::LevelUpMode>().0.read();
+    let build = session.build.read();
+    let budget = database
+        .leveling_schedule
+        .as_ref()
+        .map(|schedule| schedule.total_slots_at_level(build.level));
+    let used = coh_data::placed_budget_slots(&build);
+    struct Row {
+        key: String,
+        set_id: String,
+        ident: String,
+        level: Option<u8>,
+        name: String,
+        slots: usize,
+        room: usize,
+        add: bool,
+        remove: bool,
+    }
+    let rows: Vec<Row> = slotting_powers(&database, &build)
+        .into_iter()
+        .map(|power| {
+            let def = resolve_power_def(&database, &power.powerset, &power.internal_name);
+            let (max_add, max_remove) = slot_room(def, power, budget, used);
+            // The power's whole room, as if the budget were endless, so a spent budget still
+            // shows how far each power could go.
+            let (unbounded, _) = slot_room(def, power, Some(usize::MAX), 0);
+            Row {
+                key: power.address(),
+                set_id: power.powerset.clone(),
+                ident: power.internal_name.clone(),
+                level: (!power.is_locked && power.level > 0).then_some(power.level),
+                name: crate::naming::power_label(
+                    Some(&database),
+                    &power.powerset,
+                    &power.internal_name,
+                ),
+                slots: power.slots.len(),
+                room: power.slots.len() + unbounded,
+                add: max_add > 0,
+                remove: max_remove > 0,
+            }
+        })
+        .collect();
+    let left = budget.map(|budget| budget.saturating_sub(used));
+    let empty = build.picked_powers().next().is_none();
+    drop(build);
+
+    rsx! {
+        div { class: "phone-job",
+            p { class: "phone-job__note",
+                match left {
+                    Some(left) => rsx! {
+                        b { class: "mono", "{left}" }
+                        " extra slots left to place. Each power starts with one, and most take up to six."
+                    },
+                    None => rsx! { "This dataset carries no leveling schedule, so the slot budget is unknown." },
+                }
+            }
+            if empty {
+                p { class: "phone-job__note", "Choose some powers first." }
+            }
+            ol { class: "phone-picks",
+                for row in rows {
+                    li { key: "{row.key}",
+                        div { class: "phone-pick phone-pick--slots",
+                            span { class: "phone-pick__level mono",
+                                if let Some(level) = row.level { "{level}" } else { "·" }
+                            }
+                            span { class: "phone-pick__body",
+                                span { class: "phone-pick__name", "{row.name}" }
+                                span { class: "phone-pick__slots", "aria-hidden": "true",
+                                    for dot in 0..row.room {
+                                        span {
+                                            key: "{dot}",
+                                            class: if dot < row.slots { "phone-pick__dot" } else { "phone-pick__dot is-off" },
+                                        }
+                                    }
+                                }
+                            }
+                            span { class: "phone-stepper",
+                                button {
+                                    class: "phone-stepper__step",
+                                    r#type: "button",
+                                    disabled: !row.remove,
+                                    "aria-label": "Remove a slot from {row.name}",
+                                    onclick: {
+                                        let (set_id, ident, database) = (row.set_id.clone(), row.ident.clone(), database.clone());
+                                        move |_| {
+                                            let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
+                                            session.commit(move |state| {
+                                                remove_slot_from_power(state, &set_id, &ident, database.leveling_schedule.as_ref());
+                                            });
+                                        }
+                                    },
+                                    "−"
+                                }
+                                span { class: "phone-stepper__count mono", "{row.slots}" }
+                                button {
+                                    class: "phone-stepper__step",
+                                    r#type: "button",
+                                    disabled: !row.add,
+                                    "aria-label": "Add a slot to {row.name}",
+                                    onclick: {
+                                        let (set_id, ident, database) = (row.set_id.clone(), row.ident.clone(), database.clone());
+                                        move |_| {
+                                            let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
+                                            session.commit(move |state| {
+                                                let leveling = database.leveling_schedule.as_ref();
+                                                let budget = leveling.map_or(0, |schedule| schedule.total_slots_at_level(state.level));
+                                                add_slot_to_power(state, &set_id, &ident, budget, leveling, level_up);
+                                            });
+                                        }
+                                    },
+                                    "+"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

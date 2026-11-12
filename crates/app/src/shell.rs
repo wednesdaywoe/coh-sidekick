@@ -1289,12 +1289,15 @@ pub fn Shell() -> Element {
             }
         }
 
-        // Mobile view (<900px): the Powers pass of the Build tab, or until the Slots and
-        // Enhance passes have lists of their own, the flat stack with its independent ordering.
+        // Mobile view (<900px): the Build tab's Powers or Slots pass, or until the Enhance pass
+        // has a list of its own, the flat stack with its independent ordering.
         main { class: "grid-root mobile-stack",
             match &*db.read() {
                 Some(Ok(database)) if phone_job() == crate::phone_build::Job::Powers => rsx! {
                     crate::phone_build::PowersJob { database: Db(database.clone()) }
+                },
+                Some(Ok(database)) if phone_job() == crate::phone_build::Job::Slots => rsx! {
+                    crate::phone_build::SlotsJob { database: Db(database.clone()) }
                 },
                 Some(Ok(database)) => {
                     let db = Db(database.clone());

@@ -2938,34 +2938,7 @@ pub fn PickedPowerCard(
             .map(|schedule| schedule.total_slots_at_level(build.level))
     };
     let slots_used = coh_data::placed_budget_slots(&session.build.read());
-    // How many slots this power can still gain: the smaller of its per-power room and the
-    // remaining global budget. The rightward half of the stepper drag's clamp — a dataset
-    // without a schedule yields 0 (fail-loud: no unbounded adds).
-    //
-    // The per-power ceiling is the power's OWN `maxSlots` where the export states one, not the
-    // flat six: several powers accept four, and the ones the game grants without slotting
-    // accept none. `MAX_USER_SLOTS_PER_POWER` remains the fallback for a power whose wire
-    // omits the field, and the structural cap on anything the picker can reach.
-    let stated_cap = power_def
-        .and_then(|def| def.max_slots())
-        .map_or(coh_data::MAX_USER_SLOTS_PER_POWER, |cap| {
-            usize::from(cap).min(coh_data::MAX_USER_SLOTS_PER_POWER)
-        });
-    // A power that accepts no enhancement category takes no slots at all, whatever its stated
-    // cap — which is how the archetype inherents are marked (an explicit empty
-    // `allowedEnhancements`, their `maxSlots` being absent rather than zero).
-    let slottable = power_def.is_none_or(|def| def.accepts_enhancements());
-    let per_power_room = if slottable {
-        (stated_cap + inherent_slots).saturating_sub(power.slots.len())
-    } else {
-        0
-    };
-    let budget_room = slot_budget.map_or(0, |budget| budget.saturating_sub(slots_used));
-    let max_add = per_power_room.min(budget_room);
-    // The leftward half. Only the band between the free base slot and the trailing inherent
-    // auto-slots is the user's to give back, which is the same band `remove_slot_from_power`
-    // pops from, one slot per call.
-    let max_remove = power.slots.len().saturating_sub(1 + inherent_slots);
+    let (max_add, max_remove) = slot_room(power_def, &power, slot_budget, slots_used);
     // How many of this power's slots hold a piece — the bulk clear's only gate, and the
     // count that decides whether it is offered at all.
     let filled_slots = power.slots.iter().flatten().count();
@@ -6666,7 +6639,43 @@ fn clear_all_enhancements(
 /// its own exported `maxSlots` (6, 4, or none at all), which [`PickedPowerCard`] reads off
 /// the def to decide whether to offer a `+` in the first place. This function takes no
 /// database handle and so cannot see that; it is the backstop, not the rule.
-fn add_slot_to_power(
+/// How many slots `power` can still gain, and how many the user can give back — the two clamps
+/// on the card's slot stepper and on the phone's Slots pass.
+///
+/// Gain is the smaller of the power's own room and the build's remaining budget; a dataset with
+/// no schedule (`slot_budget` `None`) yields 0, never an unbounded add. The per-power ceiling is
+/// the power's OWN `maxSlots` where the export states one, not the flat six: several powers
+/// accept four, and the ones the game grants without slotting accept none.
+/// `MAX_USER_SLOTS_PER_POWER` remains the fallback for a power whose wire omits the field. A
+/// power that accepts no enhancement category takes no slots at all, whatever its stated cap —
+/// which is how the archetype inherents are marked.
+///
+/// Give-back is the band between the free base slot and the trailing inherent auto-slots, the
+/// same band [`remove_slot_from_power`] pops from.
+pub(crate) fn slot_room(
+    power_def: Option<&coh_data::Power>,
+    power: &coh_data::SelectedPower,
+    slot_budget: Option<usize>,
+    slots_used: usize,
+) -> (usize, usize) {
+    let inherent_slots = power.inherent_slot_count as usize;
+    let stated_cap = power_def
+        .and_then(|def| def.max_slots())
+        .map_or(coh_data::MAX_USER_SLOTS_PER_POWER, |cap| {
+            usize::from(cap).min(coh_data::MAX_USER_SLOTS_PER_POWER)
+        });
+    let slottable = power_def.is_none_or(|def| def.accepts_enhancements());
+    let per_power_room = if slottable {
+        (stated_cap + inherent_slots).saturating_sub(power.slots.len())
+    } else {
+        0
+    };
+    let budget_room = slot_budget.map_or(0, |budget| budget.saturating_sub(slots_used));
+    let max_remove = power.slots.len().saturating_sub(1 + inherent_slots);
+    (per_power_room.min(budget_room), max_remove)
+}
+
+pub(crate) fn add_slot_to_power(
     state: &mut coh_data::CharacterState,
     powerset_id: &str,
     power_internal_name: &str,
@@ -6726,7 +6735,7 @@ fn add_slot_to_power(
 /// carries only its base + inherent slots. Distinct from
 /// [`remove_enhancement_from_slot`], which clears a slot's enhancement but keeps
 /// the slot.
-fn remove_slot_from_power(
+pub(crate) fn remove_slot_from_power(
     state: &mut coh_data::CharacterState,
     powerset_id: &str,
     power_internal_name: &str,
