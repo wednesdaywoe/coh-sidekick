@@ -8028,7 +8028,7 @@ div.phone-card__head { cursor: default; }
    the name changes the power, this opens its slots. */
 .phone-card__toggle {
   flex: none;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 5px;
   /* Wide enough for six circles, so every card's circles line up down the list. */
   min-width: 108px;
   margin: 6px;
@@ -8038,6 +8038,8 @@ div.phone-card__head { cursor: default; }
   box-shadow: 0 1px 0 color-mix(in srgb, black 35%, transparent);
   color: var(--text); font: 600 12px var(--font-chrome);
   cursor: pointer;
+  /* The open state says it was tapped; the browser's flash over it only dims the slot colours. */
+  -webkit-tap-highlight-color: transparent;
 }
 .phone-card.is-open .phone-card__toggle {
   color: var(--action-active); border-color: var(--action-active);
@@ -8065,8 +8067,8 @@ div.phone-card__head { cursor: default; }
 .phone-card__room { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .phone-card__hint { font-size: 12px; color: var(--text-faint); }
 .phone-card__left { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
-/* The unfolded slots and the drag handle. The handle sits outside the wrapping cells, as on the
-   desktop card, so a drag that adds ghosts never pushes it out from under the finger. */
+/* The unfolded slots and the drag handle. The handle follows the last slot, as on the desktop
+   card, and sits outside the cells box so the cells never wrap it onto a new row mid-drag. */
 .phone-slots {
   display: flex; align-items: flex-start; gap: 8px;
   padding: 6px; margin: -6px;
@@ -8074,7 +8076,7 @@ div.phone-card__head { cursor: default; }
 }
 .phone-slots.is-active { border-color: var(--action-active); background: color-mix(in srgb, var(--action-active) 8%, transparent); }
 .phone-slots:has(.slot-handle-count--remove) { border-color: var(--action-danger); background: color-mix(in srgb, var(--action-danger) 8%, transparent); }
-.phone-slots__cells { flex: 1 1 auto; display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.phone-slots__cells { flex: 0 1 auto; display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
 .phone-slots .slot-handle { flex: none; width: 40px; height: 40px; font-size: 16px; }
 .phone-enh.is-ghost { border: 1px dashed var(--action-active); background: color-mix(in srgb, var(--action-active) 12%, transparent); }
 .phone-enh.is-doomed { opacity: 0.4; outline: 1px dashed var(--action-danger); outline-offset: 1px; }
