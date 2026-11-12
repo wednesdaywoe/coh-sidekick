@@ -7975,6 +7975,26 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 }
 .phone-stepper__step:disabled { color: var(--text-faint); opacity: 0.5; cursor: default; }
 .phone-stepper__count { min-width: 14px; text-align: center; font-weight: 700; }
+/* The Enhance pass: a head that opens the power's first empty slot, and a row of small slot
+   buttons under it, each opening its own slot. */
+.phone-pick--enhance { display: flex; flex-direction: column; align-items: stretch; gap: 6px; cursor: default; }
+.phone-pick__head {
+  display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: 10px;
+  min-height: 36px; padding: 0;
+  border: 0; background: none; color: var(--text); text-align: left;
+  cursor: pointer;
+}
+.phone-pick__open { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+.phone-pick__open.is-wanting { color: var(--action-active); font-weight: 700; }
+.phone-pick__enh { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 46px; }
+.phone-enh {
+  width: 40px; height: 40px; padding: 0;
+  border: 1px solid var(--seam-raised); border-radius: 50%;
+  background: var(--surface-raised);
+  overflow: hidden; cursor: pointer;
+}
+.phone-enh.is-empty { border-style: dashed; border-color: var(--text-faint); background: none; }
+.phone-enh__art { display: block; width: 100%; height: 100%; object-fit: contain; }
 
 /* ---- pinned powers (beta `PinnedPowersBar`) ----
    The tracked powers, each with the perma number the engine's own projection row

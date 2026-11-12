@@ -11,6 +11,7 @@ use crate::level_control::TargetSlot;
 use crate::mobile_nav::{OpenSheet, Sheet};
 use crate::panels::powers::{
     add_slot_to_power, remove_slot_from_power, slot_room, BuildBudget, PickSheetLevel,
+    PickerDestination, PickerOpen, PickerTarget,
 };
 use crate::panels::powers_by_level::{deal_picks, PickCell};
 use crate::shell::Db;
@@ -418,6 +419,133 @@ pub fn SlotsJob(database: Db) -> Element {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// The Enhance pass: each power with its slots drawn small, and how many are empty. Tapping a
+/// power opens the enhancement picker on its first empty slot (the picker fills on from there);
+/// tapping one slot opens that slot. The picker is the desktop's own, so every kind of
+/// enhancement it offers is offered here.
+#[component]
+pub fn EnhanceJob(database: Db) -> Element {
+    let session = use_context::<BuildSession>();
+    let picker = use_context::<PickerOpen>().0;
+    let build = session.build.read();
+    struct Row {
+        key: String,
+        set_id: String,
+        ident: String,
+        level: Option<u8>,
+        name: String,
+        slots: Vec<Option<String>>,
+        empty: usize,
+    }
+    let rows: Vec<Row> = slotting_powers(&database, &build)
+        .into_iter()
+        .map(|power| Row {
+            key: power.address(),
+            set_id: power.powerset.clone(),
+            ident: power.internal_name.clone(),
+            level: (!power.is_locked && power.level > 0).then_some(power.level),
+            name: crate::naming::power_label(
+                Some(&database),
+                &power.powerset,
+                &power.internal_name,
+            ),
+            slots: power
+                .slots
+                .iter()
+                .map(|slot| {
+                    slot.as_ref().map(|enhancement| {
+                        crate::panels::powers::slot_icon_url(enhancement, &database)
+                            .unwrap_or_default()
+                    })
+                })
+                .collect(),
+            empty: power.slots.iter().filter(|slot| slot.is_none()).count(),
+        })
+        .collect();
+    let empty_build = build.picked_powers().next().is_none();
+    drop(build);
+    let first_empty =
+        |slots: &[Option<String>]| slots.iter().position(Option::is_none).unwrap_or(0) as u8;
+    let next = rows.iter().find(|row| row.empty > 0).map(|row| {
+        (
+            row.set_id.clone(),
+            row.ident.clone(),
+            row.name.clone(),
+            first_empty(&row.slots),
+        )
+    });
+    let open = move |set_id: String, ident: String, slot_index: u8| {
+        let mut picker = picker;
+        picker.set(Some(PickerTarget {
+            powerset_id: set_id,
+            power_internal_name: ident,
+            slot_index,
+            destination: PickerDestination::Build,
+        }));
+    };
+
+    rsx! {
+        div { class: "phone-job",
+            p { class: "phone-job__note",
+                "Tap a power to fill its empty slots, or one slot to change what is in it."
+            }
+            if empty_build {
+                p { class: "phone-job__note", "Choose some powers first." }
+            }
+            ol { class: "phone-picks",
+                for row in rows {
+                    li { key: "{row.key}",
+                        div { class: "phone-pick phone-pick--enhance",
+                            button {
+                                class: "phone-pick__head",
+                                r#type: "button",
+                                onclick: {
+                                    let (set_id, ident, at) = (row.set_id.clone(), row.ident.clone(), first_empty(&row.slots));
+                                    move |_| open(set_id.clone(), ident.clone(), at)
+                                },
+                                span { class: "phone-pick__level mono",
+                                    if let Some(level) = row.level { "{level}" } else { "·" }
+                                }
+                                span { class: "phone-pick__name", "{row.name}" }
+                                span { class: if row.empty > 0 { "phone-pick__open is-wanting" } else { "phone-pick__open" },
+                                    if row.empty > 0 { "{row.empty} empty ›" } else { "Full ›" }
+                                }
+                            }
+                            span { class: "phone-pick__enh",
+                                for (index, slot) in row.slots.iter().cloned().enumerate() {
+                                    button {
+                                        key: "{index}",
+                                        class: if slot.is_some() { "phone-enh" } else { "phone-enh is-empty" },
+                                        r#type: "button",
+                                        "aria-label": if slot.is_some() { "Slot {index + 1} of {row.name}" } else { "Empty slot {index + 1} of {row.name}" },
+                                        onclick: {
+                                            let (set_id, ident) = (row.set_id.clone(), row.ident.clone());
+                                            move |_| open(set_id.clone(), ident.clone(), index as u8)
+                                        },
+                                        if let Some(url) = slot.as_deref().filter(|url| !url.is_empty()) {
+                                            img { class: "phone-enh__art", src: "{url}", alt: "" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if let Some((set_id, ident, name, at)) = next {
+                div { class: "phone-job__foot",
+                    button {
+                        class: "phone-job__cta",
+                        r#type: "button",
+                        onclick: move |_| open(set_id.clone(), ident.clone(), at),
+                        "Fill the next empty slots: {name}"
                     }
                 }
             }

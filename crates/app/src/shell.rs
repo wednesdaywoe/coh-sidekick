@@ -1289,8 +1289,8 @@ pub fn Shell() -> Element {
             }
         }
 
-        // Mobile view (<900px): the Build tab's Powers or Slots pass, or until the Enhance pass
-        // has a list of its own, the flat stack with its independent ordering.
+        // Mobile view (<900px): the Build tab's three passes. The flat stack below them is
+        // unreachable on a phone now; phone-build-flow-10 moves its panels to the Stats sheet.
         main { class: "grid-root mobile-stack",
             match &*db.read() {
                 Some(Ok(database)) if phone_job() == crate::phone_build::Job::Powers => rsx! {
@@ -1298,6 +1298,9 @@ pub fn Shell() -> Element {
                 },
                 Some(Ok(database)) if phone_job() == crate::phone_build::Job::Slots => rsx! {
                     crate::phone_build::SlotsJob { database: Db(database.clone()) }
+                },
+                Some(Ok(database)) if phone_job() == crate::phone_build::Job::Enhance => rsx! {
+                    crate::phone_build::EnhanceJob { database: Db(database.clone()) }
                 },
                 Some(Ok(database)) => {
                     let db = Db(database.clone());
