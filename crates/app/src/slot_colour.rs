@@ -3,7 +3,8 @@
 //! The game paints every enhancement on a coloured ball by what it boosts: red for damage,
 //! yellow for accuracy, purple for defense. Set pieces take their set type's ball, so every
 //! damage set is red. The colours are read off that art (`assets/img/Enhancements/Components/
-//! POGS`), from the band across each ball's middle where the true colour sits.
+//! POGS`), from the band across each ball's middle where the true colour sits, and checked
+//! against the game's own set icons, which agree on every hue but resistance's (see `POGS`).
 
 use crate::shell::Db;
 use coh_data::{Enhancement, EnhancementKind, IoSet};
@@ -17,7 +18,10 @@ const POGS: [(&str, &str); 32] = [
     ("CONE_RANGE", "#59772b"),
     ("CONFUSION_DURATION", "#7002ce"),
     ("DAMAGE", "#f00000"),
-    ("DAMAGE_RESIST", "#00c7c8"),
+    // Not the art: `E_POG_DAMAGE_RESIST.png` is teal, which no resistance set in the game wears.
+    // The game's resistance icons sit on a lavender barely pinker than Defense's; the owner chose
+    // to push it to a clear pink (2026-11-12) so the two read apart on a small dot.
+    ("DAMAGE_RESIST", "#d86fb8"),
     ("DEBUFF_DAMAGE", "#800000"),
     ("DEBUFF_DEFENSE", "#500d5e"),
     ("DEBUFF_TO_HIT", "#857e00"),
