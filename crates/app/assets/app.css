@@ -2226,6 +2226,15 @@ button.power-pick--empty {
   color: var(--text);
 }
 .power-row.is-picked:hover .power-row__level { background: var(--action-danger); }
+/* In a phone's level sheet, a power taken at another level: refused here, but still marked as
+   held with the picked pill, so it doesn't read as one the build hasn't reached yet. */
+.power-row.is-unpickable.is-taken { opacity: 0.6; }
+.power-row.is-taken .power-row__level {
+  border-radius: 999px;
+  background: var(--action-active);
+  color: var(--surface-app);
+  text-align: center; line-height: 15px;
+}
 
 /* Faulted: the power's prerequisite expression could not be read, so the picker refuses to
    guess which way it would have gone. Marked, not hidden (CLAUDE.md Rule 1). */
@@ -3136,6 +3145,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
      power it commits — in the stacked form the pane is short and the button is already the
      nearest thing to the thumb. */
   .pool-picker__commit { margin-top: 0; }
+  /* Nothing previewed yet: the list gets the whole window, since each row has its own Take. */
+  .pool-picker__preview:has(> .hint:only-child) { display: none; }
 }
 
 /* The commit block. A click on a power row takes it too; this is the same act spelled out,
@@ -7967,14 +7978,26 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   font: 700 15px var(--font-chrome);
   cursor: pointer;
 }
-/* A pick sheet's rows say why they refuse, under the name: a phone has no hover title. */
+/* A pick sheet's rows say why they refuse, at the row's end: a phone has no hover title. On
+   the same line as the name, so taking a power never changes a row's height. */
 .power-row__note {
-  display: block;
+  flex: 0 1 auto; max-width: 50%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   font-size: 11.5px; font-weight: 500; font-style: normal;
   color: var(--text-dim);
-  white-space: normal;
 }
 .pick-sheet__pools { margin-top: 16px; }
+/* A pool power and its Take button, side by side, so taking one needs no scroll to the preview. */
+.pool-power { display: flex; gap: 6px; align-items: stretch; }
+.pool-power > .power-row { flex: 1 1 auto; min-width: 0; }
+.pool-power__take {
+  flex: none; padding: 0 14px;
+  border: 1px solid var(--action-active); border-radius: var(--r);
+  background: none; color: var(--action-active);
+  font: 600 13px var(--font-chrome); cursor: pointer;
+}
+.pool-power__take:hover:not(:disabled) { background: var(--action-active); color: var(--surface-app); }
+.pool-power__take:disabled { border-color: var(--seam); color: var(--text-faint); cursor: not-allowed; }
 .start-picking { padding: 8px 0 16px; }
 /* The Slots pass: a row per power with a stepper at its end. The dots are the power's room,
    filled for the slots it has. */

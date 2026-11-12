@@ -391,6 +391,23 @@ fn PoolPickerModal(database: Db, mode: PoolPickerMode, on_close: EventHandler<()
         view_for(&database, &build.read(), &totals.read(), &set_id, &ident)
     });
 
+    // On a phone the details open under the list and shrink it, which can hide the row just
+    // tapped. After each redraw for a new power, scroll the list so that row shows again.
+    use_effect(move || {
+        if previewing().is_some() {
+            let _ = document::eval(
+                "requestAnimationFrame(() => { \
+                 const l = document.querySelector('.pool-picker__list'); \
+                 const r = l && l.querySelector('.power-row.is-previewing'); \
+                 if (!r) return; \
+                 const lb = l.getBoundingClientRect(), rb = r.getBoundingClientRect(); \
+                 if (rb.bottom > lb.bottom) \
+                 l.scrollTo({ top: l.scrollTop + rb.bottom - lb.bottom + 8, behavior: 'smooth' }); \
+                 });",
+            );
+        }
+    });
+
     let level_up_mode = use_context::<crate::level_control::LevelUpMode>().0;
     let target_slot = use_context::<crate::level_control::TargetSlot>();
     let open_sheet = use_context::<crate::mobile_nav::OpenSheet>().0;
@@ -439,8 +456,8 @@ fn PoolPickerModal(database: Db, mode: PoolPickerMode, on_close: EventHandler<()
             div { class: "pool-picker",
                 div { class: "pool-picker__list",
                     p { class: "pool-picker__hint",
-                        "Open a pool to read its powers. Point at one to preview it, click it to "
-                        "take it. Taking a power adds its pool too."
+                        "Open a pool to read its powers. Point at or tap one to read it, and "
+                        "Take to add it. Taking a power adds its pool too."
                     }
                     if entries.is_empty() {
                         p { class: "hint",
@@ -826,6 +843,28 @@ fn PoolRow(
     let level_up_mode = use_context::<crate::level_control::LevelUpMode>().0;
     let target_slot = use_context::<crate::level_control::TargetSlot>();
     let target_slot = move || target_slot.steering(level_up_mode());
+    let open_sheet = use_context::<crate::mobile_nav::OpenSheet>().0;
+    // Each power's Take verdict, the same check the preview's Take button and a row click use.
+    let take_blocked = |ident: &str| -> Option<String> {
+        take_check(
+            &database,
+            &session.build.read(),
+            mode,
+            &entry.id,
+            ident,
+            level_up_mode(),
+            target_slot(),
+        )
+        .map(|check| narrow_to_sheet(check, open_sheet()))
+        .map_or(Some("No definition in this dataset".to_string()), |check| {
+            check.blocker.or_else(|| {
+                check
+                    .pick_level
+                    .is_none()
+                    .then(|| "No pick left".to_string())
+            })
+        })
+    };
     let reach_level = {
         let build = session.build.read();
         let working_level = database.leveling_schedule.as_ref().and_then(|schedule| {
@@ -881,7 +920,19 @@ fn PoolRow(
             }
 
             if is_expanded && blocked.is_none() {
-                div { class: "pool-row__body",
+                div {
+                    class: "pool-row__body",
+                    // Scroll the opened pool to the top of the list, so its powers and their Take
+                    // buttons are in view. By hand rather than scrollIntoView, which would also
+                    // scroll the modal around it.
+                    onmounted: move |_| {
+                        let _ = document::eval(
+                            "const l = document.querySelector('.pool-picker__list'); \
+                             const r = l && l.querySelector('.pool-row.is-expanded'); \
+                             if (r) l.scrollTo({ top: l.scrollTop + r.getBoundingClientRect().top \
+                             - l.getBoundingClientRect().top - 8, behavior: 'smooth' });",
+                        );
+                    },
                     if !entry.description.is_empty() {
                         p { class: "pool-row__description", "{entry.description}" }
                     }
@@ -893,6 +944,7 @@ fn PoolRow(
                                 gate: gate.clone(),
                                 unlock_floor: entry.unlock_floor,
                                 reach_level,
+                                take_blocked: take_blocked(power.ident()),
                                 is_previewing: previewing.as_ref().is_some_and(|(set, ident)| {
                                     set == &entry.id && ident == power.ident()
                                 }),
@@ -950,9 +1002,8 @@ fn PoolRow(
 
 /// A power inside an expanded pool row. Hovering previews it and clicking takes it.
 ///
-/// Touch has no hover, so there a tap on a power not yet in the preview only previews it, and
-/// a second tap takes it. Taking straight off the first tap would spend a pick on a power the
-/// user never got to read.
+/// Touch has no hover, so there a tap on the row only previews it, and the Take button beside
+/// it takes it. That way a tap never spends a pick on a power the user hasn't read yet.
 #[component]
 fn PoolPowerRow(
     power: coh_data::Power,
@@ -961,13 +1012,13 @@ fn PoolPowerRow(
     /// The level being picked for ([`crate::level_control::reach_level`]): an open power
     /// unlocking above it dims, and stays takeable.
     reach_level: u8,
+    /// Why its Take button can't take it now, or `None` when it can.
+    take_blocked: Option<String>,
     is_previewing: bool,
     on_preview: EventHandler<()>,
     on_take: EventHandler<()>,
 ) -> Element {
-    // Decided on press, spent by the click that follows. The click handler can't ask
-    // `is_previewing` itself: a tap's synthetic mouseenter previews the row first, and the
-    // re-render lands before the click does.
+    // Decided on press, spent by the click that follows: a touch only previews.
     let mut preview_only = use_signal(|| false);
     let level_up_mode = use_context::<crate::level_control::LevelUpMode>().0;
     let power_name = power.name.clone();
@@ -1014,35 +1065,44 @@ fn PoolPowerRow(
     let selected_class = if is_previewing { " is-previewing" } else { "" };
 
     rsx! {
-        button {
-            class: "power-row{state_class}{selected_class}",
-            title: "{title}",
-            onpointerdown: move |evt| {
-                preview_only.set(evt.pointer_type() == "touch" && !is_previewing)
-            },
-            onclick: move |_| {
-                if preview_only() {
-                    preview_only.set(false);
-                    on_preview.call(());
-                } else {
-                    on_take.call(());
+        div { class: "pool-power",
+            button {
+                class: "power-row{state_class}{selected_class}",
+                title: "{title}",
+                onpointerdown: move |evt| preview_only.set(evt.pointer_type() == "touch"),
+                onclick: move |_| {
+                    if preview_only() {
+                        preview_only.set(false);
+                        on_preview.call(());
+                    } else {
+                        on_take.call(());
+                    }
+                },
+                onmouseenter: move |_| on_preview.call(()),
+                span { class: "power-row__level",
+                    if matches!(gate, PickGate::Unreadable(_)) { "!" } else { "{unlock_level}" }
                 }
-            },
-            onmouseenter: move |_| on_preview.call(()),
-            span { class: "power-row__level",
-                if matches!(gate, PickGate::Unreadable(_)) { "!" } else { "{unlock_level}" }
-            }
-            // Art for a readable power; the fault glyph keeps the chip when the prerequisite
-            // could not be read, because a row reporting a fault should lead with the fault and
-            // not with a picture that says nothing is wrong (Rule 1).
-            span { class: "power-row__icon",
-                if matches!(gate, PickGate::Unreadable(_)) {
-                    "⚠"
-                } else {
-                    img { class: "power-row__art", src: "{icon_url}", alt: "" }
+                // Art for a readable power; the fault glyph keeps the chip when the prerequisite
+                // could not be read, because a row reporting a fault should lead with the fault
+                // and not with a picture that says nothing is wrong (Rule 1).
+                span { class: "power-row__icon",
+                    if matches!(gate, PickGate::Unreadable(_)) {
+                        "⚠"
+                    } else {
+                        img { class: "power-row__art", src: "{icon_url}", alt: "" }
+                    }
                 }
+                span { class: "power-row__name", "{power_name}" }
             }
-            span { class: "power-row__name", "{power_name}" }
+            button {
+                class: "pool-power__take",
+                r#type: "button",
+                "aria-label": "Take {power_name}",
+                title: take_blocked.clone().unwrap_or_default(),
+                disabled: take_blocked.is_some(),
+                onclick: move |_| on_take.call(()),
+                "Take"
+            }
         }
     }
 }

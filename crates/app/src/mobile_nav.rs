@@ -37,6 +37,16 @@ pub(crate) enum Sheet {
 pub(crate) struct OpenSheet(pub Signal<Option<Sheet>>);
 
 impl Sheet {
+    /// Which sheet this is, without its level: moving from one pick level to the next keeps the
+    /// same sheet, so it stays scrolled where it was instead of starting again at the top.
+    fn kind(self) -> &'static str {
+        match self {
+            Sheet::Identity => "identity",
+            Sheet::More => "more",
+            Sheet::Pick(_) => "pick",
+        }
+    }
+
     fn title(self) -> String {
         match self {
             Sheet::Identity => "Build Identity".to_string(),
@@ -89,7 +99,7 @@ pub fn MobileNav(
             class: if incarnate().is_some() { "mobile-nav mobile-nav--over-modal" } else { "mobile-nav" },
             "aria-label": "Mobile",
             if let Some(open) = sheet() {
-                MobileSheet { key: "{open.title()}", sheet, title: open.title(),
+                MobileSheet { key: "{open.kind()}", sheet, title: open.title(),
                     match open {
                         // The form itself rather than its popover: a popover drawn inline
                         // would repeat the sheet's title as its own heading.
@@ -103,7 +113,7 @@ pub fn MobileNav(
                         },
                         Sheet::Pick(level) => rsx! {
                             if let Some(database) = database.clone() {
-                                crate::phone_build::PickSheet { level, database }
+                                crate::phone_build::PickSheet { key: "{level}", level, database }
                             }
                         },
                         Sheet::More => rsx! {

@@ -2340,12 +2340,10 @@ fn sheet_verdict(
 ) -> (RowAction, Option<String>) {
     if let Some(level) = picked_at {
         return if level == sheet_level {
-            (
-                RowAction::Drop,
-                Some("Chosen here · tap to remove".to_string()),
-            )
+            (RowAction::Drop, Some("Tap to remove".to_string()))
         } else {
-            (RowAction::Refused, Some(format!("Taken at level {level}")))
+            // Its badge already shows the level it was taken at, and the row is dimmed.
+            (RowAction::Refused, None)
         };
     }
     match action {
@@ -2354,9 +2352,8 @@ fn sheet_verdict(
                 .then(|| "Needs an earlier pick from its set".to_string());
             (action, note)
         }
-        RowAction::Pick(_) if unlock_level > sheet_level => {
-            (RowAction::Refused, Some(format!("Level {unlock_level}")))
-        }
+        // The badge already says the unlock level, so no note.
+        RowAction::Pick(_) if unlock_level > sheet_level => (RowAction::Refused, None),
         RowAction::Pick(_) => (RowAction::Refused, Some("Not at this level".to_string())),
         RowAction::Drop => (action, None),
         RowAction::Refused => {
@@ -2365,7 +2362,7 @@ fn sheet_verdict(
                 (None, PickGate::Closed | PickGate::NeedsEarlier) => {
                     "Needs a prerequisite".to_string()
                 }
-                _ if unlock_level > sheet_level => format!("Level {unlock_level}"),
+                _ if unlock_level > sheet_level => return (action, None),
                 _ => "No pick left for it".to_string(),
             };
             (action, Some(note))
@@ -2546,7 +2543,7 @@ fn AvailablePowerRow(
     // refused rather than wearing the "picked" outline the sheet's own choice wears.
     let row_class = match (try_use_context::<PickSheetLevel>(), picked_at) {
         (Some(PickSheetLevel(sheet_level)), Some(at)) if at != sheet_level => {
-            "power-row is-unpickable"
+            "power-row is-unpickable is-taken"
         }
         _ => row_class,
     };
@@ -2641,13 +2638,9 @@ fn AvailablePowerRow(
             span { class: "power-row__icon",
                 img { class: "power-row__art", src: "{icon_url}", alt: "" }
             }
+            span { class: "power-row__name", "{power_name}" }
             if let Some(note) = sheet_note {
-                span { class: "power-row__name",
-                    "{power_name}"
-                    span { class: "power-row__note", "{note}" }
-                }
-            } else {
-                span { class: "power-row__name", "{power_name}" }
+                span { class: "power-row__note", "{note}" }
             }
             {proc_potential_badge(Some(&power), &database)}
         }
@@ -6927,11 +6920,11 @@ mod tests {
         );
         assert_eq!(
             sheet_verdict(10, RowAction::Pick(32), None, 32, &open, None),
-            (RowAction::Refused, Some("Level 32".to_string()))
+            (RowAction::Refused, None)
         );
         assert_eq!(
             sheet_verdict(10, RowAction::Drop, Some(20), 6, &open, None),
-            (RowAction::Refused, Some("Taken at level 20".to_string()))
+            (RowAction::Refused, None)
         );
         assert_eq!(
             sheet_verdict(10, RowAction::Drop, Some(10), 6, &open, None).0,
