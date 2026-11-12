@@ -8024,6 +8024,25 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   font: inherit; cursor: pointer;
 }
 div.phone-card__head { cursor: default; }
+/* The name and its info button: the button sits over the name's right end, so the name keeps
+   its full width to tap and the card still reads as two framed controls. */
+.phone-card__name { position: relative; flex: 1 1 auto; min-width: 0; display: flex; }
+.phone-card__name > .phone-card__head { padding-right: 44px; }
+.phone-card__name > .power-info-button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); }
+/* The info button: a round, quiet ⓘ, large enough for a finger. */
+.power-info-button {
+  width: 36px; height: 36px; flex: none;
+  display: grid; place-items: center;
+  border: 0; border-radius: 50%; background: none;
+  color: var(--text-dim); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.power-info-button:active { background: var(--surface-warmed); color: var(--text); }
+/* A level-sheet row and its info button. The row keeps its one line; the button rides its end. */
+.pick-row { position: relative; }
+.pick-row > .power-row { padding-right: 44px; }
+.pick-row > .power-info-button { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; }
+.power-info-sheet { padding: 0 var(--pad-modal, 12px) var(--pad-modal, 12px); }
 /* A pick's name is a button too (it changes the power), framed like Slots beside it so the card
    reads as two controls. An inherent's name changes nothing, so it stays flat. */
 button.phone-card__head {

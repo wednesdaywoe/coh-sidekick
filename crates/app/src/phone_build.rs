@@ -35,11 +35,70 @@ pub struct PhoneTab(pub Signal<Tab>);
 #[derive(Clone, Copy)]
 pub struct OpenCard(pub Signal<Option<String>>);
 
+/// The power the phone's details sheet shows ([`PowerInfoSheet`]); `None` while it is closed.
+#[derive(Clone, Copy)]
+pub struct PhoneInfo(pub Signal<crate::shell::Selection>);
+
 pub fn use_phone_job_provider() {
     let tab = use_signal(|| Tab::Build);
     use_context_provider(|| PhoneTab(tab));
     let open = use_signal(|| None);
     use_context_provider(|| OpenCard(open));
+    let info = use_signal(|| None);
+    use_context_provider(|| PhoneInfo(info));
+}
+
+/// A phone has no hover to read a power by, so this small button reads it: it opens the details
+/// sheet on its power. Beside a power's name on the Build tab and on each level-sheet row.
+#[component]
+pub fn InfoButton(target: crate::shell::PowerRef, name: String) -> Element {
+    let mut info = use_context::<PhoneInfo>().0;
+    rsx! {
+        button {
+            class: "power-info-button",
+            r#type: "button",
+            "aria-label": "About {name}",
+            title: "About {name}",
+            onclick: move |evt| {
+                evt.stop_propagation();
+                info.set(Some(target.clone()));
+            },
+            svg {
+                view_box: "0 0 16 16",
+                width: "16",
+                height: "16",
+                "aria-hidden": "true",
+                fill: "none",
+                stroke: "currentColor",
+                stroke_width: "1.5",
+                stroke_linecap: "round",
+                circle { cx: "8", cy: "8", r: "6.5" }
+                path { d: "M8 7.25v4" }
+                circle { cx: "8", cy: "4.9", r: "0.4", fill: "currentColor" }
+            }
+        }
+    }
+}
+
+/// The details sheet: the desktop Info panel's own view of one power, held fixed, in a modal so
+/// it opens over the level sheet and closing it goes back there. Hosted at the shell root.
+#[component]
+pub fn PowerInfoSheet(database: Db) -> Element {
+    let mut info = use_context::<PhoneInfo>().0;
+    let Some(target) = info() else {
+        return rsx! {};
+    };
+    let title = crate::naming::power_label(Some(&database), &target.powerset_id, &target.power);
+    rsx! {
+        crate::modal::Modal {
+            title,
+            size: crate::modal::ModalSize::Full,
+            on_close: move |_| info.set(None),
+            div { class: "power-info-sheet",
+                crate::panels::info::Info { database, selection: info, fixed: true }
+            }
+        }
+    }
 }
 
 /// The build's picks dealt onto the schedule's pick levels, up to the build's own level, and any
@@ -407,6 +466,7 @@ fn PowerCard(
     rsx! {
         div { class: if is_open { "phone-card is-open" } else { "phone-card" },
             div { class: "phone-card__row",
+                div { class: "phone-card__name",
                 match level {
                     Some(level) => rsx! {
                         button {
@@ -430,6 +490,11 @@ fn PowerCard(
                             }
                         }
                     },
+                }
+                InfoButton {
+                    target: crate::shell::PowerRef { powerset_id: set_id.clone(), power: ident.clone() },
+                    name: name.clone(),
+                }
                 }
                 button {
                     class: "phone-card__toggle",

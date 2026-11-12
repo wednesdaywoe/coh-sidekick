@@ -1101,14 +1101,27 @@ fn PermaTracker(
 }
 
 #[component]
-pub fn Info(database: Db, selection: Signal<Selection>) -> Element {
+pub fn Info(
+    database: Db,
+    selection: Signal<Selection>,
+    /// Show `selection` and only it: the phone's details sheet, which names one power and must
+    /// neither follow nor touch the desktop pin. No lock control is drawn.
+    #[props(default)]
+    fixed: bool,
+) -> Element {
     let session = use_context::<BuildSession>();
     let totals = use_context::<BuildTotals>().0;
     // What the panel shows: the locked power while there is one, and the hovered one otherwise
     // (beta `infoPanel.locked ? lockedContent : content`). Everything below reads `shown`, never
     // `selection` directly, so a lock holds the whole panel — view, adjusters and procs alike.
     let lock = use_context::<crate::shell::InfoLock>().0;
-    let shown: Memo<Selection> = use_memo(move || lock().or(selection()));
+    let shown: Memo<Selection> = use_memo(move || {
+        if fixed {
+            selection()
+        } else {
+            lock().or(selection())
+        }
+    });
     // Derived once per (database, build, totals, selection) change — resolving a view runs the
     // engine's projection, and for a power the build does not hold that means a whole
     // `recalculate_projecting` pass, so it belongs in a memo rather than in render.
@@ -1214,7 +1227,8 @@ pub fn Info(database: Db, selection: Signal<Selection>) -> Element {
             // The lock control, top right (beta `InfoPanel`'s padlock). Locked, it is a button that
             // unlocks. Unlocked, it is a quiet mark that says how to lock, because right-click is
             // not something anyone discovers on their own.
-            if lock().is_some() {
+            if fixed {
+            } else if lock().is_some() {
                 button {
                     class: "info-lock info-lock--on",
                     "aria-label": "Unlock info panel",

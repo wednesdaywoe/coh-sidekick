@@ -2566,7 +2566,13 @@ fn AvailablePowerRow(
         Some(reason) => (format!("{row_class} is-out-of-order"), reason),
         None => (row_class, title),
     };
-    rsx! {
+    // A phone's level sheet reads a power by a button beside the row, the row itself taking it.
+    let in_sheet = try_use_context::<PickSheetLevel>().is_some();
+    let info_target = crate::shell::PowerRef {
+        powerset_id: set_id.clone(),
+        power: power_internal.clone(),
+    };
+    let row = rsx! {
         button {
             class: row_class,
             title: "{title}",
@@ -2644,6 +2650,16 @@ fn AvailablePowerRow(
             }
             {proc_potential_badge(Some(&power), &database)}
         }
+    };
+    if in_sheet {
+        rsx! {
+            div { class: "pick-row",
+                {row}
+                crate::phone_build::InfoButton { target: info_target, name: power_name.clone() }
+            }
+        }
+    } else {
+        row
     }
 }
 

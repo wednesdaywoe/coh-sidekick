@@ -1427,6 +1427,12 @@ pub fn Shell() -> Element {
             panels::pool_picker::PoolPickerHost { database: Db(database.clone()) }
         }
 
+        // The phone's power details sheet, hosted OUTSIDE both layout roots for the same reason,
+        // and after the pool picker so it opens over the level sheet and the picker alike.
+        if let Some(Ok(database)) = &*db.read() {
+            crate::phone_build::PowerInfoSheet { database: Db(database.clone()) }
+        }
+
         // The ED card, hosted OUTSIDE both layout roots for the same reason.
         crate::ed_view::EdTipHost {}
 
