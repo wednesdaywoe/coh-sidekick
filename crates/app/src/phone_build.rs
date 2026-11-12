@@ -30,9 +30,24 @@ pub enum Job {
 #[derive(Clone, Copy)]
 pub struct PhoneJob(pub Signal<Job>);
 
+/// The phone's two main views. Build is the three passes; Stats is every panel the phone
+/// shows, the stat panels first, in the user's own phone order (Display > Reorder). More is a
+/// sheet over either, so it is not one of these.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Tab {
+    Build,
+    Stats,
+}
+
+/// Which main view the phone shows, shared by the bottom bar, the key numbers and the shell.
+#[derive(Clone, Copy)]
+pub struct PhoneTab(pub Signal<Tab>);
+
 pub fn use_phone_job_provider() {
     let job = use_signal(|| Job::Powers);
     use_context_provider(|| PhoneJob(job));
+    let tab = use_signal(|| Tab::Build);
+    use_context_provider(|| PhoneTab(tab));
 }
 
 /// The build's picks dealt onto the schedule's pick levels, up to the build's own level, and any
@@ -87,6 +102,10 @@ pub(crate) fn slotting_powers<'a>(
 #[component]
 pub fn JobSwitch(database: Option<Db>) -> Element {
     let mut job = use_context::<PhoneJob>().0;
+    // The passes are the Build tab's; on Stats the switch would steer nothing on screen.
+    if use_context::<PhoneTab>().0() == Tab::Stats {
+        return rsx! {};
+    }
     let session = use_context::<BuildSession>();
     let slot_budget = use_context::<BuildBudget>().0;
     let (powers, enhance) = {

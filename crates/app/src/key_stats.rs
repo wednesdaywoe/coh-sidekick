@@ -9,7 +9,7 @@
 //! A preference, not build state: it lives in localStorage, like [`crate::tracked_stats`].
 
 use crate::build_session::BuildSession;
-use crate::mobile_nav::{OpenSheet, Sheet};
+use crate::mobile_nav::OpenSheet;
 use crate::panels::stat_registry::{self, StatDef, StatSection};
 use crate::panels::stats::BuildTotals;
 use dioxus::prelude::*;
@@ -198,12 +198,13 @@ async fn load() -> Option<BTreeMap<String, Vec<String>>> {
     serde_json::from_str(value.as_str()?).ok()
 }
 
-/// The strip: four numbers in a row, each in its stat's colour. Tapping one opens Stats.
+/// The strip: four numbers in a row, each in its stat's colour. Tapping one shows the Stats tab.
 #[component]
 pub fn KeyStatStrip() -> Element {
     let totals = use_context::<BuildTotals>().0;
     let choices = use_context::<KeyStatChoices>();
     let mut sheet = use_context::<OpenSheet>().0;
+    let mut tab = use_context::<crate::phone_build::PhoneTab>().0;
     let archetype = build_archetype();
     let cells: Vec<(String, String, &'static str)> = {
         let totals = totals.read();
@@ -227,7 +228,11 @@ pub fn KeyStatStrip() -> Element {
                     class: "key-stats__cell",
                     r#type: "button",
                     "aria-label": "{label} {value}, open Stats",
-                    onclick: move |_| sheet.set(Some(Sheet::Stats)),
+                    onclick: move |_| {
+                        sheet.set(None);
+                        tab.set(crate::phone_build::Tab::Stats);
+                        let _ = document::eval("window.scrollTo({ top: 0 });");
+                    },
                     span { class: "key-stats__label", "{label}" }
                     span { class: "key-stats__value mono", style: "color: {colour}", "{value}" }
                 }
@@ -236,7 +241,7 @@ pub fn KeyStatStrip() -> Element {
     }
 }
 
-/// The Stats sheet's first section: one dropdown per position, every dashboard row offered,
+/// The foot of the Stats tab: one dropdown per position, every dashboard row offered,
 /// grouped by section. A native select, so a phone opens its own picker.
 #[component]
 pub fn KeyStatChooser() -> Element {

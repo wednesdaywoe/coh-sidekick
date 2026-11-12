@@ -1,10 +1,11 @@
 //! Mobile bottom nav — the fixed <900px tab bar.
 //!
-//! Three tabs: Build, Stats, More (the phone-build-flow plan). Build is the planner itself; it
-//! closes whatever is open, and when nothing is, scrolls back to the top. Stats and More open a
-//! full-screen sheet that stops at the bar's top edge, so switching tabs is one tap. Stats holds
-//! the dashboard's stat panels; More holds every menu and setting, plus the incarnate picker,
-//! which only matters at 50 and so lost its own tab.
+//! Three tabs: Build, Stats, More (the phone-build-flow plan). Build and Stats are the two main
+//! views ([`crate::phone_build::Tab`]): Build is the three passes of making a build, Stats every
+//! panel the phone shows, the stat panels first. Each closes whatever is open, and when nothing
+//! is, scrolls back to the top. More opens a full-screen sheet that stops at the bar's top edge:
+//! every menu and setting, plus the incarnate picker, which only matters at 50 and so lost its
+//! own tab.
 //!
 //! Build Identity is a third sheet with no tab: the build bar at the top of the stack opens it
 //! (see [`crate::build_bar`]), because the build's name belongs where it can be read, and a first
@@ -14,9 +15,8 @@
 //! [`PopoverInline`], which makes each one draw its body in place under its title, so every
 //! entry here is the desktop's entry and a fix to one is a fix to both.
 
-use crate::grid::model::{GridItem, PanelKind};
+use crate::grid::model::GridItem;
 use crate::main_menu::{FileMenu, HelpMenu, OptionsMenu};
-use crate::panels::dashboards::{surfaces, title_of, DashboardConfig};
 use crate::panels::incarnate_picker::IncarnatePickerOpen;
 use crate::popover::PopoverInline;
 use crate::quickbar::{model::QuickBarItem, DisplayMenu, ToolsMenu};
@@ -27,7 +27,6 @@ use dioxus::prelude::*;
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Sheet {
     Identity,
-    Stats,
     More,
     /// Choosing the power for one pick level (see [`crate::phone_build::PickSheet`]).
     Pick(u8),
@@ -41,7 +40,6 @@ impl Sheet {
     fn title(self) -> String {
         match self {
             Sheet::Identity => "Build Identity".to_string(),
-            Sheet::Stats => "Stats".to_string(),
             Sheet::More => "More".to_string(),
             Sheet::Pick(level) => format!("Level {level}"),
         }
@@ -75,8 +73,13 @@ pub fn MobileNav(
             Some(next)
         });
     };
+    let mut tab = use_context::<crate::phone_build::PhoneTab>().0;
+    use crate::phone_build::Tab;
     // A pick sheet is part of building, so Build stays lit under it.
-    let build_active = matches!(sheet(), None | Some(Sheet::Pick(_))) && incarnate().is_none();
+    let build_active = tab() == Tab::Build
+        && matches!(sheet(), None | Some(Sheet::Pick(_)))
+        && incarnate().is_none();
+    let stats_active = tab() == Tab::Stats && sheet().is_none() && incarnate().is_none();
 
     rsx! {
         nav {
@@ -97,7 +100,6 @@ pub fn MobileNav(
                                 }
                             }
                         },
-                        Sheet::Stats => rsx! { StatsSheet {} },
                         Sheet::Pick(level) => rsx! {
                             if let Some(database) = database.clone() {
                                 crate::phone_build::PickSheet { level, database }
@@ -124,13 +126,23 @@ pub fn MobileNav(
                     }
                     sheet.set(None);
                     incarnate.set(None);
+                    tab.set(Tab::Build);
                 },
                 {marks::home()}
             }
             NavTab {
                 label: "Stats",
-                active: sheet() == Some(Sheet::Stats),
-                onclick: move |_| switch_to(Sheet::Stats),
+                active: stats_active,
+                onclick: move |_| {
+                    if stats_active {
+                        let _ = document::eval("window.scrollTo({ top: 0, behavior: 'smooth' });");
+                    } else {
+                        let _ = document::eval("window.scrollTo({ top: 0 });");
+                    }
+                    sheet.set(None);
+                    incarnate.set(None);
+                    tab.set(Tab::Stats);
+                },
                 {marks::dashboard()}
             }
             NavTab {
@@ -237,30 +249,5 @@ fn MobileSheet(sheet: Signal<Option<Sheet>>, title: String, children: Element) -
             }
             div { class: "mobile-sheet__body", {children} }
         }
-    }
-}
-
-/// Every stat panel the user has built, in their order, whether or not it is shown in the
-/// stack — this tab is where the numbers are read, so a panel hidden to shorten the stack is
-/// still one tap away.
-#[component]
-fn StatsSheet() -> Element {
-    let config = use_context::<DashboardConfig>().0;
-    let panels: Vec<(String, PanelKind)> = surfaces(&config.read())
-        .into_iter()
-        .filter(|panel| matches!(panel, PanelKind::Dashboard(_)))
-        .map(|panel| (title_of(panel, &config.read()), panel))
-        .collect();
-
-    rsx! {
-        for (index, (title, panel)) in panels.into_iter().enumerate() {
-            if let PanelKind::Dashboard(id) = panel {
-                section { key: "{index}", class: "mobile-sheet__panel",
-                    h3 { class: "popover-inline__title", "{title}" }
-                    crate::panels::stats::StatGroup { panel: id }
-                }
-            }
-        }
-        crate::key_stats::KeyStatChooser {}
     }
 }

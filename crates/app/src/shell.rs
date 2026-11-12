@@ -302,6 +302,7 @@ pub fn Shell() -> Element {
     crate::key_stats::use_key_stats_provider();
     crate::phone_build::use_phone_job_provider();
     let phone_job = use_context::<crate::phone_build::PhoneJob>().0;
+    let phone_tab = use_context::<crate::phone_build::PhoneTab>().0;
     // The detailed stat sheet, hosted below both layout roots for the same containment reason.
     let detailed_totals_open = use_signal(|| false);
     use_context_provider(|| panels::detailed_totals::DetailedTotalsOpen(detailed_totals_open));
@@ -1289,18 +1290,17 @@ pub fn Shell() -> Element {
             }
         }
 
-        // Mobile view (<900px): the Build tab's three passes. The flat stack below them is
-        // unreachable on a phone now; phone-build-flow-10 moves its panels to the Stats sheet.
+        // Mobile view (<900px). The Build tab is one of its three passes; the Stats tab is the
+        // flat stack, stat panels first, then the rest in the user's own phone order.
         main { class: "grid-root mobile-stack",
             match &*db.read() {
-                Some(Ok(database)) if phone_job() == crate::phone_build::Job::Powers => rsx! {
-                    crate::phone_build::PowersJob { database: Db(database.clone()) }
-                },
-                Some(Ok(database)) if phone_job() == crate::phone_build::Job::Slots => rsx! {
-                    crate::phone_build::SlotsJob { database: Db(database.clone()) }
-                },
-                Some(Ok(database)) if phone_job() == crate::phone_build::Job::Enhance => rsx! {
-                    crate::phone_build::EnhanceJob { database: Db(database.clone()) }
+                Some(Ok(database)) if phone_tab() == crate::phone_build::Tab::Build => {
+                    let database = Db(database.clone());
+                    match phone_job() {
+                        crate::phone_build::Job::Powers => rsx! { crate::phone_build::PowersJob { database } },
+                        crate::phone_build::Job::Slots => rsx! { crate::phone_build::SlotsJob { database } },
+                        crate::phone_build::Job::Enhance => rsx! { crate::phone_build::EnhanceJob { database } },
+                    }
                 },
                 Some(Ok(database)) => {
                     let db = Db(database.clone());
@@ -1312,11 +1312,14 @@ pub fn Shell() -> Element {
                     // the whole section out of the stack.
                     let roster = panels::dashboards::surfaces(&stat_config.read());
                     let hidden = crate::panel_visibility::hidden_panels(&desktop_layout.read(), &roster);
-                    let stack: Vec<PanelKind> = mobile_order()
+                    let mut stack: Vec<PanelKind> = mobile_order()
                         .0
                         .into_iter()
                         .filter(|panel| !hidden.contains(panel))
                         .collect();
+                    // The numbers lead: this is the Stats tab. A stable sort, so each half keeps
+                    // the user's order.
+                    stack.sort_by_key(|panel| !matches!(panel, PanelKind::Dashboard(_)));
                     rsx! {
                         if stack.is_empty() {
                             crate::panel_visibility::AllPanelsHidden {}
@@ -1364,6 +1367,7 @@ pub fn Shell() -> Element {
                                 }
                             }
                         }
+                        div { class: "key-stats-chooser-wrap", crate::key_stats::KeyStatChooser {} }
                     }
                 },
                 Some(Err(e)) => rsx! {
