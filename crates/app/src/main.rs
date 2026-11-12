@@ -70,6 +70,7 @@ mod proc_potential_store;
 mod quickbar;
 mod reorder_menu;
 mod shell;
+mod slot_colour;
 mod slot_level_store;
 mod stats_store;
 mod storage;
