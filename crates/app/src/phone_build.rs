@@ -10,8 +10,8 @@ use crate::build_session::BuildSession;
 use crate::level_control::TargetSlot;
 use crate::mobile_nav::{OpenSheet, Sheet};
 use crate::panels::powers::{
-    add_slot_to_power, remove_slot_from_power, slot_room, BuildBudget, PickSheetLevel,
-    PickerDestination, PickerOpen, PickerTarget,
+    doomed_slot_range, slot_room, BuildBudget, PickSheetLevel, PickerDestination, PickerOpen,
+    PickerTarget, SlotDrag, SlotHandle,
 };
 use crate::panels::powers_by_level::{deal_picks, PickCell};
 use crate::shell::Db;
@@ -164,8 +164,10 @@ struct CardData {
     set: String,
     dots: Vec<Dot>,
     icons: Vec<Option<String>>,
-    add: bool,
-    remove: bool,
+    max_add: usize,
+    max_remove: usize,
+    /// The trailing slots an inherent grants, which a drag left never takes.
+    inherent_slots: usize,
 }
 
 fn card_data(
@@ -201,8 +203,9 @@ fn card_data(
                 })
             })
             .collect(),
-        add: max_add > 0,
-        remove: max_remove > 0,
+        max_add,
+        max_remove,
+        inherent_slots: power.inherent_slot_count as usize,
     }
 }
 
@@ -307,7 +310,7 @@ pub fn BuildList(database: Db) -> Element {
                     li { key: "{level}-{card.as_ref().map(|c| c.key.as_str()).unwrap_or(\"\")}",
                         match card {
                             Some(card) => rsx! {
-                                PowerCard { database: database.clone(), card, level: Some(level), left }
+                                PowerCard { database: database.clone(), card, level: Some(level), left, budget: budget.unwrap_or(0) }
                             },
                             None => rsx! {
                                 button {
@@ -332,7 +335,7 @@ pub fn BuildList(database: Db) -> Element {
                 ol { class: "phone-picks",
                     for card in inherents {
                         li { key: "{card.key}",
-                            PowerCard { database: database.clone(), card, level: None, left }
+                            PowerCard { database: database.clone(), card, level: None, left, budget: budget.unwrap_or(0) }
                         }
                     }
                 }
@@ -367,8 +370,14 @@ pub fn BuildList(database: Db) -> Element {
 /// button that unfolds them beneath the card — each slot opens the enhancement picker on that
 /// slot, and a minus and plus button take a slot away or add one.
 #[component]
-fn PowerCard(database: Db, card: CardData, level: Option<u8>, left: Option<usize>) -> Element {
-    let session = use_context::<BuildSession>();
+fn PowerCard(
+    database: Db,
+    card: CardData,
+    level: Option<u8>,
+    left: Option<usize>,
+    /// The build's whole slot budget at its level, which the drag's adds are checked against.
+    budget: usize,
+) -> Element {
     let mut sheet = use_context::<OpenSheet>().0;
     let mut open = use_context::<OpenCard>().0;
     let level_up = *use_context::<crate::level_control::LevelUpMode>().0.read();
@@ -384,9 +393,16 @@ fn PowerCard(database: Db, card: CardData, level: Option<u8>, left: Option<usize
         set,
         dots,
         icons,
-        add,
-        remove,
+        max_add,
+        max_remove,
+        inherent_slots,
     } = card;
+    // The slot drag in flight on this card, shared with its handle so the cells can preview it:
+    // ghost slots for a drag right, the leaving slots marked for a drag left.
+    let drag = use_signal(|| Option::<SlotDrag>::None);
+    let pending = SlotDrag::pending(drag());
+    let doomed = doomed_slot_range(count, inherent_slots, pending);
+    let capsule_key = format!("{set_id}/{ident}");
 
     rsx! {
         div { class: if is_open { "phone-card is-open" } else { "phone-card" },
@@ -445,65 +461,53 @@ fn PowerCard(database: Db, card: CardData, level: Option<u8>, left: Option<usize
             }
             if is_open {
                 div { class: "phone-card__slots",
-                    div { class: "phone-pick__enh",
-                        for (index, icon) in icons.iter().cloned().enumerate() {
-                            button {
-                                key: "{index}",
-                                class: if icon.is_some() { "phone-enh" } else { "phone-enh is-empty" },
-                                r#type: "button",
-                                "aria-label": if icon.is_some() { "Slot {index + 1} of {name}" } else { "Empty slot {index + 1} of {name}" },
-                                onclick: {
-                                    let (set_id, ident) = (set_id.clone(), ident.clone());
-                                    move |_| open_picker(picker, set_id.clone(), ident.clone(), index as u8)
-                                },
-                                if let Some(url) = icon.as_deref().filter(|url| !url.is_empty()) {
-                                    img { class: "phone-enh__art", src: "{url}", alt: "" }
+                    div {
+                        class: if drag().is_some() { "phone-slots is-active" } else { "phone-slots" },
+                        "data-slot-capsule": "{capsule_key}",
+                        div { class: "phone-slots__cells",
+                            for (index, icon) in icons.iter().cloned().enumerate() {
+                                button {
+                                    key: "{index}",
+                                    class: match (icon.is_some(), doomed.contains(&index)) {
+                                        (_, true) => "phone-enh is-doomed",
+                                        (true, false) => "phone-enh",
+                                        (false, false) => "phone-enh is-empty",
+                                    },
+                                    r#type: "button",
+                                    "aria-label": if icon.is_some() { "Slot {index + 1} of {name}" } else { "Empty slot {index + 1} of {name}" },
+                                    onclick: {
+                                        let (set_id, ident) = (set_id.clone(), ident.clone());
+                                        move |_| open_picker(picker, set_id.clone(), ident.clone(), index as u8)
+                                    },
+                                    if let Some(url) = icon.as_deref().filter(|url| !url.is_empty()) {
+                                        img { class: "phone-enh__art", src: "{url}", alt: "" }
+                                    }
                                 }
+                            }
+                            for ghost in 0..pending.max(0) {
+                                span { key: "ghost-{ghost}", class: "phone-enh is-ghost" }
+                            }
+                        }
+                        if max_add >= 1 || max_remove >= 1 {
+                            SlotHandle {
+                                drag,
+                                capsule_key: capsule_key.clone(),
+                                max_add,
+                                max_remove,
+                                database: database.clone(),
+                                powerset_id: set_id.clone(),
+                                power_id: ident.clone(),
+                                slot_budget: budget,
+                                leveling_on: level_up,
                             }
                         }
                     }
                     div { class: "phone-card__room",
-                        span { class: "phone-stepper",
-                            button {
-                                class: "phone-stepper__step",
-                                r#type: "button",
-                                disabled: !remove,
-                                "aria-label": "Remove a slot from {name}",
-                                onclick: {
-                                    let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
-                                    move |_| {
-                                        let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
-                                        session.commit(move |state| {
-                                            remove_slot_from_power(state, &set_id, &ident, database.leveling_schedule.as_ref());
-                                        });
-                                    }
-                                },
-                                "−"
-                            }
-                            span { class: "phone-stepper__count mono", "{count}" }
-                            button {
-                                class: "phone-stepper__step",
-                                r#type: "button",
-                                disabled: !add,
-                                "aria-label": "Add a slot to {name}",
-                                onclick: {
-                                    let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
-                                    move |_| {
-                                        let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
-                                        session.commit(move |state| {
-                                            let leveling = database.leveling_schedule.as_ref();
-                                            let budget = leveling.map_or(0, |schedule| schedule.total_slots_at_level(state.level));
-                                            add_slot_to_power(state, &set_id, &ident, budget, leveling, level_up);
-                                        });
-                                    }
-                                },
-                                "+"
-                            }
-                        }
+                        span { class: "phone-card__hint", "Drag ‹› right to add slots, left to remove" }
                         if let Some(left) = left {
                             span { class: "phone-card__left",
                                 b { class: "mono", "{left}" }
-                                " extra slots left"
+                                " left"
                             }
                         }
                     }

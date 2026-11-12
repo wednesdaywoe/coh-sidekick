@@ -2831,7 +2831,7 @@ async fn arm_slot_drag(capsule_key: String, pointer_id: i32) -> Option<f64> {
         if (!capsule) return null;
         // Capture first: the measurement is allowed to fail, the gesture is not.
         try {{ capsule.querySelector('.slot-handle').setPointerCapture({pointer_id}); }} catch (_) {{}}
-        const cells = capsule.querySelectorAll('.slot-capsule__cells .enhancement-slot');
+        const cells = capsule.querySelectorAll('.slot-capsule__cells .enhancement-slot, .phone-slots__cells .phone-enh:not(.is-ghost)');
         if (!cells.length) return null;
         const first = cells[0].getBoundingClientRect();
         if (cells.length > 1) {{
@@ -2860,7 +2860,7 @@ async fn arm_slot_drag(capsule_key: String, pointer_id: i32) -> Option<f64> {
 /// that never travelled is a tap, and a tap adds one. Card-local: each card owns its own signal,
 /// so a drag on one card never previews on another.
 #[derive(Clone, Copy, PartialEq)]
-struct SlotDrag {
+pub(crate) struct SlotDrag {
     origin_x: f64,
     /// The cell pitch this drag counts in, filled by [`arm_slot_drag`] once its DOM round trip
     /// lands. `None` until then, and permanently `None` if the pitch could not be read — the drag
@@ -2872,6 +2872,13 @@ struct SlotDrag {
     delta: isize,
     max_add: usize,
     max_remove: usize,
+}
+
+impl SlotDrag {
+    /// What release would apply: the signed slot count, or 0 for no drag or one still a tap.
+    pub(crate) fn pending(drag: Option<SlotDrag>) -> isize {
+        drag.filter(|drag| drag.moved).map_or(0, |drag| drag.delta)
+    }
 }
 
 /// The count a mid-drag handle shows, signed the way the gesture reads: `+3` for three slots
@@ -2894,9 +2901,186 @@ fn slot_delta_label(delta: isize) -> String {
 /// Held as a function, rather than inlined where the cells are rendered, so the two halves can be
 /// put against each other in a test: a preview that marks a different cell than the one that goes
 /// is a lie no amount of looking at the screen will catch, because both look correct alone.
-fn doomed_slot_range(slot_count: usize, inherent_slots: usize, delta: isize) -> Range<usize> {
+pub(crate) fn doomed_slot_range(
+    slot_count: usize,
+    inherent_slots: usize,
+    delta: isize,
+) -> Range<usize> {
     let user_slot_end = slot_count.saturating_sub(inherent_slots);
     user_slot_end.saturating_sub(delta.min(0).unsigned_abs())..user_slot_end
+}
+
+/// The slot drag's handle (`‹›`): press and drag right to add slots, left to take them back,
+/// tap to add one; release commits the run as one undo step. Shared by the desktop power card and
+/// the phone's ([`crate::phone_build`]), which each own the `drag` signal so they can draw the
+/// preview (ghost slots, doomed cells) around their own cells. The cells it measures are found
+/// through the `data-slot-capsule` element holding it ([`arm_slot_drag`]).
+#[component]
+pub(crate) fn SlotHandle(
+    drag: Signal<Option<SlotDrag>>,
+    capsule_key: String,
+    max_add: usize,
+    max_remove: usize,
+    database: Db,
+    powerset_id: String,
+    power_id: String,
+    slot_budget: usize,
+    leveling_on: bool,
+) -> Element {
+    let session = use_context::<BuildSession>();
+    let mut slot_drag = drag;
+    let pending_delta = SlotDrag::pending(slot_drag());
+    rsx! {
+        button {
+            class: "slot-stepper slot-handle",
+            title: "Drag right to add slots, left to remove",
+            "aria-label": "Add or remove slots on this power",
+            onpointerdown: {
+                let capsule_key = capsule_key.clone();
+                move |evt: Event<PointerData>| {
+                    evt.prevent_default();
+                    slot_drag.set(Some(SlotDrag {
+                        origin_x: evt.client_coordinates().x,
+                        step_px: None,
+                        moved: false,
+                        delta: 0,
+                        max_add,
+                        max_remove,
+                    }));
+                    // The DOM half of arming the drag — pointer capture and the
+                    // step — is a round trip, so it lands on the signal a beat
+                    // later. Returned as a future for Dioxus to drive rather than
+                    // handed to a bare `spawn`: spawning from inside a pointer
+                    // handler tore the wasm runtime down on the first press
+                    // ("memory access out of bounds"), and this is the same shape
+                    // the rest of the app's async handlers already use.
+                    let capsule_key = capsule_key.clone();
+                    let pointer_id = evt.pointer_id();
+                    async move {
+                        let step = arm_slot_drag(capsule_key, pointer_id).await;
+                        // Through `as_mut` so a gesture that is already over (a
+                        // fast tap) is not resurrected by its own measurement.
+                        slot_drag.with_mut(|active| {
+                            if let Some(active) = active.as_mut() {
+                                active.step_px = step;
+                            }
+                        });
+                    }
+                }
+            },
+            onpointermove: move |evt: Event<PointerData>| {
+                let x = evt.client_coordinates().x;
+                slot_drag.with_mut(|active| {
+                    let Some(active) = active.as_mut() else { return };
+                    let dx = x - active.origin_x;
+                    if !active.moved && dx.abs() > SLOT_DRAG_THRESHOLD_PX {
+                        active.moved = true;
+                    }
+                    // Truncation toward zero is what makes the two directions
+                    // symmetric: a full cell of travel has to be crossed either
+                    // way before the count leaves 0.
+                    let steps = match active.step_px {
+                        Some(step) => (dx / step) as isize,
+                        None => 0,
+                    };
+                    active.delta = steps.clamp(
+                        -(active.max_remove as isize),
+                        active.max_add as isize,
+                    );
+                });
+            },
+            onpointerup: {
+                let database = database.clone();
+                let power_id = power_id.clone();
+                let powerset_id = powerset_id.clone();
+                move |_evt| {
+                    // A press that never travelled is a tap, and a tap adds the one
+                    // slot the `+` it replaced added — unless there is no room to
+                    // add, in which case the handle is only here for the other
+                    // direction and a tap does nothing.
+                    let delta = slot_drag.peek().map_or(0, |drag| {
+                        if drag.moved {
+                            drag.delta
+                        } else if drag.max_add >= 1 {
+                            1
+                        } else {
+                            0
+                        }
+                    });
+                    slot_drag.set(None);
+                    if delta == 0 {
+                        return;
+                    }
+                    let power_id = power_id.clone();
+                    let powerset_id = powerset_id.clone();
+                    // One commit = one undo step for the whole drag; each step
+                    // re-checks its own bound (the budget and per-power cap on the
+                    // way up, the removable band on the way down), so an overshoot
+                    // can't exceed either.
+                    let database = database.clone();
+                    session.commit(move |state| {
+                        let leveling = database.leveling_schedule.as_ref();
+                        for _ in 0..delta.unsigned_abs() {
+                            if delta > 0 {
+                                add_slot_to_power(state, &powerset_id, &power_id, slot_budget, leveling, leveling_on);
+                            } else {
+                                remove_slot_from_power(state, &powerset_id, &power_id, leveling);
+                            }
+                        }
+                    });
+                }
+            },
+            onpointercancel: move |_| slot_drag.set(None),
+            // Losing capture ends the drag whatever took it — the handle can no
+            // longer see where the pointer goes, so there is no gesture left to
+            // finish. Without this the card keeps a preview it will never commit,
+            // and a stranded REMOVE preview reads as slots about to vanish. Fires
+            // after `pointerup` on a normal release too, where clearing an already
+            // cleared drag is a no-op.
+            onlostpointercapture: move |_| slot_drag.set(None),
+            onkeydown: {
+                let database = database.clone();
+                let power_id = power_id.clone();
+                let powerset_id = powerset_id.clone();
+                move |evt: Event<KeyboardData>| {
+                    // The drag's two directions, given keys: the arrows step the
+                    // way they point, and Enter/Space activate the control's
+                    // primary action (add), matching the tap. Any other key is
+                    // left alone so focus and typing behave normally.
+                    let add = matches!(evt.key(), Key::Enter | Key::ArrowRight)
+                        || matches!(evt.key(), Key::Character(c) if c == " ");
+                    let remove = matches!(evt.key(), Key::ArrowLeft);
+                    if !add && !remove {
+                        return;
+                    }
+                    evt.prevent_default();
+                    let power_id = power_id.clone();
+                    let powerset_id = powerset_id.clone();
+                    let database = database.clone();
+                    session.commit(move |state| {
+                        let leveling = database.leveling_schedule.as_ref();
+                        if add {
+                            add_slot_to_power(state, &powerset_id, &power_id, slot_budget, leveling, leveling_on);
+                        } else {
+                            remove_slot_from_power(state, &powerset_id, &power_id, leveling);
+                        }
+                    });
+                }
+            },
+            if pending_delta != 0 {
+                span {
+                    class: if pending_delta < 0 {
+                        "slot-handle-count slot-handle-count--remove"
+                    } else {
+                        "slot-handle-count"
+                    },
+                    "{slot_delta_label(pending_delta)}"
+                }
+            } else {
+                "‹›"
+            }
+        }
+    }
 }
 
 /// A single picked power card — beta layout (top: level, name, toggle, tools, remove; bottom: icon, slots).
@@ -2945,13 +3129,11 @@ pub fn PickedPowerCard(
         all.get(&(category, power_id.clone())).cloned()
     });
     // The live slot drag on this card (card-local; `None` when no drag is in flight).
-    let mut slot_drag = use_signal(|| Option::<SlotDrag>::None);
+    let slot_drag = use_signal(|| Option::<SlotDrag>::None);
     // What an in-flight drag will do on release: positive slots to add, previewed as ghost
     // circles after the last cell; negative to remove, previewed by marking the cells that would
     // go. Zero while nothing is dragging, and zero until the press passes the tap threshold.
-    let pending_delta = slot_drag()
-        .filter(|drag| drag.moved)
-        .map_or(0, |drag| drag.delta);
+    let pending_delta = SlotDrag::pending(slot_drag());
     let doomed = doomed_slot_range(power.slots.len(), inherent_slots, pending_delta);
     // Names this card's slot capsule for [`arm_slot_drag`] to find. The power's identity, because
     // that is what is unique across the whole build — a card renders once per layout root, and the
@@ -3351,154 +3533,16 @@ pub fn PickedPowerCard(
                     // undoable step. Rendered whenever EITHER direction has room, so a power at
                     // its cap can still give slots back.
                     if max_add >= 1 || max_remove >= 1 {
-                        button {
-                            class: "slot-stepper slot-handle",
-                            title: "Drag right to add slots, left to remove",
-                            "aria-label": "Add or remove slots on this power",
-                            onpointerdown: {
-                                let capsule_key = capsule_key.clone();
-                                move |evt: Event<PointerData>| {
-                                    evt.prevent_default();
-                                    slot_drag.set(Some(SlotDrag {
-                                        origin_x: evt.client_coordinates().x,
-                                        step_px: None,
-                                        moved: false,
-                                        delta: 0,
-                                        max_add,
-                                        max_remove,
-                                    }));
-                                    // The DOM half of arming the drag — pointer capture and the
-                                    // step — is a round trip, so it lands on the signal a beat
-                                    // later. Returned as a future for Dioxus to drive rather than
-                                    // handed to a bare `spawn`: spawning from inside a pointer
-                                    // handler tore the wasm runtime down on the first press
-                                    // ("memory access out of bounds"), and this is the same shape
-                                    // the rest of the app's async handlers already use.
-                                    let capsule_key = capsule_key.clone();
-                                    let pointer_id = evt.pointer_id();
-                                    async move {
-                                        let step = arm_slot_drag(capsule_key, pointer_id).await;
-                                        // Through `as_mut` so a gesture that is already over (a
-                                        // fast tap) is not resurrected by its own measurement.
-                                        slot_drag.with_mut(|active| {
-                                            if let Some(active) = active.as_mut() {
-                                                active.step_px = step;
-                                            }
-                                        });
-                                    }
-                                }
-                            },
-                            onpointermove: move |evt: Event<PointerData>| {
-                                let x = evt.client_coordinates().x;
-                                slot_drag.with_mut(|active| {
-                                    let Some(active) = active.as_mut() else { return };
-                                    let dx = x - active.origin_x;
-                                    if !active.moved && dx.abs() > SLOT_DRAG_THRESHOLD_PX {
-                                        active.moved = true;
-                                    }
-                                    // Truncation toward zero is what makes the two directions
-                                    // symmetric: a full cell of travel has to be crossed either
-                                    // way before the count leaves 0.
-                                    let steps = match active.step_px {
-                                        Some(step) => (dx / step) as isize,
-                                        None => 0,
-                                    };
-                                    active.delta = steps.clamp(
-                                        -(active.max_remove as isize),
-                                        active.max_add as isize,
-                                    );
-                                });
-                            },
-                            onpointerup: {
-                                let database = database.clone();
-                                let power_id = power_id.clone();
-                                let powerset_id = powerset_id.clone();
-                                move |_evt| {
-                                    // A press that never travelled is a tap, and a tap adds the one
-                                    // slot the `+` it replaced added — unless there is no room to
-                                    // add, in which case the handle is only here for the other
-                                    // direction and a tap does nothing.
-                                    let delta = slot_drag.peek().map_or(0, |drag| {
-                                        if drag.moved {
-                                            drag.delta
-                                        } else if drag.max_add >= 1 {
-                                            1
-                                        } else {
-                                            0
-                                        }
-                                    });
-                                    slot_drag.set(None);
-                                    if delta == 0 {
-                                        return;
-                                    }
-                                    let power_id = power_id.clone();
-                                    let powerset_id = powerset_id.clone();
-                                    // One commit = one undo step for the whole drag; each step
-                                    // re-checks its own bound (the budget and per-power cap on the
-                                    // way up, the removable band on the way down), so an overshoot
-                                    // can't exceed either.
-                                    let database = database.clone();
-                                    session.commit(move |state| {
-                                        let leveling = database.leveling_schedule.as_ref();
-                                        for _ in 0..delta.unsigned_abs() {
-                                            if delta > 0 {
-                                                add_slot_to_power(state, &powerset_id, &power_id, slot_budget, leveling, leveling_on);
-                                            } else {
-                                                remove_slot_from_power(state, &powerset_id, &power_id, leveling);
-                                            }
-                                        }
-                                    });
-                                }
-                            },
-                            onpointercancel: move |_| slot_drag.set(None),
-                            // Losing capture ends the drag whatever took it — the handle can no
-                            // longer see where the pointer goes, so there is no gesture left to
-                            // finish. Without this the card keeps a preview it will never commit,
-                            // and a stranded REMOVE preview reads as slots about to vanish. Fires
-                            // after `pointerup` on a normal release too, where clearing an already
-                            // cleared drag is a no-op.
-                            onlostpointercapture: move |_| slot_drag.set(None),
-                            onkeydown: {
-                                let database = database.clone();
-                                let power_id = power_id.clone();
-                                let powerset_id = powerset_id.clone();
-                                move |evt: Event<KeyboardData>| {
-                                    // The drag's two directions, given keys: the arrows step the
-                                    // way they point, and Enter/Space activate the control's
-                                    // primary action (add), matching the tap. Any other key is
-                                    // left alone so focus and typing behave normally.
-                                    let add = matches!(evt.key(), Key::Enter | Key::ArrowRight)
-                                        || matches!(evt.key(), Key::Character(c) if c == " ");
-                                    let remove = matches!(evt.key(), Key::ArrowLeft);
-                                    if !add && !remove {
-                                        return;
-                                    }
-                                    evt.prevent_default();
-                                    let power_id = power_id.clone();
-                                    let powerset_id = powerset_id.clone();
-                                    let database = database.clone();
-                                    session.commit(move |state| {
-                                        let leveling = database.leveling_schedule.as_ref();
-                                        if add {
-                                            add_slot_to_power(state, &powerset_id, &power_id, slot_budget, leveling, leveling_on);
-                                        } else {
-                                            remove_slot_from_power(state, &powerset_id, &power_id, leveling);
-                                        }
-                                    });
-                                }
-                            },
-                            if pending_delta != 0 {
-                                span {
-                                    class: if pending_delta < 0 {
-                                        "slot-handle-count slot-handle-count--remove"
-                                    } else {
-                                        "slot-handle-count"
-                                    },
-                                    "{slot_delta_label(pending_delta)}"
-                                }
-                            } else {
-                                "‹›"
-                            }
+                        SlotHandle {
+                            drag: slot_drag,
+                            capsule_key: capsule_key.clone(),
+                            max_add,
+                            max_remove,
+                            database: database.clone(),
+                            powerset_id: powerset_id.clone(),
+                            power_id: power_id.clone(),
+                            slot_budget,
+                            leveling_on,
                         }
                     }
                     }

@@ -8024,17 +8024,25 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   font: inherit; cursor: pointer;
 }
 div.phone-card__head { cursor: default; }
+/* A button of its own, raised and outlined inside the card, so the card reads as two controls:
+   the name changes the power, this opens its slots. */
 .phone-card__toggle {
   flex: none;
-  display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 5px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
   /* Wide enough for six circles, so every card's circles line up down the list. */
   min-width: 108px;
-  padding: 6px 12px 6px 8px;
-  border: 0; border-left: 1px solid var(--seam); background: none;
-  color: var(--text-dim); font: 600 12px var(--font-chrome);
+  margin: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--seam-raised); border-radius: var(--r);
+  background: var(--surface-raised);
+  box-shadow: 0 1px 0 color-mix(in srgb, black 35%, transparent);
+  color: var(--text); font: 600 12px var(--font-chrome);
   cursor: pointer;
 }
-.phone-card.is-open .phone-card__toggle { color: var(--action-active); }
+.phone-card.is-open .phone-card__toggle {
+  color: var(--action-active); border-color: var(--action-active);
+  background: var(--surface-warmed);
+}
 .phone-card__toggle-label { display: flex; align-items: center; gap: 4px; }
 .phone-card__caret { display: inline-block; transition: transform var(--ease); }
 .phone-card__caret.is-open { transform: rotate(180deg); }
@@ -8055,7 +8063,21 @@ div.phone-card__head { cursor: default; }
   border-top: 1px solid var(--seam);
 }
 .phone-card__room { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.phone-card__left { font-size: 12px; color: var(--text-dim); }
+.phone-card__hint { font-size: 12px; color: var(--text-faint); }
+.phone-card__left { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+/* The unfolded slots and the drag handle. The handle sits outside the wrapping cells, as on the
+   desktop card, so a drag that adds ghosts never pushes it out from under the finger. */
+.phone-slots {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px; margin: -6px;
+  border: 1px solid transparent; border-radius: calc(var(--r) * 2);
+}
+.phone-slots.is-active { border-color: var(--action-active); background: color-mix(in srgb, var(--action-active) 8%, transparent); }
+.phone-slots:has(.slot-handle-count--remove) { border-color: var(--action-danger); background: color-mix(in srgb, var(--action-danger) 8%, transparent); }
+.phone-slots__cells { flex: 1 1 auto; display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.phone-slots .slot-handle { flex: none; width: 40px; height: 40px; font-size: 16px; }
+.phone-enh.is-ghost { border: 1px dashed var(--action-active); background: color-mix(in srgb, var(--action-active) 12%, transparent); }
+.phone-enh.is-doomed { opacity: 0.4; outline: 1px dashed var(--action-danger); outline-offset: 1px; }
 .phone-card__left b { color: var(--text); }
 
 /* ---- pinned powers (beta `PinnedPowersBar`) ----
