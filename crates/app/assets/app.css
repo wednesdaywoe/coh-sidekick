@@ -1350,6 +1350,9 @@
   color: var(--text-dim); font-size: 12px; text-decoration: underline; cursor: pointer;
 }
 .build-convert:hover { color: var(--action-hover); }
+/* Clear build sits last, apart from the choices above it, so it is not hit on the way past. */
+.build-clear { align-self: flex-start; margin-top: 12px; }
+.build-clear__confirm { margin-top: 12px; }
 
 /* ---- power card: inset capsule marker ----
    A detached, fully-rounded capsule (not a flush border) that can glow on all four sides.

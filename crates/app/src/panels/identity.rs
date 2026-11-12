@@ -188,6 +188,56 @@ pub fn IdentityPanel(database: Db, dataset: Signal<DatasetId>) -> Element {
             } else {
                 p { class: "hint", "Choose an archetype to begin." }
             }
+
+            if has_archetype || !build.read().name.is_empty() || build.read().origin.is_some() {
+                ClearBuild { dataset }
+            }
+        }
+    }
+}
+
+/// The main menu's New build, at the bottom of the form a build starts from. Asks in place,
+/// like that entry, and is one Undo away for the same reason.
+#[component]
+fn ClearBuild(dataset: Signal<DatasetId>) -> Element {
+    let session = use_context::<BuildSession>();
+    let tracked = use_context::<crate::tracked_stats::TrackedStats>();
+    let mut job = use_context::<crate::phone_build::PhoneJob>().0;
+    let mut confirming = use_signal(|| false);
+
+    if confirming() {
+        return rsx! {
+            div { class: "main-menu__confirm build-clear__confirm",
+                span { class: "main-menu__confirm-text", "Clear every choice and start over?" }
+                div { class: "main-menu__confirm-actions",
+                    button {
+                        class: "seg",
+                        r#type: "button",
+                        onclick: move |_| confirming.set(false),
+                        "Keep it"
+                    }
+                    button {
+                        class: "seg is-destructive",
+                        r#type: "button",
+                        onclick: move |_| {
+                            crate::build_io::start_over(session, dataset(), tracked);
+                            // A phone left on Slots or Enhance would show an empty list.
+                            job.set(crate::phone_build::Job::Powers);
+                            confirming.set(false);
+                        },
+                        "Clear build"
+                    }
+                }
+            }
+        };
+    }
+
+    rsx! {
+        button {
+            class: "seg is-destructive build-clear",
+            r#type: "button",
+            onclick: move |_| confirming.set(true),
+            "Clear build…"
         }
     }
 }

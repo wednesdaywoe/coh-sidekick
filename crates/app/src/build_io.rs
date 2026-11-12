@@ -457,10 +457,7 @@ fn NewBuildEntry(dataset: Signal<DatasetId>) -> Element {
                         class: "seg is-destructive",
                         r#type: "button",
                         onclick: move |_| {
-                            let empty = CharacterState::empty(dataset());
-                            session.commit(move |working| *working = empty);
-                            crate::cloud::owner_store::clear_quick_share();
-                            tracked.clear();
+                            start_over(session, dataset(), tracked);
                             confirming.set(false);
                             menu.set(false);
                         },
@@ -480,6 +477,19 @@ fn NewBuildEntry(dataset: Signal<DatasetId>) -> Element {
             span { class: "main-menu__hint", "Clears every pick and slot" }
         }
     }
+}
+
+/// Swap in an empty build as one undoable edit, and drop what belonged to the old one: its quick
+/// share link and the stats the user pinned for it. New build and the identity form's Clear build.
+pub(crate) fn start_over(
+    session: BuildSession,
+    dataset: DatasetId,
+    tracked: crate::tracked_stats::TrackedStats,
+) {
+    let empty = CharacterState::empty(dataset);
+    session.commit(move |working| *working = empty);
+    crate::cloud::owner_store::clear_quick_share();
+    tracked.clear();
 }
 
 /// Open a build file. A label over a hidden file input, because that input is the only thing
