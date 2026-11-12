@@ -199,35 +199,55 @@ async fn load() -> Option<BTreeMap<String, Vec<String>>> {
 }
 
 /// The strip: four numbers in a row, each in its stat's colour. Tapping one shows the Stats tab.
+///
+/// Given a `preview` — the build as a pending choice would leave it — each number also shows
+/// how it would move (phone-build-flow-7). The enhancement picker draws a second copy of the
+/// strip inside itself on phones (`in_picker`), since it covers the one at the top.
 #[component]
-pub fn KeyStatStrip() -> Element {
+pub fn KeyStatStrip(
+    #[props(default)] database: Option<crate::shell::Db>,
+    #[props(default)] preview: Option<coh_data::CharacterState>,
+    #[props(default)] in_picker: bool,
+) -> Element {
     let totals = use_context::<BuildTotals>().0;
     let choices = use_context::<KeyStatChoices>();
     let mut sheet = use_context::<OpenSheet>().0;
     let mut tab = use_context::<crate::phone_build::PhoneTab>().0;
     let archetype = build_archetype();
-    let cells: Vec<(String, String, &'static str)> = {
+    let after = preview
+        .as_ref()
+        .zip(database.as_ref())
+        .map(|(build, db)| coh_math::recalculate(build, db));
+    let cells: Vec<(String, String, &'static str, Option<(String, bool)>)> = {
         let totals = totals.read();
-        choices
-            .rows(archetype.as_deref())
-            .iter()
-            .map(|stat| {
+        let rows = choices.rows(archetype.as_deref());
+        deltas(&rows, &totals, after.as_ref())
+            .into_iter()
+            .zip(rows)
+            .map(|(delta, stat)| {
                 (
                     short_label(stat),
                     stat.format.render((stat.read)(&totals)),
                     stat.family.token(),
+                    delta.map(|d| (stat.format.render_delta(d), d < 0.0)),
                 )
             })
             .collect()
     };
     rsx! {
-        div { class: "key-stats", role: "group", "aria-label": "Key stats",
-            for (index, (label, value, colour)) in cells.into_iter().enumerate() {
+        div {
+            class: if in_picker { "key-stats key-stats--in-picker" } else { "key-stats" },
+            role: "group",
+            "aria-label": "Key stats",
+            for (index, (label, value, colour, delta)) in cells.into_iter().enumerate() {
                 button {
                     key: "{index}",
                     class: "key-stats__cell",
                     r#type: "button",
                     "aria-label": "{label} {value}, open Stats",
+                    // Inside the picker the strip is a readout: leaving for Stats would abandon
+                    // the choice being weighed.
+                    disabled: in_picker,
                     onclick: move |_| {
                         sheet.set(None);
                         tab.set(crate::phone_build::Tab::Stats);
@@ -235,10 +255,30 @@ pub fn KeyStatStrip() -> Element {
                     },
                     span { class: "key-stats__label", "{label}" }
                     span { class: "key-stats__value mono", style: "color: {colour}", "{value}" }
+                    if let Some((text, down)) = delta {
+                        span { class: if down { "key-stats__delta mono is-down" } else { "key-stats__delta mono" }, "{text}" }
+                    }
                 }
             }
         }
     }
+}
+
+/// How far each row would move from `now` to `after`, or `None` for a row that would not move
+/// (or when there is no `after`). Half a hundredth is the floor: every format the strip uses
+/// rounds finer movements away, and a "+0" would claim a change that is not there.
+pub fn deltas(
+    rows: &[&'static StatDef],
+    now: &coh_math::CalculatedTotals,
+    after: Option<&coh_math::CalculatedTotals>,
+) -> Vec<Option<f64>> {
+    rows.iter()
+        .map(|stat| {
+            let after = after?;
+            let delta = (stat.read)(after) - (stat.read)(now);
+            (delta.abs() >= 0.005).then_some(delta)
+        })
+        .collect()
 }
 
 /// The foot of the Stats tab: one dropdown per position, every dashboard row offered,

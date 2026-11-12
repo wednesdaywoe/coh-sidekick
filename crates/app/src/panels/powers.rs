@@ -4034,6 +4034,37 @@ fn EnhancementPickerModal(
         };
         (now, after)
     };
+    // The whole build as the next click would leave it — for the key numbers drawn in the
+    // picker on phones, where the picker covers the ones at the top of the screen. `None` when
+    // nothing is marked or held, or when the picker is filling a Compare row, which never
+    // touches the build.
+    let key_preview = (destination == PickerDestination::Build)
+        .then(|| {
+            let build = session.build.read();
+            let mut picks = queue.read().clone();
+            picks.extend(hovered.read().clone());
+            let placements = mark_placements(
+                &database,
+                &build,
+                destination,
+                &picks,
+                &slots,
+                slot_index as usize,
+                &|pick| build_queued_pick(&database, pick, defaults, &session),
+            );
+            (!placements.is_empty()).then(|| {
+                let mut next = build.clone();
+                apply_placements(
+                    &mut next,
+                    &database,
+                    &powerset_id,
+                    &power_internal_name,
+                    placements,
+                );
+                next
+            })
+        })
+        .flatten();
 
     let tab_class = |tab: PickerTab| {
         if active_tab() == tab {
@@ -5271,6 +5302,11 @@ fn EnhancementPickerModal(
                     }
                 }
                 crate::ed_view::EdPreviewStrip { now: enhancement_now, after: enhancement_after }
+                crate::key_stats::KeyStatStrip {
+                    database: Some(database.clone()),
+                    preview: key_preview,
+                    in_picker: true,
+                }
                 // The marks, and what spending them would do. Present only while something is
                 // marked, so the picker's resting state is unchanged. It states the slot count
                 // before the act rather than reporting it after, because the marks can outnumber
@@ -6417,6 +6453,29 @@ fn placeable_picks(
     placeable
 }
 
+/// Write `placements` into the power the way a commit does — including switching the power on
+/// when slotting it would ([`switches_on_when_slotted`]). Both commits call it, and so does the
+/// phone's key-number preview, so a preview cannot leave out a side effect the commit has.
+pub(crate) fn apply_placements(
+    state: &mut coh_data::CharacterState,
+    database: &Db,
+    powerset_id: &str,
+    power_internal_name: &str,
+    placements: Vec<(usize, coh_data::Enhancement)>,
+) {
+    let switch_on = switches_on_when_slotted(database, powerset_id, power_internal_name, state);
+    for (slot_index, enhancement) in placements {
+        set_slot_enhancement(
+            state,
+            powerset_id,
+            power_internal_name,
+            slot_index,
+            enhancement,
+            switch_on,
+        );
+    }
+}
+
 /// Land several picked enhancements at once, as ONE undo step.
 ///
 /// One user action is one history entry — the rule the pool picker already holds to, where taking
@@ -6434,25 +6493,19 @@ fn place_picks(
 ) {
     match destination {
         PickerDestination::Build => {
-            let switch_on = switches_on_when_slotted(
-                database,
-                powerset_id,
-                power_internal_name,
-                &session.build.peek(),
+            let (database, powerset_id, power_internal_name) = (
+                database.clone(),
+                powerset_id.to_string(),
+                power_internal_name.to_string(),
             );
-            let powerset_id = powerset_id.to_string();
-            let power_internal_name = power_internal_name.to_string();
             session.commit(move |state| {
-                for (slot_index, enhancement) in placements {
-                    set_slot_enhancement(
-                        state,
-                        &powerset_id,
-                        &power_internal_name,
-                        slot_index,
-                        enhancement,
-                        switch_on,
-                    );
-                }
+                apply_placements(
+                    state,
+                    &database,
+                    &powerset_id,
+                    &power_internal_name,
+                    placements,
+                );
             });
         }
         PickerDestination::CompareCopy { copy_id } => {
@@ -6495,22 +6548,18 @@ fn place_pick(
 ) {
     match destination {
         PickerDestination::Build => {
-            let switch_on = switches_on_when_slotted(
-                database,
-                powerset_id,
-                power_internal_name,
-                &session.build.peek(),
+            let (database, powerset_id, power_internal_name) = (
+                database.clone(),
+                powerset_id.to_string(),
+                power_internal_name.to_string(),
             );
-            let powerset_id = powerset_id.to_string();
-            let power_internal_name = power_internal_name.to_string();
             session.commit(move |state| {
-                set_slot_enhancement(
+                apply_placements(
                     state,
+                    &database,
                     &powerset_id,
                     &power_internal_name,
-                    slot_index,
-                    enhancement,
-                    switch_on,
+                    vec![(slot_index, enhancement)],
                 );
             });
         }
@@ -6806,6 +6855,67 @@ fn remove_slot_at(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// The phone's key-number preview goes through the commit's own write, side effects
+    /// included: slotting Rest switches it on, and the four numbers report what that does
+    /// (phone-build-flow-7). A preview that only swapped the slots would show nothing here.
+    #[test]
+    fn a_preview_carries_what_the_commit_switches_on() {
+        use std::path::PathBuf;
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../contract/homecoming/bundle.json.gz");
+        let bytes = std::fs::read(&path).expect("bundle reads");
+        let database = Db(std::sync::Arc::new(
+            coh_data::PowerDatabase::from_gz_bytes(&bytes).expect("bundle loads"),
+        ));
+        let text = std::fs::read_to_string(
+            PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../fixtures/buildsave/homecoming/charnel.txt"),
+        )
+        .expect("fixture reads");
+        let build =
+            crate::build_file::decode_import(&text, &database, coh_data::DatasetId::Homecoming)
+                .expect("fixture imports")
+                .build;
+        let rest = build
+            .inherents
+            .iter()
+            .find(|power| power.internal_name == "Rest")
+            .expect("charnel holds Rest");
+        assert!(!rest.is_active, "Rest starts off");
+        let (set, empty) = (
+            rest.powerset.clone(),
+            rest.slots
+                .iter()
+                .position(Option::is_none)
+                .expect("Rest has an empty slot"),
+        );
+        let piece = build
+            .all_selected()
+            .flat_map(|power| power.slots.iter().flatten())
+            .next()
+            .expect("charnel holds an enhancement")
+            .clone();
+
+        let mut preview = build.clone();
+        apply_placements(&mut preview, &database, &set, "Rest", vec![(empty, piece)]);
+        let rest_after = preview
+            .selected_power(&set, "Rest")
+            .expect("Rest still held");
+        assert!(rest_after.slots[empty].is_some(), "the piece is placed");
+        assert!(
+            rest_after.is_active,
+            "slotting Rest switches it on, as the commit does"
+        );
+
+        let now = coh_math::recalculate(&build, &database);
+        let after = coh_math::recalculate(&preview, &database);
+        let rows = [crate::panels::stat_registry::by_id("def_smashing").expect("row")];
+        assert!(
+            crate::key_stats::deltas(&rows, &now, Some(&after))[0].is_some(),
+            "Rest switched on moves Def Smashing"
+        );
+    }
 
     /// A pick sheet only ever takes its own level, and says why a row will not.
     #[test]

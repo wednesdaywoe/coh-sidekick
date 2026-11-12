@@ -7885,6 +7885,17 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   color: var(--text-dim);
 }
 .key-stats__value { font-size: 14px; font-weight: 700; white-space: nowrap; }
+/* What a pending choice would do to the number: green up, ember down — the direction, not a
+   verdict, since less of a stat is sometimes the point. */
+.key-stats__delta { font-size: 11px; font-weight: 700; color: var(--stat-heal); }
+.key-stats__delta.is-down { color: var(--action-danger); }
+/* The picker's own copy, on phones only: there the picker covers the strip at the top. */
+/* `flex: none`: the bar's full-row basis would read as full HEIGHT in the picker's column. */
+.key-stats--in-picker { flex: none; margin: 8px 0 0; }
+.key-stats--in-picker .key-stats__cell:disabled { cursor: default; opacity: 1; color: inherit; }
+@media (min-width: 900px) {
+  .key-stats--in-picker { display: none; }
+}
 .key-stats-chooser-wrap { padding: 0 16px 24px; }
 .key-stats-chooser__note { margin: 0 0 8px; font-size: 12px; color: var(--text-dim); }
 .key-stats-chooser__row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
