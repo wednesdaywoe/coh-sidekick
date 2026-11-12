@@ -8024,6 +8024,16 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   font: inherit; cursor: pointer;
 }
 div.phone-card__head { cursor: default; }
+/* A pick's name is a button too (it changes the power), framed like Slots beside it so the card
+   reads as two controls. An inherent's name changes nothing, so it stays flat. */
+button.phone-card__head {
+  margin: 6px 0 6px 6px;
+  border: 1px solid var(--seam-raised); border-radius: var(--r);
+  background: var(--surface-raised);
+  box-shadow: 0 1px 0 color-mix(in srgb, black 35%, transparent);
+  -webkit-tap-highlight-color: transparent;
+}
+button.phone-card__head:active, .phone-card__toggle:active { background: var(--surface-warmed); }
 /* A button of its own, raised and outlined inside the card, so the card reads as two controls:
    the name changes the power, this opens its slots. */
 .phone-card__toggle {
