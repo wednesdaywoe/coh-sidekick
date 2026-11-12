@@ -195,6 +195,13 @@ pub fn special_overlay_url(category: &str) -> String {
     format!("{IMG_DIR}/Enhancements/Overlay/{frame}")
 }
 
+/// Whether the game frames a set in purple: a very rare set, or a Superior archetype or event
+/// set (their icons say so). Exactly the sets [`io_set_overlay_url`] draws in a superior frame;
+/// the phone's slot circles ring them in purple.
+pub fn io_set_is_superior(category: &str, icon: &str) -> bool {
+    category == "purple" || icon.starts_with("SAO_") || icon.starts_with("SEO_")
+}
+
 /// The overlay frame an IO-set piece composites over its set icon (beta `getOverlayPath`).
 ///
 /// The frame is what carries rarity — every piece of a set shares one base icon, so without it a

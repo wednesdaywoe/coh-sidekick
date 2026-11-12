@@ -6,7 +6,7 @@
 //! POGS`), from the band across each ball's middle where the true colour sits.
 
 use crate::shell::Db;
-use coh_data::{Enhancement, EnhancementKind};
+use coh_data::{Enhancement, EnhancementKind, IoSet};
 
 /// One ball per enhancement stat: (the art's name, its colour).
 const POGS: [(&str, &str); 32] = [
@@ -84,8 +84,8 @@ fn stat_pog(stat: &str) -> Option<&'static str> {
 }
 
 /// The ball a set type wears in the game. `None` for the types that mix purposes (the
-/// archetype sets, the Universal ones, rez, rest and teleport), whose pieces go by their own
-/// first stat instead.
+/// archetype sets, the Universal ones, rez and teleport), which take the stat most of their
+/// pieces boost instead ([`set_colour`]).
 fn set_type_pog(set_type: &str) -> Option<&'static str> {
     let name = match set_type {
         "Melee Damage"
@@ -103,7 +103,8 @@ fn set_type_pog(set_type: &str) -> Option<&'static str> {
         "To Hit Buff" => "BUFF_TO_HIT",
         "To Hit Debuff" | "Accurate To-Hit Debuff" => "DEBUFF_TO_HIT",
         "Resist Damage" => "DAMAGE_RESIST",
-        "Healing" | "Accurate Healing" => "HEAL",
+        // Rebirth's Rest Buff set is one proc that restores health out of combat; Rest heals.
+        "Healing" | "Accurate Healing" | "Rest Buff" => "HEAL",
         "Endurance Modification" => "RECOVERY",
         "Holds" => "HOLD_DURATION",
         "Stuns" => "STUN_DURATION",
@@ -122,33 +123,71 @@ fn set_type_pog(set_type: &str) -> Option<&'static str> {
     pog(name)
 }
 
-/// A set piece's colour: its set type's, or else its first stat that has one.
-fn piece_colour(set_type: Option<&str>, aspects: &[String]) -> Option<&'static str> {
-    set_type
-        .and_then(set_type_pog)
-        .or_else(|| aspects.iter().find_map(|stat| stat_pog(stat)))
+/// A set's one colour, worn by every piece: its type's, or for a type with none (the archetype
+/// and Universal sets) the stat most of its pieces boost, the earlier stat winning a tie. One
+/// colour per set, because per-piece colours made an archetype set read as alternating stripes.
+fn set_colour(set: &IoSet) -> Option<&'static str> {
+    if let Some(colour) = set_type_pog(&set.set_type) {
+        return Some(colour);
+    }
+    let mut tally: Vec<(&'static str, usize)> = Vec::new();
+    for colour in set
+        .pieces
+        .iter()
+        .flat_map(|piece| piece.aspects.iter().filter_map(|stat| stat_pog(stat)))
+    {
+        match tally.iter_mut().find(|(seen, _)| *seen == colour) {
+            Some((_, count)) => *count += 1,
+            None => tally.push((colour, 1)),
+        }
+    }
+    // `max_by_key` keeps the LAST of equals, so walk it reversed to let the first seen win.
+    tally
+        .into_iter()
+        .rev()
+        .max_by_key(|(_, count)| *count)
+        .map(|(colour, _)| colour)
 }
 
-/// The colour a slotted enhancement shows in its circle. `None` when nothing it carries has a
-/// colour (a pure proc out of a mixed-purpose set), which the circle draws as plain filled.
-pub fn slot_colour(enhancement: &Enhancement, database: &Db) -> Option<&'static str> {
+/// How a slotted enhancement's circle is drawn.
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct SlotColour {
+    /// The in-game colour of what it boosts. `None` when nothing it carries has one.
+    pub fill: Option<&'static str>,
+    /// A piece of a set the game frames in purple (very rare, Superior archetype or event), which
+    /// the circle rings in purple: the fill already uses purple for Defense, the ring does not.
+    pub superior: bool,
+}
+
+pub fn slot_colour(enhancement: &Enhancement, database: &Db) -> SlotColour {
     match &enhancement.kind {
         EnhancementKind::IoSet {
             set_id, aspects, ..
-        } => {
-            let set_type = database
-                .io_sets
-                .as_ref()
-                .and_then(|catalog| catalog.get(set_id))
-                .map(|set| set.set_type.as_str());
-            piece_colour(set_type, aspects)
-        }
+        } => match database
+            .io_sets
+            .as_ref()
+            .and_then(|catalog| catalog.get(set_id))
+        {
+            Some(set) => SlotColour {
+                fill: set_colour(set),
+                superior: crate::view::icons::io_set_is_superior(&set.category, &set.icon),
+            },
+            // A set this dataset doesn't carry: the piece's own first stat is all there is.
+            None => SlotColour {
+                fill: aspects.iter().find_map(|stat| stat_pog(stat)),
+                superior: false,
+            },
+        },
         EnhancementKind::GenericIo { stat, .. } | EnhancementKind::Origin { stat, .. } => {
-            stat_pog(stat)
+            SlotColour {
+                fill: stat_pog(stat),
+                superior: false,
+            }
         }
-        EnhancementKind::Special { aspects, .. } => {
-            aspects.iter().find_map(|aspect| stat_pog(&aspect.stat))
-        }
+        EnhancementKind::Special { aspects, .. } => SlotColour {
+            fill: aspects.iter().find_map(|aspect| stat_pog(&aspect.stat)),
+            superior: false,
+        },
     }
 }
 
@@ -175,25 +214,51 @@ mod tests {
             .collect()
     }
 
-    /// Every set piece on every server gets a colour, except a pure proc out of a set with no
-    /// colour of its own. A new set type, or a stat spelled a new way, fails here.
+    /// Every set on every server gets one colour, so no piece draws plain. A new set type, or a
+    /// stat spelled a new way, fails here.
     #[test]
-    fn every_set_piece_has_a_colour() {
+    fn every_set_has_a_colour() {
         for (dataset, database) in every_server() {
             let catalog = database.io_sets.as_ref().expect("io sets");
             for (id, set) in &catalog.sets {
-                for piece in &set.pieces {
-                    let pure_proc = piece.proc && piece.aspects.is_empty();
-                    if pure_proc && set_type_pog(&set.set_type).is_none() {
-                        continue;
-                    }
-                    assert!(
-                        piece_colour(Some(&set.set_type), &piece.aspects).is_some(),
-                        "{} {id} ({}) piece {} {:?} has no colour",
-                        dataset.as_str(),
-                        set.set_type,
-                        piece.num,
-                        piece.aspects
+                assert!(
+                    set_colour(set).is_some(),
+                    "{} {id} ({}) has no colour",
+                    dataset.as_str(),
+                    set.set_type
+                );
+            }
+        }
+    }
+
+    /// An archetype set is one colour, not one per piece: Might of the Tanker's pieces lead with
+    /// Accuracy or Damage in turn, and it is a damage set, so all red.
+    #[test]
+    fn an_archetype_set_is_one_colour() {
+        let (_, database) = every_server().remove(0);
+        let catalog = database.io_sets.as_ref().expect("io sets");
+        let set = catalog
+            .sets
+            .values()
+            .find(|set| set.name == "Superior Might of the Tanker")
+            .expect("Homecoming carries Superior Might of the Tanker");
+        assert_eq!(set_colour(set), pog("DAMAGE"));
+    }
+
+    /// The purple ring goes on exactly the sets the desktop draws in a superior frame.
+    #[test]
+    fn the_ring_matches_the_superior_frame() {
+        for (dataset, database) in every_server() {
+            let catalog = database.io_sets.as_ref().expect("io sets");
+            for (id, set) in &catalog.sets {
+                for attuned in [false, true] {
+                    let frame =
+                        crate::view::icons::io_set_overlay_url(&set.category, &set.icon, attuned);
+                    assert_eq!(
+                        crate::view::icons::io_set_is_superior(&set.category, &set.icon),
+                        frame.contains("superior"),
+                        "{} {id}: ring and frame disagree ({frame})",
+                        dataset.as_str()
                     );
                 }
             }
@@ -232,10 +297,5 @@ mod tests {
         assert_eq!(set_type_pog("Targeted AoE Damage"), pog("DAMAGE"));
         assert_eq!(set_type_pog("Defense Sets"), pog("BUFF_DEFENSE"));
         assert_eq!(stat_pog("Accuracy"), Some("#e0db00"));
-        // A mixed-purpose set goes by the piece's own first stat.
-        assert_eq!(
-            piece_colour(Some("Tanker Archetype Sets"), &["Defense".into()]),
-            pog("BUFF_DEFENSE")
-        );
     }
 }

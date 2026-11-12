@@ -149,8 +149,8 @@ pub fn BuildCounts(database: Option<Db>) -> Element {
 #[derive(Clone, PartialEq)]
 enum Dot {
     Empty,
-    /// Slotted, in its in-game colour when it has one ([`crate::slot_colour`]).
-    Filled(Option<&'static str>),
+    /// Slotted, in its in-game colour ([`crate::slot_colour`]).
+    Filled(crate::slot_colour::SlotColour),
 }
 
 /// What a card shows of one power. Built once per render from the build, then handed to
@@ -444,11 +444,12 @@ fn PowerCard(
                         for (index, dot) in dots.iter().enumerate() {
                             match dot {
                                 Dot::Empty => rsx! { span { key: "{index}", class: "phone-dot" } },
-                                Dot::Filled(Some(hex)) => rsx! {
-                                    span { key: "{index}", class: "phone-dot is-filled", style: "--dot: {hex}" }
-                                },
-                                Dot::Filled(None) => rsx! {
-                                    span { key: "{index}", class: "phone-dot is-filled is-plain" }
+                                Dot::Filled(colour) => rsx! {
+                                    span {
+                                        key: "{index}",
+                                        class: if colour.superior { "phone-dot is-filled is-superior" } else { "phone-dot is-filled" },
+                                        style: colour.fill.map(|hex| format!("--dot: {hex}")).unwrap_or_default(),
+                                    }
                                 },
                             }
                         }
