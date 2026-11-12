@@ -7961,6 +7961,7 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   white-space: normal;
 }
 .pick-sheet__pools { margin-top: 16px; }
+.start-picking { padding: 8px 0 16px; }
 /* The Slots pass: a row per power with a stepper at its end. The dots are the power's room,
    filled for the slots it has. */
 .phone-pick--slots { cursor: default; }

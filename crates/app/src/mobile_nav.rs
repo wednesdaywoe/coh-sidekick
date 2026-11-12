@@ -96,8 +96,9 @@ pub fn MobileNav(
                         Sheet::Identity => rsx! {
                             if let Some(database) = database.clone() {
                                 div { class: "mobile-sheet__panel",
-                                    crate::panels::identity::IdentityPanel { database, dataset }
+                                    crate::panels::identity::IdentityPanel { database: database.clone(), dataset }
                                 }
+                                crate::phone_build::StartPicking { database }
                             }
                         },
                         Sheet::Pick(level) => rsx! {

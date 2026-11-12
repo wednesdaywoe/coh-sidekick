@@ -168,7 +168,7 @@ pub fn PowersJob(database: Db) -> Element {
     if build.archetype.id.is_none() {
         return rsx! {
             div { class: "phone-job",
-                p { class: "phone-job__note", "Choose an archetype to start: tap the bar at the top." }
+                p { class: "phone-job__note", "Start by choosing your archetype and powersets." }
                 button {
                     class: "phone-job__cta",
                     r#type: "button",
@@ -567,6 +567,44 @@ pub fn EnhanceJob(database: Db) -> Element {
                         "Fill the next empty slots: {name}"
                     }
                 }
+            }
+        }
+    }
+}
+
+/// The Build Identity sheet's way on: once an archetype and both powersets are chosen on a build
+/// with no powers yet, one button goes straight to the first level's pick sheet — a first visit
+/// should not have to close the form and find the Powers list to take its first step.
+#[component]
+pub fn StartPicking(database: Db) -> Element {
+    let session = use_context::<BuildSession>();
+    let mut sheet = use_context::<OpenSheet>().0;
+    let mut tab = use_context::<PhoneTab>().0;
+    let mut job = use_context::<PhoneJob>().0;
+    let first = {
+        let build = session.build.read();
+        let ready = build.archetype.id.is_some()
+            && build.primary.id.is_some()
+            && build.secondary.id.is_some()
+            && build.picked_powers().next().is_none();
+        ready
+            .then(|| cells_of(&database, &build).and_then(|(cells, _)| next_empty(&cells, 0)))
+            .flatten()
+    };
+    let Some(level) = first else {
+        return rsx! {};
+    };
+    rsx! {
+        div { class: "start-picking",
+            button {
+                class: "phone-job__cta",
+                r#type: "button",
+                onclick: move |_| {
+                    tab.set(Tab::Build);
+                    job.set(Job::Powers);
+                    sheet.set(Some(Sheet::Pick(level)));
+                },
+                "Choose your level {level} power"
             }
         }
     }
