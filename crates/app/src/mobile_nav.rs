@@ -29,6 +29,8 @@ pub(crate) enum Sheet {
     Identity,
     Stats,
     More,
+    /// Choosing the power for one pick level (see [`crate::phone_build::PickSheet`]).
+    Pick(u8),
 }
 
 /// Which sheet is open, shared by the shell so the build bar can open one too.
@@ -36,11 +38,12 @@ pub(crate) enum Sheet {
 pub(crate) struct OpenSheet(pub Signal<Option<Sheet>>);
 
 impl Sheet {
-    fn title(self) -> &'static str {
+    fn title(self) -> String {
         match self {
-            Sheet::Identity => "Build Identity",
-            Sheet::Stats => "Stats",
-            Sheet::More => "More",
+            Sheet::Identity => "Build Identity".to_string(),
+            Sheet::Stats => "Stats".to_string(),
+            Sheet::More => "More".to_string(),
+            Sheet::Pick(level) => format!("Level {level}"),
         }
     }
 }
@@ -72,7 +75,8 @@ pub fn MobileNav(
             Some(next)
         });
     };
-    let build_active = sheet().is_none() && incarnate().is_none();
+    // A pick sheet is part of building, so Build stays lit under it.
+    let build_active = matches!(sheet(), None | Some(Sheet::Pick(_))) && incarnate().is_none();
 
     rsx! {
         nav {
@@ -94,6 +98,11 @@ pub fn MobileNav(
                             }
                         },
                         Sheet::Stats => rsx! { StatsSheet {} },
+                        Sheet::Pick(level) => rsx! {
+                            if let Some(database) = database.clone() {
+                                crate::phone_build::PickSheet { level, database }
+                            }
+                        },
                         Sheet::More => rsx! {
                             FileMenu { database: database.clone(), dataset }
                             CombatPopover { database: database.clone() }
@@ -190,7 +199,7 @@ fn NavTab(
 /// puts the sheet over the sticky mobile header (z 40) and under every modal (z 1000), so a
 /// picker or a confirm raised from inside a sheet opens over it rather than behind.
 #[component]
-fn MobileSheet(sheet: Signal<Option<Sheet>>, title: &'static str, children: Element) -> Element {
+fn MobileSheet(sheet: Signal<Option<Sheet>>, title: String, children: Element) -> Element {
     // The popovers listed in this sheet take this as their open state. A menu entry that acts
     // closes its menu, and here that has to close the sheet, or the sheet would stand over the
     // dialog the entry just raised.

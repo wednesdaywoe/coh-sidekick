@@ -393,6 +393,7 @@ fn PoolPickerModal(database: Db, mode: PoolPickerMode, on_close: EventHandler<()
 
     let level_up_mode = use_context::<crate::level_control::LevelUpMode>().0;
     let target_slot = use_context::<crate::level_control::TargetSlot>();
+    let open_sheet = use_context::<crate::mobile_nav::OpenSheet>().0;
     // A click on a power row takes it when it can be taken, and otherwise leaves it in the
     // preview, where the pane says why not. Same verdict as the Take button: both read
     // `take_check`.
@@ -408,7 +409,8 @@ fn PoolPickerModal(database: Db, mode: PoolPickerMode, on_close: EventHandler<()
                 &ident,
                 level_up_mode(),
                 target_slot.steering(level_up_mode()),
-            );
+            )
+            .map(|check| narrow_to_sheet(check, open_sheet()));
             let Some(TakeCheck {
                 pool_name,
                 pick_level: Some(level),
@@ -591,6 +593,24 @@ struct TakeCheck {
     blocker: Option<String>,
 }
 
+/// While a phone's level sheet is open, a pick may only take that level — the rule the sheet's own
+/// rows follow ([`crate::panels::powers::PickSheetLevel`]). The picker is a modal at the shell
+/// root, outside the sheet, so it reads the open sheet rather than the sheet's context.
+fn narrow_to_sheet(mut check: TakeCheck, sheet: Option<crate::mobile_nav::Sheet>) -> TakeCheck {
+    if let Some(crate::mobile_nav::Sheet::Pick(level)) = sheet {
+        if check.blocker.is_none() && check.pick_level != Some(level) {
+            check.blocker = Some(match check.pick_level {
+                Some(earliest) if earliest > level => format!(
+                    "{} can't be taken at level {level}; the earliest it can go is level {earliest}.",
+                    check.power_name
+                ),
+                _ => format!("{} can't be taken at level {level}.", check.power_name),
+            });
+        }
+    }
+    check
+}
+
 /// Resolves the pick level the same way an available row does, so the level the game would
 /// grant is what the pick carries. No such level left means the build has spent every pick at
 /// or above the power's unlock level, and the blocker says that instead of substituting one.
@@ -717,6 +737,7 @@ fn PoolPickerCommit(
     let session = use_context::<BuildSession>();
     let level_up_mode = use_context::<crate::level_control::LevelUpMode>().0;
     let target_slot = use_context::<crate::level_control::TargetSlot>();
+    let open_sheet = use_context::<crate::mobile_nav::OpenSheet>().0;
 
     let Some(check) = take_check(
         &database,
@@ -726,7 +747,8 @@ fn PoolPickerCommit(
         &power_ident,
         level_up_mode(),
         target_slot.steering(level_up_mode()),
-    ) else {
+    )
+    .map(|check| narrow_to_sheet(check, open_sheet())) else {
         return rsx! {};
     };
     let TakeCheck {

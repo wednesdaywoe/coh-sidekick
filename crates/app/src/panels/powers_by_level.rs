@@ -46,9 +46,9 @@ const PICK_DRAG_THRESHOLD_PX: f64 = 4.0;
 /// One cell of the grid: a pick the character earns at `level`, and the power occupying
 /// it (`None` = the pick is unspent).
 #[derive(Clone, PartialEq)]
-struct PickCell {
-    level: u8,
-    power: Option<SelectedPower>,
+pub(crate) struct PickCell {
+    pub(crate) level: u8,
+    pub(crate) power: Option<SelectedPower>,
 }
 
 /// Deal the build's picked powers onto the schedule's picks.
@@ -59,7 +59,7 @@ struct PickCell {
 /// returned separately rather than being forced into a cell the game wouldn't grant it —
 /// the caller shows it as a visible fault (Rule 1), which is how a build carrying levels
 /// this schedule never grants announces itself.
-fn deal_picks(
+pub(crate) fn deal_picks(
     pick_levels: &[u8],
     mut powers: Vec<SelectedPower>,
 ) -> (Vec<PickCell>, Vec<SelectedPower>) {

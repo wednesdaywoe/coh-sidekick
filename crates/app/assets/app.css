@@ -7818,29 +7818,31 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   background: var(--surface-panel);
   overflow-x: auto;
 }
-/* The counter is the beta's `useBuildBudget` readout: used against available, in the
-   beta's own colour code — over the budget is the danger ember, the last few units are
-   the warning heat, and a schedule-less dataset reads an em dash the way the level
-   control beside it does. */
-.build-bar__budget {
-  display: inline-flex; align-items: baseline; gap: 5px;
-  padding: 3px 8px;
+/* ---- the Build tab's pass switch (phone_build.rs) ----
+   Three buttons sharing the bar's width, each with how far that pass has got. The pressed
+   one wears the action colour, the way the bottom bar marks its open tab. */
+.job-switch {
+  flex: 1 0 100%;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
+}
+.job-switch__job {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  min-height: 44px; padding: 4px 6px;
   background: var(--surface-raised);
   border: 1px solid var(--seam-raised);
   border-radius: var(--r);
   font-family: var(--font-chrome);
-  white-space: nowrap;
-}
-.build-bar__label {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--text-dim);
+  cursor: pointer;
 }
-.build-bar__value { font-size: 12px; font-weight: 700; color: var(--text); }
-.build-bar__budget.is-over { border-color: var(--action-danger); }
-.build-bar__budget.is-over .build-bar__value { color: var(--action-danger); }
-.build-bar__budget.is-low { border-color: var(--heat); }
-.build-bar__budget.is-low .build-bar__value { color: var(--heat); }
-.build-bar__budget.is-unavailable .build-bar__value { color: var(--text-faint); }
+.job-switch__label { font-size: 13px; font-weight: 700; }
+.job-switch__count { font-size: 11px; }
+.job-switch__job[aria-pressed="true"] {
+  color: var(--action-active);
+  border-color: var(--action-active);
+  background: var(--surface-warmed);
+}
+.job-switch__job.is-over .job-switch__count { color: var(--action-danger); }
 /* The build's name, a full row of its own. Unstarted, it takes the action colour, since it is
    where a new build begins. */
 .build-bar__identity {
@@ -7904,6 +7906,60 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
      them all in view, where a sideways scroll hid the counters behind the controls. */
   .build-bar { flex-wrap: wrap; row-gap: 6px; overflow-x: visible; }
 }
+
+/* ---- the Powers pass and its pick sheet (phone_build.rs) ---- */
+.phone-job { padding: 10px 12px 96px; }
+.phone-job__note { margin: 0 0 10px; font-size: 13px; color: var(--text-dim); }
+.phone-job__fault { margin: 0 0 10px; font-size: 13px; color: var(--action-danger); }
+.phone-picks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.phone-pick {
+  width: 100%; min-height: 52px;
+  display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: 10px;
+  padding: 6px 12px 6px 8px;
+  background: var(--surface-panel);
+  border: 1px solid var(--seam);
+  border-radius: var(--r);
+  color: var(--text); text-align: left;
+  cursor: pointer;
+}
+.phone-pick__level { font-weight: 700; color: var(--text-faint); text-align: center; }
+.phone-pick__body { display: flex; flex-direction: column; min-width: 0; }
+.phone-pick__name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.phone-pick__set { font-size: 12px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.phone-pick__slots { display: flex; gap: 3px; }
+.phone-pick__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); }
+.phone-pick.is-empty { border-style: dashed; background: none; }
+.phone-pick.is-empty .phone-pick__name { color: var(--text-dim); font-weight: 500; }
+.phone-pick.is-next { border-color: var(--action-active); border-style: solid; }
+.phone-pick.is-next .phone-pick__name { color: var(--action-active); }
+.phone-pick__next {
+  padding: 2px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--action-active); border: 1px solid var(--action-active);
+}
+/* The next-level button rides just above the bottom bar, so the next step is always a thumb
+   away however far the list has scrolled. */
+.phone-job__foot {
+  position: fixed; left: 0; right: 0; z-index: 30;
+  bottom: calc(52px + env(safe-area-inset-bottom));
+  padding: 8px 12px;
+  background: linear-gradient(to top, var(--surface-app) 70%, transparent);
+}
+.phone-job__cta {
+  width: 100%; min-height: 48px;
+  border: 0; border-radius: var(--r);
+  background: var(--action-active); color: var(--surface-app);
+  font: 700 15px var(--font-chrome);
+  cursor: pointer;
+}
+/* A pick sheet's rows say why they refuse, under the name: a phone has no hover title. */
+.power-row__note {
+  display: block;
+  font-size: 11.5px; font-weight: 500; font-style: normal;
+  color: var(--text-dim);
+  white-space: normal;
+}
+.pick-sheet__pools { margin-top: 16px; }
 
 /* ---- pinned powers (beta `PinnedPowersBar`) ----
    The tracked powers, each with the perma number the engine's own projection row

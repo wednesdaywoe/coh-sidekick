@@ -1496,7 +1496,13 @@ fn branch_offer(
 /// powersets. The incarnate row arrived here when `PanelKind::Incarnates` was retired — see
 /// [`IncarnateSockets`](crate::panels::incarnate_picker::IncarnateSockets).
 #[component]
-pub fn AvailablePanel(database: Db) -> Element {
+pub fn AvailablePanel(
+    database: Db,
+    /// Only the powerset lists: a phone's pick sheet borrows them without the incarnate and
+    /// accolade strips that ride at the panel's top on desktop.
+    #[props(default)]
+    picks_only: bool,
+) -> Element {
     let session = use_context::<BuildSession>();
     let build = session.build;
 
@@ -1562,8 +1568,10 @@ pub fn AvailablePanel(database: Db) -> Element {
             // triggers used to lead the panel, which put the LAST decision first: a pool is
             // chosen late, after the primary and secondary have taken the picks they are
             // going to take.
-            crate::panels::incarnate_picker::IncarnateSockets { database: database.clone() }
-            crate::panels::accolade_picker::AccoladeStrip { database: database.clone() }
+            if !picks_only {
+                crate::panels::incarnate_picker::IncarnateSockets { database: database.clone() }
+                crate::panels::accolade_picker::AccoladeStrip { database: database.clone() }
+            }
             // Available powers — level-ordered numbered rows, one group per set.
             //
             // Two flow containers rather than one, because the pool triggers sit between
@@ -2312,6 +2320,59 @@ fn row_verdict(inputs: RowInputs<'_>) -> (RowAction, String) {
     (action, title)
 }
 
+/// The level a phone's pick sheet is choosing for (phone-build-flow-4), provided by the sheet
+/// around the power lists it borrows. Inside it a row may only take THAT level: the desktop
+/// steers a pick toward the clicked slot and lets it land elsewhere when it cannot fit, which
+/// under a sheet titled "Level 10" would be a pick appearing somewhere the user never looked.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub struct PickSheetLevel(pub u8);
+
+/// What a row does inside a pick sheet for `sheet_level`, and the short reason drawn under its
+/// name — a phone has no hover to read the title by. `action` is [`row_verdict`]'s; this only
+/// narrows it.
+fn sheet_verdict(
+    sheet_level: u8,
+    action: RowAction,
+    picked_at: Option<u8>,
+    unlock_level: u8,
+    gate: &PickGate,
+    set_blocked: Option<&str>,
+) -> (RowAction, Option<String>) {
+    if let Some(level) = picked_at {
+        return if level == sheet_level {
+            (
+                RowAction::Drop,
+                Some("Chosen here · tap to remove".to_string()),
+            )
+        } else {
+            (RowAction::Refused, Some(format!("Taken at level {level}")))
+        };
+    }
+    match action {
+        RowAction::Pick(level) if level == sheet_level => {
+            let note = matches!(gate, PickGate::NeedsEarlier)
+                .then(|| "Needs an earlier pick from its set".to_string());
+            (action, note)
+        }
+        RowAction::Pick(_) if unlock_level > sheet_level => {
+            (RowAction::Refused, Some(format!("Level {unlock_level}")))
+        }
+        RowAction::Pick(_) => (RowAction::Refused, Some("Not at this level".to_string())),
+        RowAction::Drop => (action, None),
+        RowAction::Refused => {
+            let note = match (set_blocked, gate) {
+                (Some(reason), _) => reason.to_string(),
+                (None, PickGate::Closed | PickGate::NeedsEarlier) => {
+                    "Needs a prerequisite".to_string()
+                }
+                _ if unlock_level > sheet_level => format!("Level {unlock_level}"),
+                _ => "No pick left for it".to_string(),
+            };
+            (action, Some(note))
+        }
+    }
+}
+
 /// A single available-power row — the beta `PowerItem`: a level badge (the unlock level),
 /// an icon, and the power name. Clicking picks the power into its set, at the level the game
 /// would grant that pick; clicking a row the build already holds gives the power back.
@@ -2422,6 +2483,17 @@ fn AvailablePowerRow(
         level_gated_pick,
         level_up_mode: level_up_mode(),
     });
+    let (action, sheet_note) = match try_use_context::<PickSheetLevel>() {
+        Some(PickSheetLevel(level)) => sheet_verdict(
+            level,
+            action,
+            picked_at,
+            unlock_level,
+            &gate,
+            set_blocked.as_deref(),
+        ),
+        None => (action, None),
+    };
 
     // An unreadable prerequisite is its own state: the row shows the fault and refuses the
     // pick rather than guessing which way the expression would have gone.
@@ -2469,6 +2541,14 @@ fn AvailablePowerRow(
         (_, true, false, _) => "power-row",
         (_, false, _, PickGate::Closed | PickGate::NeedsEarlier) => "power-row is-gated",
         _ => "power-row is-unpickable",
+    };
+    // In a pick sheet a power held at ANOTHER level is one this level cannot take, so it reads
+    // refused rather than wearing the "picked" outline the sheet's own choice wears.
+    let row_class = match (try_use_context::<PickSheetLevel>(), picked_at) {
+        (Some(PickSheetLevel(sheet_level)), Some(at)) if at != sheet_level => {
+            "power-row is-unpickable"
+        }
+        _ => row_class,
     };
     let row_class = if info_locked {
         format!("{row_class} is-info-locked")
@@ -2561,7 +2641,14 @@ fn AvailablePowerRow(
             span { class: "power-row__icon",
                 img { class: "power-row__art", src: "{icon_url}", alt: "" }
             }
-            span { class: "power-row__name", "{power_name}" }
+            if let Some(note) = sheet_note {
+                span { class: "power-row__name",
+                    "{power_name}"
+                    span { class: "power-row__note", "{note}" }
+                }
+            } else {
+                span { class: "power-row__name", "{power_name}" }
+            }
             {proc_potential_badge(Some(&power), &database)}
         }
     }
@@ -6710,6 +6797,40 @@ fn remove_slot_at(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// A pick sheet only ever takes its own level, and says why a row will not.
+    #[test]
+    fn a_pick_sheet_takes_only_its_own_level() {
+        let open = PickGate::Open;
+        assert_eq!(
+            sheet_verdict(10, RowAction::Pick(10), None, 6, &open, None),
+            (RowAction::Pick(10), None)
+        );
+        assert_eq!(
+            sheet_verdict(10, RowAction::Pick(32), None, 32, &open, None),
+            (RowAction::Refused, Some("Level 32".to_string()))
+        );
+        assert_eq!(
+            sheet_verdict(10, RowAction::Drop, Some(20), 6, &open, None),
+            (RowAction::Refused, Some("Taken at level 20".to_string()))
+        );
+        assert_eq!(
+            sheet_verdict(10, RowAction::Drop, Some(10), 6, &open, None).0,
+            RowAction::Drop
+        );
+        assert_eq!(
+            sheet_verdict(10, RowAction::Refused, None, 6, &PickGate::Closed, None)
+                .1
+                .as_deref(),
+            Some("Needs a prerequisite")
+        );
+        assert_eq!(
+            sheet_verdict(10, RowAction::Refused, None, 4, &open, Some("4 pools used"))
+                .1
+                .as_deref(),
+            Some("4 pools used")
+        );
+    }
 
     /// A pick added late still reads at its level, not at the bottom: Confuse at 6 and Mass
     /// Hypnosis at 8 were listed after Mass Confusion at 32 (reported 2026-10-26).

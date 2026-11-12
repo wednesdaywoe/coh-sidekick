@@ -53,6 +53,7 @@ mod naming;
 mod panel_popout;
 mod panel_visibility;
 mod panels;
+mod phone_build;
 mod picker_defaults;
 mod picker_memory;
 mod picker_queue;

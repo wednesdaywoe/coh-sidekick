@@ -300,6 +300,8 @@ pub fn Shell() -> Element {
     // the alert above, whose mez opt-out the auto-tracking reads.
     crate::tracked_stats::use_tracked_stats_provider();
     crate::key_stats::use_key_stats_provider();
+    crate::phone_build::use_phone_job_provider();
+    let phone_job = use_context::<crate::phone_build::PhoneJob>().0;
     // The detailed stat sheet, hosted below both layout roots for the same containment reason.
     let detailed_totals_open = use_signal(|| false);
     use_context_provider(|| panels::detailed_totals::DetailedTotalsOpen(detailed_totals_open));
@@ -1287,9 +1289,13 @@ pub fn Shell() -> Element {
             }
         }
 
-        // Mobile view: flat stack with independent ordering (<900px)
+        // Mobile view (<900px): the Powers pass of the Build tab, or until the Slots and
+        // Enhance passes have lists of their own, the flat stack with its independent ordering.
         main { class: "grid-root mobile-stack",
             match &*db.read() {
+                Some(Ok(database)) if phone_job() == crate::phone_build::Job::Powers => rsx! {
+                    crate::phone_build::PowersJob { database: Db(database.clone()) }
+                },
                 Some(Ok(database)) => {
                     let db = Db(database.clone());
                     // Both folded and hidden state are read from the desktop layout rather
