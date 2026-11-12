@@ -365,8 +365,10 @@ pub fn BuildList(database: Db) -> Element {
                 }
             }
             ol { class: "phone-picks",
-                for (level, card) in rows {
-                    li { key: "{level}-{card.as_ref().map(|c| c.key.as_str()).unwrap_or(\"\")}",
+                // Keyed by position as well as power: two levels can share a number (the two
+                // level-1 picks), and two empty ones share everything else.
+                for (index, (level, card)) in rows.into_iter().enumerate() {
+                    li { key: "{index}-{card.as_ref().map(|c| c.key.as_str()).unwrap_or(\"\")}",
                         match card {
                             Some(card) => rsx! {
                                 PowerCard { database: database.clone(), card, level: Some(level), left, budget: budget.unwrap_or(0) }
