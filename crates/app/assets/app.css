@@ -8070,14 +8070,17 @@ div.phone-card__head { cursor: default; }
 /* The unfolded slots and the drag handle. The handle follows the last slot, as on the desktop
    card, and sits outside the cells box so the cells never wrap it onto a new row mid-drag. */
 .phone-slots {
-  display: flex; align-items: flex-start; gap: 8px;
+  display: flex; align-items: flex-start; gap: 6px;
   padding: 6px; margin: -6px;
   border: 1px solid transparent; border-radius: calc(var(--r) * 2);
 }
 .phone-slots.is-active { border-color: var(--action-active); background: color-mix(in srgb, var(--action-active) 8%, transparent); }
 .phone-slots:has(.slot-handle-count--remove) { border-color: var(--action-danger); background: color-mix(in srgb, var(--action-danger) 8%, transparent); }
-.phone-slots__cells { flex: 0 1 auto; display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
-.phone-slots .slot-handle { flex: none; width: 40px; height: 40px; font-size: 16px; }
+/* One row, never wrapped: a power holds six slots at most, and at 36px six of them and the
+   handle fit a 360px-wide phone. A wrapped row strands the handle away from the last slot. */
+.phone-slots__cells { flex: 0 1 auto; display: flex; gap: 6px; min-width: 0; }
+.phone-slots .phone-enh { width: 36px; height: 36px; flex: none; }
+.phone-slots .slot-handle { flex: none; width: 36px; height: 36px; font-size: 16px; }
 .phone-enh.is-ghost { border: 1px dashed var(--action-active); background: color-mix(in srgb, var(--action-active) 12%, transparent); }
 .phone-enh.is-doomed { opacity: 0.4; outline: 1px dashed var(--action-danger); outline-offset: 1px; }
 .phone-card__left b { color: var(--text); }
