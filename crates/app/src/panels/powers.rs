@@ -6682,7 +6682,7 @@ fn clear_all_enhancements(
 /// the def to decide whether to offer a `+` in the first place. This function takes no
 /// database handle and so cannot see that; it is the backstop, not the rule.
 /// How many slots `power` can still gain, and how many the user can give back — the two clamps
-/// on the card's slot stepper and on the phone's Slots pass.
+/// on the card's slot stepper and on the phone's power cards.
 ///
 /// Gain is the smaller of the power's own room and the build's remaining budget; a dataset with
 /// no schedule (`slot_budget` `None`) yields 0, never an unbounded add. The per-power ceiling is

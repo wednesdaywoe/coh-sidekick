@@ -1,7 +1,7 @@
 //! Mobile bottom nav — the fixed <900px tab bar.
 //!
 //! Three tabs: Build, Stats, More (the phone-build-flow plan). Build and Stats are the two main
-//! views ([`crate::phone_build::Tab`]): Build is the three passes of making a build, Stats every
+//! views ([`crate::phone_build::Tab`]): Build is the list of powers and their slots, Stats every
 //! panel the phone shows, the stat panels first. Each closes whatever is open, and when nothing
 //! is, scrolls back to the top. More opens a full-screen sheet that stops at the bar's top edge:
 //! every menu and setting, plus the incarnate picker, which only matters at 50 and so lost its

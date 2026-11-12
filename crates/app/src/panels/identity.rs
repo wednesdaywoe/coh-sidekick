@@ -202,7 +202,6 @@ pub fn IdentityPanel(database: Db, dataset: Signal<DatasetId>) -> Element {
 fn ClearBuild(dataset: Signal<DatasetId>) -> Element {
     let session = use_context::<BuildSession>();
     let tracked = use_context::<crate::tracked_stats::TrackedStats>();
-    let mut job = use_context::<crate::phone_build::PhoneJob>().0;
     let mut confirming = use_signal(|| false);
 
     if confirming() {
@@ -221,8 +220,6 @@ fn ClearBuild(dataset: Signal<DatasetId>) -> Element {
                         r#type: "button",
                         onclick: move |_| {
                             crate::build_io::start_over(session, dataset(), tracked);
-                            // A phone left on Slots or Enhance would show an empty list.
-                            job.set(crate::phone_build::Job::Powers);
                             confirming.set(false);
                         },
                         "Clear build"

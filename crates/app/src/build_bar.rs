@@ -1,9 +1,9 @@
-//! Build bar — the sticky <900px bar that keeps the build's name, its level, undo, the switch
-//! between the three build passes, and the four key numbers in reach while the stack scrolls.
+//! Build bar — the sticky <900px bar that keeps the build's name, its level, undo, the four key
+//! numbers and the build's pick and slot counts in reach while the stack scrolls.
 //!
 //! Nothing here computes what the app doesn't already compute: the level is the header's own
-//! [`LevelControl`] (level is one build input with one writer), and the switch's counts read the
-//! same budgets the Powers panel reads (see [`crate::phone_build::JobSwitch`]).
+//! [`LevelControl`] (level is one build input with one writer), and the counts read the same
+//! budgets the Powers panel reads (see [`crate::phone_build::BuildCounts`]).
 
 use crate::build_session::BuildSession;
 use crate::level_control::{LevelControl, LevelUpControl};
@@ -48,7 +48,7 @@ pub fn BuildBar(database: Option<Db>) -> Element {
             LevelUpControl { database: database.clone() }
             UndoRedo { session }
             crate::key_stats::KeyStatStrip {}
-            crate::phone_build::JobSwitch { database }
+            crate::phone_build::BuildCounts { database }
         }
     }
 }

@@ -1,10 +1,10 @@
-//! The phone's Build tab (phone-build-flow): a build made in three passes — choose powers, place
-//! slots, fill them — each its own short list of the same picks, picked from a switch in the
-//! build bar. The counts on the switch are the bar's old budget counters, so it replaced them.
+//! The phone's Build tab (phone-build-flow, phone-slot-cards): one list of the build's powers in
+//! level order. Each chosen power is a card whose slots show as circles in the game's colours,
+//! and whose Slots button unfolds them beneath it to fill, add or remove.
 //!
 //! Nothing here decides what a build may hold. Choosing a power borrows the Available panel's
 //! own rows inside a sheet ([`PickSheet`]); every rule about what a level may take lives in
-//! those rows, so a fix there is a fix here.
+//! those rows, and slot limits are the desktop card's own ([`slot_room`]).
 
 use crate::build_session::BuildSession;
 use crate::level_control::TargetSlot;
@@ -18,19 +18,7 @@ use crate::shell::Db;
 use crate::view::power_view::resolve_power_def;
 use dioxus::prelude::*;
 
-/// The three passes. Powers first, since nothing else can start until a power is chosen.
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum Job {
-    Powers,
-    Slots,
-    Enhance,
-}
-
-/// Which pass the Build tab shows, shared by the switch in the bar and the stack below it.
-#[derive(Clone, Copy)]
-pub struct PhoneJob(pub Signal<Job>);
-
-/// The phone's two main views. Build is the three passes; Stats is every panel the phone
+/// The phone's two main views. Build is the list of powers; Stats is every panel the phone
 /// shows, the stat panels first, in the user's own phone order (Display > Reorder). More is a
 /// sheet over either, so it is not one of these.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -43,11 +31,15 @@ pub enum Tab {
 #[derive(Clone, Copy)]
 pub struct PhoneTab(pub Signal<Tab>);
 
+/// Which card has its slots unfolded, by the power's address. One at a time.
+#[derive(Clone, Copy)]
+pub struct OpenCard(pub Signal<Option<String>>);
+
 pub fn use_phone_job_provider() {
-    let job = use_signal(|| Job::Powers);
-    use_context_provider(|| PhoneJob(job));
     let tab = use_signal(|| Tab::Build);
     use_context_provider(|| PhoneTab(tab));
+    let open = use_signal(|| None);
+    use_context_provider(|| OpenCard(open));
 }
 
 /// The build's picks dealt onto the schedule's pick levels, up to the build's own level, and any
@@ -64,7 +56,7 @@ fn cells_of(database: &Db, build: &coh_data::CharacterState) -> Option<(Vec<Pick
 }
 
 /// The first empty pick at or after `from`, wrapping round to the start — the next level the
-/// Powers pass asks for.
+/// list asks for.
 fn next_empty(cells: &[PickCell], from: u8) -> Option<u8> {
     cells
         .iter()
@@ -82,75 +74,70 @@ fn set_label(database: &Db, set_id: &str) -> String {
         .unwrap_or_else(|| crate::naming::pool_name(set_id, database))
 }
 
-/// The powers the Slots and Enhance passes list: the picks in level order, then the granted
-/// inherents that take enhancements (Health, Stamina, Sprint and the like), which players slot
-/// too. Grants that take none (the archetype inherents) have nothing to do on either pass.
-pub(crate) fn slotting_powers<'a>(
+/// The granted inherents that take enhancements (Health, Stamina, Sprint and the like), which
+/// players slot too. Grants that take none (the archetype inherents) have no card.
+fn slotted_inherents<'a>(
     database: &Db,
     build: &'a coh_data::CharacterState,
 ) -> Vec<&'a coh_data::SelectedPower> {
-    let mut picks: Vec<&coh_data::SelectedPower> = build.picked_powers().collect();
-    picks.sort_by_key(|power| power.level);
-    let inherents = build.inherents.iter().filter(|power| {
-        resolve_power_def(database, &power.powerset, &power.internal_name)
-            .is_some_and(|def| def.accepts_enhancements())
-    });
-    picks.into_iter().chain(inherents).collect()
+    build
+        .inherents
+        .iter()
+        .filter(|power| {
+            resolve_power_def(database, &power.powerset, &power.internal_name)
+                .is_some_and(|def| def.accepts_enhancements())
+        })
+        .collect()
 }
 
-/// The switch: three buttons, each with how far that pass has got.
+/// The counts the old pass switch carried, as one line in the build bar: picks made, extra
+/// slots placed, slots filled, each against what the build's level allows.
 #[component]
-pub fn JobSwitch(database: Option<Db>) -> Element {
-    let mut job = use_context::<PhoneJob>().0;
-    // The passes are the Build tab's; on Stats the switch would steer nothing on screen.
+pub fn BuildCounts(database: Option<Db>) -> Element {
     if use_context::<PhoneTab>().0() == Tab::Stats {
         return rsx! {};
     }
     let session = use_context::<BuildSession>();
-    let slot_budget = use_context::<BuildBudget>().0;
-    let (powers, enhance) = {
+    let slots = use_context::<BuildBudget>().0();
+    let (picks, filled) = {
         let build = session.build.read();
         let pick_budget = database
             .as_ref()
             .and_then(|db| db.leveling_schedule.as_ref())
             .map(|schedule| schedule.total_power_picks_at_level(build.level));
-        let picks = build.picked_powers().count();
-        let listed = database
-            .as_ref()
-            .map(|db| slotting_powers(db, &build))
-            .unwrap_or_default();
-        let (filled, total) = listed.iter().fold((0, 0), |(filled, total), power| {
+        let mut all: Vec<&coh_data::SelectedPower> = build.picked_powers().collect();
+        if let Some(db) = database.as_ref() {
+            all.extend(slotted_inherents(db, &build));
+        }
+        let (full, total) = all.iter().fold((0, 0), |(full, total), power| {
             (
-                filled + power.slots.iter().filter(|slot| slot.is_some()).count(),
+                full + power.slots.iter().filter(|slot| slot.is_some()).count(),
                 total + power.slots.len(),
             )
         });
-        (pick_budget.map(|budget| (picks, budget)), (filled, total))
+        (
+            pick_budget.map(|budget| (build.picked_powers().count(), budget)),
+            (full, total),
+        )
     };
-    let slots = slot_budget();
     let entries = [
-        (Job::Powers, "Powers", powers),
-        (Job::Slots, "Slots", Some((slots.used, slots.available))),
-        (Job::Enhance, "Enhance", Some(enhance)),
+        ("Powers", picks),
+        ("Slots", Some((slots.used, slots.available))),
+        ("Filled", Some(filled)),
     ];
     rsx! {
-        div { class: "job-switch", role: "group", "aria-label": "What you are doing",
-            for (which, label, count) in entries {
-                button {
+        div { class: "build-counts",
+            for (label, count) in entries {
+                span {
                     key: "{label}",
                     class: match count {
-                        Some((used, available)) if used > available => "job-switch__job is-over",
-                        _ => "job-switch__job",
+                        Some((used, available)) if used > available => "build-counts__count is-over",
+                        _ => "build-counts__count",
                     },
-                    r#type: "button",
-                    "aria-pressed": job() == which,
-                    onclick: move |_| job.set(which),
-                    span { class: "job-switch__label", "{label}" }
-                    span { class: "job-switch__count mono",
-                        match count {
-                            Some((used, available)) => rsx! { "{used} of {available}" },
-                            None => rsx! { "—" },
-                        }
+                    span { class: "build-counts__label", "{label}" }
+                    match count {
+                        Some((used, available)) => rsx! { b { class: "mono", "{used}/{available}" } },
+                        None => rsx! { b { "—" } },
                     }
                 }
             }
@@ -158,12 +145,89 @@ pub fn JobSwitch(database: Option<Db>) -> Element {
     }
 }
 
-/// The Powers pass: every pick level in order, each holding its power or asking for one, and a
-/// button at the foot for the next empty level.
+/// One slot as a folded card draws it.
+#[derive(Clone, PartialEq)]
+enum Dot {
+    Empty,
+    /// Slotted, in its in-game colour when it has one ([`crate::slot_colour`]).
+    Filled(Option<&'static str>),
+}
+
+/// What a card shows of one power. Built once per render from the build, then handed to
+/// [`PowerCard`] whole.
+#[derive(Clone, PartialEq)]
+struct CardData {
+    key: String,
+    set_id: String,
+    ident: String,
+    name: String,
+    set: String,
+    dots: Vec<Dot>,
+    icons: Vec<Option<String>>,
+    add: bool,
+    remove: bool,
+}
+
+fn card_data(
+    database: &Db,
+    power: &coh_data::SelectedPower,
+    budget: Option<usize>,
+    used: usize,
+) -> CardData {
+    let def = resolve_power_def(database, &power.powerset, &power.internal_name);
+    let (max_add, max_remove) = slot_room(def, power, budget, used);
+    CardData {
+        key: power.address(),
+        set_id: power.powerset.clone(),
+        ident: power.internal_name.clone(),
+        name: crate::naming::power_label(Some(database), &power.powerset, &power.internal_name),
+        set: set_label(database, &power.powerset),
+        dots: power
+            .slots
+            .iter()
+            .map(|slot| match slot {
+                None => Dot::Empty,
+                Some(enhancement) => {
+                    Dot::Filled(crate::slot_colour::slot_colour(enhancement, database))
+                }
+            })
+            .collect(),
+        icons: power
+            .slots
+            .iter()
+            .map(|slot| {
+                slot.as_ref().map(|enhancement| {
+                    crate::panels::powers::slot_icon_url(enhancement, database).unwrap_or_default()
+                })
+            })
+            .collect(),
+        add: max_add > 0,
+        remove: max_remove > 0,
+    }
+}
+
+fn open_picker(
+    mut picker: Signal<Option<PickerTarget>>,
+    set_id: String,
+    ident: String,
+    slot_index: u8,
+) {
+    picker.set(Some(PickerTarget {
+        powerset_id: set_id,
+        power_internal_name: ident,
+        slot_index,
+        destination: PickerDestination::Build,
+    }));
+}
+
+/// The Build tab: every pick level in order, each holding its power's card or asking for one,
+/// then the slotted inherents, and a button at the foot for the next thing to do.
 #[component]
-pub fn PowersJob(database: Db) -> Element {
+pub fn BuildList(database: Db) -> Element {
     let session = use_context::<BuildSession>();
     let mut sheet = use_context::<OpenSheet>().0;
+    let mut open = use_context::<OpenCard>().0;
+    let picker = use_context::<PickerOpen>().0;
     let build = session.build.read();
     if build.archetype.id.is_none() {
         return rsx! {
@@ -185,37 +249,53 @@ pub fn PowersJob(database: Db) -> Element {
             }
         };
     };
+    let budget = database
+        .leveling_schedule
+        .as_ref()
+        .map(|schedule| schedule.total_slots_at_level(build.level));
+    let used = coh_data::placed_budget_slots(&build);
+    let left = budget.map(|budget| budget.saturating_sub(used));
     let next = next_empty(&cells, 0);
-    type Row = (usize, u8, &'static str, Option<(String, String, usize)>);
-    let rows: Vec<Row> = cells
+    let rows: Vec<(u8, Option<CardData>)> = cells
         .iter()
-        .enumerate()
-        .map(|(index, cell)| {
-            let power = cell.power.as_ref().map(|power| {
-                (
-                    crate::naming::power_label(
-                        Some(&database),
-                        &power.powerset,
-                        &power.internal_name,
-                    ),
-                    set_label(&database, &power.powerset),
-                    power.slots.len(),
-                )
-            });
-            let class = match (&power, Some(cell.level) == next) {
-                (Some(_), _) => "phone-pick",
-                (None, true) => "phone-pick is-empty is-next",
-                (None, false) => "phone-pick is-empty",
-            };
-            (index, cell.level, class, power)
+        .map(|cell| {
+            let card = cell
+                .power
+                .as_ref()
+                .map(|power| card_data(&database, power, budget, used));
+            (cell.level, card)
         })
         .collect();
+    let inherents: Vec<CardData> = slotted_inherents(&database, &build)
+        .into_iter()
+        .map(|power| card_data(&database, power, budget, used))
+        .collect();
     drop(build);
+
+    // With every level chosen, the foot leads to the first power with an empty slot.
+    let next_slot = rows
+        .iter()
+        .filter_map(|(_, card)| card.as_ref())
+        .chain(inherents.iter())
+        .find_map(|card| {
+            card.dots
+                .iter()
+                .position(|dot| *dot == Dot::Empty)
+                .map(|at| {
+                    (
+                        card.key.clone(),
+                        card.set_id.clone(),
+                        card.ident.clone(),
+                        card.name.clone(),
+                        at as u8,
+                    )
+                })
+        });
 
     rsx! {
         div { class: "phone-job",
             p { class: "phone-job__note",
-                "Your power choices, in level order. Tap an empty level to fill it, or a power to change it."
+                "Tap an empty level to choose its power, or a power to change it. Slots opens a power's slots."
             }
             if unplaced > 0 {
                 p { class: "phone-job__fault",
@@ -223,34 +303,36 @@ pub fn PowersJob(database: Db) -> Element {
                 }
             }
             ol { class: "phone-picks",
-                for (index, level, class, power) in rows {
-                    li { key: "{index}",
-                        button {
-                            class,
-                            r#type: "button",
-                            onclick: move |_| sheet.set(Some(Sheet::Pick(level))),
-                            span { class: "phone-pick__level mono", "{level}" }
-                            match power {
-                                Some((name, set, slots)) => rsx! {
-                                    span { class: "phone-pick__body",
-                                        span { class: "phone-pick__name", "{name}" }
-                                        span { class: "phone-pick__set", "{set}" }
-                                    }
-                                    span { class: "phone-pick__slots", "aria-label": "{slots} slots",
-                                        for dot in 0..slots {
-                                            span { key: "{dot}", class: "phone-pick__dot" }
-                                        }
-                                    }
-                                },
-                                None => rsx! {
+                for (level, card) in rows {
+                    li { key: "{level}-{card.as_ref().map(|c| c.key.as_str()).unwrap_or(\"\")}",
+                        match card {
+                            Some(card) => rsx! {
+                                PowerCard { database: database.clone(), card, level: Some(level), left }
+                            },
+                            None => rsx! {
+                                button {
+                                    class: if Some(level) == next { "phone-pick is-empty is-next" } else { "phone-pick is-empty" },
+                                    r#type: "button",
+                                    onclick: move |_| sheet.set(Some(Sheet::Pick(level))),
+                                    span { class: "phone-pick__level mono", "{level}" }
                                     span { class: "phone-pick__body",
                                         span { class: "phone-pick__name", "Choose a power" }
                                     }
                                     if Some(level) == next {
                                         span { class: "phone-pick__next", "Next" }
                                     }
-                                },
-                            }
+                                }
+                            },
+                        }
+                    }
+                }
+            }
+            if !inherents.is_empty() {
+                h3 { class: "phone-picks__heading", "Inherent powers" }
+                ol { class: "phone-picks",
+                    for card in inherents {
+                        li { key: "{card.key}",
+                            PowerCard { database: database.clone(), card, level: None, left }
                         }
                     }
                 }
@@ -262,6 +344,168 @@ pub fn PowersJob(database: Db) -> Element {
                         r#type: "button",
                         onclick: move |_| sheet.set(Some(Sheet::Pick(level))),
                         "Choose your level {level} power"
+                    }
+                }
+            } else if let Some((key, set_id, ident, name, at)) = next_slot {
+                div { class: "phone-job__foot",
+                    button {
+                        class: "phone-job__cta",
+                        r#type: "button",
+                        onclick: move |_| {
+                            open.set(Some(key.clone()));
+                            open_picker(picker, set_id.clone(), ident.clone(), at);
+                        },
+                        "Fill the next empty slot: {name}"
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// One chosen power: its name (tap to change it, for a pick), its slots as circles, and a Slots
+/// button that unfolds them beneath the card — each slot opens the enhancement picker on that
+/// slot, and a minus and plus button take a slot away or add one.
+#[component]
+fn PowerCard(database: Db, card: CardData, level: Option<u8>, left: Option<usize>) -> Element {
+    let session = use_context::<BuildSession>();
+    let mut sheet = use_context::<OpenSheet>().0;
+    let mut open = use_context::<OpenCard>().0;
+    let level_up = *use_context::<crate::level_control::LevelUpMode>().0.read();
+    let picker = use_context::<PickerOpen>().0;
+    let is_open = open().as_deref() == Some(card.key.as_str());
+    let filled = card.dots.iter().filter(|dot| **dot != Dot::Empty).count();
+    let count = card.dots.len();
+    let CardData {
+        key,
+        set_id,
+        ident,
+        name,
+        set,
+        dots,
+        icons,
+        add,
+        remove,
+    } = card;
+
+    rsx! {
+        div { class: if is_open { "phone-card is-open" } else { "phone-card" },
+            div { class: "phone-card__row",
+                match level {
+                    Some(level) => rsx! {
+                        button {
+                            class: "phone-card__head",
+                            r#type: "button",
+                            "aria-label": "Change your level {level} power, {name}",
+                            onclick: move |_| sheet.set(Some(Sheet::Pick(level))),
+                            span { class: "phone-pick__level mono", "{level}" }
+                            span { class: "phone-pick__body",
+                                span { class: "phone-pick__name", "{name}" }
+                                span { class: "phone-pick__set", "{set}" }
+                            }
+                        }
+                    },
+                    None => rsx! {
+                        div { class: "phone-card__head",
+                            span { class: "phone-pick__level mono", "·" }
+                            span { class: "phone-pick__body",
+                                span { class: "phone-pick__name", "{name}" }
+                                span { class: "phone-pick__set", "{set}" }
+                            }
+                        }
+                    },
+                }
+                button {
+                    class: "phone-card__toggle",
+                    r#type: "button",
+                    "aria-expanded": is_open,
+                    "aria-label": "Slots for {name}: {filled} of {count} filled",
+                    onclick: {
+                        let key = key.clone();
+                        move |_| open.set((!is_open).then(|| key.clone()))
+                    },
+                    span { class: "phone-dots", "aria-hidden": "true",
+                        for (index, dot) in dots.iter().enumerate() {
+                            match dot {
+                                Dot::Empty => rsx! { span { key: "{index}", class: "phone-dot" } },
+                                Dot::Filled(Some(hex)) => rsx! {
+                                    span { key: "{index}", class: "phone-dot is-filled", style: "--dot: {hex}" }
+                                },
+                                Dot::Filled(None) => rsx! {
+                                    span { key: "{index}", class: "phone-dot is-filled is-plain" }
+                                },
+                            }
+                        }
+                    }
+                    span { class: "phone-card__toggle-label",
+                        "Slots"
+                        span { class: if is_open { "phone-card__caret is-open" } else { "phone-card__caret" }, "▾" }
+                    }
+                }
+            }
+            if is_open {
+                div { class: "phone-card__slots",
+                    div { class: "phone-pick__enh",
+                        for (index, icon) in icons.iter().cloned().enumerate() {
+                            button {
+                                key: "{index}",
+                                class: if icon.is_some() { "phone-enh" } else { "phone-enh is-empty" },
+                                r#type: "button",
+                                "aria-label": if icon.is_some() { "Slot {index + 1} of {name}" } else { "Empty slot {index + 1} of {name}" },
+                                onclick: {
+                                    let (set_id, ident) = (set_id.clone(), ident.clone());
+                                    move |_| open_picker(picker, set_id.clone(), ident.clone(), index as u8)
+                                },
+                                if let Some(url) = icon.as_deref().filter(|url| !url.is_empty()) {
+                                    img { class: "phone-enh__art", src: "{url}", alt: "" }
+                                }
+                            }
+                        }
+                    }
+                    div { class: "phone-card__room",
+                        span { class: "phone-stepper",
+                            button {
+                                class: "phone-stepper__step",
+                                r#type: "button",
+                                disabled: !remove,
+                                "aria-label": "Remove a slot from {name}",
+                                onclick: {
+                                    let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
+                                    move |_| {
+                                        let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
+                                        session.commit(move |state| {
+                                            remove_slot_from_power(state, &set_id, &ident, database.leveling_schedule.as_ref());
+                                        });
+                                    }
+                                },
+                                "−"
+                            }
+                            span { class: "phone-stepper__count mono", "{count}" }
+                            button {
+                                class: "phone-stepper__step",
+                                r#type: "button",
+                                disabled: !add,
+                                "aria-label": "Add a slot to {name}",
+                                onclick: {
+                                    let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
+                                    move |_| {
+                                        let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
+                                        session.commit(move |state| {
+                                            let leveling = database.leveling_schedule.as_ref();
+                                            let budget = leveling.map_or(0, |schedule| schedule.total_slots_at_level(state.level));
+                                            add_slot_to_power(state, &set_id, &ident, budget, leveling, level_up);
+                                        });
+                                    }
+                                },
+                                "+"
+                            }
+                        }
+                        if let Some(left) = left {
+                            span { class: "phone-card__left",
+                                b { class: "mono", "{left}" }
+                                " extra slots left"
+                            }
+                        }
                     }
                 }
             }
@@ -316,262 +560,6 @@ pub fn PickSheet(level: u8, database: Db) -> Element {
     }
 }
 
-/// The Slots pass: each power with its slot count and a minus and plus button, under how many
-/// slots are left to place. The buttons' limits are the power card's own ([`slot_room`]).
-#[component]
-pub fn SlotsJob(database: Db) -> Element {
-    let session = use_context::<BuildSession>();
-    let level_up = *use_context::<crate::level_control::LevelUpMode>().0.read();
-    let build = session.build.read();
-    let budget = database
-        .leveling_schedule
-        .as_ref()
-        .map(|schedule| schedule.total_slots_at_level(build.level));
-    let used = coh_data::placed_budget_slots(&build);
-    struct Row {
-        key: String,
-        set_id: String,
-        ident: String,
-        level: Option<u8>,
-        name: String,
-        slots: usize,
-        room: usize,
-        add: bool,
-        remove: bool,
-    }
-    let rows: Vec<Row> = slotting_powers(&database, &build)
-        .into_iter()
-        .map(|power| {
-            let def = resolve_power_def(&database, &power.powerset, &power.internal_name);
-            let (max_add, max_remove) = slot_room(def, power, budget, used);
-            // The power's whole room, as if the budget were endless, so a spent budget still
-            // shows how far each power could go.
-            let (unbounded, _) = slot_room(def, power, Some(usize::MAX), 0);
-            Row {
-                key: power.address(),
-                set_id: power.powerset.clone(),
-                ident: power.internal_name.clone(),
-                level: (!power.is_locked && power.level > 0).then_some(power.level),
-                name: crate::naming::power_label(
-                    Some(&database),
-                    &power.powerset,
-                    &power.internal_name,
-                ),
-                slots: power.slots.len(),
-                room: power.slots.len() + unbounded,
-                add: max_add > 0,
-                remove: max_remove > 0,
-            }
-        })
-        .collect();
-    let left = budget.map(|budget| budget.saturating_sub(used));
-    let empty = build.picked_powers().next().is_none();
-    drop(build);
-
-    rsx! {
-        div { class: "phone-job",
-            p { class: "phone-job__note",
-                match left {
-                    Some(left) => rsx! {
-                        b { class: "mono", "{left}" }
-                        " extra slots left to place. Each power starts with one, and most take up to six."
-                    },
-                    None => rsx! { "This dataset carries no leveling schedule, so the slot budget is unknown." },
-                }
-            }
-            if empty {
-                p { class: "phone-job__note", "Choose some powers first." }
-            }
-            ol { class: "phone-picks",
-                for row in rows {
-                    li { key: "{row.key}",
-                        div { class: "phone-pick phone-pick--slots",
-                            span { class: "phone-pick__level mono",
-                                if let Some(level) = row.level { "{level}" } else { "·" }
-                            }
-                            span { class: "phone-pick__body",
-                                span { class: "phone-pick__name", "{row.name}" }
-                                span { class: "phone-pick__slots", "aria-hidden": "true",
-                                    for dot in 0..row.room {
-                                        span {
-                                            key: "{dot}",
-                                            class: if dot < row.slots { "phone-pick__dot" } else { "phone-pick__dot is-off" },
-                                        }
-                                    }
-                                }
-                            }
-                            span { class: "phone-stepper",
-                                button {
-                                    class: "phone-stepper__step",
-                                    r#type: "button",
-                                    disabled: !row.remove,
-                                    "aria-label": "Remove a slot from {row.name}",
-                                    onclick: {
-                                        let (set_id, ident, database) = (row.set_id.clone(), row.ident.clone(), database.clone());
-                                        move |_| {
-                                            let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
-                                            session.commit(move |state| {
-                                                remove_slot_from_power(state, &set_id, &ident, database.leveling_schedule.as_ref());
-                                            });
-                                        }
-                                    },
-                                    "−"
-                                }
-                                span { class: "phone-stepper__count mono", "{row.slots}" }
-                                button {
-                                    class: "phone-stepper__step",
-                                    r#type: "button",
-                                    disabled: !row.add,
-                                    "aria-label": "Add a slot to {row.name}",
-                                    onclick: {
-                                        let (set_id, ident, database) = (row.set_id.clone(), row.ident.clone(), database.clone());
-                                        move |_| {
-                                            let (set_id, ident, database) = (set_id.clone(), ident.clone(), database.clone());
-                                            session.commit(move |state| {
-                                                let leveling = database.leveling_schedule.as_ref();
-                                                let budget = leveling.map_or(0, |schedule| schedule.total_slots_at_level(state.level));
-                                                add_slot_to_power(state, &set_id, &ident, budget, leveling, level_up);
-                                            });
-                                        }
-                                    },
-                                    "+"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-/// The Enhance pass: each power with its slots drawn small, and how many are empty. Tapping a
-/// power opens the enhancement picker on its first empty slot (the picker fills on from there);
-/// tapping one slot opens that slot. The picker is the desktop's own, so every kind of
-/// enhancement it offers is offered here.
-#[component]
-pub fn EnhanceJob(database: Db) -> Element {
-    let session = use_context::<BuildSession>();
-    let picker = use_context::<PickerOpen>().0;
-    let build = session.build.read();
-    struct Row {
-        key: String,
-        set_id: String,
-        ident: String,
-        level: Option<u8>,
-        name: String,
-        slots: Vec<Option<String>>,
-        empty: usize,
-    }
-    let rows: Vec<Row> = slotting_powers(&database, &build)
-        .into_iter()
-        .map(|power| Row {
-            key: power.address(),
-            set_id: power.powerset.clone(),
-            ident: power.internal_name.clone(),
-            level: (!power.is_locked && power.level > 0).then_some(power.level),
-            name: crate::naming::power_label(
-                Some(&database),
-                &power.powerset,
-                &power.internal_name,
-            ),
-            slots: power
-                .slots
-                .iter()
-                .map(|slot| {
-                    slot.as_ref().map(|enhancement| {
-                        crate::panels::powers::slot_icon_url(enhancement, &database)
-                            .unwrap_or_default()
-                    })
-                })
-                .collect(),
-            empty: power.slots.iter().filter(|slot| slot.is_none()).count(),
-        })
-        .collect();
-    let empty_build = build.picked_powers().next().is_none();
-    drop(build);
-    let first_empty =
-        |slots: &[Option<String>]| slots.iter().position(Option::is_none).unwrap_or(0) as u8;
-    let next = rows.iter().find(|row| row.empty > 0).map(|row| {
-        (
-            row.set_id.clone(),
-            row.ident.clone(),
-            row.name.clone(),
-            first_empty(&row.slots),
-        )
-    });
-    let open = move |set_id: String, ident: String, slot_index: u8| {
-        let mut picker = picker;
-        picker.set(Some(PickerTarget {
-            powerset_id: set_id,
-            power_internal_name: ident,
-            slot_index,
-            destination: PickerDestination::Build,
-        }));
-    };
-
-    rsx! {
-        div { class: "phone-job",
-            p { class: "phone-job__note",
-                "Tap a power to fill its empty slots, or one slot to change what is in it."
-            }
-            if empty_build {
-                p { class: "phone-job__note", "Choose some powers first." }
-            }
-            ol { class: "phone-picks",
-                for row in rows {
-                    li { key: "{row.key}",
-                        div { class: "phone-pick phone-pick--enhance",
-                            button {
-                                class: "phone-pick__head",
-                                r#type: "button",
-                                onclick: {
-                                    let (set_id, ident, at) = (row.set_id.clone(), row.ident.clone(), first_empty(&row.slots));
-                                    move |_| open(set_id.clone(), ident.clone(), at)
-                                },
-                                span { class: "phone-pick__level mono",
-                                    if let Some(level) = row.level { "{level}" } else { "·" }
-                                }
-                                span { class: "phone-pick__name", "{row.name}" }
-                                span { class: if row.empty > 0 { "phone-pick__open is-wanting" } else { "phone-pick__open" },
-                                    if row.empty > 0 { "{row.empty} empty ›" } else { "Full ›" }
-                                }
-                            }
-                            span { class: "phone-pick__enh",
-                                for (index, slot) in row.slots.iter().cloned().enumerate() {
-                                    button {
-                                        key: "{index}",
-                                        class: if slot.is_some() { "phone-enh" } else { "phone-enh is-empty" },
-                                        r#type: "button",
-                                        "aria-label": if slot.is_some() { "Slot {index + 1} of {row.name}" } else { "Empty slot {index + 1} of {row.name}" },
-                                        onclick: {
-                                            let (set_id, ident) = (row.set_id.clone(), row.ident.clone());
-                                            move |_| open(set_id.clone(), ident.clone(), index as u8)
-                                        },
-                                        if let Some(url) = slot.as_deref().filter(|url| !url.is_empty()) {
-                                            img { class: "phone-enh__art", src: "{url}", alt: "" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if let Some((set_id, ident, name, at)) = next {
-                div { class: "phone-job__foot",
-                    button {
-                        class: "phone-job__cta",
-                        r#type: "button",
-                        onclick: move |_| open(set_id.clone(), ident.clone(), at),
-                        "Fill the next empty slots: {name}"
-                    }
-                }
-            }
-        }
-    }
-}
-
 /// The Build Identity sheet's way on: once an archetype and both powersets are chosen on a build
 /// with no powers yet, one button goes straight to the first level's pick sheet — a first visit
 /// should not have to close the form and find the Powers list to take its first step.
@@ -580,7 +568,6 @@ pub fn StartPicking(database: Db) -> Element {
     let session = use_context::<BuildSession>();
     let mut sheet = use_context::<OpenSheet>().0;
     let mut tab = use_context::<PhoneTab>().0;
-    let mut job = use_context::<PhoneJob>().0;
     let first = {
         let build = session.build.read();
         let ready = build.archetype.id.is_some()
@@ -601,7 +588,6 @@ pub fn StartPicking(database: Db) -> Element {
                 r#type: "button",
                 onclick: move |_| {
                     tab.set(Tab::Build);
-                    job.set(Job::Powers);
                     sheet.set(Some(Sheet::Pick(level)));
                 },
                 "Choose your level {level} power"

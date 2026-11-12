@@ -7832,31 +7832,16 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   background: var(--surface-panel);
   overflow-x: auto;
 }
-/* ---- the Build tab's pass switch (phone_build.rs) ----
-   Three buttons sharing the bar's width, each with how far that pass has got. The pressed
-   one wears the action colour, the way the bottom bar marks its open tab. */
-.job-switch {
+/* ---- the build's counts (phone_build.rs BuildCounts) ----
+   One quiet line: picks, extra slots and filled slots against what the level allows. */
+.build-counts {
   flex: 1 0 100%;
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
+  display: flex; justify-content: space-between; gap: 8px;
+  font: 12px var(--font-chrome); color: var(--text-dim);
 }
-.job-switch__job {
-  display: flex; flex-direction: column; align-items: center; gap: 1px;
-  min-height: 44px; padding: 4px 6px;
-  background: var(--surface-raised);
-  border: 1px solid var(--seam-raised);
-  border-radius: var(--r);
-  font-family: var(--font-chrome);
-  color: var(--text-dim);
-  cursor: pointer;
-}
-.job-switch__label { font-size: 13px; font-weight: 700; }
-.job-switch__count { font-size: 11px; }
-.job-switch__job[aria-pressed="true"] {
-  color: var(--action-active);
-  border-color: var(--action-active);
-  background: var(--surface-warmed);
-}
-.job-switch__job.is-over .job-switch__count { color: var(--action-danger); }
+.build-counts__count { display: flex; gap: 5px; align-items: baseline; }
+.build-counts__count b { color: var(--text); font-weight: 700; }
+.build-counts__count.is-over b { color: var(--action-danger); }
 /* The build's name, a full row of its own. Unstarted, it takes the action colour, since it is
    where a new build begins. */
 .build-bar__identity {
@@ -7952,8 +7937,6 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .phone-pick__body { display: flex; flex-direction: column; min-width: 0; }
 .phone-pick__name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .phone-pick__set { font-size: 12px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.phone-pick__slots { display: flex; gap: 3px; }
-.phone-pick__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); }
 .phone-pick.is-empty { border-style: dashed; background: none; }
 .phone-pick.is-empty .phone-pick__name { color: var(--text-dim); font-weight: 500; }
 .phone-pick.is-next { border-color: var(--action-active); border-style: solid; }
@@ -7999,11 +7982,6 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .pool-power__take:hover:not(:disabled) { background: var(--action-active); color: var(--surface-app); }
 .pool-power__take:disabled { border-color: var(--seam); color: var(--text-faint); cursor: not-allowed; }
 .start-picking { padding: 8px 0 16px; }
-/* The Slots pass: a row per power with a stepper at its end. The dots are the power's room,
-   filled for the slots it has. */
-.phone-pick--slots { cursor: default; }
-.phone-pick--slots .phone-pick__slots { margin-top: 4px; }
-.phone-pick__dot.is-off { background: none; box-shadow: inset 0 0 0 1px var(--text-faint); }
 .phone-stepper { display: flex; align-items: center; gap: 6px; }
 .phone-stepper__step {
   width: 44px; height: 44px;
@@ -8012,20 +7990,10 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   font: 700 20px var(--font-chrome);
   cursor: pointer;
 }
-.phone-stepper__step:disabled { color: var(--text-faint); opacity: 0.5; cursor: default; }
+.phone-stepper__step:disabled,
+.phone-stepper__step:disabled:hover { color: var(--text-faint); background: var(--surface-raised); opacity: 0.5; cursor: default; }
 .phone-stepper__count { min-width: 14px; text-align: center; font-weight: 700; }
-/* The Enhance pass: a head that opens the power's first empty slot, and a row of small slot
-   buttons under it, each opening its own slot. */
-.phone-pick--enhance { display: flex; flex-direction: column; align-items: stretch; gap: 6px; cursor: default; }
-.phone-pick__head {
-  display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: 10px;
-  min-height: 36px; padding: 0;
-  border: 0; background: none; color: var(--text); text-align: left;
-  cursor: pointer;
-}
-.phone-pick__open { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
-.phone-pick__open.is-wanting { color: var(--action-active); font-weight: 700; }
-.phone-pick__enh { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 46px; }
+.phone-pick__enh { display: flex; flex-wrap: wrap; gap: 8px; }
 .phone-enh {
   width: 40px; height: 40px; padding: 0;
   border: 1px solid var(--seam-raised); border-radius: 50%;
@@ -8034,6 +8002,61 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 }
 .phone-enh.is-empty { border-style: dashed; border-color: var(--text-faint); background: none; }
 .phone-enh__art { display: block; width: 100%; height: 100%; object-fit: contain; }
+/* A chosen power's card: its name (tap to change it) beside a Slots button carrying its slots
+   as circles. Unfolded, the slots open beneath at picker size, with the slot stepper. */
+.phone-picks__heading {
+  margin: 18px 2px 8px;
+  font: 700 11px var(--font-chrome); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.phone-card {
+  background: var(--surface-panel);
+  border: 1px solid var(--seam);
+  border-radius: var(--r);
+}
+.phone-card.is-open { border-color: var(--action-active); }
+.phone-card__row { display: flex; align-items: stretch; min-height: 52px; }
+.phone-card__head {
+  flex: 1 1 auto; min-width: 0;
+  display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: center; gap: 10px;
+  padding: 6px 4px 6px 8px;
+  border: 0; background: none; color: var(--text); text-align: left;
+  font: inherit; cursor: pointer;
+}
+div.phone-card__head { cursor: default; }
+.phone-card__toggle {
+  flex: none;
+  display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 5px;
+  /* Wide enough for six circles, so every card's circles line up down the list. */
+  min-width: 108px;
+  padding: 6px 12px 6px 8px;
+  border: 0; border-left: 1px solid var(--seam); background: none;
+  color: var(--text-dim); font: 600 12px var(--font-chrome);
+  cursor: pointer;
+}
+.phone-card.is-open .phone-card__toggle { color: var(--action-active); }
+.phone-card__toggle-label { display: flex; align-items: center; gap: 4px; }
+.phone-card__caret { display: inline-block; transition: transform var(--ease); }
+.phone-card__caret.is-open { transform: rotate(180deg); }
+/* Empty slots are hollow, so they never read as Stun's or Sleep's grey; a filled one takes its
+   enhancement's in-game colour, ringed light so the dark ones (Taunt, Recharge) still show. */
+.phone-dots { display: flex; gap: 4px; }
+.phone-dot {
+  width: 11px; height: 11px; border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--text-faint);
+}
+.phone-dot.is-filled {
+  background: var(--dot, var(--text-dim));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 45%, transparent);
+}
+.phone-card__slots {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--seam);
+}
+.phone-card__room { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.phone-card__left { font-size: 12px; color: var(--text-dim); }
+.phone-card__left b { color: var(--text); }
 
 /* ---- pinned powers (beta `PinnedPowersBar`) ----
    The tracked powers, each with the perma number the engine's own projection row
