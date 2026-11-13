@@ -104,6 +104,11 @@ struct MidsUidSection {
     origin: Vec<String>,
     #[serde(default)]
     source_sha256: String,
+    /// set id -> [lowest, highest] level Mids lets a crafted piece of it be.
+    #[serde(default)]
+    io_set_levels: HashMap<String, [u8; 2]>,
+    #[serde(default, rename = "genericIOLevels")]
+    generic_io_levels: Option<[u8; 2]>,
 }
 
 /// The dataset's Mids UID table, indexed for the direction a reader needs it.
@@ -124,6 +129,10 @@ pub struct MidsUids {
     special: HashMap<String, String>,
     origin: HashMap<String, String>,
     source_sha256: String,
+    /// Every UID in Mids' own spelling, for the writer, which has to hand Mids back exactly that.
+    spellings: Vec<String>,
+    io_set_levels: HashMap<String, [u8; 2]>,
+    generic_io_levels: Option<[u8; 2]>,
 }
 
 /// Which family this table places a UID in, when the boost index could not resolve it.
@@ -148,6 +157,7 @@ impl MidsUids {
             .map_err(|e| format!("mids-uids section: {e}"))?;
 
         let mut by_uid: HashMap<String, (String, u8, MidsUidPrefix)> = HashMap::new();
+        let mut spellings: Vec<String> = Vec::new();
         for (set, pieces) in &raw.io_set_pieces {
             if pieces.iter().all(String::is_empty) {
                 continue;
@@ -174,6 +184,7 @@ impl MidsUids {
                     ));
                 }
                 by_uid.insert(key, (set.clone(), piece, prefix));
+                spellings.push(uid.clone());
             }
         }
 
@@ -183,8 +194,19 @@ impl MidsUids {
                 .collect()
         };
 
+        spellings.extend(
+            [&raw.generic_io, &raw.special, &raw.origin]
+                .into_iter()
+                .flatten()
+                .cloned(),
+        );
+        spellings.sort();
+
         Ok(Some(Self {
             by_uid,
+            spellings,
+            io_set_levels: raw.io_set_levels,
+            generic_io_levels: raw.generic_io_levels,
             generic_io: index(&raw.generic_io),
             special: index(&raw.special),
             origin: index(&raw.origin),
@@ -243,6 +265,23 @@ impl MidsUids {
     /// population sized from whatever a fixture happens to hold.
     pub fn set_piece_uids(&self) -> impl Iterator<Item = &str> {
         self.by_uid.keys().map(String::as_str)
+    }
+
+    /// Every UID Mids' database carries, set pieces and the three other rosters alike, spelled
+    /// exactly as Mids spells it.
+    pub fn uids(&self) -> &[String] {
+        &self.spellings
+    }
+
+    /// The lowest and highest level Mids lets a crafted piece of this set be, or `None` where
+    /// its table states no range for the set.
+    pub fn io_set_levels(&self, set: &str) -> Option<[u8; 2]> {
+        self.io_set_levels.get(set).copied()
+    }
+
+    /// The same range for a generic IO, which Mids states once for all of them.
+    pub fn generic_io_levels(&self) -> Option<[u8; 2]> {
+        self.generic_io_levels
     }
 
     /// The three non-set rosters' sizes: generic IOs, specials, origins.

@@ -227,7 +227,7 @@ pub fn with_uid<'a>(
 }
 
 /// Which boost record a Mids UID names, through the two doors.
-fn locate<'a>(
+pub(crate) fn locate<'a>(
     uid: &str,
     index: &'a BoostIndex,
     mids: &MidsUids,
@@ -310,13 +310,28 @@ fn locate<'a>(
     }
 }
 
-/// The tier as the build spells it, matching [`crate::game_import`]'s.
+/// Each origin tier as the build spells it (matching [`crate::game_import`]'s) and as Mids does.
+/// One table so the reader and the writer can't disagree (MBDEXPORT-4).
+const ORIGIN_TIERS: [(OriginTier, &str, &str); 3] = [
+    (OriginTier::Training, "TO", "TrainingO"),
+    (OriginTier::Dual, "DO", "DualO"),
+    (OriginTier::Single, "SO", "SingleO"),
+];
+
 fn tier_name(tier: OriginTier) -> &'static str {
-    match tier {
-        OriginTier::Training => "TO",
-        OriginTier::Dual => "DO",
-        OriginTier::Single => "SO",
-    }
+    ORIGIN_TIERS
+        .iter()
+        .find(|(t, _, _)| *t == tier)
+        .map(|(_, ours, _)| *ours)
+        .expect("every tier is in the table")
+}
+
+/// Mids' grade token for one of our tier names, or `None` for a name that isn't a tier.
+pub(crate) fn mids_grade(tier_name: &str) -> Option<&'static str> {
+    ORIGIN_TIERS
+        .iter()
+        .find(|(_, ours, _)| *ours == tier_name)
+        .map(|(_, _, mids)| *mids)
 }
 
 /// Mids' grade tokens, which are the ONLY place a `.mbd` states an origin piece's tier.
@@ -325,14 +340,13 @@ fn tier_name(tier: OriginTier) -> &'static str {
 /// closed. `None` is a grade too, and on an origin record it is a contradiction rather than a
 /// default: the file would be saying the piece has no tier.
 fn origin_tier(grade: &str) -> Result<OriginTier, PieceRefusal> {
-    match grade {
-        "TrainingO" => Ok(OriginTier::Training),
-        "DualO" => Ok(OriginTier::Dual),
-        "SingleO" => Ok(OriginTier::Single),
-        other => Err(PieceRefusal::Grade {
-            stated: other.to_string(),
-        }),
-    }
+    ORIGIN_TIERS
+        .iter()
+        .find(|(_, _, mids)| *mids == grade)
+        .map(|(tier, _, _)| *tier)
+        .ok_or_else(|| PieceRefusal::Grade {
+            stated: grade.to_string(),
+        })
 }
 
 /// Mids' `eEnhRelative`, as a signed offset.
@@ -363,6 +377,15 @@ pub fn relative_level_token(ordinal: u8) -> Option<&'static str> {
     RELATIVE_LEVEL
         .get(usize::from(ordinal))
         .map(|(token, _)| *token)
+}
+
+/// The token Mids writes for a signed level offset, or `None` outside Mids' -3..=+5. Skips
+/// `None`, which Mids reads as even but never writes for it.
+pub(crate) fn relative_level_for(offset: i8) -> Option<&'static str> {
+    RELATIVE_LEVEL
+        .into_iter()
+        .find(|(token, value)| *value == offset && *token != "None")
+        .map(|(token, _)| token)
 }
 
 fn relative_level(enhancement: &MbdEnhancement) -> Result<i8, PieceRefusal> {
@@ -396,7 +419,10 @@ fn crafted_level(enhancement: &MbdEnhancement) -> Result<Level, PieceRefusal> {
 /// catalog carries (every `_Heal` record names `["Healing", "Absorb"]` and the catalog has no
 /// `Absorb`), so the intersection decides, and two survivors is a question rather than a tie to
 /// break.
-fn catalog_stat(named: &[String], catalog: &EnhancementCatalog) -> Result<String, PieceRefusal> {
+pub(crate) fn catalog_stat(
+    named: &[String],
+    catalog: &EnhancementCatalog,
+) -> Result<String, PieceRefusal> {
     let carried: Vec<String> = named
         .iter()
         .filter(|stat| catalog.common_io_types.contains(stat))
