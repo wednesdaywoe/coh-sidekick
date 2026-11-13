@@ -12,6 +12,11 @@
 //! defense, and one running Faraday Cage shows nothing whatsoever — its parent power carries a
 //! single `EntCreate` atom and an empty effects bag.
 //!
+//! A Mastermind henchman is commandable and otherwise its own character, but the buffs it puts on
+//! its owner fold here too: the Protector Bot's Force Shield and the Ember Demon's Ember Shields.
+//! Its abilities are read with the upgrades the build holds
+//! ([`crate::granted::active_entity_abilities`]).
+//!
 //! **Who receives it is a separate question from what it is, and it is asked FIRST.** A pet's
 //! `HoldProtection` row and the one Singularity hands the foe it just held are the same type at
 //! the same aspect; only the pet POWER's recipients tell them apart
@@ -146,7 +151,8 @@ pub fn apply_buff_pet_auras(
             });
         };
 
-        each_folded_row(power, db, |_pet, pet_class, effect| {
+        let holds = |name: &str| holds_power(state, name);
+        each_folded_row(power, db, &holds, |_pet, pet_class, effect| {
             let scope = scope(pet_class, archetype);
             let kind = effect.get("type").and_then(Value::as_str);
             if let Some(faced) = kind.and_then(faced_route) {
@@ -304,8 +310,9 @@ fn enh_multiplier(effect: &Value, faced: Option<FacedRoute>, enh: &EnhancementBo
 ///
 /// The read behind the opt-in control: it walks what [`apply_buff_pet_auras`] folds, through the
 /// same traversal and the same key vocabulary, so a control offered here is a control that moves
-/// exactly those numbers. Empty for a power that summons nothing, summons a commandable pet, or
-/// summons one carrying no ally buff.
+/// exactly those numbers. Empty for a power that summons nothing, summons a commandable pet that
+/// is not a Mastermind henchman, or summons one carrying no ally buff. `state` answers which
+/// henchman upgrades the build holds.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BuffPetSource {
     /// The pet's own display name, as the entity states it.
@@ -314,9 +321,14 @@ pub struct BuffPetSource {
     pub breakdown_keys: Vec<String>,
 }
 
-pub fn buff_pet_sources(power: &Power, db: &PowerDatabase) -> Vec<BuffPetSource> {
+pub fn buff_pet_sources(
+    power: &Power,
+    db: &PowerDatabase,
+    state: &CharacterState,
+) -> Vec<BuffPetSource> {
     let mut sources: Vec<BuffPetSource> = Vec::new();
-    each_folded_row(power, db, |pet, _pet_class, effect| {
+    let holds = |name: &str| holds_power(state, name);
+    each_folded_row(power, db, &holds, |pet, _pet_class, effect| {
         let source = match sources.iter_mut().find(|source| source.pet == pet) {
             Some(existing) => existing,
             None => {
@@ -356,6 +368,7 @@ pub fn buff_pet_sources(power: &Power, db: &PowerDatabase) -> Vec<BuffPetSource>
 fn each_folded_row(
     power: &Power,
     db: &PowerDatabase,
+    holds: &dyn Fn(&str) -> bool,
     mut visit: impl FnMut(&str, Option<&str>, &Value),
 ) {
     let Some(summon) = power.summon() else {
@@ -415,6 +428,19 @@ fn each_folded_row(
                 .unwrap_or(&entity_name);
             let pet_class = entity.get("characterClass").and_then(Value::as_str);
             for ability in crate::granted::entity_abilities(entity) {
+                from_entity_table |= visit_ability(pet, pet_class, ability);
+            }
+        }
+        // A Mastermind henchman the chain skipped: only its buffs on its owner fold, read with
+        // the upgrades the build holds. One per summon, whatever the count: Force Shield is
+        // `Collective`, so two Protector Bots are one shield.
+        if let Some(henchman) = crate::granted::mastermind_henchman(db, &entity_name) {
+            let pet = henchman
+                .get("displayName")
+                .and_then(Value::as_str)
+                .unwrap_or(&entity_name);
+            let pet_class = henchman.get("characterClass").and_then(Value::as_str);
+            for ability in crate::granted::active_entity_abilities(henchman, holds) {
                 from_entity_table |= visit_ability(pet, pet_class, ability);
             }
         }
@@ -481,6 +507,12 @@ pub fn aura_keys(effect: &Value) -> Vec<&'static str> {
         Some("RechargeBuff") => vec!["recharge"],
         _ => Vec::new(),
     }
+}
+
+/// Whether the build has picked a power by this internal name — how a henchman upgrade tier's
+/// `grantedBy` is answered.
+fn holds_power(state: &CharacterState, name: &str) -> bool {
+    state.all_selected().any(|pick| pick.internal_name == name)
 }
 
 /// The class an aura's table is read under: the pet's own, or the build's archetype when the

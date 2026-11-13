@@ -1205,7 +1205,7 @@ pub fn Info(
                 coh_data::caster_class_name(&build, &database),
             ),
             buff_pets: match buff_pet_toggle.is_some() {
-                true => coh_math::buff_pets::buff_pet_sources(power, &database),
+                true => coh_math::buff_pets::buff_pet_sources(power, &database, &build),
                 false => Vec::new(),
             },
             buff_pet_toggle,

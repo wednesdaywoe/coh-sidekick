@@ -1762,6 +1762,64 @@ fn pet_entity<'a>(db: &'a PowerDatabase, name: &str) -> Option<&'a Value> {
     db.sections.get("pet-entities")?.get("entities")?.get(name)
 }
 
+/// The named entity if it is a Mastermind henchman: commandable, with a class naming `henchman`
+/// (the same taxonomy `damage.rs` reads). [`summoned_entity_chain`] skips it, and that stays
+/// right for damage and procs; only the buff-pet fold asks for it, for the buffs it puts on its
+/// owner. Lore and Fate pets are commandable too, under other classes, and stay out.
+pub fn mastermind_henchman<'a>(db: &'a PowerDatabase, name: &str) -> Option<&'a Value> {
+    let entity = pet_entity(db, name)?;
+    let commandable = entity.get("commandable").and_then(Value::as_bool) == Some(true);
+    let henchman = entity
+        .get("characterClass")
+        .and_then(Value::as_str)
+        .is_some_and(|class| class.contains("henchman"));
+    (commandable && henchman).then_some(entity)
+}
+
+/// An entity's abilities as a build has them: the base list, then each upgrade tier the build
+/// holds a granter of, in tier order, dropping what that tier revokes and adding its own.
+///
+/// Mastermind upgrades replace rather than add. Enchant Demon revokes the Ember Demon's two
+/// shields and grants boosted copies under the same names, so reading both would double them.
+pub fn active_entity_abilities<'a>(
+    entity: &'a Value,
+    holds: &dyn Fn(&str) -> bool,
+) -> Vec<&'a Value> {
+    let mut abilities: Vec<&Value> = entity_abilities(entity).collect();
+    let mut tiers: Vec<&Value> = entity
+        .get("upgradeTiers")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .collect();
+    tiers.sort_by_key(|tier| tier.get("tier").and_then(Value::as_i64).unwrap_or(0));
+    for tier in tiers {
+        let held = tier
+            .get("grantedBy")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .any(holds);
+        if !held {
+            continue;
+        }
+        let revoked: Vec<&str> = tier
+            .get("revokes")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .collect();
+        abilities.retain(|ability| {
+            let name = ability.get("name").and_then(Value::as_str).unwrap_or("");
+            !revoked.contains(&name)
+        });
+        abilities.extend(entity_abilities(tier));
+    }
+    abilities
+}
+
 /// The pseudo-pets one summon reference actually delivers: the named entity, then the ones its
 /// own powers create in place (`createsEntities`), transitively.
 ///

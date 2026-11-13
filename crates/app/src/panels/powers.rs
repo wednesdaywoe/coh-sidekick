@@ -5756,7 +5756,7 @@ fn power_pill(
 ) -> Option<PowerPill> {
     if self_pill_slots(def, database, build).is_some() {
         Some(PowerPill::Active)
-    } else if !coh_math::buff_pets::buff_pet_sources(def, &database.0).is_empty() {
+    } else if !coh_math::buff_pets::buff_pet_sources(def, &database.0, build).is_empty() {
         Some(PowerPill::BuffPet(
             coh_math::buff_pets::buff_pet_toggle_key(&power.powerset, &power.internal_name),
         ))
