@@ -735,6 +735,11 @@
       "id": "rarity-order",
       "date": "2026-11-10",
       "preview": "The enhancement picker can order its IO sets by rarity, most common first or rar"
+    },
+    {
+      "id": "account-deletion",
+      "date": "2026-11-13",
+      "preview": "You can now delete your account from File ▸ Delete account… (on mobile, under Mo"
     }
   ]
 }
