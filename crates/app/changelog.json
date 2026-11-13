@@ -1,10 +1,21 @@
 [
-
+  {
+    "date": "2026-11-12",
+    "items": [
+      { "id": "phone-build-tab", "type": "feat", "message": "Signifcant UI refactor for mobile." },
+      { "id": "phone-key-numbers", "type": "feat", "message": "Mobile: Stats displayed at the top can be swapped from the Stats tab." },
+      { "id": "phone-slot-cards", "type": "feat", "message": "Mobile: each power shows its slots as representative dots. Tap the slots button to unfold the enhancement section where you can add and remove slots & enhancments. Tap a slot to fill, or drag the handle to add & remove slots." },
+      { "id": "phone-power-info", "type": "feat", "message": "Mobile: Info button to show details about a power." },
+      { "id": "phone-inherent-groups", "type": "feat", "message": "Mobiler: inherent powers are sorted into folding groups" },
+      { "id": "clear-build", "type": "feat", "message": "Added a clear build button, for starting over." },
+      { "id": "mbd-legacy-enhancement-names", "type": "fix", "message": "Builds saved by Mids 3.6 or earlier should now open with their enhancements." }
+    ]
+  },
   {
     "date": "2026-11-11",
     "items": [
-      { "id": "unfiled-107", "type": "feat", "message": "On the Brainstorm beta, Spines attacks count their poison again. A slider beside the attack, and in Build Settings, sets how many Poison stacks the target already carries (0 to 10), and the poison's damage grows with it." },
-      { "id": "unfiled-108", "type": "fix", "message": "Damage rows name their mechanic more often. Brainstorm's Spines poison reads SpinePoison again, and rows such as Sonic Melee's attuned damage, Brawling's combo hits and Sentinel crits now carry the name the game gives them." }
+      { "id": "unfiled-107", "type": "feat", "message": "HC Brainstorm: Spines attacks count their poison again. A slider sets how many Poison stacks the target already has (0 to 10)." },
+      { "id": "unfiled-108", "type": "fix", "message": "Damage rows should show and label their mechanic more often." }
     ]
   },
   {

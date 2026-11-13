@@ -675,6 +675,66 @@
       "id": "auction-prices",
       "date": "2026-11-06",
       "preview": "The Enhancement List now shows what your Homecoming build costs: each set piece,"
+    },
+    {
+      "id": "phone-build-tab",
+      "date": "2026-11-12",
+      "preview": "Signifcant UI refactor for mobile."
+    },
+    {
+      "id": "phone-key-numbers",
+      "date": "2026-11-12",
+      "preview": "Mobile: Stats displayed at the top can be swapped from the Stats tab."
+    },
+    {
+      "id": "phone-slot-cards",
+      "date": "2026-11-12",
+      "preview": "Mobile: each power shows its slots as representative dots. Tap the slots button "
+    },
+    {
+      "id": "phone-power-info",
+      "date": "2026-11-12",
+      "preview": "Mobile: Info button to show details about a power."
+    },
+    {
+      "id": "phone-inherent-groups",
+      "date": "2026-11-12",
+      "preview": "Mobiler: inherent powers are sorted into folding groups"
+    },
+    {
+      "id": "clear-build",
+      "date": "2026-11-12",
+      "preview": "Added a clear build button, for starting over."
+    },
+    {
+      "id": "mbd-legacy-enhancement-names",
+      "date": "2026-11-12",
+      "preview": "Builds saved by Mids 3.6 or earlier should now open with their enhancements."
+    },
+    {
+      "id": "unfiled-107",
+      "date": "2026-11-11",
+      "preview": "HC Brainstorm: Spines attacks count their poison again. A slider sets how many P"
+    },
+    {
+      "id": "unfiled-108",
+      "date": "2026-11-11",
+      "preview": "Damage rows should show and label their mechanic more often."
+    },
+    {
+      "id": "level-order-shift",
+      "date": "2026-11-10",
+      "preview": "Drag and drop to move powers around has been expanded to allow drag & drop betwe"
+    },
+    {
+      "id": "inherent-fold-memory",
+      "date": "2026-11-10",
+      "preview": "The inherent panels remember whether you left them expanded or collapsed"
+    },
+    {
+      "id": "rarity-order",
+      "date": "2026-11-10",
+      "preview": "The enhancement picker can order its IO sets by rarity, most common first or rar"
     }
   ]
 }
