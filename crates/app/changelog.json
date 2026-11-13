@@ -6,7 +6,7 @@
       { "id": "phone-key-numbers", "type": "feat", "message": "Mobile: Stats displayed at the top can be swapped from the Stats tab." },
       { "id": "phone-slot-cards", "type": "feat", "message": "Mobile: each power shows its slots as representative dots. Tap the slots button to unfold the enhancement section where you can add and remove slots & enhancments. Tap a slot to fill, or drag the handle to add & remove slots." },
       { "id": "phone-power-info", "type": "feat", "message": "Mobile: Info button to show details about a power." },
-      { "id": "phone-inherent-groups", "type": "feat", "message": "Mobiler: inherent powers are sorted into folding groups" },
+      { "id": "phone-inherent-groups", "type": "feat", "message": "Mobile: inherent powers are sorted into folding groups" },
       { "id": "clear-build", "type": "feat", "message": "Added a clear build button, for starting over." },
       { "id": "mbd-legacy-enhancement-names", "type": "fix", "message": "Builds saved by Mids 3.6 or earlier should now open with their enhancements." }
     ]
