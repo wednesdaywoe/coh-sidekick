@@ -79,7 +79,7 @@ pub struct MidsPiece {
 /// Why a piece can't be written at all. The slot goes out empty.
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum WriteRefusal {
-    #[error("Mids' database has no enhancement that reads back as this one")]
+    #[error("Mids' database has no known enhancement matching this one")]
     NoMidsId,
     #[error("{0:?} is not an origin tier")]
     Tier(String),
@@ -431,7 +431,7 @@ impl MidsExport {
 /// Why nothing could be written at all.
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum ExportError {
-    #[error("this dataset ships no {0}, so a Mids file can't be written")]
+    #[error("this dataset has no {0}, so a Mids file can't be written")]
     Missing(&'static str),
     #[error("{0}")]
     Table(String),
@@ -574,7 +574,7 @@ impl<'a> Writer<'a> {
         match class {
             Some(class) => class.to_string(),
             None => {
-                self.note("archetype", "this build has no archetype Mids can name");
+                self.note("archetype", "Mids does not recognize this archetype.");
                 String::new()
             }
         }
@@ -633,7 +633,7 @@ impl<'a> Writer<'a> {
         let Some(path) = self.game_path(set_id) else {
             self.note(
                 set_id,
-                "this set has no game path, so Mids gets no entry for it",
+                "this set has no game path.",
             );
             return String::new();
         };
@@ -705,7 +705,7 @@ impl<'a> Writer<'a> {
                 self.power_label(power),
                 format!(
                     "taken at level {}, past the last pick this server's schedule grants, so \
-                     Mids gets it in the last row",
+                     Mids puts it in the last row",
                     power.level
                 ),
             );
@@ -721,7 +721,7 @@ impl<'a> Writer<'a> {
             None => {
                 self.note(
                     self.power_label(power),
-                    "its set has no game path, so Mids gets the bare name",
+                    "its set has no game path, so Mids recieves the bare name",
                 );
                 power.internal_name.clone()
             }
@@ -803,7 +803,7 @@ impl<'a> Writer<'a> {
                 self.power_label(power),
                 format!(
                     "{left_out} empty free {slots} left out, because Mids won't open a file with \
-                     more free slots than it gives; add them again in Mids"
+                     more free slots than it gives; please add them again in Mids"
                 ),
             );
         }
@@ -879,7 +879,7 @@ impl<'a> Writer<'a> {
                     // The row still has to be there for Mids to load the file.
                     self.note(
                         name,
-                        "this server's inherent list doesn't name it; Mids gets a bare row",
+                        "this server's inherent list is unknown to Mids, will get a bare row",
                     );
                     let path = self
                         .game_path(crate::INHERENT_SET)
@@ -933,7 +933,7 @@ impl<'a> Writer<'a> {
             None => {
                 self.note(
                     declared.as_str(),
-                    format!("Mids shows no inherent for {class}, so it gets ours and may skip it"),
+                    format!("Mids has no inherent for {class}, so it may be skipped"),
                 );
                 self.mids_full_name(path, &ident)
             }
@@ -1014,7 +1014,7 @@ impl<'a> Writer<'a> {
             let Some((slot, power)) = found else {
                 self.note(
                     pick.power_name.as_str(),
-                    format!("no {slot_id} power of that name, so Mids gets no entry for it"),
+                    format!("Mids has no {slot_id} power of that name"),
                 );
                 continue;
             };
@@ -1036,7 +1036,7 @@ impl<'a> Writer<'a> {
             let Some(toggle) = toggles.iter().find(|toggle| &toggle.id == id) else {
                 self.note(
                     id.as_str(),
-                    "no accolade by that name, so Mids gets no entry for it",
+                    "Mids has no accolade by that name",
                 );
                 continue;
             };
@@ -1048,7 +1048,7 @@ impl<'a> Writer<'a> {
             let Some(path) = path else {
                 self.note(
                     id.as_str(),
-                    "its set has no game path, so Mids gets no entry for it",
+                    "its set has no game path",
                 );
                 continue;
             };
@@ -1173,18 +1173,18 @@ fn loss_text(loss: &PieceLoss) -> String {
     match loss {
         PieceLoss::Attunement {
             written_attuned: false,
-        } => "Mids only has the crafted form of this piece, so it goes out crafted".to_string(),
+        } => "Mids only has the crafted form of this piece, so it gets converted to crafted".to_string(),
         PieceLoss::Attunement {
             written_attuned: true,
-        } => "Mids only has the attuned form of this piece, so it goes out attuned".to_string(),
+        } => "Mids only has the attuned form of this piece, so it gets converted to attuned".to_string(),
         PieceLoss::LevelClamped { asked, kept } => format!(
             "crafted at level {asked}, which Mids doesn't allow for it; Mids will show it at {kept}"
         ),
         PieceLoss::RelativeLevelClamped { asked, kept } => {
-            format!("{asked:+} levels is outside what Mids can store; it goes out at {kept:+}")
+            format!("{asked:+} levels is outside what Mids can store; it appears as {kept:+}")
         }
         PieceLoss::SwappedFor { category, id } => format!(
-            "Mids has no record of this enhancement, so it goes out as the {category} {id}, \
+            "Mids has no record of this enhancement, so it gets converted as the {category} {id}, \
              which does the same thing"
         ),
     }

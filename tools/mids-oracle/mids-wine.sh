@@ -67,6 +67,13 @@ APP="$PREFIX/drive_c/MidsReborn"
 # does not need one. `-x` here reported "no Mids" against a working install.
 [ -f "$APP/MidsReborn.exe" ] || { echo "no Mids at $APP — see setup above" >&2; exit 1; }
 
+# One already open (say, from Lutris) would fool the is-it-still-up check below,
+# and if it's on Lutris' Wine our launch dies of a version mismatch anyway.
+if running=$(pgrep -x MidsReborn.exe); then
+  echo "Mids is already running (pid $(echo $running)) — close it first" >&2
+  exit 1
+fi
+
 if [ $# -ge 1 ]; then
   cp "$1" "$APP/test.mbd"
   # Passing the path on the command line only sets LastFileName for the NEXT
@@ -106,7 +113,20 @@ cd "$APP"
 WINEPREFIX="$PREFIX" WINEDEBUG=-all \
   DOTNET_SYSTEM_GLOBALIZATION_APPLOCALICU="$ICU_VERSION" \
   setsid nohup "$WINE" MidsReborn.exe >/tmp/mids-wine.log 2>&1 </dev/null &
-echo "launched; window appears in ~40s. Screenshot with:"
+
+# Wait 10s to see that Mids stayed up. Every known failure (ICU, version
+# mismatch, bad appSettings) kills it within ~5s. $! is a helper that exits at
+# once, so watch for the process by name instead.
+for _ in $(seq 10); do
+  sleep 1
+  pgrep -x MidsReborn.exe >/dev/null && seen=1 || { [ -n "${seen:-}" ] && break; }
+done
+if ! pgrep -x MidsReborn.exe >/dev/null; then
+  echo "Mids did not stay running. Last of /tmp/mids-wine.log:" >&2
+  tail -20 /tmp/mids-wine.log >&2
+  exit 1
+fi
+echo "launched and still running after 10s. Screenshot with:"
 echo "  W=\$(DISPLAY=:0 xdotool search --name \"Mids' Reborn\" | head -1)"
 echo "  DISPLAY=:0 import -window \$W /tmp/mids.png"
 echo "An error shows up as a separate 'MessageBoxEx' or 'Microsoft .NET' window — check for those before trusting a screenshot."
