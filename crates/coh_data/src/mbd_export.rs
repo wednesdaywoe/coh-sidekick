@@ -5,7 +5,8 @@
 //! which means the writer can only hand Mids an ID that reads back as the piece it started from.
 
 use crate::boost_index::{BoostEntry, BoostIndex};
-use crate::enhancements::EnhancementCatalog;
+use crate::character::AspectValue;
+use crate::enhancements::{EnhancementCatalog, SpecialEnhancementDef};
 use crate::level::Level;
 use crate::mbd::MbdEnhancement;
 use crate::mbd_import::{catalog_stat, locate, mids_grade, relative_level_for};
@@ -37,6 +38,8 @@ enum PieceKey {
 #[derive(Debug, Clone)]
 pub struct MidsEnhancementIds {
     by_piece: HashMap<PieceKey, String>,
+    /// A special Mids has no record of -> the one Mids has that does the same thing.
+    stand_ins: HashMap<PieceKey, PieceKey>,
     io_set_levels: HashMap<String, [u8; 2]>,
     generic_io_levels: Option<[u8; 2]>,
 }
@@ -52,6 +55,8 @@ pub enum PieceLoss {
     LevelClamped { asked: u8, kept: u8 },
     /// Mids' relative levels run -3 to +5.
     RelativeLevelClamped { asked: i8, kept: i8 },
+    /// Mids has no record of this special, so it went out as this one, which does the same.
+    SwappedFor { category: String, id: String },
 }
 
 /// One piece ready for a slot, with anything Mids will hold differently.
@@ -108,8 +113,10 @@ impl MidsEnhancementIds {
             })
             .filter_map(|set| Some((set.clone(), mids.io_set_levels(set)?)))
             .collect();
+        let stand_ins = stand_ins(&by_piece, index, catalog);
         Ok(Self {
             by_piece,
+            stand_ins,
             io_set_levels,
             generic_io_levels: mids.generic_io_levels(),
         })
@@ -204,10 +211,23 @@ impl MidsEnhancementIds {
                 id,
                 relative_level,
             } => {
-                let uid = self.uid(PieceKey::Special {
+                let key = PieceKey::Special {
                     category: category.clone(),
                     id: id.clone(),
-                })?;
+                };
+                let uid = match self.uid(key.clone()) {
+                    Ok(uid) => uid,
+                    Err(refusal) => {
+                        let stand_in = self.stand_ins.get(&key).ok_or(refusal)?;
+                        if let PieceKey::Special { category, id } = stand_in {
+                            losses.push(PieceLoss::SwappedFor {
+                                category: category.clone(),
+                                id: id.clone(),
+                            });
+                        }
+                        self.uid(stand_in.clone())?
+                    }
+                };
                 mids_enhancement(
                     uid,
                     MIDS_SPECIAL_GRADE,
@@ -241,6 +261,67 @@ impl MidsEnhancementIds {
         };
         form(attuned).or_else(|_| form(!attuned))
     }
+}
+
+/// Specials Mids has no record of, each paired with the one Mids has that does the same thing.
+///
+/// Same effects alone isn't enough: a Synthetic Nucleolus matches a Hamidon, a Titan, a Hydra
+/// and a D-Sync piece. The game's record name settles it, since `Synthetic_Hamidon_Damage_Accuracy`
+/// ends with Mids' `Hamidon_Damage_Accuracy`. Both must hold, for exactly one candidate.
+fn stand_ins(
+    by_piece: &HashMap<PieceKey, String>,
+    index: &BoostIndex,
+    catalog: &EnhancementCatalog,
+) -> HashMap<PieceKey, PieceKey> {
+    let mut stand_ins = HashMap::new();
+    for (name, entry) in &index.entries {
+        let BoostEntry::Special { family, id } = entry else {
+            continue;
+        };
+        let key = PieceKey::Special {
+            category: family.clone(),
+            id: id.clone(),
+        };
+        let Some(own) = special_def(catalog, family, id) else {
+            continue;
+        };
+        if by_piece.contains_key(&key) {
+            continue;
+        }
+        let name = name.to_lowercase();
+        let mut candidates = by_piece.iter().filter(|(candidate, uid)| {
+            let PieceKey::Special { category, id } = candidate else {
+                return false;
+            };
+            name.ends_with(&format!("_{}", uid.to_lowercase()))
+                && special_def(catalog, category, id).is_some_and(|def| same_aspects(def, own))
+        });
+        if let (Some((stand_in, _)), None) = (candidates.next(), candidates.next()) {
+            stand_ins.insert(key, stand_in.clone());
+        }
+    }
+    stand_ins
+}
+
+fn special_def<'a>(
+    catalog: &'a EnhancementCatalog,
+    category: &str,
+    id: &str,
+) -> Option<&'a SpecialEnhancementDef> {
+    let (_, _, family) = catalog
+        .special_families()
+        .into_iter()
+        .find(|(_, tag, _)| *tag == category)?;
+    family.get(id)
+}
+
+fn same_aspects(a: &SpecialEnhancementDef, b: &SpecialEnhancementDef) -> bool {
+    let sorted = |def: &SpecialEnhancementDef| {
+        let mut aspects: Vec<AspectValue> = def.aspects.clone();
+        aspects.sort_by(|x, y| x.stat.cmp(&y.stat).then(x.value.total_cmp(&y.value)));
+        aspects
+    };
+    sorted(a) == sorted(b)
 }
 
 fn key_of(entry: &BoostEntry, catalog: &EnhancementCatalog) -> Option<PieceKey> {

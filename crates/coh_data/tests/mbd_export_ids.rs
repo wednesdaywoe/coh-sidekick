@@ -180,6 +180,14 @@ fn every_piece_reads_back_as_itself_or_says_why_not() {
                     },
                     booster: *booster,
                 },
+                (
+                    SkifEnhancement::Special { relative_level, .. },
+                    [PieceLoss::SwappedFor { category, id }],
+                ) => SkifEnhancement::Special {
+                    category: category.clone(),
+                    id: id.clone(),
+                    relative_level: *relative_level,
+                },
                 (_, []) => piece.clone(),
                 (_, losses) => panic!("{dataset:?} {name}: unexpected losses {losses:?}"),
             };
@@ -233,5 +241,34 @@ fn mids_uid_for_answers_on_every_fork() {
     for dataset in DatasetId::ALL {
         let database = load(dataset);
         assert!(ids(&database).len() > 1000, "{dataset:?}");
+    }
+}
+
+/// A Synthetic Hamidon goes out as the regular Hamidon with the same effects, and says so.
+#[test]
+fn a_synthetic_hamidon_goes_out_as_its_regular_twin() {
+    for dataset in DatasetId::ALL {
+        let database = load(dataset);
+        let catalog = database.enhancements.as_ref().expect("a catalog");
+        let ids = ids(&database);
+        assert!(!catalog.synthetic_hamidon.is_empty(), "{dataset:?}");
+        for id in catalog.synthetic_hamidon.keys() {
+            let piece = SkifEnhancement::Special {
+                category: "synthetic-hamidon".to_string(),
+                id: id.clone(),
+                relative_level: 0,
+            };
+            let written = ids
+                .mids_uid_for(&piece, DEFAULT_IO_LEVEL)
+                .unwrap_or_else(|e| panic!("{dataset:?} {id}: {e}"));
+            let [PieceLoss::SwappedFor { category, id: twin }] = written.losses.as_slice() else {
+                panic!("{dataset:?} {id}: {:?}", written.losses);
+            };
+            assert_eq!(category, "hamidon", "{dataset:?} {id}");
+            assert_eq!(
+                catalog.hamidon[twin].aspects, catalog.synthetic_hamidon[id].aspects,
+                "{dataset:?} {id}"
+            );
+        }
     }
 }
