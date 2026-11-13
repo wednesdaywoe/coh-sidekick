@@ -287,9 +287,17 @@ fn allowed(
         "level" | "slot 1 level" if group("Inherent.Fitness") => Some(
             "the game data states no grant level for Fitness; Mids reads none on a granted row",
         ),
-        "slots" if group("Inherent.Fitness") && difference.mids < difference.ours => Some(
-            "Rebirth's free Health and Stamina slots, which Mids' own Mastermind and Widow files carry",
-        ),
+        "slots"
+            if entry.is_some_and(|e| {
+                let ours: usize = difference.ours.parse().unwrap_or(usize::MAX);
+                e.slot_entries
+                    .iter()
+                    .skip(ours)
+                    .all(|slot| slot.is_inherent && slot.enhancement.is_none())
+            }) =>
+        {
+            Some("an empty free slot isn't written: Mids refuses a build it wouldn't grant one to")
+        }
         "pick row" if group("Inherent.") => Some(
             "Mids sometimes files its own inherent inside the pick rows; it's not a pick either way",
         ),
@@ -391,4 +399,38 @@ fn a_slider_goes_out_as_its_rows_variable_value() {
         .find(|entry| entry.power_name.ends_with(".Sunless_Mire"))
         .expect("a Sunless Mire row");
     assert_eq!(row.variable_value, 4);
+}
+
+/// A powerset Mids' database doesn't have goes out with a warning, since Mids will show its
+/// powers empty. Homecoming's Wind Control is newer than the Mids database vendored here.
+#[test]
+fn a_set_mids_lacks_is_warned_about() {
+    let dataset = DatasetId::Homecoming;
+    let database = load(dataset);
+    let path = fixtures(dataset)
+        .into_iter()
+        .find(|path| name(path).starts_with("blaster-"))
+        .expect("the Blaster fixture");
+    let original = mbd::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
+    let (mut state, _) = as_the_app_opens(&original, &database, dataset);
+    let clean = write_mbd(&state, &database, DEFAULT_IO_LEVEL).expect("it writes");
+    assert_eq!(
+        clean.notes,
+        vec![],
+        "every set the Blaster holds is one Mids has"
+    );
+    let wind = "controller/wind-control";
+    state.primary.id = Some(wind.to_string());
+    for power in &mut state.primary.powers {
+        power.powerset = wind.to_string();
+    }
+    let export = write_mbd(&state, &database, DEFAULT_IO_LEVEL).expect("it writes");
+    assert!(
+        export
+            .notes
+            .iter()
+            .any(|note| note.detail.contains("doesn't have")),
+        "{:?}",
+        export.notes
+    );
 }

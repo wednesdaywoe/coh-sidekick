@@ -798,6 +798,28 @@ const archetypeInherents = midsNames.archetypeInherents || {};
 const sortedArchetypeInherents = Object.fromEntries(
   Object.keys(archetypeInherents).sort().map((k) => [k, archetypeInherents[k]]));
 
+// Granted powers Mids files under `Inherent.Inherent` while our export keeps them in the set
+// that grants them: Homecoming's `Pool.Speed.SpeedPhase` is Mids' `Inherent.Inherent.Speed_Phase`.
+// The per-set passes above never put the two side by side. Writer-only, and narrow on purpose:
+// the internal names must be the same once separators and case are stripped, the display
+// names too, and exactly one of ours may answer.
+const INHERENT_KEY = 'inherent.inherent';
+const midsInherent = midsSets.get(INHERENT_KEY);
+const oursInherent = new Set((exportSets.get(INHERENT_KEY) || []).map((p) => stripSeparators(p.displayName)));
+for (const [midsInternal, midsDisplay] of midsInherent ? midsInherent.rows : []) {
+  if (oursInherent.has(stripSeparators(midsDisplay))) continue;
+  const candidates = [...exportSets.values()].flat().filter((p) =>
+    stripSeparators(p.displayName) === stripSeparators(midsDisplay)
+    && stripSeparators(p.internalName) === stripSeparators(midsInternal)
+    && p.internalName !== String(midsInternal));
+  if (candidates.length !== 1) continue;
+  const ours = candidates[0].internalName;
+  looseReverse[INHERENT_KEY] = looseReverse[INHERENT_KEY] || {};
+  if (looseReverse[INHERENT_KEY][ours.toLowerCase()]) continue;
+  looseReverse[INHERENT_KEY][ours.toLowerCase()] = String(midsInternal);
+  stats.loose.push(`${INHERENT_KEY}: ${ours} → ${midsInternal} (granted elsewhere in ours)`);
+}
+
 const sorted = Object.fromEntries(Object.keys(map).sort().map((k) => [k, map[k]]));
 const sortedReverse = Object.fromEntries(Object.keys(reverse).sort().map((k) => [k, reverse[k]]));
 const sortedAlias = Object.fromEntries(Object.keys(alias).sort().map((k) => [k, alias[k]]));

@@ -3669,6 +3669,11 @@
  "nameReverseLoose": {
   "guardian_assault.dark_assault": {
    "moonbeam": "Moon_Beam"
+  },
+  "inherent.inherent": {
+   "combo_level_1": "COMBO_LEVEL_1",
+   "combo_level_2": "COMBO_LEVEL_2",
+   "combo_level_3": "COMBO_LEVEL_3"
   }
  },
  "archetypeInherent": {

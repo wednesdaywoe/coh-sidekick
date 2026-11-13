@@ -4107,7 +4107,14 @@
   "widow_training.night_widow_training": "Widow_Training.Night_Widow_Training",
   "widow_training.widow_training": "Widow_Training.Widow_Training"
  },
- "nameReverseLoose": {},
+ "nameReverseLoose": {
+  "inherent.inherent": {
+   "speedphase": "Speed_Phase",
+   "combo_level_1": "COMBO_LEVEL_1",
+   "combo_level_2": "COMBO_LEVEL_2",
+   "combo_level_3": "COMBO_LEVEL_3"
+  }
+ },
  "archetypeInherent": {
   "Class_Arachnos_Soldier": "Spider_Conditioning",
   "Class_Arachnos_Widow": "Widow_Conditioning",

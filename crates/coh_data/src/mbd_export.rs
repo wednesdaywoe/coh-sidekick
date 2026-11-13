@@ -630,34 +630,38 @@ impl<'a> Writer<'a> {
 
     /// The path Mids writes for a game path (MBDEXPORT-6, -9).
     fn mids_path(&self, game_path: &str) -> String {
-        self.names
-            .mids_powerset_path(&fold_path(game_path))
-            .map_or_else(|| game_path.to_string(), str::to_string)
+        mids_set_path(self.names, game_path)
     }
 
-    /// `Group.Set.Power` as Mids spells it (MBDEXPORT-3).
     fn mids_full_name(&self, game_path: &str, power: &str) -> String {
-        let name = self
-            .names
-            .mids_power_name(&fold_path(game_path), power)
-            .unwrap_or(power);
-        format!("{}.{name}", self.mids_path(game_path))
+        mids_full_name(self.names, game_path, power)
     }
 
     fn set_mids_path(&mut self, set_id: Option<&str>) -> String {
         let Some(set_id) = set_id else {
             return String::new();
         };
-        match self.game_path(set_id) {
-            Some(path) => self.mids_path(path),
-            None => {
-                self.note(
-                    set_id,
-                    "this set has no game path, so Mids gets no entry for it",
-                );
-                String::new()
-            }
+        let Some(path) = self.game_path(set_id) else {
+            self.note(
+                set_id,
+                "this set has no game path, so Mids gets no entry for it",
+            );
+            return String::new();
+        };
+        // Mids' path table pairs every set its database has, so a miss is a set it lacks.
+        if self.names.mids_powerset_path(&fold_path(path)).is_none() {
+            let name = self
+                .database
+                .find_powerset(set_id)
+                .map_or(set_id, |set| set.name.as_str());
+            self.note(
+                name,
+                format!(
+                    "Mids' database doesn't have {name}, so its powers will show empty in Mids"
+                ),
+            );
         }
+        self.mids_path(path)
     }
 
     /// Primary, secondary, a reserved blank, four pools, the epic.
@@ -743,12 +747,19 @@ impl<'a> Writer<'a> {
             level,
             // Only `true` writes `true` (MBDEXPORT-13).
             stat_include: power.is_active,
-            proc_include: false,
+            // On, Mids leaves chance procs out of its totals; off, it counts them as always
+            // running. Sidekick counts them at their average uptime, so on is the nearer of the
+            // two (Mids 3.8.6: the corpus Blaster's Force Feedback, 162.5% recharge on and in
+            // Sidekick, 262.5% off; the Guardian's Gaussian's, To-Hit 26.8 on, 40.0 ours, 60.8 off).
+            proc_include: true,
             variable_value: power
                 .targets_hit
                 .and_then(|value| i32::try_from(value).ok())
                 .unwrap_or(0),
-            inherent_slots_used: i32::from(power.inherent_slot_count),
+            inherent_slots_used: i32::try_from(
+                slot_entries.iter().filter(|slot| slot.is_inherent).count(),
+            )
+            .unwrap_or(0),
             sub_power_entries: Value::Array(Vec::new()),
             slot_entries,
         }
@@ -765,6 +776,13 @@ impl<'a> Writer<'a> {
             .saturating_sub(usize::from(power.inherent_slot_count));
         let mut entries = Vec::with_capacity(power.slots.len());
         for (index, slot) in power.slots.iter().enumerate() {
+            let free = index > 0 && index >= auto_from;
+            // A free slot (Rebirth's on Health and Stamina) goes out only when it holds
+            // something. Mids grants these per build, and one it wouldn't grant makes it refuse
+            // the whole file: the corpus Guardian loads with one, not with two (Mids 3.8.6).
+            if free && slot.is_none() {
+                continue;
+            }
             // A placed level goes out as placed, even where this server's schedule would move
             // it; anything else goes out where the planner solves it (MBDEXPORT-21).
             let level = match index {
@@ -779,7 +797,7 @@ impl<'a> Writer<'a> {
                 .and_then(|enhancement| self.piece(power, index, enhancement));
             entries.push(MbdSlotEntry {
                 level: level.max(1),
-                is_inherent: index > 0 && index >= auto_from,
+                is_inherent: free,
                 enhancement,
                 flipped_enhancement: Value::Null,
             });
@@ -1078,6 +1096,21 @@ fn requirement_paths(def: &crate::Power) -> Vec<(String, bool)> {
             (token.to_string(), negated)
         })
         .collect()
+}
+
+/// The path Mids writes for a game set path (MBDEXPORT-6, -9).
+pub fn mids_set_path(names: &MidsNames, game_path: &str) -> String {
+    names
+        .mids_powerset_path(&fold_path(game_path))
+        .map_or_else(|| game_path.to_string(), str::to_string)
+}
+
+/// `Group.Set.Power` as Mids spells it (MBDEXPORT-3), from the game's set path and power name.
+pub fn mids_full_name(names: &MidsNames, game_path: &str, power: &str) -> String {
+    let name = names
+        .mids_power_name(&fold_path(game_path), power)
+        .unwrap_or(power);
+    format!("{}.{name}", mids_set_path(names, game_path))
 }
 
 /// The set a role's header names: the branch set once an Arachnos build has specialised into
