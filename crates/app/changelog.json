@@ -2,6 +2,7 @@
   {
     "date": "2026-11-13",
     "items": [
+      { "id": "mids-export", "type": "feat", "message": "You can save builds for Mids Reborn again. File ▸ Save to file… (on mobile, under More) now asks for Sidekick (.skif) or Mids Reborn (.mbd). Before you save a Mids file it lists anything Mids will show differently, such as chance-based procs Mids doesn't count in its totals." },
       { "id": "henchman-owner-buffs", "type": "feat", "message": "Masterminds: Protector Bots and Summon Demons now have an ON/OFF switch that adds Force Shield's defense, or the Ember Demon's two Ember Shields' resistance, to your totals. With Enchant Demon taken, Resistance enhancements in Summon Demons raise the Ember Shields." },
       { "id": "account-deletion", "type": "feat", "message": "You can now delete your account from File ▸ Delete account… (on mobile, under More). This permanently removes your account, your public profile, your favourites and saved layout, and every build saved or published to it. Builds saved as files on your device aren't affected." }
     ]

@@ -710,12 +710,10 @@ fn paste_refusal(error: &LinkError) -> String {
     }
 }
 
-/// Write the build out as a `.skif`. Where it lands is the platform's business (see
-/// [`build_file::write_file`]); what it is called is [`build_file::file_name_for`].
+/// Open the save window: a `.skif`, or a Mids `.mbd` ([`crate::save_file`]).
 #[component]
 fn SaveFileEntry(database: Option<Db>) -> Element {
-    let session = use_context::<BuildSession>();
-    let mut report = use_context::<BuildIoReport>().0;
+    let mut save = use_context::<crate::save_file::SaveFileOpen>().0;
     let mut menu = use_context::<crate::popover::PopoverOpen>().0;
 
     rsx! {
@@ -724,36 +722,11 @@ fn SaveFileEntry(database: Option<Db>) -> Element {
             r#type: "button",
             disabled: database.is_none(),
             onclick: move |_| {
-                let database = database.clone();
-                async move {
-                    let Some(database) = database else {
-                        return;
-                    };
-                    // Both derived before the await: a `Signal` read guard held across one
-                    // would outlive the render it belongs to.
-                    let file_name = build_file::file_name_for(&session.build.read(), &database);
-                    let encoded = skif::encode(&session.build.read(), &database);
-                    let written = match encoded {
-                        Ok(text) => build_file::write_file(&file_name, &text).await.err(),
-                        Err(error) => Some(error.to_string()),
-                    };
-                    if let Some(reason) = written {
-                        report
-                            .set(
-                                Some(BuildIoOutcome::Refused {
-                                    action: format!("Save {file_name}"),
-                                    reason,
-                                }),
-                            );
-                    }
-                    // LAST, for the reason `OpenFileEntry` states: closing the menu unmounts
-                    // this component, and that cancels the future it is standing in — which on
-                    // the desktop is the save dialog itself.
-                    menu.set(false);
-                }
+                save.set(true);
+                menu.set(false);
             },
             span { class: "main-menu__label", "Save to file…" }
-            span { class: "main-menu__hint", "The whole build, in this planner's own format" }
+            span { class: "main-menu__hint", "As a Sidekick file, or for Mids Reborn" }
         }
     }
 }

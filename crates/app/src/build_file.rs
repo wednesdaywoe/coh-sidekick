@@ -11,7 +11,7 @@
 //! browser's own on the web, so opening needs nothing here — a component takes the text off the
 //! event. Writing has no such primitive, and the two targets do not share a mechanism: the
 //! browser downloads a blob, and the desktop webview cannot, because `wry` registers a download
-//! handler only when the app supplies one and `dioxus-desktop` supplies none. So [`write_file`]
+//! handler only when the app supplies one and `dioxus-desktop` supplies none. So [`write_text_file`]
 //! is the one place in this crate with a per-target body, and both arms are real. That is the
 //! opposite of the shape that killed the slot drag — a helper only `wasm32` could run, with a
 //! `None` twin standing in for the platform that got nothing.
@@ -77,6 +77,11 @@ const WINDOWS_DEVICES: [&str; 22] = [
 /// arrived from a file has those blank, and the file name must not depend on how the build
 /// arrived.
 pub fn file_name_for(build: &CharacterState, database: &PowerDatabase) -> String {
+    format!("{}.{EXTENSION}", file_stem_for(build, database))
+}
+
+/// [`file_name_for`] without the extension, for a save in another format.
+pub fn file_stem_for(build: &CharacterState, database: &PowerDatabase) -> String {
     let described = [
         naming::archetype_name(build, database),
         naming::powerset_name(&build.primary, database),
@@ -88,11 +93,10 @@ pub fn file_name_for(build: &CharacterState, database: &PowerDatabase) -> String
     .filter(|part| !part.is_empty())
     .collect::<Vec<_>>()
     .join(" - ");
-    let stem = [filename_safe(&build.name), filename_safe(&described)]
+    [filename_safe(&build.name), filename_safe(&described)]
         .into_iter()
         .find(|candidate| !candidate.is_empty())
-        .unwrap_or_else(|| UNNAMED.to_string());
-    format!("{stem}.{EXTENSION}")
+        .unwrap_or_else(|| UNNAMED.to_string())
 }
 
 /// `text` reduced to a stem this app is willing to write, changing as little as it can.
@@ -548,16 +552,6 @@ fn hydrate_converted(
 /// the app was never told it.
 pub type WrittenTo = Option<String>;
 
-/// Write `text` out as a file the user keeps, offering `suggested_name`.
-///
-/// Returns `Ok(None)` when the write succeeded somewhere the app cannot name (the browser's
-/// download, wherever it is configured to land), `Ok(Some(path))` when it can, and `Err` with
-/// what went wrong. A cancelled save dialog is `Ok(None)` too: the user declining is not a
-/// failure, and nothing about it needs reporting.
-pub async fn write_file(suggested_name: &str, text: &str) -> Result<WrittenTo, String> {
-    write_text_file(suggested_name, text, &BUILD_FILE).await
-}
-
 /// What a text file is, for the save dialog's filter and the download's MIME type.
 pub struct TextFileKind {
     /// The save dialog's filter, on the desktop and in a browser that offers a save picker.
@@ -568,14 +562,19 @@ pub struct TextFileKind {
     pub mime: &'static str,
 }
 
-const BUILD_FILE: TextFileKind = TextFileKind {
+pub const BUILD_FILE: TextFileKind = TextFileKind {
     label: "CoH Sidekick build",
     extension: EXTENSION,
     mime: "application/json",
 };
 
-/// [`write_file`] for any text file: same three outcomes, with the dialog filter and MIME type
-/// the caller's.
+/// Write `text` out as a file the user keeps, offering `suggested_name`, with the dialog filter
+/// and MIME type of `kind`.
+///
+/// Returns `Ok(None)` when the write succeeded somewhere the app cannot name (the browser's
+/// download, wherever it is configured to land), `Ok(Some(path))` when it can, and `Err` with
+/// what went wrong. A cancelled save dialog is `Ok(None)` too: the user declining is not a
+/// failure, and nothing about it needs reporting.
 #[cfg(target_arch = "wasm32")]
 pub async fn write_text_file(
     suggested_name: &str,
@@ -758,7 +757,7 @@ pub async fn save_text_file_remembering(
 
 /// Write `bytes` out as a PNG the user keeps, offering `suggested_name`.
 ///
-/// The image twin of [`write_file`], and per-target for the same reason: the browser downloads a
+/// The image twin of [`write_text_file`], and per-target for the same reason: the browser downloads a
 /// blob and the desktop webview cannot. Same three outcomes — `Ok(None)` for a save the app
 /// cannot name or a dialog the user cancelled, `Ok(Some(path))` where it can, `Err` otherwise.
 #[cfg(target_arch = "wasm32")]

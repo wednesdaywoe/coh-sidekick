@@ -376,6 +376,9 @@ pub fn Shell() -> Element {
     // surface and go when it closes.
     let popmenu_export_open = use_signal(|| false);
     use_context_provider(|| crate::popmenu_export::PopmenuExportOpen(popmenu_export_open));
+    // The save window's open flag; the format and any failure live in the window.
+    let save_file_open = use_signal(|| false);
+    use_context_provider(|| crate::save_file::SaveFileOpen(save_file_open));
     // The image-export modal's open flag, owned here for the same reason and owning as little:
     // the poster is derived from the same three things the post is.
     let export_image_open = use_signal(|| false);
@@ -1522,6 +1525,14 @@ pub fn Shell() -> Element {
         // The popmenu-export modal, hosted here for the same reason. It takes the database
         // because a build stores ids and the menu is made of the game's record names.
         crate::popmenu_export::PopmenuExportHost {
+            database: match &*db.read() {
+                Some(Ok(database)) => Some(Db(database.clone())),
+                _ => None,
+            },
+        }
+
+        // The save window, hosted here for the same reason.
+        crate::save_file::SaveFileHost {
             database: match &*db.read() {
                 Some(Ok(database)) => Some(Db(database.clone())),
                 _ => None,

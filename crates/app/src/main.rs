@@ -69,6 +69,7 @@ mod print_sheet;
 mod proc_potential_store;
 mod quickbar;
 mod reorder_menu;
+mod save_file;
 mod shell;
 mod slot_colour;
 mod slot_level_store;

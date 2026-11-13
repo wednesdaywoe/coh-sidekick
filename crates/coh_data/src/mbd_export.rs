@@ -496,7 +496,7 @@ pub fn write_mbd(
         notes: Vec::new(),
     };
 
-    let mids_database = writer.mids_database();
+    let mids_database = mids_database_for(state.dataset);
     let class = writer.class();
     let alignment = writer.alignment();
     let power_sets = writer.power_sets();
@@ -556,22 +556,11 @@ impl<'a> Writer<'a> {
         });
     }
 
-    /// Mids' database for this fork, with a note where Mids has none of its own (MBDEXPORT-2).
-    fn mids_database(&mut self) -> &'static str {
-        let dataset = self.state.dataset;
-        let database = mids_database_for(dataset);
-        if dataset_for_database(database) != Some(dataset) {
-            self.note(
-                dataset.display_name(),
-                format!(
-                    "Mids has no {} database, so this file is written for its {database} one. \
-                     Powers and enhancements only {} has may not appear in Mids.",
-                    dataset.display_name(),
-                    dataset.display_name()
-                ),
-            );
-        }
-        database
+    /// The power's name as the player sees it, for a note.
+    fn power_label(&self, power: &SelectedPower) -> String {
+        self.database
+            .resolve_power(&power.powerset, &power.internal_name)
+            .map_or_else(|| power.internal_name.clone(), |found| found.name.clone())
     }
 
     /// The archetype's own class token, read off the dataset (MBDEXPORT-6's Guardian).
@@ -713,7 +702,7 @@ impl<'a> Writer<'a> {
         }
         for power in picked {
             self.note(
-                power.internal_name.as_str(),
+                self.power_label(power),
                 format!(
                     "taken at level {}, past the last pick this server's schedule grants, so \
                      Mids gets it in the last row",
@@ -731,7 +720,7 @@ impl<'a> Writer<'a> {
             Some(path) => self.mids_full_name(path, &power.internal_name),
             None => {
                 self.note(
-                    power.internal_name.as_str(),
+                    self.power_label(power),
                     "its set has no game path, so Mids gets the bare name",
                 );
                 power.internal_name.clone()
@@ -775,12 +764,14 @@ impl<'a> Writer<'a> {
             .len()
             .saturating_sub(usize::from(power.inherent_slot_count));
         let mut entries = Vec::with_capacity(power.slots.len());
+        let mut left_out = 0;
         for (index, slot) in power.slots.iter().enumerate() {
             let free = index > 0 && index >= auto_from;
             // A free slot (Rebirth's on Health and Stamina) goes out only when it holds
             // something. Mids grants these per build, and one it wouldn't grant makes it refuse
             // the whole file: the corpus Guardian loads with one, not with two (Mids 3.8.6).
             if free && slot.is_none() {
+                left_out += 1;
                 continue;
             }
             // A placed level goes out as placed, even where this server's schedule would move
@@ -801,6 +792,20 @@ impl<'a> Writer<'a> {
                 enhancement,
                 flipped_enhancement: Value::Null,
             });
+        }
+        if left_out > 0 {
+            let slots = if left_out == 1 {
+                "slot is"
+            } else {
+                "slots are"
+            };
+            self.note(
+                self.power_label(power),
+                format!(
+                    "{left_out} empty free {slots} left out, because Mids won't open a file with \
+                     more free slots than it gives; add them again in Mids"
+                ),
+            );
         }
         entries
     }
@@ -832,7 +837,7 @@ impl<'a> Writer<'a> {
         index: usize,
         enhancement: &crate::character::Enhancement,
     ) -> Option<MbdEnhancement> {
-        let context = format!("{}, slot {}", power.internal_name, index + 1);
+        let context = format!("{}, slot {}", self.power_label(power), index + 1);
         let skif = match slim_enhancement(enhancement) {
             Ok(skif) => skif,
             Err(error) => {
@@ -1135,6 +1140,19 @@ fn mids_database_for(dataset: DatasetId) -> &'static str {
         DatasetId::Rebirth => "Rebirth",
         DatasetId::Thunderspy => "Generic",
     }
+}
+
+/// What to tell the player when Mids has no database for this server (MBDEXPORT-2). Kept out
+/// of the notes so a save screen can lead with it.
+pub fn database_warning(dataset: DatasetId) -> Option<String> {
+    let database = mids_database_for(dataset);
+    (dataset_for_database(database) != Some(dataset)).then(|| {
+        let server = dataset.display_name();
+        format!(
+            "Mids has no {server} database, so this file opens in its {database} one. Powers and \
+             enhancements only {server} has may be missing or wrong in Mids."
+        )
+    })
 }
 
 /// An unfilled pick, as Mids writes one.
