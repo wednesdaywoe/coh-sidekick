@@ -645,6 +645,10 @@ function emitDataset(dataset) {
     powersetAlias: midsNames.MIDS_POWERSET_ALIAS,
     nameReverse: midsNames.MIDS_NAME_REVERSE,
     powersetPath: midsNames.MIDS_POWERSET_PATH,
+    // Writer-only: names Mids spells with different separators (MBDEXPORT-8), and the inherent
+    // Mids shows for each class (MBDEXPORT-24).
+    nameReverseLoose: midsNames.MIDS_NAME_REVERSE_LOOSE,
+    archetypeInherent: midsNames.MIDS_ARCHETYPE_INHERENT,
   };
 
   for (const [name, value] of Object.entries(sections)) {

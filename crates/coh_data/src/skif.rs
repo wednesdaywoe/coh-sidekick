@@ -592,7 +592,7 @@ fn booster(boost: i8) -> Result<u8, SkifError> {
     u8::try_from(boost).map_err(|_| SkifError::NegativeBooster(boost))
 }
 
-fn slim_enhancement(enhancement: &Enhancement) -> Result<SkifEnhancement, SkifError> {
+pub(crate) fn slim_enhancement(enhancement: &Enhancement) -> Result<SkifEnhancement, SkifError> {
     Ok(match &enhancement.kind {
         EnhancementKind::IoSet {
             set_id, piece_num, ..

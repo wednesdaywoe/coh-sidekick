@@ -71,6 +71,8 @@ pub fn archetype_inherent(
             None if power.accepts_enhancements() => coh_data::MAX_USER_SLOTS_PER_POWER as u8,
             None => 0,
         },
+        full_name: None,
+        granted_at_level: None,
     })
 }
 

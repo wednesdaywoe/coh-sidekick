@@ -50,6 +50,10 @@ pub struct InherentGrant {
     /// all (the archetype inherents and the prestige travel powers) — they render, they
     /// contribute, they cannot be slotted.
     pub max_slots: u8,
+    /// The game's full path, `Inherent.Fitness.Swift`, where the export states one.
+    pub full_name: Option<String>,
+    /// The level the game hands it over at, where the export states one.
+    pub granted_at_level: Option<u8>,
 }
 
 /// Every universal inherent grant, in grant order (archetype inherent first once the caller
@@ -77,6 +81,10 @@ struct WireInherent {
     category: InherentCategory,
     #[serde(rename = "maxSlots", default)]
     max_slots: u8,
+    #[serde(rename = "fullName", default)]
+    full_name: Option<String>,
+    #[serde(rename = "grantedAtLevel", default)]
+    granted_at_level: Option<u8>,
 }
 
 impl InherentGrants {
@@ -105,6 +113,8 @@ impl InherentGrants {
             name: entry.name,
             category: entry.category,
             max_slots: entry.max_slots,
+            full_name: entry.full_name,
+            granted_at_level: entry.granted_at_level,
         })
         .collect();
 

@@ -43,6 +43,12 @@ struct MidsNameSection {
     /// Our powerset key -> the path Mids writes, for the writer (MBDEXPORT-6).
     #[serde(default)]
     powerset_path: HashMap<String, String>,
+    /// Reverse rows that differ from ours only in separators, writer-only (MBDEXPORT-8).
+    #[serde(default)]
+    name_reverse_loose: HashMap<String, HashMap<String, String>>,
+    /// Mids' class token -> the inherent power Mids shows for it (MBDEXPORT-24).
+    #[serde(default)]
+    archetype_inherent: HashMap<String, String>,
 }
 
 /// The dataset's Mids power-name tables, both directions.
@@ -52,6 +58,8 @@ pub struct MidsNames {
     powerset_alias: HashMap<String, String>,
     name_reverse: HashMap<String, HashMap<String, String>>,
     powerset_path: HashMap<String, String>,
+    name_reverse_loose: HashMap<String, HashMap<String, String>>,
+    archetype_inherent: HashMap<String, String>,
     /// [`Self::powerset_path`] read backwards — Mids' literal path, folded, to our key
     /// (DATA-GAP MBDIMPORT-12). Built here rather than emitted because it is the same
     /// measurement: the generator pairs every set it can and states the pairing one way, and
@@ -73,6 +81,8 @@ impl MidsNames {
             powerset_alias: raw.powerset_alias,
             name_reverse: raw.name_reverse,
             powerset_path: raw.powerset_path,
+            name_reverse_loose: raw.name_reverse_loose,
+            archetype_inherent: raw.archetype_inherent,
         }))
     }
 
@@ -130,12 +140,20 @@ impl MidsNames {
         !rows.is_empty() && rows.values().any(|ours| ours.to_lowercase() == name)
     }
 
-    /// Mids' internal name for one of ours, for the writer.
+    /// Mids' internal name for one of ours, for the writer. The loose rows answer only where the
+    /// tight ones don't, so a real rotation always wins over a separator respelling.
     pub fn mids_power_name(&self, powerset_key: &str, our_name: &str) -> Option<&str> {
-        self.name_reverse
-            .get(&powerset_key.to_lowercase())?
-            .get(&our_name.to_lowercase())
+        let key = powerset_key.to_lowercase();
+        let name = our_name.to_lowercase();
+        [&self.name_reverse, &self.name_reverse_loose]
+            .into_iter()
+            .find_map(|table| table.get(&key)?.get(&name))
             .map(String::as_str)
+    }
+
+    /// The inherent power Mids shows for a class, by Mids' own name for it.
+    pub fn archetype_inherent(&self, class: &str) -> Option<&str> {
+        self.archetype_inherent.get(class).map(String::as_str)
     }
 
     /// The path Mids writes for one of our powersets, for the writer.
@@ -212,7 +230,7 @@ fn invert_paths(paths: &HashMap<String, String>) -> HashMap<String, String> {
 /// writes that space into the file too — `Energy_Composition .Kinetic_Shield` — so keying the
 /// inverse on the literal would leave exactly those sets unreachable through the door built to
 /// reach them.
-fn fold_path(path: &str) -> String {
+pub(crate) fn fold_path(path: &str) -> String {
     path.split('.')
         .map(str::trim)
         .collect::<Vec<_>>()

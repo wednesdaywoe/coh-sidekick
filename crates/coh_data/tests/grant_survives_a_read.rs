@@ -83,6 +83,8 @@ fn archetype_inherent(state: &CharacterState, db: &PowerDatabase) -> Option<Inhe
         name: power.name.clone(),
         category: InherentCategory::Archetype,
         max_slots: power.max_slots().unwrap_or(0),
+        full_name: None,
+        granted_at_level: None,
     })
 }
 
