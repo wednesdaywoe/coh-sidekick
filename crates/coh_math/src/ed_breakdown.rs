@@ -32,6 +32,9 @@ pub struct AspectBreakdown {
     /// What ED cuts from `slotted + alpha`: the diminishing returns, as a fraction. Zero at
     /// stage 0.
     pub lost: f64,
+    /// What one more point counts for at this stage: 1.0 at stage 0, then the dataset's tier
+    /// effectiveness (0.9, 0.7, 0.15 on every fork today).
+    pub next_point_counts: f64,
     /// The aspect's ED thresholds, so a surface can draw where the total sits.
     pub thresholds: [f64; 3],
 }
@@ -83,6 +86,10 @@ pub fn power_enhancement_breakdown(
             let total = slotted + alpha_share;
             let stage = thresholds.iter().filter(|&&at| total > at).count() as u8;
             let lost = (total - apply_ed(total, schedule, curves)).max(0.0);
+            let next_point_counts = match stage {
+                0 => 1.0,
+                deeper => curves.tier_effectiveness[usize::from(deeper) - 1],
+            };
             Some(AspectBreakdown {
                 aspect,
                 slotted,
@@ -90,6 +97,7 @@ pub fn power_enhancement_breakdown(
                 counted: counted.get(aspect),
                 stage,
                 lost,
+                next_point_counts,
                 thresholds,
             })
         })

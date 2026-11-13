@@ -169,6 +169,27 @@ fn damage_ios_walk_through_the_stages() {
     }
 }
 
+/// What the card says one more point is worth is what the next IO really adds: in full below the
+/// first step, 15% of its value past the last one.
+#[test]
+fn the_next_point_is_worth_what_the_card_says() {
+    let db = load();
+    let at = |count: usize| {
+        let rows = projected(&build(vec![io("Damage"); count], None), &db).enhancement_breakdown;
+        damage(&rows).clone()
+    };
+    assert_eq!(at(1).next_point_counts, 1.0);
+    let (six, seven) = (at(6), at(7));
+    assert_eq!(six.stage, 3, "{six:?}");
+    assert!((six.next_point_counts - 0.15).abs() < 1e-6, "{six:?}");
+    let added = seven.counted - six.counted;
+    let slotted = seven.slotted - six.slotted;
+    assert!(
+        (added - six.next_point_counts * slotted).abs() < 1e-9,
+        "the seventh adds {added} of {slotted}: {six:?}"
+    );
+}
+
 /// Nothing slotted, nothing to break down.
 #[test]
 fn an_unslotted_power_has_no_breakdown() {

@@ -2757,7 +2757,6 @@ button.power-pick--empty {
 }
 .ed-row__fill { position: absolute; inset: 0 auto 0 0; background: var(--text-faint); }
 .ed-row.is-steep .ed-row__fill { background: var(--action-hover); }
-.ed-row.is-capped .ed-row__fill { background: var(--action-danger); }
 .ed-row__step { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--surface-panel); }
 .ed-row__foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 8px; font-size: 10.5px; color: var(--text-faint); }
 .ed-row__alpha { font-size: 10.5px; color: var(--text-faint); }
@@ -4510,7 +4509,6 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .picker-preview__name { color: var(--text); font-weight: 600; }
 .picker-preview__after { color: var(--action-active-core); font-weight: 600; }
 .picker-preview__after.is-steep { color: var(--action-hover); }
-.picker-preview__after.is-capped { color: var(--action-danger); }
 
 /* The bar that spends the marks. Above the footer rather than inside it, because the footer's
    controls are about the picker (close, empty this slot) and this one is about the build. Absent

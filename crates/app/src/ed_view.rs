@@ -47,22 +47,33 @@ fn mark_class(stage: u8) -> &'static str {
     }
 }
 
-/// The card's bar keeps the heat: amber on the steep part, red past the last step.
+/// The card's bar: amber from the second step on. Never red: players read red as a mistake,
+/// and the game itself shows nothing wrong past the last step.
 fn bar_class(stage: u8) -> &'static str {
     match stage {
         0 | 1 => "is-room",
-        2 => "is-steep",
-        _ => "is-capped",
+        _ => "is-steep",
     }
 }
 
-/// What a stage means to a player. Kept plain: sets routinely push an aspect past a threshold,
-/// so it is a fact about the power, not a fault.
-fn stage_words(stage: u8) -> &'static str {
+/// The mark's short label, where only the deepest stage is known.
+fn stage_label(stage: u8) -> &'static str {
     if stage == 0 {
         "Full value"
     } else {
-        "Diminishing returns in effect"
+        "Diminishing returns"
+    }
+}
+
+/// What a stage means to a player: what one more point of this aspect is worth now.
+fn stage_words(row: &AspectBreakdown) -> String {
+    if row.stage == 0 {
+        "Full value".to_string()
+    } else {
+        format!(
+            "Diminishing returns: adding more only gives {} of its value",
+            percent(row.next_point_counts)
+        )
     }
 }
 
@@ -106,7 +117,7 @@ pub fn EdMark(power: PowerRef, stage: u8) -> Element {
     rsx! {
         span {
             class: "ed-mark {mark_class(stage)}",
-            "aria-label": "Enhancement Diversification: {stage_words(stage)}",
+            "aria-label": "Enhancement Diversification: {stage_label(stage)}",
             onmouseenter: {
                 let power = power.clone();
                 move |evt: Event<MouseData>| {
@@ -181,10 +192,11 @@ fn EdRow(row: AspectBreakdown) -> Element {
     let at = |value: f64| (value / scale * 100.0).clamp(0.0, 100.0);
     let alpha_note =
         (row.alpha > 0.0).then(|| format!(" (Alpha adds {} before ED)", percent(row.alpha)));
+    let words = stage_words(&row);
     rsx! {
         div {
             class: "ed-row {bar_class(row.stage)}",
-            title: "{aspect_label(row.aspect)}: {stage_words(row.stage)}",
+            title: "{aspect_label(row.aspect)}: {words}",
             div { class: "ed-row__head",
                 span { class: "ed-row__name", {aspect_label(row.aspect)} }
                 span { class: "ed-row__values",
@@ -204,11 +216,9 @@ fn EdRow(row: AspectBreakdown) -> Element {
                 }
             }
             div { class: "ed-row__foot",
-                span {
-                    {stage_words(row.stage)}
-                    if row.lost > 0.0 {
-                        ", {percent(row.lost)} lost"
-                    }
+                span { "{words}" }
+                if row.lost > 0.0 {
+                    span { "{percent(row.lost)} lost to ED" }
                 }
             }
             if let Some(note) = alpha_note {
@@ -261,14 +271,16 @@ pub fn EdPreviewStrip(now: Vec<AspectBreakdown>, after: Vec<AspectBreakdown>) ->
                     let will = find(&after, aspect);
                     let was_value = was.as_ref().map_or(0.0, |row| row.counted);
                     let will_value = will.as_ref().map_or(0.0, |row| row.counted);
-                    let stage = will.as_ref().or(was.as_ref()).map_or(0, |row| row.stage);
+                    let shown = will.as_ref().or(was.as_ref());
+                    let stage = shown.map_or(0, |row| row.stage);
+                    let words = shown.map_or_else(|| stage_label(0).to_string(), stage_words);
                     let label = aspect_label(aspect);
                     let short = crate::naming::stat_abbreviation(&label).to_string();
                     rsx! {
                         span {
                             key: "{aspect}",
                             class: "picker-preview__aspect",
-                            title: "{label}: {stage_words(stage)}",
+                            title: "{label}: {words}",
                             span { class: "picker-preview__name", "{short}" }
                             " {percent(was_value)}"
                             if (will_value - was_value).abs() > 0.000_5 {
