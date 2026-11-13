@@ -8009,6 +8009,18 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   font: 700 11px var(--font-chrome); letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--text-dim);
 }
+.phone-group { margin-bottom: 8px; }
+.phone-group__head {
+  display: flex; align-items: baseline; gap: 8px; width: 100%;
+  min-height: 44px; padding: 10px 12px; margin-bottom: 8px;
+  background: var(--surface-panel); border: 1px solid var(--seam); border-radius: var(--r);
+  color: var(--text); text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.phone-group__head:active { background: var(--surface-warmed); }
+.phone-group__title { font-weight: 600; }
+.phone-group__count { color: var(--text-dim); font-size: 12px; }
+.phone-group__chevron { margin-left: auto; color: var(--text-dim); }
 .phone-card {
   background: var(--surface-panel);
   border: 1px solid var(--seam);

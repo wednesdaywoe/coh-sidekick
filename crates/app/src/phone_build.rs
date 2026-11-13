@@ -16,6 +16,7 @@ use crate::panels::powers::{
 use crate::panels::powers_by_level::{deal_picks, PickCell};
 use crate::shell::Db;
 use crate::view::power_view::resolve_power_def;
+use coh_data::InherentCategory;
 use dioxus::prelude::*;
 
 /// The phone's two main views. Build is the list of powers; Stats is every panel the phone
@@ -290,6 +291,7 @@ pub fn BuildList(database: Db) -> Element {
     let mut sheet = use_context::<OpenSheet>().0;
     let mut open = use_context::<OpenCard>().0;
     let picker = use_context::<PickerOpen>().0;
+    let mut folds = use_context::<crate::inherent_fold_store::InherentFolds>().0;
     let build = session.build.read();
     if build.archetype.id.is_none() {
         return rsx! {
@@ -328,23 +330,39 @@ pub fn BuildList(database: Db) -> Element {
             (cell.level, card)
         })
         .collect();
-    let inherents: Vec<CardData> = slotted_inherents(&database, &build)
+    // The inherents in the desktop's five groups and order; a group with no card is left out.
+    let slotted = slotted_inherents(&database, &build);
+    let groups: Vec<(InherentCategory, Vec<CardData>)> = crate::grid::model::INHERENT_GROUPS
         .into_iter()
-        .map(|power| card_data(&database, power, budget, used))
+        .map(|group| {
+            let cards = slotted
+                .iter()
+                .filter(|power| power.inherent_category == Some(group))
+                .map(|power| card_data(&database, power, budget, used))
+                .collect::<Vec<_>>();
+            (group, cards)
+        })
+        .filter(|(_, cards)| !cards.is_empty())
         .collect();
     drop(build);
 
-    // With every level chosen, the foot leads to the first power with an empty slot.
+    // With every level chosen, the foot leads to the first power with an empty slot, and
+    // opens its inherent group first if that is folded.
     let next_slot = rows
         .iter()
-        .filter_map(|(_, card)| card.as_ref())
-        .chain(inherents.iter())
-        .find_map(|card| {
+        .filter_map(|(_, card)| card.as_ref().map(|card| (None, card)))
+        .chain(
+            groups
+                .iter()
+                .flat_map(|(group, cards)| cards.iter().map(|card| (Some(*group), card))),
+        )
+        .find_map(|(group, card)| {
             card.dots
                 .iter()
                 .position(|dot| *dot == Dot::Empty)
                 .map(|at| {
                     (
+                        group,
                         card.key.clone(),
                         card.set_id.clone(),
                         card.ident.clone(),
@@ -391,13 +409,16 @@ pub fn BuildList(database: Db) -> Element {
                     }
                 }
             }
-            if !inherents.is_empty() {
+            if !groups.is_empty() {
                 h3 { class: "phone-picks__heading", "Inherent powers" }
-                ol { class: "phone-picks",
-                    for card in inherents {
-                        li { key: "{card.key}",
-                            PowerCard { database: database.clone(), card, level: None, left, budget: budget.unwrap_or(0) }
-                        }
+                for (group, cards) in groups {
+                    InherentGroup {
+                        key: "{crate::grid::model::inherent_group_slug(group)}",
+                        database: database.clone(),
+                        group,
+                        cards,
+                        left,
+                        budget: budget.unwrap_or(0),
                     }
                 }
             }
@@ -410,16 +431,67 @@ pub fn BuildList(database: Db) -> Element {
                         "Choose your level {level} power"
                     }
                 }
-            } else if let Some((key, set_id, ident, name, at)) = next_slot {
+            } else if let Some((group, key, set_id, ident, name, at)) = next_slot {
                 div { class: "phone-job__foot",
                     button {
                         class: "phone-job__cta",
                         r#type: "button",
                         onclick: move |_| {
+                            if let Some(group) = group {
+                                folds.write().insert(group, false);
+                            }
                             open.set(Some(key.clone()));
                             open_picker(picker, set_id.clone(), ident.clone(), at);
                         },
                         "Fill the next empty slot: {name}"
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// One inherent group under a heading that folds it open or shut. The fold is the desktop
+/// panels' own memory ([`crate::inherent_fold_store`]), so both layouts agree.
+#[component]
+fn InherentGroup(
+    database: Db,
+    group: InherentCategory,
+    cards: Vec<CardData>,
+    left: Option<usize>,
+    budget: usize,
+) -> Element {
+    let folds = use_context::<crate::inherent_fold_store::InherentFolds>().0;
+    let fold = crate::inherent_fold_store::InherentFold::new(folds, group);
+    let folded = fold.folded();
+    let title = crate::grid::model::inherent_group_title(group);
+    let slots: usize = cards.iter().map(|card| card.dots.len()).sum();
+    let filled: usize = cards
+        .iter()
+        .flat_map(|card| card.dots.iter())
+        .filter(|dot| **dot != Dot::Empty)
+        .count();
+    let powers = match cards.len() {
+        1 => "1 power".to_string(),
+        n => format!("{n} powers"),
+    };
+    rsx! {
+        section { class: "phone-group",
+            button {
+                class: "phone-group__head",
+                r#type: "button",
+                aria_expanded: "{!folded}",
+                onclick: move |_| fold.toggle(),
+                span { class: "phone-group__title", "{title}" }
+                span { class: "phone-group__count", "{powers} · {filled}/{slots} filled" }
+                span { class: "phone-group__chevron", if folded { "▸" } else { "▾" } }
+            }
+            if !folded {
+                ol { class: "phone-picks",
+                    for card in cards {
+                        li { key: "{card.key}",
+                            PowerCard { database: database.clone(), card, level: None, left, budget }
+                        }
                     }
                 }
             }
