@@ -64,6 +64,7 @@ pub mod account;
 pub mod auction;
 pub mod avatar;
 pub mod browser;
+pub mod delete_account;
 pub mod favorites;
 pub mod layouts;
 pub mod oauth;

@@ -7157,6 +7157,9 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
    up, in the direction that means go rather than careful. */
 .seg.is-primary { color: var(--action-active); border-color: color-mix(in srgb, var(--action-active) 55%, transparent); }
 .seg.is-primary:hover { color: var(--action-active); border-color: var(--action-active); }
+.seg.is-danger { color: var(--action-danger); border-color: color-mix(in srgb, var(--action-danger) 55%, transparent); }
+.seg.is-danger:hover { color: var(--action-danger); border-color: var(--action-danger); }
+.sb-delete__list { margin: 0 0 4px; padding-left: 20px; }
 
 /* ---- the touch layer ----
    Everything above is drawn for a mouse: marks sized to the ink they measure, controls seated

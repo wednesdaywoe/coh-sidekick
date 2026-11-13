@@ -321,6 +321,7 @@ fn AccountEntries() -> Element {
             }
             ProfileEntry {}
             ClaimBuildsEntry {}
+            DeleteAccountEntry {}
         };
     }
 
@@ -409,6 +410,25 @@ fn ProfileEntry() -> Element {
             },
             span { class: "main-menu__label", "Public profile…" }
             span { class: "main-menu__hint", "Your handle, display name and bio" }
+        }
+    }
+}
+
+/// Opens the delete-account confirmation. Last of the signed-in rows, away from Sign out.
+#[component]
+fn DeleteAccountEntry() -> Element {
+    let mut open = use_context::<crate::cloud::delete_account::DeleteAccountOpen>().0;
+    let mut menu = use_context::<crate::popover::PopoverOpen>().0;
+    rsx! {
+        button {
+            class: "main-menu__item",
+            r#type: "button",
+            onclick: move |_| {
+                open.set(true);
+                menu.set(false);
+            },
+            span { class: "main-menu__label", "Delete account…" }
+            span { class: "main-menu__hint", "Erase your account and everything saved to it" }
         }
     }
 }

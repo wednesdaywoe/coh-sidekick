@@ -420,6 +420,28 @@ impl Account {
         }
     }
 
+    /// Erase the signed-in account on the server (`delete-account`), then sign this device out
+    /// the way [`Account::sign_out`] does, minus the logout call: the user it would log out is gone.
+    /// On failure nothing local changes, so the person is still signed in and can retry.
+    pub async fn delete_account(&self) -> Result<(), CloudError> {
+        let mut guard = self.manager.lock().await;
+        let manager = guard.as_mut().map_err(|e| e.clone())?;
+        let cloud = manager.client().await?.clone();
+        let _: serde_json::Value = cloud
+            .invoke(
+                "delete-account",
+                &serde_json::json!({ "confirm": "DELETE" }),
+            )
+            .await?;
+        manager.forget();
+        self.publish(IdentityChange::SignedOut, manager.session());
+        drop(guard);
+        super::owner_store::clear_quick_share();
+        super::favorites::clear_cache();
+        crate::layout_sync::forget_user();
+        Ok(())
+    }
+
     async fn complete_callback(
         &self,
         guard: &mut Result<SessionManager, CloudError>,

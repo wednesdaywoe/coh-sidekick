@@ -424,6 +424,9 @@ pub fn Shell() -> Element {
     // republished through `Account`, not held here.
     let profile_open = use_signal(|| false);
     use_context_provider(|| crate::cloud::profile::ProfileOpen(profile_open));
+    // The delete-account confirmation's open flag, raised by the account menu.
+    let delete_account_open = use_signal(|| false);
+    use_context_provider(|| crate::cloud::delete_account::DeleteAccountOpen(delete_account_open));
 
     // The self-description modals (About / Changelog / Donate). The main menu's tail rows
     // raise them, and each owns nothing but its open flag — they describe the app, not the
@@ -1596,6 +1599,7 @@ pub fn Shell() -> Element {
         // The public-profile editor (RB4f), hosted here for the same containment reason. It
         // takes no database: a profile is an account's, not a build's.
         crate::cloud::profile::ProfileHost {}
+        crate::cloud::delete_account::DeleteAccountHost {}
 
         // The self-description modals, hosted here for the same containment reason. They need
         // no database: they describe the app, not the build on screen.

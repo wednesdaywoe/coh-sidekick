@@ -555,7 +555,9 @@ impl SessionManager {
         self.session = Some(session);
     }
 
-    fn forget(&mut self) {
+    /// Drop the session on this device only. `pub(super)` for account deletion, where the
+    /// server has already erased the user and a logout call would only fail.
+    pub(super) fn forget(&mut self) {
         self.session = None;
         self.cloud.set_access_token(None);
         clear_stored(&self.storage_key);
