@@ -50,6 +50,10 @@ pub struct MbdEnhancement {
     /// Mids' UID for the piece. Resolved by lookup, never by reading its parts.
     #[serde(default)]
     pub uid: String,
+    /// Mids' long name for the piece, `Artillery: Accuracy/Damage`. A file written before Mids
+    /// had UIDs (3.6 and earlier) names the piece by this instead; empty on a newer one.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub enhancement: String,
     /// `None` / `TrainingO` / `DualO` / `SingleO`.
     ///
     /// **Never `TO` / `DO` / `SO`** — those are OUR tokens, and testing for them is MBDIMPORT-6:
@@ -123,8 +127,19 @@ impl MbdPowerEntry {
     pub fn enhancement_count(&self) -> usize {
         self.slot_entries
             .iter()
-            .filter(|slot| slot.enhancement.as_ref().is_some_and(|e| !e.uid.is_empty()))
+            .filter(|slot| {
+                slot.enhancement
+                    .as_ref()
+                    .is_some_and(MbdEnhancement::names_a_piece)
+            })
             .count()
+    }
+}
+
+impl MbdEnhancement {
+    /// Whether the slot names a piece at all, by UID or by a pre-UID file's long name.
+    pub fn names_a_piece(&self) -> bool {
+        !self.uid.is_empty() || !self.enhancement.is_empty()
     }
 }
 

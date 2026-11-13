@@ -3,8 +3,8 @@
   "dataset": "thunderspy",
   "inputs": {
     "bundle": "contract/thunderspy/bundle.json.gz",
-    "bundleFnv1a64": "bb225b565f29ef5f",
-    "bundleBytes": 1623423,
+    "bundleFnv1a64": "fb96058932a133ec",
+    "bundleBytes": 1630175,
     "builds": "fixtures/totals/thunderspy/synthetic.jsonl",
     "buildsFnv1a64": "16e01d3a8859956a",
     "buildsBytes": 124215

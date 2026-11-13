@@ -1009,6 +1009,7 @@ fn enhancement(
             let (crafted_level, relative) = reference.as_invention();
             MbdEnhancement {
                 uid,
+                enhancement: String::new(),
                 grade: GRADE[0].to_string(),
                 io_level: i32::from(crafted_level),
                 relative_level: relative_level_token(relative)
@@ -1021,6 +1022,7 @@ fn enhancement(
             let (relative, grade) = reference.as_graded();
             MbdEnhancement {
                 uid,
+                enhancement: String::new(),
                 grade: GRADE
                     .get(usize::from(grade))
                     .copied()
