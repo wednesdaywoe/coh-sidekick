@@ -130,6 +130,12 @@ impl AuthProvider {
             Self::SimpleLogin => "Email-based, privacy-focused",
         }
     }
+
+    /// The provider a stored id names. Searches [`PROVIDERS`] rather than matching strings
+    /// by hand, so a third provider is a compile error here too.
+    pub fn from_id(id: &str) -> Option<Self> {
+        PROVIDERS.into_iter().find(|p| p.id() == id)
+    }
 }
 
 /// Why a sign-in did not happen.
@@ -484,4 +490,178 @@ pub async fn complete(
     };
     let verifier = verifier.ok_or(OAuthError::NoVerifier)?;
     exchange_code(cloud, code, verifier, now).await
+}
+
+// ============================================================
+// The one refusal that is a race, and the one restart it buys.
+// ============================================================
+
+/// GoTrue's code for the provider-side state row a duplicate callback delivery already spent.
+///
+/// GoTrue consumes that row (`FindAndDeleteOAuthClientStateByID`) before it finishes the
+/// provider exchange, so a second delivery of the same callback — the gateway in front of the
+/// hosted project retries origin requests — finds the row gone and refuses with this code.
+/// Expiry answers a different code, and cleanup only deletes day-old rows, so this one names
+/// the race and nothing else. The remedy is the one a person would perform by hand: start the
+/// sign-in again, now that the provider session exists.
+pub const STATE_NOT_FOUND: &str = "oauth_client_state_not_found";
+
+/// The sign-in this browser began and has not finished, parked beside the verifier.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct PendingSignIn {
+    pub provider: AuthProvider,
+    pub retried: bool,
+}
+
+pub fn encode_pending_sign_in(provider: AuthProvider, retried: bool) -> String {
+    serde_json::json!({ "provider": provider.id(), "retried": retried }).to_string()
+}
+
+/// Strict on purpose: a record that does not parse exactly is a record no restart answers
+/// for, which leaves the callback on the ordinary refusal path.
+pub fn parse_pending_sign_in(text: &str) -> Option<PendingSignIn> {
+    let value: Value = serde_json::from_str(text).ok()?;
+    let provider = AuthProvider::from_id(value.get("provider")?.as_str()?)?;
+    let retried = value.get("retried")?.as_bool()?;
+    Some(PendingSignIn { provider, retried })
+}
+
+/// Which provider to silently restart, if any. `Some` only for the race code on a refusal
+/// this browser started and has not already restarted once.
+///
+/// The gate and the code precedence are [`complete`]'s, not a widening of them: a URL carrying
+/// `code` and a bare `error_code` is an exchange, not a refusal, and must not restart. A
+/// stranger's link finds no parked record and buys nothing.
+pub fn retry_provider(
+    params: &BTreeMap<String, String>,
+    pending: Option<PendingSignIn>,
+) -> Option<AuthProvider> {
+    let pending = pending?;
+    if pending.retried {
+        return None;
+    }
+    params.get("error_description").or(params.get("error"))?;
+    let code = params.get("error_code").or(params.get("error"))?;
+    (code.as_str() == STATE_NOT_FOUND).then_some(pending.provider)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn refusal(code: &str) -> BTreeMap<String, String> {
+        let mut params = BTreeMap::new();
+        params.insert("error".to_string(), "server_error".to_string());
+        params.insert("error_code".to_string(), code.to_string());
+        params.insert(
+            "error_description".to_string(),
+            "OAuth state not found".to_string(),
+        );
+        params
+    }
+
+    fn pending(retried: bool) -> PendingSignIn {
+        PendingSignIn {
+            provider: AuthProvider::SimpleLogin,
+            retried,
+        }
+    }
+
+    #[test]
+    fn a_transient_refusal_with_a_fresh_pending_sign_in_restarts_it() {
+        assert_eq!(
+            retry_provider(&refusal(STATE_NOT_FOUND), Some(pending(false))),
+            Some(AuthProvider::SimpleLogin)
+        );
+    }
+
+    #[test]
+    fn a_transient_refusal_after_one_restart_is_left_to_the_modal() {
+        assert_eq!(retry_provider(&refusal(STATE_NOT_FOUND), Some(pending(true))), None);
+    }
+
+    #[test]
+    fn a_transient_refusal_with_no_pending_sign_in_is_left_to_the_modal() {
+        assert_eq!(retry_provider(&refusal(STATE_NOT_FOUND), None), None);
+    }
+
+    #[test]
+    fn a_refusal_with_any_other_code_never_restarts() {
+        for code in ["otp_expired", "access_denied", "flow_state_not_found"] {
+            assert_eq!(retry_provider(&refusal(code), Some(pending(false))), None);
+        }
+    }
+
+    #[test]
+    fn the_error_code_is_read_before_error_when_both_are_present() {
+        let mut params = refusal(STATE_NOT_FOUND);
+        params.insert("error".to_string(), "server_error".to_string());
+        assert_eq!(retry_provider(&params, Some(pending(false))), Some(AuthProvider::SimpleLogin));
+
+        let mut params = refusal("otp_expired");
+        params.insert("error".to_string(), STATE_NOT_FOUND.to_string());
+        assert_eq!(retry_provider(&params, Some(pending(false))), None);
+    }
+
+    #[test]
+    fn error_alone_is_read_as_the_code_when_error_code_is_absent() {
+        let mut params = BTreeMap::new();
+        params.insert("error".to_string(), STATE_NOT_FOUND.to_string());
+        params.insert(
+            "error_description".to_string(),
+            "OAuth state not found".to_string(),
+        );
+        assert_eq!(retry_provider(&params, Some(pending(false))), Some(AuthProvider::SimpleLogin));
+    }
+
+    #[test]
+    fn a_code_bearing_url_is_not_a_refusal_however_its_error_code_reads() {
+        let mut params = BTreeMap::new();
+        params.insert("code".to_string(), "an-auth-code".to_string());
+        params.insert("error_code".to_string(), STATE_NOT_FOUND.to_string());
+        assert_eq!(retry_provider(&params, Some(pending(false))), None);
+    }
+
+    #[test]
+    fn a_parked_pending_sign_in_reads_back_as_itself() {
+        for provider in PROVIDERS {
+            for retried in [false, true] {
+                assert_eq!(
+                    parse_pending_sign_in(&encode_pending_sign_in(provider, retried)),
+                    Some(PendingSignIn { provider, retried })
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn a_pending_record_with_an_unknown_provider_is_not_restarted() {
+        assert_eq!(
+            parse_pending_sign_in(r#"{"provider":"custom:nope","retried":false}"#),
+            None
+        );
+    }
+
+    #[test]
+    fn a_pending_record_that_will_not_parse_is_not_restarted() {
+        for text in [
+            "not json",
+            r#"{"provider":"discord"}"#,
+            r#"{"provider":"discord","retried":"false"}"#,
+        ] {
+            assert_eq!(parse_pending_sign_in(text), None);
+        }
+    }
+
+    #[test]
+    fn every_provider_id_reads_back_as_itself() {
+        for provider in PROVIDERS {
+            assert_eq!(AuthProvider::from_id(provider.id()), Some(provider));
+        }
+    }
+
+    #[test]
+    fn an_unknown_provider_id_is_none() {
+        assert_eq!(AuthProvider::from_id("custom:nope"), None);
+    }
 }

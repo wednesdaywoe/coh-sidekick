@@ -50,7 +50,7 @@
 
 use super::oauth::{self, AuthProvider, OAuthError};
 use super::session::{Session, SessionManager};
-use super::{Cloud, CloudError};
+use super::{Cloud, CloudError, Config};
 use dioxus::prelude::*;
 use futures_util::lock::Mutex;
 use serde_json::Value;
@@ -223,6 +223,24 @@ impl Account {
             clear_fragment();
         }
 
+        // The one silent restart, BEFORE the lock: `begin_sign_in` takes it twice, and the
+        // pending read is a `document::eval` the lock must never wait on (the note above).
+        // A callback that is not a restart spends the record here, whichever way the exchange
+        // below goes — taken, not read, the verifier's own rule.
+        let mut restarting = false;
+        if let Some(params) = callback.as_ref() {
+            let pending = read_pending_sign_in().await;
+            if let Some(provider) = oauth::retry_provider(params, pending) {
+                restarting = true;
+                if let Err(e) = self.begin_sign_in(provider, true).await {
+                    clear_pending_sign_in();
+                    self.refuse(format!("Sign in with {}", provider.label()), e.to_string());
+                }
+            } else {
+                clear_pending_sign_in();
+            }
+        }
+
         let mut guard = self.manager.lock().await;
         if let Ok(manager) = guard.as_mut() {
             manager.restore_stored().await;
@@ -236,8 +254,10 @@ impl Account {
         }
 
         // After the restore, so a sign-in coming back overwrites a stale stored session and never
-        // the other way round.
-        if let Some(params) = callback {
+        // the other way round. A restart skips the exchange: its answer is the next page load.
+        // No early return above — `navigate` swallows its errors, so a boot whose navigation
+        // silently failed must still restore, publish and reconcile.
+        if let Some(params) = callback.filter(|_| !restarting) {
             if let Err(e) = self.complete_callback(&mut guard, &params).await {
                 self.refuse("Sign in", e.to_string());
             }
@@ -287,13 +307,16 @@ impl Account {
     /// RB5's sign-in is the same string handed to the OS browser. The caller is what decides —
     /// see [`crate::main_menu`], where the desktop rows are drawn disabled with their reason.
     pub async fn sign_in(&self, provider: AuthProvider) {
-        let outcome = self.begin_sign_in(provider).await;
+        let outcome = self.begin_sign_in(provider, false).await;
         if let Err(e) = outcome {
             self.refuse(format!("Sign in with {}", provider.label()), e.to_string());
         }
     }
 
     /// Draw a verifier, park it, and leave with its challenge (F01).
+    ///
+    /// The pending-sign-in record rides beside the verifier, `retried` saying whether this
+    /// leave is the one silent restart a lost-state callback buys ([`oauth::retry_provider`]).
     ///
     /// The web arm used to send `None` here and take whatever the fragment came back with, which
     /// meant any URL on this origin could hand this client a session. It is PKCE now, the same
@@ -307,7 +330,7 @@ impl Account {
     /// names a backend. `crypto.getRandomValues` is the CSPRNG this target does have, it is the
     /// one `auth-js` itself draws from (`helpers.js:239`), and reaching it through
     /// `document::eval` is how everything else in this app talks to the page.
-    async fn begin_sign_in(&self, provider: AuthProvider) -> Result<(), OAuthError> {
+    async fn begin_sign_in(&self, provider: AuthProvider, retried: bool) -> Result<(), OAuthError> {
         let cloud = self.prepared().await?;
         let location = read_location()
             .await
@@ -322,6 +345,7 @@ impl Account {
             let guard = self.manager.lock().await;
             let manager = guard.as_ref().map_err(|e| e.clone())?;
             manager.remember_code_verifier(&verifier)?;
+            write_pending_sign_in(provider, retried);
         }
         let url = oauth::authorize_url(&cloud, provider, &location.redirect_to, Some(&challenge));
         navigate(&url);
@@ -631,6 +655,31 @@ fn navigate(url: &str) {
     document::eval(&format!(
         "try {{ window.location.assign({url}); }} catch (_) {{}}"
     ));
+}
+
+/// The pending-sign-in record, under the project-scoped key ([`Config::pending_signin_key`]).
+/// An unconfigured build has no key and therefore no record, which leaves every callback on
+/// the ordinary path. Reads stay local and writes ride [`crate::storage`], the owner store's
+/// own helpers and rule.
+async fn read_pending_sign_in() -> Option<oauth::PendingSignIn> {
+    let key = Config::from_build_env()
+        .and_then(|config| config.pending_signin_key())
+        .ok()?;
+    oauth::parse_pending_sign_in(&super::owner_store::read_key(&key).await)
+}
+
+fn write_pending_sign_in(provider: AuthProvider, retried: bool) {
+    let Ok(key) = Config::from_build_env().and_then(|config| config.pending_signin_key()) else {
+        return;
+    };
+    super::owner_store::write_key(&key, &oauth::encode_pending_sign_in(provider, retried));
+}
+
+fn clear_pending_sign_in() {
+    let Ok(key) = Config::from_build_env().and_then(|config| config.pending_signin_key()) else {
+        return;
+    };
+    super::owner_store::clear_key(&key);
 }
 
 // ============================================================

@@ -158,6 +158,16 @@ impl Config {
     pub fn pkce_verifier_key(&self) -> Result<String, CloudError> {
         Ok(format!("{}-code-verifier", self.storage_key()?))
     }
+
+    /// Where the in-flight sign-in record waits out the provider hop, on the web arm.
+    ///
+    /// Ours, not `auth-js`'s — derived from [`storage_key`] only to scope it per project the
+    /// way the verifier key is, so the beta on this origin never reads or writes this name.
+    ///
+    /// [`storage_key`]: Self::storage_key
+    pub fn pending_signin_key(&self) -> Result<String, CloudError> {
+        Ok(format!("{}-pending-signin", self.storage_key()?))
+    }
 }
 
 /// What went wrong, in the terms the caller can act on.
