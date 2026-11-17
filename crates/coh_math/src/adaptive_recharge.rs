@@ -69,6 +69,7 @@ pub fn adaptive_recharge(power: &Power) -> Option<AdaptiveRecharge> {
         .filter(|atom| {
             atom.effect_type == Some(EffectType::RechargePower)
                 && atom.aspect == Some(Aspect::Abs)
+                && atom.not_on_caster != Some(true)
                 && lands_on_caster(atom)
                 && atom
                     .requires_expression

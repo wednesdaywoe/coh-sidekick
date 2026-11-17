@@ -89,11 +89,20 @@ pub(crate) fn atoms_of_type(power: &Power, t: EffectType) -> Vec<&AtomicEffect> 
 
 /// The power's always-on atoms of one type (`baseAtomsOfType`): the converter-stamped
 /// `gated` flag is the runtime's only base-vs-conditional signal.
+/// The base atoms of one type — the direct-read twin of the gather's stamp filter.
+/// `not_on_caster` is the converter's verdict that a row never reaches the caster's own
+/// totals (pet/foe traps: `stampPetOnlyBuffs`, `stampNotOnCaster`); the stream passes drop
+/// it in `gather_active_atoms`, and every applier that re-reads `power.atoms` drops it here.
 pub(crate) fn base_atoms_of_type(power: &Power, t: EffectType) -> Vec<&AtomicEffect> {
     power
         .atoms
         .iter()
-        .filter(|a| a.effect_type == Some(t) && !is_gated(a) && !is_display_only(a))
+        .filter(|a| {
+            a.effect_type == Some(t)
+                && !is_gated(a)
+                && !is_display_only(a)
+                && a.not_on_caster != Some(true)
+        })
         .collect()
 }
 

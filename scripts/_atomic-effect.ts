@@ -1241,7 +1241,11 @@ function mapToWho(target?: string): ToWho {
  *   `MyOwner`, and the Incarnate sockets hit `Self`. `scripts/planb-shadow-towho.cjs`
  *   pinned that premise and was deleted on 2026-09-25 with the `src/` tree it read, so
  *   nothing measures it now: a foe-facing one arriving in a future export would pass
- *   quietly, and the premise rests on this comment rather than on a check.
+ *   quietly, and the premise rests on this comment rather than on a check. The pet-only
+ *   carriers (Serum, Smoke Flash) are stamped `notOnCaster` by `stampPetOnlyBuffs` in
+ *   convert-powerset.cjs: in game their per-template pet gate excludes the owner, and
+ *   this emitter drops that gate (`jit_requires`, unfiled-116), so the stamp is what
+ *   keeps their rows out of the caster's totals.
  * - `Target` and `TargetOnly` are the open half. They land on the caster exactly when
  *   the power's own `targetsAffected` names `Self` (Maneuvers buffs you; Wormhole's
  *   teleport resistance is the victim's), and no atom carries that — it is a power-level

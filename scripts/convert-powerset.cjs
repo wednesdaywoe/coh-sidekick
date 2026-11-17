@@ -6849,7 +6849,10 @@ function parseAbsorbMaxHPFraction(expr, scale, table, ignoresStrength) {
  * entity's owner, which is the caster on every player power in the corpus that carries it
  * (Serum and Smoke Flash hit `MyPet`, Force Shield hits `MyOwner`).
  * `scripts/planb-shadow-towho.cjs` pinned that premise until 2026-09-25, when it was deleted
- * with the `src/` tree it read. Nothing measures it now.
+ * with the `src/` tree it read. Nothing measures it now. The pet-only carriers (Serum,
+ * Smoke Flash) are stamped `notOnCaster` by `stampPetOnlyBuffs` — in game their per-template
+ * pet gate excludes the owner, and the Parse7 emitter drops that gate (unfiled-116) — so
+ * their rows never reach the caster's totals; the premise stays unmeasured for future carriers.
  *
  * `AnyAffected` is NOT here, and this is the BAG's reading, which stays as it is. The atom
  * route resolves that recipient against the power (`reachesCaster`, TARGETS-3), so it now
@@ -9467,6 +9470,46 @@ function guardThunderspyOnesBuffs(power, targetsAffected, effects = power.effect
 }
 
 /**
+ * Pet-only target-trap, EVERY fork: a player power whose `targets_affected` are all
+ * `MyPet` lands its `TargetAndPets` rows on the henchmen, not the Mastermind.
+ *
+ * `AnyAffectedAndPets` anchors on whoever the power hit and walks up to that entity's
+ * owner — on a MyPet power the hit entity is a henchman and the owner is the caster, so
+ * `landsOnCaster` reads the rows as caster-facing. In game the per-template gate takes
+ * the owner back out (Serum's `target.VillainName` mercenary classes, Smoke Flash's
+ * henchman archetype classes), but the Parse7 emitter drops `jit_requires`
+ * (unfiled-116), so on Homecoming/Brainstorm the gate never reaches the wire and the
+ * rows folded into the MM's own totals: +75% damage, +7.5% to-hit, +100% recovery,
+ * +30% resistance and +7.79 mez protection on Serum, +54/+500 ft stealth radius on
+ * Smoke Flash (measured 2026-11-17, pet-only-buffs). Rebirth/Thunderspy ship the rows
+ * as `Target` with the gate intact and carry no `TargetAndPets` atoms at all, so the
+ * stamp is a no-op there — the built-in control.
+ *
+ * The stamp is the converter's verdict, not a runtime re-derivation: it keys on
+ * `targets_affected` and shortHelp, neither of which is on the atom. `Self` and
+ * `SelfAndPets` atoms anchor on the caster BY CONSTRUCTION and stay — Fortify Pack's
+ * charge mechanics and Rally the Militia's summons are exactly those. Gated atoms are
+ * left alone, as in `stampNotOnCaster`: the conditional walk honours the stamp itself.
+ *
+ * shortHelp carve-out mirrors `guardThunderspyOnesBuffs`: `targets_affected`
+ * under-reports (Rally the Militia is `['MyPet']` yet advertises "Self, Pets"), so a
+ * power naming Self as a beneficiary keeps ALL its rows — separating the self share
+ * from the pet share needs the gate the emitter drops, and no current carrier is in
+ * that shape. Stamped, not dropped: the power card is right to show what Serum does.
+ */
+function stampPetOnlyBuffs(power, targetsAffected) {
+  const ta = targetsAffected || [];
+  if (!ta.length || !ta.every((t) => t === 'MyPet')) return;
+  if (/\bself\b/i.test(power.shortHelp || '')) return;
+  if (!power.atoms) return;
+  power.atoms = power.atoms.map((t) => {
+    if (_atomField(t, 'gated') === true) return t;
+    if (_atomField(t, 'toWho') !== 'TargetAndPets') return t;
+    return _withAtomField(t, 'notOnCaster', true);
+  });
+}
+
+/**
  * Veto the Thunderspy applied-mez / offensive-KB target-trap.
  *
  * The parser recovers the APPLIED mez/knockback attrib from the post-`requires`
@@ -10460,6 +10503,9 @@ function convertPower(powerJson, availableLevel, archetypeId, powerType, provena
     guardThunderspyAppliedMez(power, powerJson.targets_affected, effectsRef);
   }
 
+  // Pet-only target-trap, every fork — see stampPetOnlyBuffs.
+  stampPetOnlyBuffs(power, powerJson.targets_affected);
+
   const targetStacks = extractTargetStacks(power);
   if (targetStacks) power.targetStacks = targetStacks;
 
@@ -10728,6 +10774,7 @@ module.exports = {
   DAMAGE_ATTRIB_INDEX,
   guardThunderspyOnesBuffs,
   guardThunderspyAppliedMez,
+  stampPetOnlyBuffs,
   resolveThunderspyMovementTargets,
   extractEffects,
   extractPowerSummon,

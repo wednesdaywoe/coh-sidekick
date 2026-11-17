@@ -97,10 +97,10 @@ pub fn recharge_buff_value(power: &Power) -> Option<TypedValue> {
     let atoms: Vec<&AtomicEffect> = base_atoms_of_type(power, EffectType::RechargeTime)
         .into_iter()
         .filter(|a| a.aspect == Some(Aspect::Str))
-        // `base_atoms_of_type` filters `gated` and `displayOnly` but NOT `not_on_caster` — each
-        // applier states that itself (resources, defense, absorb all do). Omitting it here is
-        // what let the 23 Thunderspy artifacts through; `gather` honours the flag but never
-        // sees this read, which is per-power.
+        // `base_atoms_of_type` drops `not_on_caster` too since pet-only-buffs; this local filter
+        // predates that and stays as the applier's own statement of the rule. Omitting it is
+        // what let the 23 Thunderspy artifacts through when the shared helper did not yet filter;
+        // `gather` honours the flag but never sees this read, which is per-power.
         .filter(|a| a.not_on_caster != Some(true))
         .filter(|a| !is_debuff_atom(a))
         .filter(|a| !is_slow_table(a))

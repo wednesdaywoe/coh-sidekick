@@ -66,6 +66,7 @@ pub fn stealth_contribution(power: &Power) -> Option<Stealth> {
             a.effect_type == Some(EffectType::Stealth)
                 && a.aspect == Some(Aspect::Cur)
                 && !is_gated(a)
+                && a.not_on_caster != Some(true)
         })
         .collect();
 

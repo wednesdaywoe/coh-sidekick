@@ -277,6 +277,12 @@ impl ToWho {
     ///   and was deleted on 2026-09-25 with the `src/` tree it read, so nothing measures it
     ///   now: a foe-facing one arriving in a future export would pass quietly, and the
     ///   premise is an assumption on this comment's word rather than a checked claim.
+    ///   The pet-only carriers (Serum, Smoke Flash) are stamped [`not_on_caster`] by the
+    ///   converter's `stampPetOnlyBuffs`: in game their per-template pet gate excludes the
+    ///   owner, and the Parse7 emitter drops that gate (`jit_requires`, worklog unfiled-116),
+    ///   so the gather drops their rows before this question is ever asked of them.
+    ///
+    /// [`not_on_caster`]: AtomicEffect::not_on_caster
     /// - `Target` and `TargetOnly` are the open half. They reach the caster exactly when
     ///   the power's own [`targets_affected`](crate::Power::targets_affected) names `Self`
     ///   — Maneuvers buffs you, Wormhole's teleport resistance is the victim's — and no

@@ -399,6 +399,24 @@ const KNOWN_DIVERGENCE: [(&str, &str); 1] = [(
     "powerset/blaster/temporal-manipulation/Aging_Touch@0",
 )];
 
+/// The pet-only buff stamp (worklog pet-only-buffs): the frozen beta credited Serum's
+/// henchmen-only rows to the Mastermind — the bug reported in the Homecoming bugs channel.
+/// The converter now stamps those atoms `notOnCaster` (`stampPetOnlyBuffs`) and the appliers
+/// decline them, so the atom answer is `Absent` where the record holds the beta's leak.
+/// Smoke Flash leaks the same way but none of its families are among the recorded appliers.
+///
+/// Allowlisted by KEY, re-checked two ways: ours must be exactly `Absent`, AND the power must
+/// actually carry the stamp. If the stamp stops being emitted the answer is no longer Absent
+/// (or the power no longer carries it) and the run goes red — this cannot hide a second
+/// disagreement, and on Rebirth/Thunderspy, whose Serum ships no stamped atoms, it cannot
+/// apply at all. The keys are fork-independent; the stamp re-check is what scopes them.
+const PET_ONLY_STAMP_DIVERGENCE: [(&str, &str); 4] = [
+    ("damageBuffValue", "powerset/mastermind/mercenaries/Serum@0"),
+    ("toHitBuffValue", "powerset/mastermind/mercenaries/Serum@0"),
+    ("recoveryBuffValue", "powerset/mastermind/mercenaries/Serum@0"),
+    ("resistanceBuffValue", "powerset/mastermind/mercenaries/Serum@0"),
+];
+
 /// The same answer with every per-target increment dropped — the one transformation
 /// [`KNOWN_DIVERGENCE`] permits.
 fn without_per_target(answer: &Answer) -> Answer {
@@ -727,6 +745,7 @@ fn rewrite(dataset: DatasetId) {
                         let theirs = answer_of_json(&record["value"], applier.shape, key);
                         same_answer(&ours, &theirs)
                             || KNOWN_DIVERGENCE.contains(&(applier.recorded, key.as_str()))
+                            || PET_ONLY_STAMP_DIVERGENCE.contains(&(applier.recorded, key.as_str()))
                     });
                 match kept {
                     Some(line) => out.push_str(line),
@@ -842,6 +861,18 @@ fn grade(dataset: DatasetId) {
                 && KNOWN_DIVERGENCE.contains(&(applier.recorded, key.as_str()))
                 && states_per_target(&ours)
                 && same_answer(&without_per_target(&ours), &theirs)
+            {
+                tally.diverged_as_expected.push(key.clone());
+                tally.graded += 1;
+                agrees = true;
+            }
+
+            // The pet-only stamp divergence, re-checked: the answer must be exactly Absent
+            // and the power must carry the converter's stamp (see PET_ONLY_STAMP_DIVERGENCE).
+            if !agrees
+                && PET_ONLY_STAMP_DIVERGENCE.contains(&(applier.recorded, key.as_str()))
+                && matches!(ours, Answer::Absent)
+                && power.atoms.iter().any(|a| a.not_on_caster == Some(true))
             {
                 tally.diverged_as_expected.push(key.clone());
                 tally.graded += 1;

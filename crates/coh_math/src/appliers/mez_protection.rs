@@ -142,14 +142,16 @@ pub fn kb_protection_value(power: &Power, field: &str) -> Option<ScaledMez> {
         // `Self`/`Current`/`Melee_Ones` scale −10, and Rebirth's duplicate pair does not both
         // survive), so max and accumulate coincide on every one of them. The two folds also
         // differ in their filters — this one drops the PvP twin and foe-facing atoms, that one
-        // prefers PvE and honours `not_on_caster` — and those differences are equally unmeasured
-        // here. The converter is the evidence; the corpus only confirms the magnitude.
+        // prefers PvE — and those differences are equally unmeasured here. Both honour
+        // `not_on_caster` (pet-only-buffs). The converter is the evidence; the corpus only
+        // confirms the magnitude.
         "repel" => SubType::Repel,
         _ => return None,
     };
     let mut cur: Option<(f64, String)> = None; // (accumulated |scale|, table)
     for atom in power.atoms.iter().filter(|a| {
         !is_gated(a)
+            && a.not_on_caster != Some(true)
             && matches!(a.effect_type, Some(EffectType::Mez) | Some(EffectType::MezResist))
             && a.sub_type == Some(subtype)
             && reaches_caster(a, power) // branch 1 (foe) excluded → PASS2B-1

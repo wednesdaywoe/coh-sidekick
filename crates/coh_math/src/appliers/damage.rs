@@ -111,6 +111,7 @@ fn is_damage_debuff(a: &AtomicEffect) -> bool {
 /// cannot drift apart.
 fn is_damage_buff_atom(a: &AtomicEffect) -> bool {
     !is_gated(a)
+        && a.not_on_caster != Some(true)
         && a.effect_type == Some(EffectType::DamageBuff)
         && a.aspect == Some(Aspect::Str)
         && a.scale.is_some_and(|s| s > 0.0)
