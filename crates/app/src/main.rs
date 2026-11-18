@@ -59,6 +59,7 @@ mod picker_memory;
 mod picker_queue;
 mod picker_sets;
 mod picker_store;
+mod pin_readouts_store;
 mod pinned_powers;
 mod popmenu_export;
 mod popover;

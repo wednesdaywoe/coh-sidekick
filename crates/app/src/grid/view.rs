@@ -726,6 +726,11 @@ pub fn GridContainer(
     // nothing for an absolutely placed box, so the stick is computed. Written on `<html>`
     // rather than the grid, whose `style` Dioxus rewrites whenever the grid's height changes.
     // Capture-phase, so a scroll of any ancestor counts, not only the window's.
+    //
+    // The rect is window pixels but `top` is laid out inside the UI scale's `zoom` on `<html>`
+    // ([`crate::ui_scale`]), hence the divide: without it a 110% app moved its pinned surfaces
+    // 1.1× as far as the page, drifting off their cells. `ui_scale::apply` re-runs this, since a
+    // zoom change moves the grid without firing a scroll.
     use_future(move || async move {
         let _ = document::eval(&format!(
             "if (window.__skGridPin) {{\
@@ -735,7 +740,8 @@ pub fn GridContainer(
              window.__skGridPin = () => {{\
                const el = document.getElementById('{GRID_ELEMENT_ID}');\
                if (!el) return;\
-               const s = Math.max(0, -el.getBoundingClientRect().top);\
+               const z = parseFloat(getComputedStyle(document.documentElement).zoom) || 1;\
+               const s = Math.max(0, -el.getBoundingClientRect().top) / z;\
                document.documentElement.style.setProperty('--grid-scroll', s + 'px');\
              }};\
              document.addEventListener('scroll', window.__skGridPin, {{ capture: true, passive: true }});\
@@ -935,9 +941,12 @@ fn GridSurface(
     // the pointer is on, wherever that is. Sticky in effect: a pinned surface sits at its cell
     // until the viewport's top edge reaches it, follows that edge down, and stops where its
     // bottom meets the grid's. Only readouts on the top row, because a stuck readout anywhere
-    // else would ride over the band. Not during a drag, whose geometry is the cells'.
-    let pinned = (item.panel.dashboard().is_some() && rendered.y == 0
-        || item.panel == PanelKind::Info)
+    // else would ride over the band. Not during a drag, whose geometry is the cells'. Not at all
+    // when the reader has switched it off in Options.
+    let pin_enabled = try_use_context::<crate::pin_readouts_store::PinReadouts>()
+        .is_none_or(|pref| (pref.0)());
+    let pinned = pin_enabled
+        && (item.panel.dashboard().is_some() && rendered.y == 0 || item.panel == PanelKind::Info)
         && !drag.read().as_ref().is_some_and(|d| d.moved);
     let top = if pinned {
         let floor = (container_height(&state.read(), &config) - height).max(y);

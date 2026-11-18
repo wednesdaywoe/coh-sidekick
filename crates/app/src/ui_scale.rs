@@ -31,7 +31,11 @@ enum StoredUiScale {
 /// to call before a persisted value has loaded — it just repaints once more when the real value
 /// arrives, the same accepted flash [`crate::shell::RuleOfFiveAlert`]'s default takes.
 pub fn apply(pct: u32) {
-    let js = format!("document.documentElement.style.zoom = '{pct}%';");
+    // The grid's pinned surfaces hold their offset in zoomed units; restate it at the new zoom.
+    let js = format!(
+        "document.documentElement.style.zoom = '{pct}%';\
+         if (window.__skGridPin) window.__skGridPin();"
+    );
     document::eval(&js);
 }
 
