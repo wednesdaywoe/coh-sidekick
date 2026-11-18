@@ -578,7 +578,7 @@ mod tests {
             panels,
             [
                 (1, "Offense", 5),
-                (2, "Defense", 2),
+                (2, "Defense", 3),
                 (3, "Resistance", 8),
                 (4, "Survival", 5)
             ]
