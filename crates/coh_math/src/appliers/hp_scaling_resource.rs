@@ -15,23 +15,32 @@
 //! neutralized, because the expression multiplies it in to reach the final magnitude. The result is
 //! the COMPLETE magnitude (already × @StdResult), so the caller adds it directly and must NOT re-run
 //! `resolve_scaled_effect` on it.
+//!
+//! The same input drives Super Reflexes' scaling resistance ([`hp_scaling_resistance_value`]):
+//! Agile, Dodge and Lucky state `60 kHitPoints% source> - 0 100 minmax 60 / 0.2 * [@Strength *]`,
+//! nothing at 60% health and above, rising linearly to the coefficient at zero. Its `scale` is 0 on
+//! `Melee_Ones`, so the ordinary resistance reader resolves it to a silent zero.
 
 use super::base_atoms_of_type;
+use super::resistance::RESIST_STD_SUBTYPES;
 use crate::expr::{eval, EvalContext, EvalError, Value};
 use crate::scaled::resolve_scaled_effect;
 use crate::totals::CalcError;
 use coh_data::{
-    reaches_caster, Aspect, AttribType, CombatContext, EffectType, Power, PowerDatabase,
+    reaches_caster, Aspect, AtomicEffect, AttribType, CombatContext, EffectType, Power,
+    PowerDatabase, PvMode,
 };
 
 /// Resolves the two readers an HP-scaling resource Expression names: `kHitPoints% source>` (the
 /// caster's current-HP%, the runtime input) and `@StdResult` (the atom's own scale×table, the base
-/// magnitude the expression modulates). Every other reader is Indeterminate, so only this shape
-/// yields a number — an unrecognized reader falls back to the bag rather than a fabricated value
-/// (Rule 1).
+/// magnitude the expression modulates). `@Strength` resolves only where the caller supplies the
+/// power's enhancement strength (the resistance reader). Every other reader is Indeterminate, so
+/// only this shape yields a number — an unrecognized reader falls back to the bag rather than a
+/// fabricated value (Rule 1).
 struct HitPointsProbe {
     hit_points_percent: f64,
     std_result: f64,
+    strength: Option<f64>,
 }
 
 impl EvalContext for HitPointsProbe {
@@ -44,6 +53,10 @@ impl EvalContext for HitPointsProbe {
                 _ => Err(EvalError::Indeterminate(reader.into())),
             },
             "@StdResult" => Ok(Value::Number(self.std_result)),
+            "@Strength" => self
+                .strength
+                .map(Value::Number)
+                .ok_or_else(|| EvalError::Indeterminate(reader.into())),
             _ => Err(EvalError::Indeterminate(reader.into())),
         }
     }
@@ -100,6 +113,7 @@ pub fn hp_scaling_resource_value(
         let probe = HitPointsProbe {
             hit_points_percent: combat.hit_points_percent,
             std_result,
+            strength: None,
         };
         let expression = atom
             .magnitude_expression
@@ -113,4 +127,75 @@ pub fn hp_scaling_resource_value(
         table = atom.modifier_table.as_deref().map(str::to_string);
     }
     total.map(|value| HpScalingResource { value, table })
+}
+
+/// The HP-scaling +resistance this power grants the caster at `combat.hit_points_percent`, as
+/// FRACTIONS keyed by lowercase damage type. Empty when the power has no such atom.
+///
+/// Matches BASE `Resistance` atoms with `aspect=Res`, `type=Expression`, a standard damage type, a
+/// `kHitPoints%` term, and the caster as recipient. A PvP-only twin (Agile's Toxic row) counts only
+/// on a PvP map, and a PvE-only one only off it. `strength` is the power's resistance enhancement
+/// (`1 + enh`), and reaches the value only through an `@Strength` the expression names: Rebirth
+/// writes it in, Homecoming does not, and the engine applies no strength to an Expression
+/// magnitude it is not told to. Atoms of one type are copies of one effect, so the largest stands.
+pub fn hp_scaling_resistance_value(
+    power: &Power,
+    archetype: &str,
+    level: i32,
+    combat: &CombatContext,
+    strength: f64,
+    db: &PowerDatabase,
+    errors: &mut Vec<CalcError>,
+) -> Vec<(String, f64)> {
+    let mut out: Vec<(String, f64)> = Vec::new();
+    for atom in base_atoms_of_type(power, EffectType::Resistance) {
+        let Some(sub) = atom.sub_type.filter(|s| RESIST_STD_SUBTYPES.contains(s)) else {
+            continue;
+        };
+        if atom.aspect != Some(Aspect::Res)
+            || atom.attrib_type != Some(AttribType::Expression)
+            || atom.not_on_caster == Some(true)
+            || !reaches_caster(atom, power)
+            || !pv_mode_applies(atom, combat.pvp)
+        {
+            continue;
+        }
+        let Some(expression) = atom
+            .magnitude_expression
+            .as_deref()
+            .filter(|e| e.iter().any(|t| &**t == "kHitPoints%"))
+        else {
+            continue;
+        };
+        let std_result = resolve_scaled_effect(
+            atom.scale.unwrap_or(0.0),
+            atom.modifier_table.as_deref(),
+            archetype,
+            level,
+            db,
+            errors,
+        );
+        let probe = HitPointsProbe {
+            hit_points_percent: combat.hit_points_percent,
+            std_result,
+            strength: Some(strength),
+        };
+        let Ok(Value::Number(value)) = eval(expression, &probe) else {
+            continue;
+        };
+        let key = sub.as_wire().to_lowercase();
+        match out.iter_mut().find(|(k, _)| *k == key) {
+            Some((_, v)) => *v = v.max(value),
+            None => out.push((key, value)),
+        }
+    }
+    out
+}
+
+fn pv_mode_applies(atom: &AtomicEffect, pvp: bool) -> bool {
+    match atom.pv_mode {
+        Some(PvMode::PvP) => pvp,
+        Some(PvMode::PvE) => !pvp,
+        _ => true,
+    }
 }

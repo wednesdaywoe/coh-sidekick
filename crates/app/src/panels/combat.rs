@@ -588,7 +588,8 @@ pub fn Combat(database: Option<Db>) -> Element {
                 }
             }
 
-            // Health % — the `kHitPoints%` runtime input for HP-scaling regen/recovery (Gamma Boost, Reactive Defenses).
+            // Health % — the `kHitPoints%` runtime input for HP-scaling regen/recovery (Gamma Boost),
+            // resistance (Super Reflexes) and unpinned HP-scaling procs (Reactive Defenses).
             div { class: "combat-row",
                 span { class: "combat-label", "Health %" }
                 div { class: "slider combat-slider",
