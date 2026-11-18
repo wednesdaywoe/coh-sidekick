@@ -41,6 +41,18 @@
 //! A tick is keyed by the piece as the file states it ([`purchase_key`]), not by its display
 //! name, because a build reopened from a file comes back with its display names empty.
 //!
+//! # Two orders
+//!
+//! The list reads in two orders for two jobs. By set is how you shop: one row per thing to buy,
+//! however many powers it ends up in. By power is how you slot: each power in the order it is
+//! taken, with what goes into it — "level 1 Fire Shield: 3 Aegis, 1 Steadfast…" — so placing a
+//! power's pieces is one look rather than a hunt through every set heading.
+//!
+//! Both read the one tick map. A purchase in several powers is one key there, so the power view
+//! hands its ticks out in level order: the copies you own go to the earliest powers that want
+//! them. That is a reading of the count, not a record of which power a copy was bought for —
+//! nothing records that, and nothing needs to.
+//!
 //! # Prices
 //!
 //! On a Homecoming build each row is priced from recent auction house sales
@@ -94,6 +106,9 @@ pub struct Item {
     pub key: String,
     /// The piece's own name. The set name is the section heading, not part of this.
     pub label: String,
+    /// The by-set heading this piece sits under — its set, special family or vendor tier. The
+    /// power view prints it on the row, because there the heading is the power.
+    pub group: String,
     /// What distinguishes this configuration from another of the same piece
     /// ([`naming::enhancement_qualifiers`]).
     pub qualifiers: Vec<String>,
@@ -113,9 +128,14 @@ pub struct Item {
 }
 
 impl Item {
-    /// The row as one line of text, at whatever count the caller is showing.
-    fn line(&self, count: usize) -> String {
-        let mut line = format!("{count}x {}", self.label);
+    /// The row as one line of text, at whatever count the caller is showing. `with_group`
+    /// names the set too, for the view whose headings are powers.
+    fn line(&self, count: usize, with_group: bool) -> String {
+        let mut line = if with_group {
+            format!("{count}x {}: {}", self.group, self.label)
+        } else {
+            format!("{count}x {}", self.label)
+        };
         if !self.qualifiers.is_empty() {
             line.push_str(&format!(" ({})", self.qualifiers.join(", ")));
         }
@@ -212,6 +232,131 @@ impl ShoppingList {
             .iter()
             .flat_map(|section| section.items.iter())
     }
+
+    /// How many of each row are ticked off, row for row with [`Self::sections`].
+    fn shares(&self, acquired: &Acquired) -> Vec<Vec<usize>> {
+        self.sections
+            .iter()
+            .map(|section| {
+                section
+                    .items
+                    .iter()
+                    .map(|item| acquired_count(acquired, item))
+                    .collect()
+            })
+            .collect()
+    }
+
+    /// How many copies of one purchase the whole build wants — what a stored tick count is
+    /// capped at.
+    fn wanted(&self, key: &str) -> usize {
+        self.items()
+            .find(|item| item.key == key)
+            .map_or(0, |item| item.count)
+    }
+}
+
+/// The same pieces as [`ShoppingList`], under the power each is slotted in.
+#[derive(Clone, PartialEq, Debug, Default)]
+pub struct PowerList {
+    pub sections: Vec<Section>,
+}
+
+impl PowerList {
+    /// One section per power with anything slotted, in the order the powers are taken. Ties —
+    /// two powers at one level, or the level-0 auto grants — keep the build's own bucket order,
+    /// which is the order the planner draws them in.
+    pub fn build(build: &CharacterState, database: &PowerDatabase) -> Self {
+        let index = database
+            .boost_index
+            .as_ref()
+            .filter(|_| auction::prices_dataset(database.dataset_id()));
+
+        let mut powers: Vec<_> = build
+            .all_selected()
+            .filter(|power| power.slots.iter().flatten().next().is_some())
+            .collect();
+        powers.sort_by_key(|power| power.level);
+
+        let sections = powers
+            .into_iter()
+            .map(|power| {
+                let mut groups: BTreeMap<GroupKey, Item> = BTreeMap::new();
+                for enhancement in power.slots.iter().flatten() {
+                    let (key, item) = describe(enhancement, database, index);
+                    groups
+                        .entry(key)
+                        .and_modify(|existing| existing.count += 1)
+                        .or_insert(item);
+                }
+                // The internal name is the fallback for the reason `naming::power_label` gives.
+                let name = database
+                    .resolve_power(&power.powerset, &power.internal_name)
+                    .map_or_else(|| power.internal_name.clone(), |def| def.name.clone());
+                Section {
+                    heading: if power.level == 0 {
+                        name
+                    } else {
+                        format!("Level {} · {name}", power.level)
+                    },
+                    items: groups.into_values().collect(),
+                }
+            })
+            .collect();
+        PowerList { sections }
+    }
+
+    /// How many of each row are ticked off. A purchase's ticks go to its rows in list order —
+    /// the earliest power first — and never past what the build wants of it in all.
+    fn shares(&self, acquired: &Acquired, list: &ShoppingList) -> Vec<Vec<usize>> {
+        let mut left: HashMap<&str, usize> = HashMap::new();
+        self.sections
+            .iter()
+            .map(|section| {
+                section
+                    .items
+                    .iter()
+                    .map(|item| {
+                        let pool = left.entry(item.key.as_str()).or_insert_with(|| {
+                            acquired
+                                .get(&item.key)
+                                .map_or(0, |count| *count as usize)
+                                .min(list.wanted(&item.key))
+                        });
+                        let share = (*pool).min(item.count);
+                        *pool -= share;
+                        share
+                    })
+                    .collect()
+            })
+            .collect()
+    }
+}
+
+/// Which order the list reads in.
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+pub enum ListOrder {
+    #[default]
+    BySet,
+    ByPower,
+}
+
+impl ListOrder {
+    const ALL: [ListOrder; 2] = [ListOrder::BySet, ListOrder::ByPower];
+
+    fn label(self) -> &'static str {
+        match self {
+            ListOrder::BySet => "By set",
+            ListOrder::ByPower => "By power",
+        }
+    }
+
+    fn hint(self) -> &'static str {
+        match self {
+            ListOrder::BySet => "One row per thing to buy — for shopping",
+            ListOrder::ByPower => "Each power in level order, with what goes in it — for slotting",
+        }
+    }
 }
 
 /// One slotted piece as its group key and the row it opens.
@@ -283,7 +428,7 @@ fn describe(
     let purchase = purchase_key(enhancement);
     let key = GroupKey {
         rank,
-        heading,
+        heading: heading.clone(),
         piece_num,
         label: label.clone(),
         level: enhancement.level.map(|level| level.get()),
@@ -294,6 +439,7 @@ fn describe(
     let item = Item {
         key: purchase,
         label,
+        group: heading,
         qualifiers,
         count: 1,
         catalysts_each,
@@ -375,13 +521,24 @@ impl ShoppingList {
     /// The list as text, at the counts on screen. Finished rows are dropped rather than struck
     /// through: strikethrough is a mark this destination does not have, and a line that says
     /// `0x` reads as an item you need none of rather than one you already own.
-    fn to_text(&self, acquired: &Acquired, prices: Option<&Prices>) -> String {
+    ///
+    /// `sections` and `shares` are whichever view is on screen; the footer is the whole build's
+    /// either way.
+    fn to_text(
+        &self,
+        acquired: &Acquired,
+        prices: Option<&Prices>,
+        sections: &[Section],
+        shares: &[Vec<usize>],
+        with_group: bool,
+    ) -> String {
         let mut lines: Vec<String> = Vec::new();
-        for section in &self.sections {
+        for (section, shares) in sections.iter().zip(shares) {
             let live: Vec<(&Item, usize)> = section
                 .items
                 .iter()
-                .map(|item| (item, item.count - acquired_count(acquired, item)))
+                .zip(shares)
+                .map(|(item, share)| (item, item.count - share))
                 .filter(|(_, remaining)| *remaining > 0)
                 .collect();
             if live.is_empty() {
@@ -389,7 +546,7 @@ impl ShoppingList {
             }
             lines.push(section.heading.clone());
             for (item, remaining) in live {
-                let mut line = format!("  {}", item.line(remaining));
+                let mut line = format!("  {}", item.line(remaining, with_group));
                 if let Some(RowPrice::Each(each)) = prices.and_then(|prices| item.price(prices)) {
                     let cost = auction::format_influence(each * remaining as i64);
                     line.push_str(&format!(" — ~{cost}"));
@@ -425,6 +582,22 @@ fn acquired_count(acquired: &Acquired, item: &Item) -> usize {
         .get(&item.key)
         .map_or(0, |count| *count as usize)
         .min(item.count)
+}
+
+/// Puts one row's ticked copies back on the list. The stored count is capped at what the build
+/// wants before the row's share comes off it, so clearing a by-set row — whose share is the
+/// whole capped count — empties the entry even when an edit shrank the row under it.
+fn put_back(acquired: &mut Acquired, key: &str, share: usize, wanted: usize) {
+    let stored = acquired
+        .get(key)
+        .map_or(0, |count| *count as usize)
+        .min(wanted);
+    let left = stored.saturating_sub(share);
+    if left == 0 {
+        acquired.remove(key);
+    } else {
+        acquired.insert(key.to_string(), left as u32);
+    }
 }
 
 // ============================================================
@@ -534,6 +707,8 @@ pub struct EnhancementListOpen(pub Signal<bool>);
 #[component]
 pub fn EnhancementListHost(database: Option<Db>) -> Element {
     let mut open = use_context::<EnhancementListOpen>().0;
+    // Held here, above the body, so the order chosen survives closing and reopening the list.
+    let order = use_signal(ListOrder::default);
     if !open() {
         return rsx! {};
     }
@@ -543,13 +718,13 @@ pub fn EnhancementListHost(database: Option<Db>) -> Element {
             title: "Enhancement list".to_string(),
             default_size: (620.0, 680.0),
             on_close: move |_| open.set(false),
-            EnhancementListBody { database }
+            EnhancementListBody { database, order }
         }
     }
 }
 
 #[component]
-fn EnhancementListBody(database: Option<Db>) -> Element {
+fn EnhancementListBody(database: Option<Db>, order: Signal<ListOrder>) -> Element {
     let session = use_context::<BuildSession>();
     let acquired = use_memo(move || session.build.read().enhancement_acquired.clone());
     let mut copied = use_signal(|| Option::<Result<(), String>>::None);
@@ -561,9 +736,29 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
     let loading = database.is_none();
     // A memo, not a signal: the list is a pure function of the build and the dataset, and
     // derived state that is STORED is state that can be stale.
+    let power_database = database.clone();
     let list = use_memo(move || match &database {
         Some(database) => ShoppingList::build(&session.build.read(), &database.0),
         None => ShoppingList::default(),
+    });
+    let by_power = use_memo(move || match (&power_database, order()) {
+        (Some(database), ListOrder::ByPower) => {
+            PowerList::build(&session.build.read(), &database.0)
+        }
+        _ => PowerList::default(),
+    });
+    // The view on screen: its sections, how many of each row are ticked, and whether its rows
+    // name their set.
+    let view = use_memo(move || match order() {
+        ListOrder::BySet => {
+            let list = list.read();
+            (list.sections.clone(), list.shares(&acquired.read()), false)
+        }
+        ListOrder::ByPower => {
+            let power = by_power.read();
+            let shares = power.shares(&acquired.read(), &list.read());
+            (power.sections.clone(), shares, true)
+        }
     });
     let out = use_memo(move || list.read().outstanding(&acquired.read()));
     // What the build wants with nothing ticked off — the denominator of all three tallies, and
@@ -607,6 +802,7 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
     }
     // Read once for every row below rather than once per row.
     let shown_prices = landed();
+    let (sections, shares, show_group) = view();
 
     rsx! {
         div { class: "enh-list",
@@ -666,7 +862,14 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
                         class: "seg is-primary",
                         r#type: "button",
                         onclick: move |_| async move {
-                            let text = list.read().to_text(&acquired.read(), landed().as_ref());
+                            let (sections, shares, with_group) = view();
+                            let text = list.read().to_text(
+                                &acquired.read(),
+                                landed().as_ref(),
+                                &sections,
+                                &shares,
+                                with_group,
+                            );
                             copied.set(Some(crate::clipboard::copy(&text).await));
                         },
                         "Copy the list"
@@ -674,9 +877,26 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
                 }
             }
 
+            div { class: "enh-list__order",
+                for option in ListOrder::ALL {
+                    button {
+                        key: "{option.label()}",
+                        class: if order() == option { "seg active" } else { "seg" },
+                        r#type: "button",
+                        title: "{option.hint()}",
+                        "aria-pressed": order() == option,
+                        onclick: move |_| {
+                            order.set(option);
+                            copied.set(None);
+                        },
+                        "{option.label()}"
+                    }
+                }
+            }
+
             p { class: "enh-list__hint",
                 "Click a row to mark one off; click a finished row to put it back. Ticks are "
-                "saved with the build."
+                "saved with the build, and both orders share them."
             }
 
             if let Some(Err(error)) = &*prices.read() {
@@ -709,15 +929,16 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
             }
 
             div { class: "enh-list__body",
-                for section in list.read().sections.iter() {
-                    div { key: "{section.heading}", class: "enh-list__section",
+                for (index, (section, shares)) in sections.iter().zip(shares.iter()).enumerate() {
+                    div { key: "{index}-{section.heading}", class: "enh-list__section",
                         h3 { class: "enh-list__heading", "{section.heading}" }
                         ul { class: "enh-list__rows",
-                            for item in section.items.iter() {
+                            for (item, share) in section.items.iter().zip(shares.iter().copied()) {
                                 ItemRow {
                                     key: "{item.key}",
                                     item: item.clone(),
-                                    acquired: acquired_count(&acquired.read(), item),
+                                    acquired: share,
+                                    show_group,
                                     price: shown_prices.as_ref().and_then(|prices| item.price(prices)),
                                     on_tick: move |key: String| {
                                         session.commit(move |build| {
@@ -725,9 +946,10 @@ fn EnhancementListBody(database: Option<Db>) -> Element {
                                         });
                                         copied.set(None);
                                     },
-                                    on_clear: move |key: String| {
+                                    on_clear: move |(key, share): (String, usize)| {
+                                        let wanted = list.read().wanted(&key);
                                         session.commit(move |build| {
-                                            build.enhancement_acquired.remove(&key);
+                                            put_back(&mut build.enhancement_acquired, &key, share, wanted);
                                         });
                                         copied.set(None);
                                     },
@@ -762,9 +984,12 @@ fn Tally(label: String, remaining: usize, total: usize) -> Element {
 fn ItemRow(
     item: Item,
     acquired: usize,
+    /// Name the row's set beside the piece — the power view, whose headings are powers.
+    show_group: bool,
     price: Option<RowPrice>,
     on_tick: EventHandler<String>,
-    on_clear: EventHandler<String>,
+    /// The row's key and how many copies it has ticked, to put back.
+    on_clear: EventHandler<(String, usize)>,
 ) -> Element {
     let remaining = item.count - acquired;
     let done = remaining == 0;
@@ -778,7 +1003,7 @@ fn ItemRow(
                 title: if done { "Put this row back on the list" } else { "Tick one off" },
                 onclick: move |_| {
                     if done {
-                        on_clear.call(key.clone());
+                        on_clear.call((key.clone(), acquired));
                     } else {
                         on_tick.call(key.clone());
                     }
@@ -786,7 +1011,12 @@ fn ItemRow(
                 span { class: "enh-list__count",
                     if done { "✓" } else { "{remaining}×" }
                 }
-                span { class: "enh-list__label", "{item.label}" }
+                span { class: "enh-list__label",
+                    if show_group {
+                        span { class: "enh-list__group", "{item.group}" }
+                    }
+                    "{item.label}"
+                }
                 if !item.qualifiers.is_empty() {
                     span { class: "enh-list__qualifiers", "{item.qualifiers.join(\", \")}" }
                 }
@@ -981,5 +1211,74 @@ mod tests {
                 unpriced: 1
             }
         );
+    }
+    /// Two powers, taken out of bucket order, both wanting the same common IO.
+    const TWO_POWERS: &str = r#"{
+      "version": 5,
+      "build": {
+        "dataset": "homecoming",
+        "archetype": "tanker",
+        "level": 50,
+        "primary": {
+          "id": "tanker/stone-armor",
+          "powers": [
+            {
+              "internalName": "Granite_Armor",
+              "level": 26,
+              "slots": [
+                { "type": "io-generic", "stat": "Defense", "level": 50 },
+                { "type": "io-set", "setId": "absolute_amazement", "pieceNum": 1, "level": 50 }
+              ]
+            },
+            {
+              "internalName": "Stone_Skin",
+              "level": 1,
+              "slots": [
+                { "type": "io-generic", "stat": "Defense", "level": 50 },
+                { "type": "io-generic", "stat": "Defense", "level": 50 }
+              ]
+            }
+          ]
+        },
+        "secondary": { "id": "tanker/super-strength" }
+      }
+    }"#;
+
+    /// The power view lists powers by the level they are taken at, names the set on each row,
+    /// and hands a shared purchase's ticks to the earliest power first.
+    #[test]
+    fn the_power_view_reads_in_level_order_and_shares_the_ticks() {
+        let database = homecoming();
+        let build = skif::decode(TWO_POWERS, &database).expect("decodes").build;
+        let list = ShoppingList::build(&build, &database);
+        let powers = PowerList::build(&build, &database);
+
+        let headings: Vec<&str> = powers.sections.iter().map(|s| s.heading.as_str()).collect();
+        assert_eq!(headings.len(), 2, "{headings:?}");
+        assert!(headings[0].starts_with("Level 1 · "), "{headings:?}");
+        assert!(headings[1].starts_with("Level 26 · "), "{headings:?}");
+
+        let generic = list
+            .items()
+            .find(|item| item.group == "Generic IOs")
+            .expect("the common IO")
+            .clone();
+        assert_eq!(generic.count, 3, "one purchase row across both powers");
+
+        // Two of the three bought: both go to the level-1 power.
+        let mut acquired: Acquired = [(generic.key.clone(), 2)].into_iter().collect();
+        let shares = powers.shares(&acquired, &list);
+        assert_eq!(shares[0], vec![2]);
+        assert_eq!(shares[1].iter().sum::<usize>(), 0);
+
+        // Putting the level-1 row back takes its two off and leaves nothing behind.
+        put_back(&mut acquired, &generic.key, 2, list.wanted(&generic.key));
+        assert!(acquired.is_empty());
+
+        // A count stored past what the build wants is capped before a by-set clear, so the
+        // row really does come back.
+        let mut over: Acquired = [(generic.key.clone(), 9)].into_iter().collect();
+        put_back(&mut over, &generic.key, 3, 3);
+        assert!(over.is_empty());
     }
 }
