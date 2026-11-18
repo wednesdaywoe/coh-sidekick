@@ -359,6 +359,7 @@ pub fn surfaces(dashboards: &Dashboards) -> Vec<PanelKind> {
     roster.extend(dashboards.ids().map(PanelKind::Dashboard));
     roster.push(PanelKind::SetBonuses);
     roster.push(PanelKind::Info);
+    roster.push(PanelKind::Henchmen);
     roster
 }
 

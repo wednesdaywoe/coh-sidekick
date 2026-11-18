@@ -60,7 +60,7 @@ pub fn inherent_group_slug(group: InherentGroup) -> &'static str {
 /// default would be the grid learning it. So this is a restatement, and a restatement drifts:
 /// `the_authored_default_seats_exactly_the_default_roster` in `panels::dashboards` is what holds
 /// the two together, from the side that can see both.
-pub const DEFAULT_SURFACES: [PanelKind; 14] = [
+pub const DEFAULT_SURFACES: [PanelKind; 15] = [
     PanelKind::Powers,
     PanelKind::Available,
     PanelKind::Pools,
@@ -71,6 +71,7 @@ pub const DEFAULT_SURFACES: [PanelKind; 14] = [
     PanelKind::Inherent(InherentCategory::Granted),
     PanelKind::SetBonuses,
     PanelKind::Info,
+    PanelKind::Henchmen,
     PanelKind::Dashboard(DashboardId(1)),
     PanelKind::Dashboard(DashboardId(2)),
     PanelKind::Dashboard(DashboardId(3)),
@@ -141,6 +142,10 @@ pub enum PanelKind {
     /// is read while spending slots.
     SetBonuses,
     Info,
+    /// A Mastermind's henchmen: the roster's damage headline and each pet's own stats, read
+    /// from [`coh_math::henchmen`]'s projection. A reference surface like Info — it answers
+    /// questions about the build's pets rather than being a place the build is made.
+    Henchmen,
     /// One granted-inherent group — the powers the game hands the character, which spend no
     /// power pick. A surface each rather than one section inside [`PanelKind::Powers`], so a
     /// group can be placed, folded, hidden and popped out like any other panel.
@@ -234,13 +239,14 @@ impl PanelKind {
     // runtime caller would be nice to have and is not what makes it load-bearing. Annotated
     // rather than deleted 2026-09-26; deleting it removes a check, not a leftover.
     #[allow(dead_code)]
-    pub const FIXED: [PanelKind; 10] = {
+    pub const FIXED: [PanelKind; 11] = {
         match PanelKind::Powers {
             PanelKind::Powers
             | PanelKind::Available
             | PanelKind::Pools
             | PanelKind::SetBonuses
             | PanelKind::Info
+            | PanelKind::Henchmen
             | PanelKind::Inherent(_)
             | PanelKind::Dashboard(_) => {}
         }
@@ -250,6 +256,7 @@ impl PanelKind {
             PanelKind::Pools,
             PanelKind::SetBonuses,
             PanelKind::Info,
+            PanelKind::Henchmen,
             PanelKind::Inherent(InherentCategory::Archetype),
             PanelKind::Inherent(InherentCategory::Granted),
             PanelKind::Inherent(InherentCategory::Fitness),
@@ -282,6 +289,7 @@ impl PanelKind {
             PanelKind::Pools => Some("Power Pools"),
             PanelKind::SetBonuses => Some("Set Bonuses"),
             PanelKind::Info => Some("Info"),
+            PanelKind::Henchmen => Some("Henchmen"),
             PanelKind::Inherent(group) => Some(inherent_group_title(*group)),
             PanelKind::Dashboard(_) => None,
         }
@@ -304,7 +312,7 @@ impl PanelKind {
             | PanelKind::Pools
             | PanelKind::SetBonuses
             | PanelKind::Inherent(_) => PanelGroup::Loadout,
-            PanelKind::Info => PanelGroup::Reference,
+            PanelKind::Info | PanelKind::Henchmen => PanelGroup::Reference,
         }
     }
 
@@ -322,6 +330,7 @@ impl PanelKind {
             | PanelKind::Pools
             | PanelKind::SetBonuses
             | PanelKind::Info
+            | PanelKind::Henchmen
             | PanelKind::Dashboard(_) => 4,
             // Three, not four: a group is a short column of cards, and the width it wants is
             // the card floor (256px) rather than a third of the grid. A group appended by
@@ -344,6 +353,7 @@ impl PanelKind {
             PanelKind::Pools => "pools".to_string(),
             PanelKind::SetBonuses => "set-bonuses".to_string(),
             PanelKind::Info => "info".to_string(),
+            PanelKind::Henchmen => "henchmen".to_string(),
             PanelKind::Inherent(group) => inherent_group_slug(*group).to_string(),
             PanelKind::Dashboard(id) => format!("dashboard-{}", id.0),
         }
@@ -372,6 +382,7 @@ impl PanelKind {
             | PanelKind::Powers
             | PanelKind::Available
             | PanelKind::Pools
+            | PanelKind::Henchmen
             | PanelKind::Inherent(_) => true,
             PanelKind::SetBonuses | PanelKind::Info => false,
         }
@@ -404,6 +415,8 @@ impl PanelKind {
             // shrinkable as a stat panel, and a build with two set bonuses should be able to
             // keep it that small.
             PanelKind::SetBonuses => (2, 3),
+            // A headline over a few roster rows — the same readout floor as a stat panel.
+            PanelKind::Henchmen => (2, 3),
             PanelKind::Info => (2, 4),
             // A group heading over one card, which is what a group with a single power draws.
             // Fitted, so this is only the floor a drag falls back to.
@@ -422,6 +435,7 @@ impl PanelKind {
             | PanelKind::Pools
             | PanelKind::SetBonuses
             | PanelKind::Info
+            | PanelKind::Henchmen
             | PanelKind::Inherent(_)
             | PanelKind::Dashboard(_) => (None, None),
         }
@@ -865,6 +879,7 @@ impl GridItem {
             GridItem::new(PanelKind::Powers, 2, COLUMN_START_ROW, 6, tall),
             GridItem::new(PanelKind::Info, 4, below, 2, tall).off_grid(),
             GridItem::new(PanelKind::SetBonuses, 6, below, 2, tall).off_grid(),
+            GridItem::new(PanelKind::Henchmen, 5, below, 3, 4),
         ];
         seat_dashboards(&mut items, expected, 8, below);
         seat_inherents(&mut items, expected, 8, 2, below);
@@ -909,6 +924,13 @@ impl GridItem {
             GridItem::new(PanelKind::Powers, 3, COLUMN_START_ROW, 7, tall),
             GridItem::new(PanelKind::Info, 10, 0, 2, full),
             GridItem::new(PanelKind::SetBonuses, 6, below, 2, tall).off_grid(),
+            // Beside Fitness at the foot — the seat every surface with no authored cell takes
+            // (see `seat_inherents`). On the grid rather than off it: for a Mastermind the pets
+            // ARE the build's damage, so a fresh install meets the meter without a menu trip;
+            // every other archetype reads its one-line empty state, in the row Fitness already
+            // spends. Its rectangle overlaps SetBonuses' hidden one, which `set_hidden` pushes
+            // clear when that surface is shown.
+            GridItem::new(PanelKind::Henchmen, 6, below, 3, 4),
         ];
         seat_dashboards(&mut items, expected, 10, below);
         seat_inherents(&mut items, expected, 12, 3, below);

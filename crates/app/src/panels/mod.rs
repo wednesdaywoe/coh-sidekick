@@ -5,6 +5,7 @@ pub mod branch_view;
 pub mod combat;
 pub mod dashboards;
 pub mod detailed_totals;
+pub mod henchmen;
 pub mod identity;
 pub mod incarnate_crafting;
 pub mod incarnate_picker;
