@@ -68,6 +68,9 @@ pub fn PowerViewCard(
     /// the Combat panel instead.
     #[props(default)]
     rank_options: Vec<crate::panels::combat::TargetOption>,
+    /// A summon power's pets, drawn where the Damage section sits. Only the Info panel passes it.
+    #[props(default)]
+    henchmen: Option<(Db, Power)>,
 ) -> Element {
     let mut tab = use_signal(|| InfoTab::Info);
     // What the slotted damage procs add to one cast on average, before the reader's switch:
@@ -196,6 +199,13 @@ pub fn PowerViewCard(
                                 damage: damage.clone(),
                                 rank_options: rank_options.clone(),
                                 proc_per_cast,
+                            }
+                        }
+                        // A summon's pets are its damage, so they take the Damage slot.
+                        if let Some((database, power)) = &henchmen {
+                            crate::panels::henchmen::HenchmanView {
+                                database: database.clone(),
+                                power: power.clone(),
                             }
                         }
                         if !view.headline_rows.is_empty() {
@@ -1267,6 +1277,7 @@ pub fn Info(
                         slotted_procs: slotted_procs(),
                         perma_track: true,
                         rank_options: crate::panels::combat::target_options(&database),
+                        henchmen: henchman_power().map(|power| (database.clone(), power)),
                     }
                 },
                 Some(Err(power)) => rsx! {
@@ -1282,11 +1293,6 @@ pub fn Info(
                         div { class: "hint", "Its stats, effects and slotting all resolve against this build." }
                     }
                 },
-            }
-            // A summon power keeps its card and gains its pets' damage readout below it, the way
-            // any damage power carries a Damage section (owner ruling).
-            if let Some(power) = henchman_power() {
-                crate::panels::henchmen::HenchmanView { database: database.clone(), power }
             }
         }
     }

@@ -1,6 +1,6 @@
-//! Henchmen — the pets ONE summon power fields, shown in the Info panel below the summon
-//! power's own card as its damage section (owner ruling: the card keeps its information and
-//! gains the pets' damage readout, the way any damage power carries one): the roster's damage
+//! Henchmen — the pets ONE summon power fields, shown on the summon power's Info tab in the
+//! spot a Damage section takes (owner ruling: the card keeps its information and gains the
+//! pets' damage readout, the way any damage power carries one): the roster's damage
 //! headline and, per pet, survivability,
 //! the upgrade tier that swaps its attack set, and every attack's damage. Reads
 //! [`coh_math::henchmen`]'s read-only per-power projection and nothing else; the view computes
