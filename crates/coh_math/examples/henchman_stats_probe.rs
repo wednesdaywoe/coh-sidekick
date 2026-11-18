@@ -174,13 +174,16 @@ fn mm_headline(db: &PowerDatabase, dataset: DatasetId) {
 /// (per-activation damage / recharge) times the count the build fields, summed. A spam-attack
 /// proxy, NOT a rotation model — the label the mock must carry. Counts at L50: Soldiers fields
 /// 2 Soldiers + 1 Medic (the power's help: "The third Soldier you gain will be a Medic"),
-/// Spec Ops 2, Commando 1; the Medic heals and deals no damage.
+/// Spec Ops 2, Commando 1. EVERY damage-dealing henchman counts, the Medic included: it heals
+/// but also fires SMG_Burst (the same 2.25 dmg/s proxy as a Soldier's Quick Burst). Owner ruled
+/// 2026-11-17: count all damage; the earlier "Medic deals no damage" exclusion was false.
 fn roster_headline(db: &PowerDatabase) {
     let mut total = 0.0;
     for (entity_name, count, upgrades) in [
         ("MastermindPets_Soldier", 2.0, &["Equip_Mercenary", "Tactical_Upgrade"][..]),
         ("MastermindPets_Spec_Ops", 2.0, &["Equip_Mercenary", "Tactical_Upgrade"][..]),
         ("MastermindPets_Commando", 1.0, &["Equip_Mercenary", "Tactical_Upgrade"][..]),
+        ("MastermindPets_Medic", 1.0, &["Equip_Mercenary", "Tactical_Upgrade"][..]),
     ] {
         let Some(entity) = mastermind_henchman(db, entity_name) else {
             continue;
@@ -237,7 +240,7 @@ fn main() {
             print_loadout(entity, class, &db, "+Equip +Tactical Upgrade", &["Equip_Mercenary", "Tactical_Upgrade"]);
         }
         roster(&db);
-        println!("  ROSTER (L50, per Soldiers help: third Soldier is a Medic; Medic heals, no damage):");
+        println!("  ROSTER (L50, per Soldiers help: third Soldier is a Medic; every damage henchman counts):");
         roster_headline(&db);
         mm_headline(&db, dataset);
     }

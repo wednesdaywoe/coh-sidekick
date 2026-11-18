@@ -24,6 +24,7 @@ pub mod expr;
 pub mod finalize;
 pub mod gather;
 pub mod granted;
+pub mod henchmen;
 pub mod incarnates;
 pub mod inherents;
 pub mod movement;
