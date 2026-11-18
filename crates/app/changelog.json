@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-11-18",
+    "items": [
+      { "id": "henchmen-info", "type": "feat", "message": "Masterminds: the Info panel for a summon power now adds a Henchmen section to hows a damage meter across your henchmen, and you can open each pet to see its stats." },
+      { "id": "shopping-list-by-power", "type": "feat", "message": "The enhancement list can now be grouped By set (one row per thing to buy) or By power." },
+      { "id": "pin-readouts-option", "type": "feat", "message": "New option: Keep top-row dashboards and Info on screen while scrolling. Turn it off and every panel scrolls with the page." },
+      { "id": "aoe-defense-default", "type": "feat", "message": "The Defense dashboard now shows AoE defense with Melee and Ranged by default." },
+      { "id": "health-scaling-resistance", "type": "fix", "message": "Lowering Health % now raises the scaling damage resistance from Super Reflexes' Agile, Dodge and Lucky, and from the Reactive Defenses proc." },
+      { "id": "zoomed-grid-scroll", "type": "fix", "message": "Pinned panels should no longer drift out of place while scrolling when the page is zoomed, and reposition when the zoom changes." }
+    ]
+  },
+  {
+    "date": "2026-11-17",
+    "items": [
+      { "id": "pet-only-buffs", "type": "fix", "message": "Masterminds: Serum (Mercenaries) and Smoke Flash (Ninjas) no longer add their henchman-only buffs to your own totals." },
+      { "id": "sign-in-retry", "type": "fix", "message": "Fixed an occasional sign-in failure where the login window closed without signing you in." }
+    ]
+  },
+  {
     "date": "2026-11-13",
     "items": [
       { "id": "mids-export", "type": "feat", "message": "You can save builds for Mids Reborn again. File ▸ Save to file… (on mobile, under More) now asks for Sidekick (.skif) or Mids Reborn (.mbd). Before you save a Mids file it lists anything Mids will show differently, such as chance-based procs Mids doesn't count in its totals." },
