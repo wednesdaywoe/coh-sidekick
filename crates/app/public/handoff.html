@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sidekick</title>
+<!--
+  Receives a next.coh-sidekick.com browser's localStorage when that address moves to
+  coh-sidekick.com. The two are different origins, so the app's storage does not follow the
+  redirect on its own: working builds, layouts, settings, the sign-in session, and the owner
+  tokens that keep anonymous shares editable would all stay behind.
+
+  index.html, served on next.coh-sidekick.com, loads this page in a hidden frame and posts its
+  storage here. This page trusts a message from that origin only. It never overwrites what this
+  origin already holds, so it cannot replace a signed-in session or a working build already
+  here. The two lists a returning beta user may already have (owner tokens, favourites) are
+  merged instead, because both origins can hold entries the other lacks.
+-->
+</head>
+<body>
+<script>
+(function () {
+  var SENDER = 'https://next.coh-sidekick.com';
+  if (location.origin !== 'https://coh-sidekick.com') return;
+
+  // Only this app's keys travel: its own `sk-`, the beta-era names it inherited, and the
+  // Supabase session. The carry-over markers are per-origin decisions and never copied.
+  function travels(key) {
+    if (key === 'sk-handed-off' || key === 'sk-beta-carried') return false;
+    return key.indexOf('sk-') === 0 || key.indexOf('coh-planner-') === 0 ||
+      (key.indexOf('sb-') === 0 && key.slice(-11) === '-auth-token');
+  }
+
+  // `undefined` for text that does not parse, so a merge can tell "unreadable" from "empty" and
+  // leave an unreadable value exactly as it found it. Reading it as empty and writing the merge
+  // back would destroy the only copy of every token in it.
+  function parse(text) {
+    try { return JSON.parse(text); } catch (_) { return undefined; }
+  }
+
+  function isMap(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
+
+  // id -> token. Ours wins on a clash; a clash cannot happen for distinct builds.
+  function mergeTokens(ours, theirs) {
+    var a = parse(ours), b = parse(theirs);
+    if (!isMap(a) || !isMap(b)) return ours;
+    for (var id in b) if (!(id in a)) a[id] = b[id];
+    return JSON.stringify(a);
+  }
+
+  // An ordered list of build ids: ours first, then theirs we lack.
+  function mergeFavorites(ours, theirs) {
+    var a = parse(ours), b = parse(theirs);
+    if (!Array.isArray(a) || !Array.isArray(b)) return ours;
+    for (var i = 0; i < b.length; i++) if (a.indexOf(b[i]) < 0) a.push(b[i]);
+    return JSON.stringify(a);
+  }
+
+  window.addEventListener('message', function (event) {
+    if (event.origin !== SENDER) return;
+    var data = event.data;
+    if (!data || data.type !== 'sk-handoff' || typeof data.entries !== 'object') return;
+    try {
+      for (var key in data.entries) {
+        var theirs = data.entries[key];
+        if (typeof theirs !== 'string' || !travels(key)) continue;
+        var ours = localStorage.getItem(key);
+        if (ours === null) {
+          localStorage.setItem(key, theirs);
+        } else if (key === 'coh-planner-owner-tokens') {
+          localStorage.setItem(key, mergeTokens(ours, theirs));
+        } else if (key === 'coh-planner-favorites') {
+          localStorage.setItem(key, mergeFavorites(ours, theirs));
+        }
+      }
+      event.source.postMessage({ type: 'sk-handoff-done' }, SENDER);
+    } catch (_) {
+      // Storage refused (private mode, quota). Say nothing; the sender redirects on its timeout
+      // and tries again on the next visit.
+    }
+  });
+})();
+</script>
+</body>
+</html>

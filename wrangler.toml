@@ -2,17 +2,24 @@
 #
 # A Worker rather than a Pages project because wrangler 4.144 no longer creates Pages projects —
 # `wrangler pages project create` hands itself to Workers and fails without this file (measured
-# 2026-09-29). The live beta at coh-sidekick.com is untouched by it: that site is GitHub Pages,
-# built from the CoH-Sidekick repo.
+# 2026-09-29).
 #
 # `npm run build:web` fills the directory below, and `npx wrangler deploy` publishes it.
 name = "coh-sidekick-rebuild"
 compatibility_date = "2026-09-29"
 
-# The address testers use. `custom_domain` makes Cloudflare create and own the DNS record and the
-# certificate on deploy -- coh-sidekick.com's zone is on Cloudflare -- so no record is hand-made
-# in the dashboard. It names one host only; the apex stays the beta's.
-routes = [{ pattern = "next.coh-sidekick.com", custom_domain = true }]
+# The public site, and the address it used to be tested on. coh-sidekick.com was the React beta
+# on GitHub Pages until 1.0.0 (docs/apex-cutover.md). `custom_domain` makes Cloudflare create
+# and own each DNS record and certificate on deploy, which it refuses to do over a record it did
+# not create: the apex's GitHub Pages records have to be deleted first.
+#
+# next.coh-sidekick.com stays on this Worker rather than becoming a redirect rule, because the
+# page itself does the redirect: index.html, served there, first hands that browser's storage to
+# the apex (public/handoff.html). A redirect rule would answer before the page could.
+routes = [
+  { pattern = "coh-sidekick.com", custom_domain = true },
+  { pattern = "next.coh-sidekick.com", custom_domain = true },
+]
 
 [assets]
 directory = "target/dx/Sidekick/release/web/public"

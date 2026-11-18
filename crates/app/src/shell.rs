@@ -1670,6 +1670,9 @@ pub fn Shell() -> Element {
         // A build arriving on the URL, read once at boot.
         crate::build_io::BuildIoFragmentHost { dataset }
 
+        // The build a returning beta user was working on, opened once on their first visit.
+        crate::build_io::BetaCarryOverHost { dataset }
+
         // The clipboard's door onto the same two readers, and the desktop's only one for a
         // share link.
         crate::build_io::PasteBuildHost {

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+        <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="64x64" href="/img/favicon-64x64.png">
+        <link rel="apple-touch-icon" sizes="256x256" href="/img/favicon-256x256.png">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="description" content="Sidekick is a free City of Heroes build planner. Plan powers, enhancements, IO sets, incarnates, and view detailed stats for your hero or villain builds.">
+        <!-- The build-og Worker on coh-sidekick.com/builds/* fetches this page and rewrites these
+             tags in place for a shared build. It only rewrites tags that exist, so removing one
+             removes it from every shared build's link preview too. -->
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="Sidekick - City of Heroes Build Planner">
+        <meta property="og:description" content="Plan your City of Heroes builds with powers, enhancements, IO sets, incarnates, and detailed stat breakdowns.">
+        <meta property="og:url" content="https://coh-sidekick.com">
+        <meta property="og:site_name" content="Sidekick">
+        <meta property="og:image" content="https://coh-sidekick.com/og-image.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:type" content="image/png">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Sidekick - City of Heroes Build Planner">
+        <meta name="twitter:description" content="Plan your City of Heroes builds with powers, enhancements, IO sets, incarnates, and detailed stat breakdowns.">
+        <meta name="twitter:image" content="https://coh-sidekick.com/og-image.png">
+        <script>
+            // next.coh-sidekick.com moved to coh-sidekick.com. The same Worker serves both, so
+            // this page decides: on the old address, carry this browser's storage across once
+            // (public/handoff.html says what it keeps), then go to the same path on the new one.
+            // A link's own fragment rides along. Runs before the app's script, so the snapshot
+            // is what the user left, not what a booting app has just written.
+            (function () {
+                if (location.hostname !== 'next.coh-sidekick.com') return;
+                var TARGET = 'https://coh-sidekick.com';
+                var destination = TARGET + location.pathname + location.search + location.hash;
+                document.documentElement.style.visibility = 'hidden';
+                function go() { location.replace(destination); }
+
+                var entries = {};
+                try {
+                    if (localStorage.getItem('sk-handed-off') !== null) return go();
+                    for (var i = 0; i < localStorage.length; i++) {
+                        var key = localStorage.key(i);
+                        entries[key] = localStorage.getItem(key);
+                    }
+                } catch (_) { return go(); }
+                if (Object.keys(entries).length === 0) return go();
+
+                var frame = document.createElement('iframe');
+                frame.style.display = 'none';
+                frame.src = TARGET + '/handoff.html';
+                // Not marked as handed off on a timeout, so the next visit tries again.
+                var timeout = setTimeout(go, 5000);
+                window.addEventListener('message', function (event) {
+                    if (event.origin !== TARGET || !event.data || event.data.type !== 'sk-handoff-done') return;
+                    clearTimeout(timeout);
+                    try { localStorage.setItem('sk-handed-off', '1'); } catch (_) {}
+                    go();
+                });
+                frame.onload = function () {
+                    frame.contentWindow.postMessage({ type: 'sk-handoff', entries: entries }, TARGET);
+                };
+                document.documentElement.appendChild(frame);
+            })();
+        </script>
+    </head>
+    <body>
+        <div id="main"></div>
+    </body>
+</html>

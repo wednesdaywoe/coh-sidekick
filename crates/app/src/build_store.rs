@@ -13,7 +13,7 @@
 use coh_data::{build_store, StoredBuilds};
 use dioxus::prelude::*;
 
-const KEY_BUILD: &str = "sk-build";
+pub(crate) const KEY_BUILD: &str = "sk-build";
 
 /// Persist the whole per-dataset envelope (fire-and-forget, like `theme::apply_theme`).
 /// The envelope — not just the active build — so a dataset switch stays non-destructive:

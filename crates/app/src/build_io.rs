@@ -1140,6 +1140,104 @@ pub fn BuildIoFragmentHost(dataset: Signal<DatasetId>) -> Element {
 }
 
 // ============================================================
+// The beta's working build.
+// ============================================================
+
+/// The beta's persisted working build (zustand `persist`, version 1: `{ state: { activeServerId,
+/// buildsByServer } }`, or v0's single `{ state: { build } }`). This app took over the beta's
+/// origin, so the key is still in a returning beta user's browser. Read, never written or removed:
+/// if the cut-over is rolled back, the beta finds its build where it left it.
+const BETA_BUILD_KEY: &str = "coh-planner-build";
+
+/// Set once the carry-over has been decided, either way, so it happens on one boot only.
+const BETA_CARRIED_KEY: &str = "sk-beta-carried";
+
+/// What the carry-over decides on, read in one script so the four answers agree.
+fn read_beta_carry_over() -> String {
+    let ours = crate::build_store::KEY_BUILD;
+    format!(
+        "try {{ return {{ \
+           carried: localStorage.getItem({BETA_CARRIED_KEY:?}) !== null, \
+           beta: localStorage.getItem({BETA_BUILD_KEY:?}), \
+           ours: localStorage.getItem({ours:?}) !== null, \
+           fragment: (window.location.hash || '').length > 1 \
+         }}; }} catch (_) {{ return null; }}"
+    )
+}
+
+/// The beta's working build as a v4 `.skif` document, for [`take_build`], or `None` when there is
+/// nothing worth opening: unreadable state, or a build with no archetype chosen.
+///
+/// The stored build is the beta's whole `Build`, a superset of the slim one its `.skif` export
+/// writes, and the legacy reader ignores the fields it does not use. So wrapping it is enough:
+/// it then resolves through exactly the rules an exported beta file does, `serverId` included.
+fn beta_working_build(raw: &str) -> Option<String> {
+    let persisted: serde_json::Value = serde_json::from_str(raw).ok()?;
+    let state = persisted.get("state")?;
+    let build = match state.get("buildsByServer") {
+        Some(by_server) => {
+            let active = state.get("activeServerId")?.as_str()?;
+            by_server.get(active)?
+        }
+        None => state.get("build")?,
+    };
+    build
+        .pointer("/archetype/id")
+        .and_then(|id| id.as_str())
+        .filter(|id| !id.is_empty())?;
+    Some(serde_json::json!({ "version": 4, "build": build }).to_string())
+}
+
+/// Opens the build a returning beta user was working on, once, the first time they reach this
+/// app on the beta's old address.
+///
+/// Skipped, and marked done, when this browser already has a working build here: that is
+/// someone who has used this app on this origin, and replacing their build would be the loss.
+/// Skipped WITHOUT marking when the visit arrived with a fragment, a shared build or a sign-in
+/// coming back, so the two never race for the working build. The next boot decides.
+#[component]
+pub fn BetaCarryOverHost(dataset: Signal<DatasetId>) -> Element {
+    let session = use_context::<BuildSession>();
+    let pending = use_context::<BuildIoPending>().0;
+    let choice = use_context::<BuildIoChoice>().0;
+    let report = use_context::<BuildIoReport>().0;
+
+    use_future(move || async move {
+        let Ok(value) = document::eval(&read_beta_carry_over()).await else {
+            return;
+        };
+        let flag = |key: &str| value.get(key).and_then(|v| v.as_bool()).unwrap_or(false);
+        let Some(beta) = value.get("beta").and_then(|v| v.as_str()) else {
+            return;
+        };
+        if flag("carried") || flag("fragment") {
+            return;
+        }
+        crate::storage::commit(format!(
+            "try {{ localStorage.setItem({BETA_CARRIED_KEY:?}, '1'); }} catch (_) {{}}"
+        ));
+        if flag("ours") {
+            return;
+        }
+        if let Some(text) = beta_working_build(beta) {
+            take_build(
+                text,
+                "Your build from Sidekick beta".to_string(),
+                None,
+                None,
+                dataset,
+                session,
+                pending,
+                choice,
+                report,
+            );
+        }
+    });
+
+    rsx! {}
+}
+
+// ============================================================
 // The receipt.
 // ============================================================
 
@@ -1303,6 +1401,68 @@ mod tests {
             .join("../../fixtures/import-link/vault/eidothea.frag");
         let fragment = std::fs::read_to_string(&path).expect("fixture reads");
         read_pasted(&fragment).expect("the link decodes")
+    }
+
+    /// A beta autosave, built from a real beta export: the persisted envelope around the build,
+    /// with the definition fields the stored `Build` carries and the export strips.
+    fn beta_autosave(skif: &str, active: &str) -> (String, serde_json::Value) {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/skif/v4").join(skif);
+        let file: serde_json::Value =
+            serde_json::from_str(&std::fs::read_to_string(&path).expect("fixture")).unwrap();
+        let mut build = file["build"].clone();
+        build["sets"] = serde_json::json!({ "basilisks_gaze": { "count": 4, "pieces": [1, 2, 3, 4] } });
+        for power in build["primary"]["powers"].as_array_mut().unwrap() {
+            power["description"] = "a definition the export strips".into();
+            power["effects"] = serde_json::json!({ "damage": [] });
+            for slot in power["slots"].as_array_mut().unwrap() {
+                if slot.is_object() {
+                    slot["name"] = "Basilisk's Gaze".into();
+                    slot["icon"] = "Immobilize.png".into();
+                }
+            }
+        }
+        let raw = serde_json::json!({
+            "state": { "activeServerId": active, "buildsByServer": { active: build } },
+            "version": 1,
+        });
+        (raw.to_string(), file)
+    }
+
+    #[test]
+    fn a_beta_autosave_opens_as_the_build_its_export_would() {
+        let dataset = DatasetId::Homecoming;
+        let database = bundle(dataset);
+        let (raw, file) = beta_autosave("homecoming-troller.skif", "homecoming");
+        let carried = beta_working_build(&raw).expect("a build with an archetype");
+        let carried = build_file::decode_import(&carried, &database, dataset).expect("decodes");
+        let exported =
+            build_file::decode_import(&file.to_string(), &database, dataset).expect("decodes");
+        assert_eq!(carried.build, exported.build);
+    }
+
+    #[test]
+    fn a_beta_autosave_reads_the_active_server_and_the_v0_shape() {
+        let (raw, _) = beta_autosave("homecoming-troller.skif", "homecoming");
+        let mut persisted: serde_json::Value = serde_json::from_str(&raw).unwrap();
+        persisted["state"]["activeServerId"] = "rebirth".into();
+        assert_eq!(beta_working_build(&persisted.to_string()), None, "rebirth has no build");
+
+        let build = persisted["state"]["buildsByServer"]["homecoming"].clone();
+        let v0 = serde_json::json!({ "state": { "build": build }, "version": 0 });
+        assert!(beta_working_build(&v0.to_string()).is_some());
+    }
+
+    #[test]
+    fn an_empty_or_unreadable_beta_autosave_opens_nothing() {
+        let empty = serde_json::json!({
+            "state": { "activeServerId": "homecoming", "buildsByServer": {
+                "homecoming": { "archetype": { "id": null, "name": "" }, "primary": { "powers": [] } }
+            } },
+            "version": 1,
+        });
+        assert_eq!(beta_working_build(&empty.to_string()), None);
+        assert_eq!(beta_working_build("not json"), None);
+        assert_eq!(beta_working_build("{}"), None);
     }
 
     fn bundle(dataset: DatasetId) -> PowerDatabase {

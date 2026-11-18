@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publish the web build to next.coh-sidekick.com from this machine: deploy-web.yml's two steps,
+# Publish the web build to coh-sidekick.com from this machine: deploy-web.yml's two steps,
 # run locally while the repo is private and hosted Actions minutes are out.
 #
 # Reads the three build settings from deploy-web.env.local at the repo root (git-ignored). Needs

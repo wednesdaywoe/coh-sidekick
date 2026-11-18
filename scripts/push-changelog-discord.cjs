@@ -62,7 +62,7 @@ const TYPE_META = {
 
 // Every title says which app it is about, since the beta posts to the same channel.
 const PRODUCT = 'Sidekick 1.0';
-const SITE = 'https://next.coh-sidekick.com';
+const SITE = 'https://coh-sidekick.com';
 
 // A date with several types takes the colour of the first type in this order.
 const COLOR_PRIORITY = ['feat', 'fix', 'update', 'known-issue'];

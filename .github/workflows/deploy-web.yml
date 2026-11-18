@@ -1,12 +1,12 @@
-# Publish the web build to next.coh-sidekick.com, the rebuild's public test site.
+# Publish the web build to coh-sidekick.com (and next.coh-sidekick.com, which hands off to it).
 #
 # Separate from ci.yml on purpose, and NOT gated on it: on 2026-09-29 the last green CI run on
 # main was days old -- every run since was cancelled or still queued behind the self-hosted
 # runners -- so a deploy that waited on CI would not deploy. This job builds on a hosted runner
 # with nothing but the pinned toolchain, and ships what `main` says.
 #
-# The live beta at coh-sidekick.com is a different repo (CoH-Sidekick) on GitHub Pages; nothing
-# here can reach it. `wrangler.toml` names the Worker and the one hostname it owns.
+# `wrangler.toml` names the Worker and the two hostnames it owns. The first deploy that carries
+# the apex route needs the apex's GitHub Pages DNS records gone first; see docs/apex-cutover.md.
 #
 # Secrets (repo Settings -> Secrets and variables -> Actions):
 #   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID  -- required; the deploy step fails without them
