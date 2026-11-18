@@ -771,6 +771,15 @@ pub struct AtomicEffect {
     /// STAMPED BY THE CONVERTER for [`redirect_base`](Self::redirect_base)'s reason: the class
     /// lives on the entity def the spawning row names, two files away from the row.
     pub pet_class: Option<Box<str>>,
+
+    /// The entity this `EntCreate` row spawns, verbatim from the template's `params.entity_def`
+    /// (`MastermindPets_Soldier`, `MastermindPets_Medic`). A parser datum, not a converter verdict:
+    /// the name the row states, carried so a roster projection can name each summoned pet —
+    /// including the gated templates the summon extractor skips (the Soldiers Medic at
+    /// `combatlevel>17`), whose entity name otherwise never reaches the wire. `None` on every
+    /// non-`EntCreate` atom and on an `EntCreate` that states no named entity (DATA-GAP-REGISTER
+    /// ENT-10, the henchman roster).
+    pub entity_def: Option<Box<str>>,
 }
 
 impl AtomicEffect {

@@ -47,6 +47,7 @@
   "conditionalId",
   "stackByAttribAndKey",
   "redirectBase",
-  "petClass"
+  "petClass",
+  "entityDef"
  ]
 }

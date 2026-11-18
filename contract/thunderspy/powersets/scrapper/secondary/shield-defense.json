@@ -3640,7 +3640,12 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shield_Charge_Scrapper"
     ]
    ],
    "damageTypes": [

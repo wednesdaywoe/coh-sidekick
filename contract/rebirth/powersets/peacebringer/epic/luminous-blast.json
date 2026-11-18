@@ -7135,7 +7135,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_LightDrone1"
     ],
     [
      "EntCreate",
@@ -7170,7 +7175,22 @@
      null,
      null,
      null,
-     "Level"
+     "Level",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_LightDrone2"
     ],
     [
      "EntCreate",
@@ -7205,7 +7225,22 @@
      null,
      null,
      null,
-     "Level"
+     "Level",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_LightDrone3"
     ]
    ],
    "modesDisallowed": [

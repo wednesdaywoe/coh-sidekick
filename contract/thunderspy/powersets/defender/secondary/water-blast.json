@@ -4074,7 +4074,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Whirlpool_Defender"
     ],
     [
      "GrantPower",

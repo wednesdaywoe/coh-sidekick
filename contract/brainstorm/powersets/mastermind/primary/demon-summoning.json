@@ -418,7 +418,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Fiery_Demonling"
     ],
     [
      "Stealth",
@@ -557,7 +562,18 @@
      null,
      null,
      null,
-     3.35
+     3.35,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Cold_Demonling"
     ],
     [
      "EntCreate",
@@ -601,7 +617,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Hellfire_Demonling"
     ],
     [
      "RechargePower",
@@ -2443,7 +2470,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Ember_Demon"
     ],
     [
      "EntCreate",
@@ -2487,7 +2519,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Hellfire_Gargoyle"
     ],
     [
      "RechargePower",
@@ -2799,7 +2842,12 @@
      null,
      null,
      null,
-     90
+     90,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -2838,7 +2886,18 @@
      null,
      null,
      null,
-     10
+     10,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -2877,7 +2936,18 @@
      null,
      null,
      null,
-     20
+     20,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -2916,7 +2986,18 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -2955,7 +3036,18 @@
      null,
      null,
      null,
-     40
+     40,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -2994,7 +3086,18 @@
      null,
      null,
      null,
-     50
+     50,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -3033,7 +3136,18 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -3072,7 +3186,18 @@
      null,
      null,
      null,
-     70
+     70,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -3111,7 +3236,18 @@
      null,
      null,
      null,
-     80
+     80,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ],
     [
      "EntCreate",
@@ -3150,7 +3286,18 @@
      null,
      null,
      null,
-     90
+     90,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Living_Hellfire"
     ]
    ],
    "specialEffects": [
@@ -3280,7 +3427,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Demon_Prince"
     ],
     [
      "RechargePower",

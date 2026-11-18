@@ -1265,7 +1265,12 @@
      null,
      null,
      null,
-     10
+     10,
+     null,
+     null,
+     null,
+     null,
+     "Pets_FlameThrower"
     ]
    ],
    "damageTypes": [

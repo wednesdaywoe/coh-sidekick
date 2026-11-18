@@ -106,7 +106,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Umbra_Beast"
     ]
    ]
   },
@@ -1986,7 +1991,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shade"
     ],
     [
      "EntCreate",
@@ -2021,7 +2031,22 @@
      null,
      null,
      null,
-     "Ones"
+     "Ones",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shade"
     ],
     [
      "GrantPower",
@@ -2155,7 +2180,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shadow_Field_Dominator"
     ],
     [
      "EntCreate",
@@ -2206,7 +2236,11 @@
      null,
      null,
      null,
-     "domination"
+     "domination",
+     null,
+     null,
+     null,
+     "Pets_Shadow_Field_Dominator_Domination"
     ]
    ],
    "conditionalEffects": [
@@ -2361,7 +2395,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shade"
     ],
     [
      "EntCreate",
@@ -2396,7 +2435,22 @@
      null,
      null,
      null,
-     "Level"
+     "Level",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shade"
     ],
     [
      "EntCreate",
@@ -2431,7 +2485,22 @@
      null,
      null,
      null,
-     "Level"
+     "Level",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shade"
     ]
    ]
   }

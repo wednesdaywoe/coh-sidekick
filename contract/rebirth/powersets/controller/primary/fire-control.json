@@ -3075,7 +3075,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Bonfire"
     ]
    ]
   },
@@ -3167,7 +3172,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_FireImp"
     ],
     [
      "EntCreate",
@@ -3206,7 +3216,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_FireImp"
     ],
     [
      "EntCreate",
@@ -3245,7 +3266,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_FireImp"
     ]
    ]
   }

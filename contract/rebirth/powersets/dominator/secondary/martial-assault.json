@@ -747,7 +747,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Trick_Shot_Jump1"
     ],
     [
      "Meta",
@@ -1646,7 +1651,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Caltrops"
     ]
    ]
   },

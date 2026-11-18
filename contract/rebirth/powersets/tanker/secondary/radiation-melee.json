@@ -3222,7 +3222,12 @@
      null,
      null,
      null,
-     10
+     10,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Radiation_Melee_Irradiated_Ground_Pet"
     ]
    ]
   },

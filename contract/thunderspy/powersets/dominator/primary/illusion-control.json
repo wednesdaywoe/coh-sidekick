@@ -402,7 +402,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Phantasm"
     ]
    ],
    "damageTypes": [
@@ -1332,7 +1337,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Terror"
     ],
     [
      "EntCreate",
@@ -1383,7 +1393,11 @@
      null,
      null,
      null,
-     "domination"
+     "domination",
+     null,
+     null,
+     null,
+     "Pets_Terror"
     ]
    ],
    "conditionalEffects": [
@@ -1495,7 +1509,12 @@
      null,
      null,
      null,
-     10
+     10,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Mirage_Dominator"
     ],
     [
      "EntCreate",
@@ -1546,7 +1565,11 @@
      null,
      null,
      null,
-     "domination"
+     "domination",
+     null,
+     null,
+     null,
+     "Pets_Mirage_Dominator_Domination"
     ]
    ],
    "conditionalEffects": [
@@ -1655,7 +1678,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy"
     ],
     [
      "EntCreate",
@@ -1694,7 +1722,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy"
     ],
     [
      "EntCreate",
@@ -1733,7 +1772,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy"
     ],
     [
      "EntCreate",
@@ -1784,7 +1834,11 @@
      null,
      null,
      null,
-     "domination"
+     "domination",
+     null,
+     null,
+     null,
+     "Pets_Decoy"
     ]
    ],
    "conditionalEffects": [

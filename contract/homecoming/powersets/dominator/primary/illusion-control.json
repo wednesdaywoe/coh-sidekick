@@ -1052,7 +1052,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Terror"
     ]
    ]
   },
@@ -2934,7 +2939,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy_Dominator"
     ],
     [
      "EntCreate",
@@ -2981,7 +2991,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy_Dominator"
     ],
     [
      "EntCreate",
@@ -3028,7 +3049,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy_Dominator"
     ],
     [
      "Meta",
@@ -3121,7 +3153,18 @@
      null,
      null,
      null,
-     0.1
+     0.1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy_Dominator"
     ],
     [
      "EntCreate",
@@ -3169,7 +3212,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy_Dominator"
     ],
     [
      "EntCreate",
@@ -3217,7 +3271,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Decoy_Dominator"
     ],
     [
      "Meta",
@@ -3606,7 +3671,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Phantasm"
     ]
    ]
   }

@@ -830,7 +830,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_StickyArrow_Blaster"
     ],
     [
      "DamageBuff",
@@ -4431,7 +4436,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_OilSlickOil_Blaster"
     ],
     [
      "DamageBuff",

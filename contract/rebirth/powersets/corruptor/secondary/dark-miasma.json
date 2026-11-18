@@ -101,7 +101,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Twilight"
     ],
     [
      "ToHit",
@@ -585,7 +590,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_TarPatch"
     ]
    ]
   },
@@ -1370,7 +1380,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_HowlingVillain"
     ],
     [
      "Mez",
@@ -2599,7 +2614,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Black_Hole"
     ],
     [
      "EntCreate",
@@ -2634,7 +2654,22 @@
      null,
      null,
      null,
-     "Ones"
+     "Ones",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Black_Hole_Phased"
     ]
    ]
   },
@@ -2732,7 +2767,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_V_DarkServant"
     ]
    ]
   }

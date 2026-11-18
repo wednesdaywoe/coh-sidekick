@@ -4625,7 +4625,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_VoltaicSentinel"
     ],
     [
      "DamageBuff",

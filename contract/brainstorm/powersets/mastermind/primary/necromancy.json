@@ -170,7 +170,22 @@
      null,
      null,
      null,
-     "UndeadForces"
+     "UndeadForces",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Enslaved_Specter"
     ]
    ]
   },
@@ -265,7 +280,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Zombie"
     ],
     [
      "Stealth",
@@ -404,7 +424,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Zombie"
     ],
     [
      "EntCreate",
@@ -448,7 +479,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Zombie"
     ],
     [
      "RechargePower",
@@ -652,7 +694,22 @@
      null,
      null,
      null,
-     "UndeadForces"
+     "UndeadForces",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Enslaved_Specter2"
     ]
    ]
   },
@@ -1533,7 +1590,22 @@
      null,
      null,
      null,
-     "UndeadForces"
+     "UndeadForces",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Enslaved_Specter3"
     ]
    ]
   },
@@ -1632,7 +1704,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Skeletal_Warrior"
     ],
     [
      "EntCreate",
@@ -1676,7 +1753,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Skeletal_Warrior"
     ],
     [
      "RechargePower",
@@ -1869,7 +1957,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Ghost_Boss"
     ],
     [
      "EntCreate",
@@ -1917,7 +2010,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Ghost_Lt"
     ],
     [
      "EntCreate",
@@ -1965,7 +2063,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Ghost_Minion"
     ]
    ]
   },
@@ -2068,7 +2171,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Lich"
     ],
     [
      "RechargePower",

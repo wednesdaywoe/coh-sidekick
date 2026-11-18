@@ -194,7 +194,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "Damage",
@@ -509,7 +514,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "Damage",
@@ -902,7 +912,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "Damage",
@@ -1302,7 +1317,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "Damage",
@@ -2683,7 +2703,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "EntCreate",
@@ -2718,7 +2743,22 @@
      null,
      null,
      null,
-     "Ones"
+     "Ones",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "EntCreate",
@@ -2753,7 +2793,22 @@
      null,
      null,
      null,
-     "Ones"
+     "Ones",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ]
    ]
   },
@@ -2939,7 +2994,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "Damage",
@@ -3294,7 +3354,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "Damage",
@@ -4104,7 +4169,12 @@
      null,
      null,
      null,
-     6
+     6,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "EntCreate",
@@ -4143,7 +4213,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "EntCreate",
@@ -4182,7 +4263,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Telekinetic_Sword"
     ],
     [
      "Damage",

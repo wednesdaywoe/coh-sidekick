@@ -764,7 +764,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Triage_Beacon"
     ]
    ]
   },
@@ -857,7 +862,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Acid_Mortar"
     ]
    ]
   },
@@ -945,7 +955,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_FF_Generator"
     ]
    ]
   },
@@ -1137,7 +1152,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker1"
     ],
     [
      "EntCreate",
@@ -1176,7 +1196,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker1"
     ]
    ]
   },

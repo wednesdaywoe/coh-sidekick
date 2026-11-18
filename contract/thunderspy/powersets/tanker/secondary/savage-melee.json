@@ -4825,7 +4825,12 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Savage_Melee_Savage_Leap"
     ],
     [
      "GrantPower",

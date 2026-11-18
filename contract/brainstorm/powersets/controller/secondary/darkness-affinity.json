@@ -1246,7 +1246,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_HowlingVillain"
     ],
     [
      "Mez",
@@ -2707,7 +2712,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_SoulAbsorptionBuff"
     ],
     [
      "ToHit",
@@ -3357,7 +3367,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_V_DarkServant"
     ]
    ]
   }

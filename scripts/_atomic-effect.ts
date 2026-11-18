@@ -385,6 +385,21 @@ export interface AtomicEffect {
   petClass?: string;
 
   /**
+   * The entity this `EntCreate` row spawns, verbatim from the template's `params.entity_def`
+   * (e.g. `MastermindPets_Soldier`, `MastermindPets_Medic`). A parser datum like {@link stackKey},
+   * NOT a converter verdict: it carries the name the row states so a roster projection can name
+   * each summoned pet — including the GATED templates `extractSummon` skips (the Soldiers Medic
+   * at `combatlevel>17`), whose entity name otherwise never reaches the wire.
+   *
+   * STAMPED BY THE CONVERTER only in the sense that the encoder copies it off the source template
+   * (see `encodeAtomsForEmit`); the value itself is the export's own. Present only on `EntCreate`
+   * rows that state a named `entity_def`; an entity-less or redirect-only `EntCreate` carries none.
+   * Absent everywhere else, so it appends last on the trailing-null economics (DATA-GAP-REGISTER
+   * ENT-10, the henchman roster).
+   */
+  entityDef?: string;
+
+  /**
    * True when this atom is combat-SUPPRESSED — the game turns it off while the
    * caster is in combat (Hide's +Def, Stealth/Cloaking Device's +Def, and every
    * travel-power speed/cap buff), and the planner's In-Combat toggle removes it
@@ -775,6 +790,10 @@ export const ATOM_TUPLE_FIELDS = [
   // helper applies to its summoner carry one (Rebirth and Thunderspy's Kinetics family), so
   // every other atom's encoding stays byte-identical.
   'petClass',
+  // `entityDef` appends last on the same trailing-null economics: only `EntCreate` rows that
+  // state a named `entity_def` carry one (~1k corpus-wide against ~190k atoms), so every other
+  // atom's encoding stays byte-identical and the summon rows pay the interior nulls.
+  'entityDef',
 ] as const satisfies ReadonlyArray<keyof AtomicEffect>;
 
 /** One atom, positionally encoded. A `null` at position `i` means the field

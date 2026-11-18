@@ -3327,7 +3327,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Chain_Induction_Jump1"
     ],
     [
      "Meta",
@@ -4315,7 +4320,12 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Lightning_Rod_Brute"
     ],
     [
      "EntCreate",
@@ -4354,7 +4364,18 @@
      null,
      null,
      null,
-     0.625
+     0.625,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Embraced_Lightning_Rod_Brute"
     ]
    ]
   }

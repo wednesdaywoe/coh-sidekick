@@ -1284,7 +1284,12 @@
      null,
      null,
      null,
-     5
+     5,
+     null,
+     null,
+     null,
+     null,
+     "Pets_OilSlickLighter"
     ],
     [
      "ToHit",
@@ -1735,7 +1740,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_StickyArrow"
     ]
    ]
   },
@@ -2637,7 +2647,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_PoisonGasArrow"
     ]
    ]
   },
@@ -3666,7 +3681,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_SonicDebuffArrow_Controller"
     ]
    ]
   },
@@ -3768,7 +3788,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_OilSlickOil"
     ]
    ],
    "conditionalEffects": [
@@ -4069,7 +4094,12 @@
      null,
      null,
      null,
-     5
+     5,
+     null,
+     null,
+     null,
+     null,
+     "Pets_OilSlickLighter"
     ],
     [
      "Mez",

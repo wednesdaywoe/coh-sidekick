@@ -1773,7 +1773,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_FreezingRain"
     ]
    ]
   },
@@ -2458,7 +2463,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Tornado"
     ]
    ]
   },
@@ -2552,7 +2562,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_LightningStorm"
     ]
    ]
   }

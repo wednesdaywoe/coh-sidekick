@@ -4079,7 +4079,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Sleet"
     ]
    ],
    "damageTypes": [
@@ -4184,7 +4189,12 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     "Pets_HeatLossDebuff"
     ],
     [
      "EntCreate",
@@ -4219,7 +4229,22 @@
      null,
      null,
      null,
-     "Ones"
+     "Ones",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_HeatLossBuff"
     ],
     [
      "Endurance",

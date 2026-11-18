@@ -1256,7 +1256,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_IceStorm_Defender"
     ]
    ]
   },
@@ -1967,7 +1972,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Blizzard_Defender"
     ]
    ]
   }

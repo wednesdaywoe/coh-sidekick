@@ -2445,7 +2445,12 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     "Pets_RainofArrows_Visual"
     ],
     [
      "EntCreate",
@@ -2484,7 +2489,18 @@
      null,
      null,
      null,
-     1.8
+     1.8,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_RainofArrows_Corruptor"
     ]
    ],
    "damageTypes": [

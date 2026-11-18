@@ -2069,7 +2069,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shade"
     ],
     [
      "EntCreate",
@@ -2089,7 +2094,37 @@
      null,
      1,
      null,
-     true
+     true,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shade"
     ],
     [
      "GrantPower",
@@ -2203,7 +2238,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Shadow_Field_Controller"
     ]
    ]
   },
@@ -2303,7 +2343,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Umbra_Beast_Controller"
     ]
    ]
   }

@@ -2919,7 +2919,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_IceStorm"
     ],
     [
      "DamageBuff",
@@ -4792,7 +4797,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Blizzard"
     ],
     [
      "DamageBuff",

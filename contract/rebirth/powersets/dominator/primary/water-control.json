@@ -2330,7 +2330,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Water_Control_Geyser_Burst"
     ]
    ]
   },
@@ -2880,7 +2885,12 @@
      null,
      null,
      null,
-     20
+     20,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Water_Control_Riptide"
     ]
    ]
   },
@@ -4613,7 +4623,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Water_Control_Water_Golem"
     ]
    ]
   }

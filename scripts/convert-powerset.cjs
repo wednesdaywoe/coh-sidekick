@@ -6565,6 +6565,13 @@ function encodeAtomsForEmit(templates, baseTemplates, powerName) {
     // entity def that names the class is two files away from the row (AtomicEffect.petClass).
     if (src && src._petClass) patch.petClass = src._petClass;
     if (src && src._summonWindow > 0) patch.summonWindow = src._summonWindow;
+    // The entity this EntCreate row spawns, verbatim from the template's params. Carried so a
+    // roster projection can name each summoned pet INCLUDING the gated templates extractSummon
+    // skips (the Soldiers Medic at combatlevel>17), whose entity name otherwise never reaches the
+    // wire. Additive: only EntCreate rows stating a named entity_def carry one (AtomicEffect.entityDef).
+    if (a.effectType === 'EntCreate' && src?.params?.type === 'EntCreate' && src.params.entity_def) {
+      patch.entityDef = src.params.entity_def;
+    }
     // Combat-suppression (Hide +Def, travel buffs). Mirrors the routing's
     // `isCombatSuppressed`: an `ActivateAttackClick`-family suppress event OR an
     // OutOfCombat requires-gate. The event half is a template tail field that

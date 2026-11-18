@@ -267,7 +267,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Zombie"
     ],
     [
      "EntCreate",
@@ -311,7 +316,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Zombie"
     ],
     [
      "EntCreate",
@@ -355,7 +371,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Zombie"
     ]
    ]
   },
@@ -1543,7 +1570,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Skeletal_Warrior"
     ],
     [
      "EntCreate",
@@ -1587,7 +1619,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Skeletal_Warrior"
     ]
    ]
   },
@@ -1752,7 +1795,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Zombie_Extraction"
     ],
     [
      "EntCreate",
@@ -1851,7 +1905,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Skeletal_Warrior_Extraction"
     ]
    ],
    "damageTypes": [
@@ -1957,7 +2022,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Lich"
     ]
    ]
   },

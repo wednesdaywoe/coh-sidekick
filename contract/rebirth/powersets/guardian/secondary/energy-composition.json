@@ -785,7 +785,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_SiphonPower_Controller"
     ],
     [
      "DamageBuff",
@@ -3078,7 +3083,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Guardian_InertialSiphonBuff"
     ],
     [
      "Movement",
@@ -4166,7 +4176,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Transference_Controller"
     ],
     [
      "Endurance",
@@ -4391,7 +4406,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_KineticTransferDebuff_Controller"
     ],
     [
      "EntCreate",
@@ -4426,7 +4446,22 @@
      null,
      null,
      null,
-     "Ones"
+     "Ones",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_KineticTransferBuffSelf_Controller"
     ],
     [
      "DamageBuff",

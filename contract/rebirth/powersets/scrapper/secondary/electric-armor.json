@@ -3343,7 +3343,12 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Power_Surge"
     ],
     [
      "MezResist",

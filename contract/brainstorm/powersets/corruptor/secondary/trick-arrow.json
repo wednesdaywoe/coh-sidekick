@@ -5621,7 +5621,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_OilSlickOil"
     ]
    ],
    "conditionalEffects": [

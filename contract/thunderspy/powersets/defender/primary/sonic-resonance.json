@@ -4667,7 +4667,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Liquefy_Defender"
     ],
     [
      "EntCreate",
@@ -4702,7 +4707,22 @@
      null,
      null,
      null,
-     "Level"
+     "Level",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_ShockDef"
     ]
    ],
    "damageTypes": [

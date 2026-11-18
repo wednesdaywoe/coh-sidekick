@@ -2774,7 +2774,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_IceSlick"
     ]
    ]
   },
@@ -3760,7 +3765,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_JackFrost"
     ]
    ]
   }

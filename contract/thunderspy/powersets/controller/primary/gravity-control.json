@@ -105,7 +105,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Singularity"
     ]
    ]
   },
@@ -3167,7 +3172,12 @@
      null,
      null,
      "OnActivate",
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Dimension_Shift"
     ],
     [
      "EntCreate",
@@ -3211,7 +3221,13 @@
      null,
      null,
      null,
-     "OnActivate"
+     "OnActivate",
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Dimension_Shift_Phased"
     ]
    ]
   },

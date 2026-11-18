@@ -2655,7 +2655,12 @@
       null,
       null,
       null,
-      15
+      15,
+      null,
+      null,
+      null,
+      null,
+      "Pets_IceStorm"
      ],
      [
       "EntCreate",
@@ -2690,7 +2695,22 @@
       null,
       null,
       null,
-      "FieryEmbrace"
+      "FieryEmbrace",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Embraced_IceStorm"
      ]
     ]
    }
@@ -3777,7 +3797,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Arachnobot_Spiderling"
      ],
      [
       "EntCreate",
@@ -3816,7 +3841,18 @@
       null,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Arachnobot_Spiderling"
      ],
      [
       "EntCreate",
@@ -3855,7 +3891,18 @@
       null,
       null,
       null,
-      2
+      2,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Arachnobot_Spiderling"
      ]
     ]
    },
@@ -4778,7 +4825,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Mu_Adept"
      ]
     ]
    },
@@ -14529,7 +14581,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Coral_Guardian_Sentinel"
      ]
     ]
    }
@@ -16541,7 +16598,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Arachnobot_Blaster"
      ]
     ]
    }
@@ -19053,7 +19115,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Mu_Striker"
      ]
     ]
    }
@@ -20904,7 +20971,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Blood_Widow"
      ]
     ]
    }
@@ -26903,7 +26975,12 @@
       null,
       null,
       null,
-      30
+      30,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Water_Spout"
      ]
     ]
    },
@@ -28019,7 +28096,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Blue_Corolax"
      ]
     ]
    }
@@ -29840,7 +29922,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Toxic_Tarantula"
      ]
     ]
    }
@@ -31259,7 +31346,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Mu_Guardian"
      ]
     ]
    }
@@ -34282,7 +34374,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Fortunata_Seer"
      ]
     ]
    }
@@ -35852,7 +35949,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Coral_Guardian_Sentinel"
      ]
     ]
    }
@@ -37192,7 +37294,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Arachnobot_Disrupter"
      ]
     ]
    }
@@ -38445,7 +38552,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Mu_Adept"
      ]
     ]
    }
@@ -40881,7 +40993,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Fortunata_Mistress"
      ]
     ]
    }
@@ -48379,7 +48496,12 @@
       null,
       null,
       null,
-      30
+      30,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Water_Spout"
      ]
     ]
    },
@@ -49364,7 +49486,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Blue_Corolax"
      ]
     ]
    }
@@ -51941,7 +52068,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Toxic_Tarantula"
      ]
     ]
    }
@@ -53217,7 +53349,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Mu_Guardian"
      ]
     ]
    }
@@ -54913,7 +55050,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Fortunata_Seer"
      ]
     ]
    }
@@ -56492,7 +56634,12 @@
       null,
       null,
       null,
-      20
+      20,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Quicksand"
      ]
     ]
    },
@@ -65833,7 +65980,12 @@
       null,
       null,
       null,
-      5
+      5,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Phoenix"
      ],
      [
       "Mez",
@@ -66447,7 +66599,12 @@
       null,
       null,
       null,
-      15
+      15,
+      null,
+      null,
+      null,
+      null,
+      "Pets_RainofFire"
      ]
     ]
    },
@@ -66971,7 +67128,12 @@
       null,
       null,
       null,
-      5
+      5,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Phoenix"
      ],
      [
       "Mez",
@@ -67605,7 +67767,12 @@
       null,
       null,
       null,
-      45
+      45,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Bonfire"
      ]
     ]
    },
@@ -68806,7 +68973,12 @@
       null,
       null,
       null,
-      5
+      5,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Phoenix"
      ],
      [
       "Mez",
@@ -71274,7 +71446,12 @@
       null,
       null,
       null,
-      45
+      45,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Bonfire"
      ]
     ]
    },
@@ -72286,7 +72463,12 @@
       null,
       null,
       null,
-      5
+      5,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Phoenix"
      ],
      [
       "Mez",
@@ -74634,7 +74816,12 @@
       null,
       null,
       null,
-      15
+      15,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Epic_IceStorm"
      ]
     ]
    }
@@ -74758,7 +74945,12 @@
       null,
       null,
       null,
-      15
+      15,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Sleet_Defender"
      ]
     ]
    },
@@ -76153,7 +76345,12 @@
       null,
       null,
       null,
-      15
+      15,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Epic_IceStorm"
      ]
     ]
    }
@@ -78177,7 +78374,12 @@
       null,
       null,
       null,
-      2
+      2,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Radiation_Melee_Irradiated_Ground_Pet"
      ]
     ]
    },
@@ -99232,7 +99434,12 @@
       null,
       null,
       null,
-      30
+      30,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Water_Spout_Stalker"
      ]
     ]
    },
@@ -100155,7 +100362,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Coral_Guardian_Warder"
      ]
     ]
    }
@@ -102204,7 +102416,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Arachnobot_Spiderling"
      ],
      [
       "EntCreate",
@@ -102243,7 +102460,18 @@
       null,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Arachnobot_Spiderling"
      ],
      [
       "EntCreate",
@@ -102282,7 +102510,18 @@
       null,
       null,
       null,
-      2
+      2,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Arachnobot_Spiderling"
      ]
     ]
    }
@@ -104385,7 +104624,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Mu_Adept"
      ]
     ]
    }
@@ -106007,7 +106251,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Night_Widow"
      ]
     ]
    }
@@ -109900,7 +110149,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Coral_Guardian_Sentinel"
      ]
     ]
    }
@@ -111505,7 +111759,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Toxic_Tarantula"
      ]
     ]
    }
@@ -113114,7 +113373,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Mu_Striker"
      ]
     ]
    }
@@ -114235,7 +114499,12 @@
       null,
       null,
       null,
-      240
+      240,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Patron_Powers_Blood_Widow"
      ]
     ]
    }
@@ -114956,7 +115225,12 @@
       null,
       null,
       null,
-      45
+      45,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Caltrops"
      ]
     ]
    },

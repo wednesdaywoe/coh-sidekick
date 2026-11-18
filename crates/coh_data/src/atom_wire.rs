@@ -7,7 +7,7 @@ use crate::atom::*;
 use serde_json::Value;
 
 /// Wire order authority. MUST match the TS `ATOM_TUPLE_FIELDS` exactly.
-pub const ATOM_TUPLE_FIELDS: [&str; 47] = [
+pub const ATOM_TUPLE_FIELDS: [&str; 48] = [
     "effectType",
     "subType",
     "scale",
@@ -55,6 +55,7 @@ pub const ATOM_TUPLE_FIELDS: [&str; 47] = [
     "stackByAttribAndKey",
     "redirectBase",
     "petClass",
+    "entityDef",
 ];
 
 #[derive(Debug, thiserror::Error)]
@@ -187,6 +188,7 @@ pub fn decode_atom(tuple: &[Value]) -> Result<AtomicEffect, AtomDecodeError> {
         stack_by_attrib_and_key: b(44)?,
         redirect_base: f(45)?,
         pet_class: s(46)?.map(Box::from),
+        entity_def: s(47)?.map(Box::from),
     })
 }
 

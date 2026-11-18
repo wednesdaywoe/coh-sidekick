@@ -2680,7 +2680,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_FreezingRain_Controller"
     ]
    ],
    "damageTypes": [
@@ -3496,7 +3501,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Tornado"
     ]
    ],
    "damageTypes": [
@@ -3600,7 +3610,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_LightningStorm"
     ]
    ],
    "damageTypes": [

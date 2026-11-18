@@ -4849,7 +4849,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Chain_Induction_Jump1"
     ],
     [
      "Meta",
@@ -5733,7 +5738,12 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Lightning_Rod_Stalker"
     ],
     [
      "GrantPower",

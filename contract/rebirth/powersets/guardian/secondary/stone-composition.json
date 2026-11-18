@@ -1444,7 +1444,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Quicksand"
     ]
    ]
   },
@@ -2722,7 +2727,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Earthquake"
     ]
    ]
   },
@@ -2820,7 +2830,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Guardian_StoneComposition_Eruption"
     ]
    ]
   }

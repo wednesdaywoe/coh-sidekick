@@ -99,7 +99,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Transfusion"
     ],
     [
      "Endurance",
@@ -664,7 +669,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_SiphonPower"
     ],
     [
      "DamageBuff",
@@ -3203,7 +3213,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Transference"
     ],
     [
      "Endurance",
@@ -3429,7 +3444,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_KineticTransferDebuff"
     ],
     [
      "EntCreate",
@@ -3464,7 +3484,22 @@
      null,
      null,
      null,
-     "Ones"
+     "Ones",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_KineticTransferBuffSelf"
     ],
     [
      "DamageBuff",

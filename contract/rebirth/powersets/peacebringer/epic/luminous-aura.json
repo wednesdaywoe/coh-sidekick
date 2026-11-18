@@ -10499,7 +10499,12 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Dive_Attack"
     ]
    ],
    "requires": [

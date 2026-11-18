@@ -2721,7 +2721,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Liquefy"
     ],
     [
      "EntCreate",
@@ -2756,7 +2761,22 @@
      null,
      null,
      null,
-     "Level"
+     "Level",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_ShockCont"
     ]
    ]
   }

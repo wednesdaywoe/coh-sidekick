@@ -467,7 +467,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Caltrops"
     ]
    ],
    "damageTypes": [
@@ -566,7 +571,12 @@
      null,
      null,
      "OnActivate",
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Triage_Beacon"
     ],
     [
      "Endurance",
@@ -710,7 +720,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Acid_Mortar_Defender"
     ]
    ],
    "damageTypes": [
@@ -803,7 +818,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_FF_Generator_Defender"
     ]
    ]
   },
@@ -891,7 +911,12 @@
      null,
      null,
      null,
-     260
+     260,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Poison_Trap_Defender"
     ]
    ]
   },
@@ -997,7 +1022,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker1_Defender"
     ],
     [
      "EntCreate",
@@ -1036,7 +1066,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker2_Defender"
     ]
    ],
    "damageTypes": [
@@ -1131,7 +1172,12 @@
      null,
      null,
      null,
-     260
+     260,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Mine_Defender"
     ]
    ]
   },
@@ -1224,7 +1270,12 @@
      null,
      null,
      null,
-     90
+     90,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Turret"
     ],
     [
      "EntCreate",
@@ -1259,7 +1310,22 @@
      null,
      null,
      null,
-     "Level"
+     "Level",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Turret"
     ]
    ],
    "damageTypes": [

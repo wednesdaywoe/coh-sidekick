@@ -2598,7 +2598,12 @@
       null,
       null,
       null,
-      14
+      14,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Experimentation_Corrosive_Vial"
      ]
     ],
     "summon": {
@@ -26135,7 +26140,12 @@
       null,
       null,
       null,
-      4
+      4,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Dive_Attack"
      ]
     ],
     "summon": {
@@ -45727,7 +45737,22 @@
       null,
       null,
       null,
-      "Ones"
+      "Ones",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_VictoryRush_Base"
      ],
      [
       "EntCreate",
@@ -45772,7 +45797,22 @@
       null,
       null,
       null,
-      "Ones"
+      "Ones",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_VictoryRush_MN"
      ],
      [
       "EntCreate",
@@ -45837,7 +45877,22 @@
       null,
       null,
       null,
-      "Ones"
+      "Ones",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_VictoryRush_LT"
      ],
      [
       "EntCreate",
@@ -45932,7 +45987,22 @@
       null,
       null,
       null,
-      "Ones"
+      "Ones",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_VictoryRush_BS"
      ],
      [
       "EntCreate",
@@ -45982,7 +46052,22 @@
       null,
       null,
       null,
-      "Ones"
+      "Ones",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_VictoryRush_EB"
      ],
      [
       "EntCreate",
@@ -46072,7 +46157,22 @@
       null,
       null,
       null,
-      "Ones"
+      "Ones",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_VictoryRush_AV"
      ]
     ]
    }
@@ -59071,7 +59171,12 @@
       null,
       null,
       null,
-      4
+      4,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Spring_Attack"
      ]
     ],
     "summon": {
@@ -65386,7 +65491,12 @@
       null,
       null,
       null,
-      5
+      5,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Enflame_Pet"
      ],
      [
       "EntCreate",
@@ -65425,7 +65535,18 @@
       null,
       null,
       null,
-      3
+      3,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Enflame_Pet"
      ],
      [
       "EntCreate",
@@ -65464,7 +65585,18 @@
       null,
       null,
       null,
-      6
+      6,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Enflame_Pet"
      ],
      [
       "EntCreate",
@@ -65503,7 +65635,18 @@
       null,
       null,
       null,
-      9
+      9,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Enflame_Pet"
      ],
      [
       "EntCreate",
@@ -65542,7 +65685,18 @@
       null,
       null,
       null,
-      12
+      12,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Enflame_Pet"
      ],
      [
       "EntCreate",
@@ -65581,7 +65735,18 @@
       null,
       null,
       null,
-      15
+      15,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Enflame_Pet"
      ]
     ],
     "summon": {
@@ -68924,7 +69089,12 @@
       null,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      "Pets_Whirlwind_Lightning_Jump1"
      ],
      [
       "Mez",
@@ -71978,7 +72148,12 @@
         null,
         null,
         null,
-        1
+        1,
+        null,
+        null,
+        null,
+        null,
+        "Pets_TPFoeTaunt"
        ]
       ]
      },
@@ -72214,7 +72389,12 @@
         null,
         null,
         null,
-        1
+        1,
+        null,
+        null,
+        null,
+        null,
+        "Pets_TPFoeTaunt"
        ]
       ]
      },
@@ -72451,7 +72631,12 @@
         null,
         null,
         null,
-        1
+        1,
+        null,
+        null,
+        null,
+        null,
+        "Pets_TPFoeTaunt"
        ]
       ]
      }
@@ -72532,7 +72717,12 @@
       null,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      "Pets_TPFoeTaunt"
      ],
      [
       "Meta",
@@ -73425,7 +73615,12 @@
       null,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      "Pets_TPFoeTaunt"
      ],
      [
       "Damage",
@@ -79046,7 +79241,12 @@
       null,
       null,
       null,
-      1
+      1,
+      null,
+      null,
+      null,
+      null,
+      "Pets_TPFoeTauntWide"
      ],
      [
       "Stealth",

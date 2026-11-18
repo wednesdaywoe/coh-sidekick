@@ -477,7 +477,11 @@
      null,
      null,
      null,
-     "beam_rifle_debuff"
+     "beam_rifle_debuff",
+     null,
+     null,
+     null,
+     "Pets_DisintegrateSpread"
     ]
    ],
    "conditionalEffects": [
@@ -983,7 +987,11 @@
      null,
      null,
      null,
-     "beam_rifle_debuff"
+     "beam_rifle_debuff",
+     null,
+     null,
+     null,
+     "Pets_DisintegrateSpread"
     ]
    ],
    "conditionalEffects": [
@@ -2641,7 +2649,11 @@
      null,
      null,
      null,
-     "beam_rifle_debuff"
+     "beam_rifle_debuff",
+     null,
+     null,
+     null,
+     "Pets_DisintegrateSpread"
     ]
    ],
    "conditionalEffects": [
@@ -3184,7 +3196,11 @@
      null,
      null,
      null,
-     "beam_rifle_debuff"
+     "beam_rifle_debuff",
+     null,
+     null,
+     null,
+     "Pets_DisintegrateSpread"
     ],
     [
      "Meta",

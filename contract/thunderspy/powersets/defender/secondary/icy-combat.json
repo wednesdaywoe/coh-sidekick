@@ -3681,7 +3681,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_IceStorm_Defender"
     ]
    ],
    "damageTypes": [
@@ -4696,7 +4701,12 @@
      null,
      null,
      null,
-     15
+     15,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Blizzard_Defender"
     ]
    ],
    "damageTypes": [

@@ -3615,7 +3615,11 @@
        null,
        null,
        null,
-       "radiation_melee_contaminated"
+       "radiation_melee_contaminated",
+       null,
+       null,
+       null,
+       "Pets_Radiation_Melee_Irradiated_Ground_Pet"
       ]
      ]
     },
@@ -3946,7 +3950,12 @@
        null,
        null,
        null,
-       10
+       10,
+       null,
+       null,
+       null,
+       null,
+       "Pets_Radiation_Melee_Irradiated_Ground_Pet"
       ],
       [
        "EntCreate",
@@ -3964,7 +3973,39 @@
        2,
        null,
        null,
-       1
+       1,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "Pets_Radiation_Melee_Irradiated_Ground_Pet"
       ],
       [
        "Stealth",

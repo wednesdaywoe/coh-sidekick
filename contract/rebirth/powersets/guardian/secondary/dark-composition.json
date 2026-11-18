@@ -443,7 +443,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Twilight"
     ],
     [
      "ToHit",
@@ -927,7 +932,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_TarPatch"
     ]
    ]
   },
@@ -2913,7 +2923,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_SoulAbsorptionBuff"
     ],
     [
      "ToHit",
@@ -3484,7 +3499,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_HowlingVillain"
     ],
     [
      "Mez",

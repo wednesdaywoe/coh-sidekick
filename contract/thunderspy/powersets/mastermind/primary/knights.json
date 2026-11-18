@@ -448,7 +448,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Knight_Minion"
     ],
     [
      "EntCreate",
@@ -492,7 +497,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Knight_Minion"
     ],
     [
      "EntCreate",
@@ -536,7 +552,18 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Knight_Minion"
     ]
    ]
   },
@@ -2668,7 +2695,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Knight_Lt"
     ],
     [
      "EntCreate",
@@ -2712,7 +2744,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Knight_Lt"
     ]
    ]
   },
@@ -3282,7 +3325,12 @@
      null,
      null,
      null,
-     120
+     120,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Militia_01"
     ],
     [
      "EntCreate",
@@ -3321,7 +3369,18 @@
      null,
      null,
      null,
-     0.5
+     0.5,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Militia_01"
     ],
     [
      "EntCreate",
@@ -3360,7 +3419,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Militia_02"
     ],
     [
      "EntCreate",
@@ -3399,7 +3469,18 @@
      null,
      null,
      null,
-     1.5
+     1.5,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Militia_02"
     ],
     [
      "EntCreate",
@@ -3438,7 +3519,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Militia_03"
     ],
     [
      "EntCreate",
@@ -3477,7 +3569,18 @@
      null,
      null,
      null,
-     1.5
+     1.5,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Militia_04"
     ]
    ]
   },
@@ -3572,7 +3675,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Knight_Boss"
     ]
    ]
   },

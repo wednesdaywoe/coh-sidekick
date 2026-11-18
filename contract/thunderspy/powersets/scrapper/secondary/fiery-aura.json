@@ -1671,7 +1671,12 @@
      null,
      null,
      null,
-     10
+     10,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Burn"
     ],
     [
      "Mez",
@@ -2346,7 +2351,12 @@
      null,
      null,
      null,
-     5
+     5,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Phoenix"
     ],
     [
      "Mez",

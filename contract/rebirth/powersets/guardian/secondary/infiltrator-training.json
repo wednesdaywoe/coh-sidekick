@@ -1880,7 +1880,12 @@
      null,
      null,
      null,
-     260
+     260,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Poison_Trap"
     ]
    ]
   },
@@ -2991,7 +2996,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker1"
     ],
     [
      "EntCreate",
@@ -3030,7 +3040,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker2"
     ]
    ]
   },
@@ -3461,7 +3482,12 @@
      null,
      null,
      null,
-     260
+     260,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Guardian_InfiltratorTraining_ShredderMine"
     ]
    ]
   }

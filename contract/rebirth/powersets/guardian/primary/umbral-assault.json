@@ -3991,7 +3991,12 @@
      null,
      null,
      null,
-     200
+     200,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Warshade_Extraction"
     ],
     [
      "Heal",

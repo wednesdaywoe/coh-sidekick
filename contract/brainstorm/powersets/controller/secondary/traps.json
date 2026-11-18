@@ -764,7 +764,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Triage_Beacon"
     ]
    ]
   },
@@ -856,7 +861,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Acid_Mortar"
     ]
    ]
   },
@@ -944,7 +954,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_FF_Generator"
     ]
    ]
   },
@@ -1137,7 +1152,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker1"
     ],
     [
      "EntCreate",
@@ -1176,7 +1196,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker1"
     ]
    ]
   },
@@ -1856,7 +1887,19 @@
      [
       "Foe",
       "DeadVillain"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Bomb"
     ],
     [
      "DamageBuff",
@@ -2334,7 +2377,19 @@
      [
       "Foe",
       "DeadVillain"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Bomb_Controller"
     ],
     [
      "EntCreate",
@@ -2380,7 +2435,19 @@
      [
       "Foe",
       "DeadVillain"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Bomb_Corruptor"
     ],
     [
      "EntCreate",
@@ -2426,7 +2493,19 @@
      [
       "Foe",
       "DeadVillain"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Bomb_Temporal"
     ],
     [
      "EntCreate",
@@ -2477,7 +2556,19 @@
      [
       "Foe",
       "DeadVillain"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Bomb_Temporal_Defender"
     ],
     [
      "EntCreate",
@@ -2523,7 +2614,19 @@
      [
       "Foe",
       "DeadVillain"
-     ]
+     ],
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Bomb_Defender"
     ],
     [
      "Damage",

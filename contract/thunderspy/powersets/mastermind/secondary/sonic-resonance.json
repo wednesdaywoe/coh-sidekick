@@ -4666,7 +4666,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Liquefy_MM"
     ],
     [
      "EntCreate",
@@ -4701,7 +4706,22 @@
      null,
      null,
      null,
-     "Level"
+     "Level",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_ShockMM"
     ]
    ],
    "damageTypes": [

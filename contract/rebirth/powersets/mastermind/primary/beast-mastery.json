@@ -489,7 +489,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Howler_Wolf"
     ],
     [
      "EntCreate",
@@ -533,7 +538,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Howler_Wolf"
     ],
     [
      "EntCreate",
@@ -577,7 +593,18 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Howler_Wolf_Alpha"
     ]
    ]
   },
@@ -2100,7 +2127,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Lioness"
     ],
     [
      "EntCreate",
@@ -2144,7 +2176,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Lioness"
     ]
    ]
   },
@@ -2896,7 +2939,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Dire_Wolf"
     ]
    ]
   },

@@ -4380,7 +4380,12 @@
      null,
      null,
      null,
-     8
+     8,
+     null,
+     null,
+     null,
+     null,
+     "Pets_WindControl_Vacuum_Dominator"
     ],
     [
      "Mez",
@@ -4978,7 +4983,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_WindControl_Vortex"
     ]
    ]
   },

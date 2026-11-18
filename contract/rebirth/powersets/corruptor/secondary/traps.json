@@ -538,7 +538,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Caltrops"
     ]
    ]
   },
@@ -624,7 +629,12 @@
      null,
      null,
      null,
-     90
+     90,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Triage_Beacon"
     ]
    ]
   },
@@ -717,7 +727,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Acid_Mortar"
     ]
    ]
   },
@@ -804,7 +819,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_FF_Generator"
     ]
    ]
   },
@@ -892,7 +912,12 @@
      null,
      null,
      null,
-     260
+     260,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Poison_Trap"
     ]
    ]
   },
@@ -999,7 +1024,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker1"
     ],
     [
      "EntCreate",
@@ -1038,7 +1068,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Seeker2"
     ]
    ]
   },
@@ -1130,7 +1171,12 @@
      null,
      null,
      null,
-     260
+     260,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Traps_Mine"
     ]
    ]
   },
@@ -1222,7 +1268,12 @@
      null,
      null,
      null,
-     21
+     21,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Bomb"
     ]
    ]
   }

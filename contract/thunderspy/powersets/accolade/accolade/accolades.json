@@ -3554,7 +3554,12 @@
      null,
      null,
      null,
-     300
+     300,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Field_Workbench"
     ]
    ],
    "targetsAffected": [

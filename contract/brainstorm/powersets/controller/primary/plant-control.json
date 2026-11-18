@@ -2051,7 +2051,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Spirit_Tree"
     ],
     [
      "EntCreate",
@@ -3874,7 +3879,10 @@
           null,
           null,
           null,
-          true
+          true,
+          null,
+          null,
+          "Pets_Creeper_Vine"
          ]
         ]
        },
@@ -4040,7 +4048,37 @@
           null,
           1,
           null,
-          true
+          true,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "Pets_Creeper_FX"
          ]
         ]
        }
@@ -4190,7 +4228,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Fly_Trap_Controller"
     ]
    ]
   }

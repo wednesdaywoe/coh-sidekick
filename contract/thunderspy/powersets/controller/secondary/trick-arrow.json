@@ -956,7 +956,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_StickyArrow"
     ]
    ]
   },
@@ -2067,7 +2072,12 @@
      null,
      null,
      null,
-     20
+     20,
+     null,
+     null,
+     null,
+     null,
+     "Pets_PoisonGasArrow"
     ]
    ]
   },
@@ -3454,7 +3464,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_SonicDebuffArrow_Controller"
     ]
    ]
   },
@@ -3554,7 +3569,12 @@
      null,
      null,
      null,
-     30
+     30,
+     null,
+     null,
+     null,
+     null,
+     "Pets_OilSlickOil"
     ]
    ],
    "conditionalEffects": [

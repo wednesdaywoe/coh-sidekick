@@ -2160,7 +2160,12 @@
      null,
      null,
      null,
-     240
+     240,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Patron_Powers_Arachnobot_Spiderling"
     ],
     [
      "EntCreate",
@@ -2199,7 +2204,18 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Patron_Powers_Arachnobot_Spiderling"
     ],
     [
      "EntCreate",
@@ -2238,7 +2254,18 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Patron_Powers_Arachnobot_Spiderling"
     ]
    ],
    "damageTypes": [

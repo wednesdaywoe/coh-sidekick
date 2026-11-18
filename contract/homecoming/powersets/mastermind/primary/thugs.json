@@ -157,7 +157,22 @@
      null,
      null,
      null,
-     "StreetCred"
+     "StreetCred",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_06"
     ]
    ]
   },
@@ -251,7 +266,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Thug"
     ],
     [
      "Stealth",
@@ -390,7 +410,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Thug"
     ],
     [
      "EntCreate",
@@ -434,7 +465,18 @@
      null,
      null,
      null,
-     4
+     4,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Thug_Arsonist"
     ],
     [
      "RechargePower",
@@ -688,7 +730,22 @@
      null,
      null,
      null,
-     "StreetCred"
+     "StreetCred",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_06"
     ]
    ],
    "specialEffects": [
@@ -3581,7 +3638,22 @@
      null,
      null,
      null,
-     "StreetCred"
+     "StreetCred",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_06"
     ]
    ],
    "specialEffects": [
@@ -3685,7 +3757,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Thug_Lt"
     ],
     [
      "EntCreate",
@@ -3729,7 +3806,18 @@
      null,
      null,
      null,
-     3
+     3,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Thug_Lt"
     ],
     [
      "RechargePower",
@@ -4018,7 +4106,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_01"
     ],
     [
      "EntCreate",
@@ -4063,7 +4156,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_02"
     ],
     [
      "EntCreate",
@@ -4108,7 +4206,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_03"
     ],
     [
      "EntCreate",
@@ -4153,7 +4256,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_04"
     ],
     [
      "EntCreate",
@@ -4198,7 +4306,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_05"
     ],
     [
      "EntCreate",
@@ -4243,7 +4356,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_06"
     ],
     [
      "EntCreate",
@@ -4288,7 +4406,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_07"
     ],
     [
      "EntCreate",
@@ -4333,7 +4456,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_08"
     ],
     [
      "EntCreate",
@@ -4378,7 +4506,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_09"
     ],
     [
      "EntCreate",
@@ -4423,7 +4556,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_02"
     ],
     [
      "EntCreate",
@@ -4468,7 +4606,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_04"
     ],
     [
      "EntCreate",
@@ -4513,7 +4656,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_06"
     ],
     [
      "EntCreate",
@@ -4558,7 +4706,12 @@
      null,
      null,
      null,
-     60
+     60,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Thug_Pose_09"
     ]
    ]
   },
@@ -4654,7 +4807,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "MastermindPets_Thug_Boss"
     ],
     [
      "RechargePower",

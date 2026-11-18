@@ -1460,7 +1460,12 @@
      null,
      null,
      null,
-     2
+     2,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Burst_of_Speed"
     ],
     [
      "RechargePower",

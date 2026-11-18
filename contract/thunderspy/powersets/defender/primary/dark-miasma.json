@@ -923,7 +923,12 @@
      null,
      null,
      null,
-     45
+     45,
+     null,
+     null,
+     null,
+     null,
+     "Pets_TarPatch"
     ]
    ]
   },
@@ -1839,7 +1844,12 @@
      null,
      null,
      null,
-     1
+     1,
+     null,
+     null,
+     null,
+     null,
+     "Pets_Howling"
     ],
     [
      "Mez",
@@ -3513,7 +3523,12 @@
      null,
      null,
      null,
-     99999
+     99999,
+     null,
+     null,
+     null,
+     null,
+     "Pets_DarkServant"
     ]
    ]
   }
