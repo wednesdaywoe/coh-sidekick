@@ -278,25 +278,6 @@ pub fn Shell() -> Element {
         _ => coh_math::CalculatedTotals::default(),
     });
     use_context_provider(|| panels::stats::BuildTotals(totals));
-    // The henchman projection, a sibling of the totals memo on the same two inputs. Held here
-    // rather than in the panel so the status strip sees its errors whether or not the surface
-    // is on the grid (Rule 1). `holds` is the build's own picked powers: an upgrade granter is
-    // held exactly when the build picked it, which is what the engine's tier walk asks.
-    let henchmen_totals = use_memo(move || match &*db.read() {
-        Some(Ok(database)) => coh_math::henchmen::project(
-            database,
-            &session.build.read(),
-            &|name| {
-                session
-                    .build
-                    .read()
-                    .picked_powers()
-                    .any(|pick| pick.internal_name == name)
-            },
-        ),
-        _ => panels::henchmen::empty_projection(),
-    });
-    use_context_provider(|| panels::henchmen::HenchmanTotals(henchmen_totals));
     // Which stats the eight stat panels show, and the config modal's open target. Both live
     // here rather than in a panel: the config is one set shared by every stat panel, and the
     // modal is hosted below both layout roots (see `StatsConfigHost`).
@@ -1702,9 +1683,7 @@ pub fn Shell() -> Element {
 #[component]
 fn StatusStrip() -> Element {
     let totals = use_context::<panels::stats::BuildTotals>().0;
-    let henchmen = use_context::<panels::henchmen::HenchmanTotals>().0;
-    let mut errors = totals.read().bonuses.errors.clone();
-    errors.extend(henchmen.read().errors.iter().cloned());
+    let errors = totals.read().bonuses.errors.clone();
     if errors.is_empty() {
         return rsx! {};
     }
@@ -2026,7 +2005,6 @@ fn MobilePanel(panel: PanelKind, database: Db, selection: Signal<Selection>) -> 
         PanelKind::Pools => rsx! { panels::powers::PoolsPanel { database } },
         PanelKind::SetBonuses => rsx! { panels::set_bonus_totals::SetBonusTotals { database } },
         PanelKind::Info => rsx! { panels::info::Info { database, selection } },
-        PanelKind::Henchmen => rsx! { panels::henchmen::HenchmanPanel { database } },
         PanelKind::Inherent(group) => {
             rsx! { panels::inherents_section::InherentGroupPanel { database, group } }
         }

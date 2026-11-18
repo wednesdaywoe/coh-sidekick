@@ -30,7 +30,7 @@ use crate::expr::{eval_bool, EvalContext, EvalError, Value};
 use crate::granted::{active_entity_abilities, mastermind_henchman};
 use crate::scaled::resolve_scaled_effect_for;
 use crate::totals::CalcError;
-use coh_data::{Aspect, CharacterState, EffectType, PowerDatabase, TableScope, ToWho};
+use coh_data::{Aspect, AtomicEffect, CharacterState, EffectType, Power, PowerDatabase, TableScope, ToWho};
 use serde_json::Value as Json;
 use std::collections::BTreeMap;
 
@@ -142,27 +142,77 @@ pub fn roster(db: &PowerDatabase, state: &CharacterState) -> Vec<RosterEntry> {
     };
     let mut counts: BTreeMap<String, f64> = BTreeMap::new();
     for pick in state.picked_powers() {
-        let Some(power) = db.find_power(&pick.powerset, &pick.internal_name) else {
-            continue;
-        };
-        for atom in &power.atoms {
-            if atom.effect_type != Some(EffectType::EntCreate) {
-                continue;
-            }
-            let Some(entity) = atom.entity_def.as_deref() else {
-                continue;
-            };
-            if mastermind_henchman(db, entity).is_none() {
-                continue;
-            }
-            if let Some(gate) = &atom.requires_expression {
-                if !matches!(eval_bool(gate, &ctx), Ok(true)) {
-                    continue;
-                }
-            }
-            *counts.entry(entity.to_string()).or_insert(0.0) += atom.magnitude.unwrap_or(1.0);
+        if let Some(power) = db.find_power(&pick.powerset, &pick.internal_name) {
+            scan_entcreate(db, &power.atoms, &ctx, &mut counts);
         }
     }
+    into_entries(counts)
+}
+
+/// The henchmen ONE summon power fields at `level` — the Info panel's per-power reading, as
+/// opposed to [`roster`]'s whole-build one. Same gate and entity rules, one power's atoms.
+pub fn power_roster(db: &PowerDatabase, power: &Power, level: u8) -> Vec<RosterEntry> {
+    let ctx = LevelContext {
+        level: f64::from(level),
+    };
+    let mut counts: BTreeMap<String, f64> = BTreeMap::new();
+    scan_entcreate(db, &power.atoms, &ctx, &mut counts);
+    into_entries(counts)
+}
+
+/// One power's henchman projection: its roster, each pet's detail, and their damage headline.
+pub fn project_power(
+    db: &PowerDatabase,
+    power: &Power,
+    level: u8,
+    holds: &dyn Fn(&str) -> bool,
+) -> HenchmanProjection {
+    let roster = power_roster(db, power, level);
+    let mut errors = Vec::new();
+    let mut pets = Vec::new();
+    let mut headline_dps = 0.0;
+    for entry in &roster {
+        if let Some(detail) = pet_detail(db, &entry.entity, i32::from(level), entry.count, holds, &mut errors) {
+            headline_dps += detail.best_proxy * entry.count;
+            pets.push(detail);
+        }
+    }
+    HenchmanProjection {
+        roster,
+        pets,
+        headline_dps,
+        errors,
+    }
+}
+
+/// Fold one power's `EntCreate` atoms into the roster counts: a named henchman entity whose
+/// level gate passes, counted by its magnitude (an atom stating none summons one).
+fn scan_entcreate(
+    db: &PowerDatabase,
+    atoms: &[AtomicEffect],
+    ctx: &LevelContext,
+    counts: &mut BTreeMap<String, f64>,
+) {
+    for atom in atoms {
+        if atom.effect_type != Some(EffectType::EntCreate) {
+            continue;
+        }
+        let Some(entity) = atom.entity_def.as_deref() else {
+            continue;
+        };
+        if mastermind_henchman(db, entity).is_none() {
+            continue;
+        }
+        if let Some(gate) = &atom.requires_expression {
+            if !matches!(eval_bool(gate, ctx), Ok(true)) {
+                continue;
+            }
+        }
+        *counts.entry(entity.to_string()).or_insert(0.0) += atom.magnitude.unwrap_or(1.0);
+    }
+}
+
+fn into_entries(counts: BTreeMap<String, f64>) -> Vec<RosterEntry> {
     counts
         .into_iter()
         .map(|(entity, count)| RosterEntry { entity, count })

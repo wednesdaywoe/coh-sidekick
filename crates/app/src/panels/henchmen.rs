@@ -1,63 +1,58 @@
-//! Henchmen — a Mastermind's pets as their own readout (worklog henchman-panel-2/3): the
-//! roster's damage headline and, per pet, survivability, the upgrade tier that swaps its
-//! attack set, and every attack's damage. Reads [`coh_math::henchmen`]'s read-only projection
-//! and nothing else; the panel computes no stat of its own.
+//! Henchmen — the pets ONE summon power fields, shown in the Info panel in place of the
+//! generic power card (owner ruling: the henchmen info belongs to the power that summons
+//! them, not a surface of its own): the roster's damage headline and, per pet, survivability,
+//! the upgrade tier that swaps its attack set, and every attack's damage. Reads
+//! [`coh_math::henchmen`]'s read-only per-power projection and nothing else; the view computes
+//! no stat of its own.
 //!
-//! The headline is the build's own, from the one projection memo at the shell root
-//! ([`HenchmanTotals`], the status strip reads its errors from the same place). The drill-in
-//! re-runs `pet_detail` at the tier the reader chooses and may show the build's pet buffs on
-//! top — both are views, neither writes the build, and neither moves the headline: the buff
-//! is opt-in per pet, exactly as the engine keeps it.
+//! The headline is the power's own, from one projection memo over the build's held upgrades.
+//! The drill-in re-runs `pet_detail` at the tier the reader chooses and may show the build's
+//! pet buffs on top — both are views, neither writes the build, and neither moves the
+//! headline: the buff is opt-in per pet, exactly as the engine keeps it.
 
 use crate::build_session::BuildSession;
 use crate::shell::Db;
-use coh_data::CharacterState;
+use coh_data::{CharacterState, Power};
 use coh_math::granted::mastermind_henchman;
-use coh_math::henchmen::{self, BuffDelta, HenchmanProjection, DAMAGE_BASIS};
+use coh_math::henchmen::{self, BuffDelta, DAMAGE_BASIS};
 use coh_math::totals::CalcError;
 use dioxus::prelude::*;
 
-/// Context handle for the one henchman projection, provided at the shell root beside
-/// [`BuildTotals`](crate::panels::stats::BuildTotals) so the panel and the status strip read
-/// one pass. A newtype so it never collides with another `Memo<_>` in context.
-#[derive(Clone, Copy, PartialEq)]
-pub struct HenchmanTotals(pub Memo<HenchmanProjection>);
-
-/// The projection a build with no loaded dataset gets — the same shape `BuildTotals` answers
-/// with `CalculatedTotals::default()`, stated here because the engine's type has no Default.
-pub fn empty_projection() -> HenchmanProjection {
-    HenchmanProjection {
-        roster: Vec::new(),
-        pets: Vec::new(),
-        headline_dps: 0.0,
-        errors: Vec::new(),
-    }
-}
-
-/// The surface: the damage headline over the roster, and the drill-in a roster row opens.
+/// The Info panel's henchman face: the damage headline over the roster one summon power
+/// fields, and the drill-in a roster row opens.
 #[component]
-pub fn HenchmanPanel(database: Db) -> Element {
-    let totals = use_context::<HenchmanTotals>().0;
+pub fn HenchmanView(database: Db, power: Power) -> Element {
     let session = use_context::<BuildSession>();
     let mut selected = use_signal(|| Option::<String>::None);
 
-    let (roster, pets, headline) = {
-        let proj = totals.read();
-        (proj.roster.clone(), proj.pets.clone(), proj.headline_dps)
-    };
-    let level = session.build.read().level;
+    // `holds` is the build's own picked powers: an upgrade granter is held exactly when the
+    // build picked it, which is what the engine's tier walk asks.
+    let projection = use_memo(use_reactive!(|database, power| {
+        let build = session.build.read();
+        henchmen::project_power(&database, &power, build.level, &|name| {
+            build.picked_powers().any(|pick| pick.internal_name == name)
+        })
+    }));
 
     // The meter's scale: the same roster with no upgrades (the pale anchor fill) and with
-    // every tier held (the track's end). Reads the totals memo too, so a dataset switch
-    // re-runs it — the database prop alone is not a reactive subscription.
-    let scale_db = database.clone();
-    let scale = use_memo(move || {
-        let _ = totals.read();
+    // every tier held (the track's end).
+    let scale = use_memo(use_reactive!(|database, power| {
         let build = session.build.read();
-        let base = henchmen::project(&scale_db, &build, &|_| false).headline_dps;
-        let full = henchmen::project(&scale_db, &build, &|_| true).headline_dps;
+        let base = henchmen::project_power(&database, &power, build.level, &|_| false).headline_dps;
+        let full = henchmen::project_power(&database, &power, build.level, &|_| true).headline_dps;
         (base, full)
-    });
+    }));
+
+    let (roster, pets, headline, errors) = {
+        let proj = projection.read();
+        (
+            proj.roster.clone(),
+            proj.pets.clone(),
+            proj.headline_dps,
+            proj.errors.clone(),
+        )
+    };
+    let level = session.build.read().level;
     let (base_dps, full_dps) = scale();
     let reference = full_dps.max(headline).max(base_dps);
     let width = |value: f64| (value / reference * 100.0).clamp(0.0, 100.0);
@@ -84,13 +79,18 @@ pub fn HenchmanPanel(database: Db) -> Element {
     let total_count: f64 = roster.iter().map(|entry| entry.count).sum();
     // A selection the roster no longer has (the level dropped a gate) falls back to the
     // roster rather than writing the signal back — the same derived fallback Info's tabs use.
-    let open = selected().filter(|entity| roster.iter().any(|entry| &entry.entity == entity));
+    let open = selected()
+        .filter(|entity| roster.iter().any(|entry| &entry.entity == entity))
+        .and_then(|entity| {
+            let count = roster.iter().find(|entry| entry.entity == entity)?.count;
+            Some((entity, count))
+        });
 
     rsx! {
         div { class: "henchmen",
             if roster.is_empty() {
                 p { class: "henchmen-empty",
-                    "No henchmen fielded — this build summons no Mastermind henchmen at its current level."
+                    "No henchmen fielded — this power summons no Mastermind henchmen at the build's current level."
                 }
             } else {
                 div { class: "damage-hero",
@@ -113,10 +113,13 @@ pub fn HenchmanPanel(database: Db) -> Element {
                 p { class: "henchmen-basis",
                     "{DAMAGE_BASIS} · L{level} pet-class tables (henchman level offset unmodeled) · no transient buffs"
                 }
+                for (index, err) in errors.iter().enumerate() {
+                    div { key: "{index}", class: "load-state error", "{err.context}: {err.detail}" }
+                }
                 div { class: "info-lines",
                     for (entity, count, best_attack, best_proxy) in rows {
                         {
-                            let is_open = open.as_deref() == Some(entity.as_str());
+                            let is_open = open.as_ref().is_some_and(|(open_entity, _)| open_entity == &entity);
                             let label = entity_label(&entity);
                             let contribution = best_proxy * count;
                             rsx! {
@@ -158,11 +161,12 @@ pub fn HenchmanPanel(database: Db) -> Element {
                         }
                     }
                 }
-                if let Some(entity) = open {
+                if let Some((entity, count)) = open {
                     PetDrillIn {
                         key: "{entity}",
                         database: database.clone(),
                         entity,
+                        count,
                         on_close: move |_| selected.set(None),
                     }
                 }
@@ -253,7 +257,6 @@ fn build_choice(build: &CharacterState, choices: &[UpgradeChoice]) -> usize {
 /// One attack as the table draws it: adjacent equal components grouped into "n × type" chips.
 struct AttackView {
     name: String,
-    internal: String,
     hits: Vec<(String, f64, u32)>,
     per_activation: f64,
     recharge: f64,
@@ -265,45 +268,36 @@ struct AttackView {
 
 /// The pet detail a roster row opens: survivability, the upgrade selector, the attack table,
 /// and the opt-in buff view. Keyed by entity in the roster, so switching pets remounts it and
-/// the tier/buff choices start from the build again.
+/// the tier/buff choices start from the build again. `count` is the roster's own count for
+/// this entity, passed down so the drill-in reads the same roster the headline drew.
 #[component]
-fn PetDrillIn(database: Db, entity: String, on_close: EventHandler<()>) -> Element {
+fn PetDrillIn(database: Db, entity: String, count: f64, on_close: EventHandler<()>) -> Element {
     let session = use_context::<BuildSession>();
-    let totals = use_context::<HenchmanTotals>().0;
     let mut chosen = use_signal(|| Option::<usize>::None);
     let mut buff_on = use_signal(|| false);
 
     let choices = upgrade_choices(&database, &entity);
     let memo_choices = choices.clone();
-    let memo_db = database.clone();
-    let memo_entity = entity.clone();
-    let detail = use_memo(move || {
+    let detail = use_memo(use_reactive!(|database, entity, count| {
         let build = session.build.read();
         let level = i32::from(build.level);
-        let count = totals
-            .read()
-            .roster
-            .iter()
-            .find(|entry| entry.entity == memo_entity)
-            .map(|entry| entry.count);
         let choice = chosen().unwrap_or_else(|| build_choice(&build, &memo_choices));
         let buffed = buff_on();
         let mut errors: Vec<CalcError> = Vec::new();
-        let count = count?;
         let granters = memo_choices
             .get(choice)
             .map(|tier| tier.granters.clone())
             .unwrap_or_default();
         let holds = |name: &str| granters.iter().any(|granter| granter == name);
-        let base = henchmen::pet_detail(&memo_db, &memo_entity, level, count, &holds, &mut errors)?;
+        let base = henchmen::pet_detail(&database, &entity, level, count, &holds, &mut errors)?;
         let (shown, delta) = if buffed {
-            let delta = henchmen::buff_delta(&memo_db, &build, &base.class, level, &mut errors);
+            let delta = henchmen::buff_delta(&database, &build, &base.class, level, &mut errors);
             (henchmen::buffed_pet(&base, &delta), delta)
         } else {
             (base.clone(), BuffDelta::default())
         };
         Some((base, shown, delta, errors))
-    });
+    }));
 
     let Some((base, shown, delta, errors)) = detail() else {
         return rsx! {
@@ -401,7 +395,6 @@ fn PetDrillIn(database: Db, entity: String, on_close: EventHandler<()>) -> Eleme
                     });
             AttackView {
                 name: attack.display_name.clone(),
-                internal: attack.internal_name.clone(),
                 hits,
                 per_activation: attack.damage_per_activation,
                 recharge: attack.recharge,

@@ -153,7 +153,6 @@ pub enum Surface {
     StatsConfig,
     DetailedTotals,
     BuildSettings,
-    Henchmen,
     // Tools
     WhatIf,
     AttackChain,
@@ -187,7 +186,7 @@ impl Surface {
     /// list cannot silently fall behind the enum — and `help_covers_every_surface` reads this
     /// array, so a surface added here with no topic reds rather than disappearing.
     #[allow(dead_code)] // read by the coverage and symbol tests; that is the whole job.
-    pub const ALL: [Surface; 51] = {
+    pub const ALL: [Surface; 50] = {
         match Surface::Identity {
             Surface::Identity
             | Surface::PowersetSelect
@@ -217,7 +216,6 @@ impl Surface {
             | Surface::StatsConfig
             | Surface::DetailedTotals
             | Surface::BuildSettings
-            | Surface::Henchmen
             | Surface::WhatIf
             | Surface::AttackChain
             | Surface::PowersetCompare
@@ -270,7 +268,6 @@ impl Surface {
             Surface::StatsConfig,
             Surface::DetailedTotals,
             Surface::BuildSettings,
-            Surface::Henchmen,
             Surface::WhatIf,
             Surface::AttackChain,
             Surface::PowersetCompare,
@@ -333,7 +330,6 @@ impl Surface {
             Surface::StatsConfig => "panels::stats_config::StatsConfigHost",
             Surface::DetailedTotals => "panels::detailed_totals::DetailedTotalsHost",
             Surface::BuildSettings => "panels::combat::Combat",
-            Surface::Henchmen => "panels::henchmen::HenchmanPanel",
             Surface::WhatIf => "panels::what_if::WhatIfHost",
             Surface::AttackChain => "panels::attack_chain::AttackChainHost",
             Surface::PowersetCompare => "powerset_compare::PowersetCompareHost",
@@ -397,7 +393,6 @@ fn surface_of_panel(panel: PanelKind) -> Surface {
         PanelKind::Pools => Surface::PoolsPanel,
         PanelKind::SetBonuses => Surface::SetBonusTotals,
         PanelKind::Info => Surface::InfoPanel,
-        PanelKind::Henchmen => Surface::Henchmen,
         PanelKind::Inherent(_) => Surface::Inherents,
         PanelKind::Dashboard(_) => Surface::Dashboards,
     }
@@ -974,36 +969,6 @@ pub const TOPICS: &[Topic] = &[
             "arcanatime",
             "assumptions",
             "drift",
-        ],
-    },
-    Topic {
-        id: "stats-henchmen",
-        title: "A Mastermind's henchmen",
-        category: Category::Stats,
-        surface: Surface::Henchmen,
-        body: "The Henchmen panel is the pets' own stats: a damage headline for the whole \
-               roster, each henchman counted with its best attack, and a drill-in per pet — \
-               survivability, the upgrade tiers that swap its attack set, and every attack's \
-               damage. The numbers are a labeled best-attack spam proxy read at the build \
-               level's pet-class tables, not a rotation model, and the henchman level offset \
-               is not in the export. The buff toggle shows what the build's pet buffs add to \
-               one pet; it never moves the headline.",
-        keywords: &[
-            "henchman",
-            "henchmen",
-            "pet",
-            "pets",
-            "mastermind",
-            "minion",
-            "soldier",
-            "spec ops",
-            "commando",
-            "medic",
-            "upgrade",
-            "equip",
-            "tactical",
-            "serum",
-            "summon",
         ],
     },
     // ---- Tools --------------------------------------------------------------------------

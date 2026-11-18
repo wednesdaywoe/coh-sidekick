@@ -9,7 +9,7 @@
 //! fully-upgraded headline is 23.26 dmg/s, not the 21.0 that wrongly excluded it.
 
 use coh_data::{CharacterState, DatasetId, PowerDatabase, SelectedPower};
-use coh_math::henchmen::{buff_delta, buffed_pet, pet_detail, project, roster};
+use coh_math::henchmen::{buff_delta, buffed_pet, pet_detail, power_roster, project, project_power, roster};
 use std::path::PathBuf;
 
 const MERCS: &str = "mastermind/mercenaries";
@@ -138,4 +138,23 @@ fn serum_buffs_the_pet_and_the_buffed_state_only_rises() {
     assert!(buffed.best_proxy >= base.best_proxy, "buffed damage must not fall");
     // The base detail is untouched by the opt-in buff.
     assert!((base.survivability.resistance["smashing"] - 0.261).abs() < 1e-3);
+}
+
+#[test]
+fn a_summon_powers_roster_and_headline_are_its_own_pets() {
+    let db = load();
+    // The Info panel reads ONE summon power: Soldiers fields 2 Soldiers + 1 Medic, nobody else.
+    let soldiers = db.find_power(MERCS, "Soldiers").unwrap();
+    let proj = project_power(&db, soldiers, 50, &|n| UPGRADES.contains(&n));
+    assert!(proj.errors.is_empty(), "{:?}", proj.errors);
+    assert_eq!(proj.roster.len(), 2);
+    assert_eq!(count(&proj.roster, "MastermindPets_Soldier"), 2.0);
+    assert_eq!(count(&proj.roster, "MastermindPets_Medic"), 1.0);
+    // HC: Soldier 2.25 x2 + Medic 2.25 = 6.75, not the whole-build 23.26.
+    assert!((proj.headline_dps - 6.75).abs() < 0.05, "{}", proj.headline_dps);
+    // Spec Ops is its own roster of 2, with no Soldier/Medic bleed.
+    let spec = db.find_power(MERCS, "Spec_Ops").unwrap();
+    let r = power_roster(&db, spec, 50);
+    assert_eq!(r.len(), 1);
+    assert_eq!(count(&r, "MastermindPets_Spec_Ops"), 2.0);
 }

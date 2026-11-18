@@ -18,6 +18,7 @@ use crate::shell::Selection;
 use crate::view::power_view::{
     resolve_power_def, resolve_selected_view, DamageMetric, DamageView, EffectRow, PowerView,
 };
+use coh_data::Power;
 use coh_math::perma::PermaInfo;
 use dioxus::prelude::*;
 
@@ -1132,6 +1133,15 @@ pub fn Info(
             resolve_selected_view(&database, &build, &totals, &shown())
         }));
 
+    // Owner ruling: a power that summons henchmen reads as its pets, in place of the generic card.
+    let henchman_power: Memo<Option<Power>> = use_memo(use_reactive!(|database| {
+        let selected = shown()?;
+        let build = session.build.read();
+        let power = resolve_power_def(&database, &selected.powerset_id, &selected.power)?;
+        (!coh_math::henchmen::power_roster(&database, power, build.level).is_empty())
+            .then(|| power.clone())
+    }));
+
     // What the selected power lets this build adjust. Read off the power AS AUTHORED, not off
     // the effective one: a conditional's contribution is measured against the base effects it
     // merges into, and the effective power has already merged the active ones in. The two are
@@ -1248,29 +1258,33 @@ pub fn Info(
                     LockMark { closed: false }
                 }
             }
-            match selected_view() {
-                Some(Ok(view)) => rsx! {
-                    PowerViewCard {
-                        view,
-                        adjusters: adjusters(),
-                        slotted_procs: slotted_procs(),
-                        perma_track: true,
-                        rank_options: crate::panels::combat::target_options(&database),
-                    }
-                },
-                Some(Err(power)) => rsx! {
-                    div { class: "info-power",
-                        p { class: "faint", "“{power}” isn’t in the {database.manifest.dataset} dataset." }
-                    }
-                },
-                // Nothing pointed at. The panel names what fills it rather than sitting blank,
-                // since hovering a card is not a discoverable act on its own.
-                None => rsx! {
-                    div { class: "empty-state",
-                        "Point at a power to read it here."
-                        div { class: "hint", "Its stats, effects and slotting all resolve against this build." }
-                    }
-                },
+            if let Some(power) = henchman_power() {
+                crate::panels::henchmen::HenchmanView { database: database.clone(), power }
+            } else {
+                match selected_view() {
+                    Some(Ok(view)) => rsx! {
+                        PowerViewCard {
+                            view,
+                            adjusters: adjusters(),
+                            slotted_procs: slotted_procs(),
+                            perma_track: true,
+                            rank_options: crate::panels::combat::target_options(&database),
+                        }
+                    },
+                    Some(Err(power)) => rsx! {
+                        div { class: "info-power",
+                            p { class: "faint", "“{power}” isn’t in the {database.manifest.dataset} dataset." }
+                        }
+                    },
+                    // Nothing pointed at. The panel names what fills it rather than sitting blank,
+                    // since hovering a card is not a discoverable act on its own.
+                    None => rsx! {
+                        div { class: "empty-state",
+                            "Point at a power to read it here."
+                            div { class: "hint", "Its stats, effects and slotting all resolve against this build." }
+                        }
+                    },
+                }
             }
         }
     }

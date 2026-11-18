@@ -5613,12 +5613,11 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 }
 
 
-/* ---- henchmen (panels::henchmen — the Mastermind pets' own readout) ----
+/* ---- henchmen (panels::henchmen — the summon power's pets, inside the Info panel) ----
    The meter, roster rows and drill-in reuse the damage/stat/info vocabulary above; only the
-   seams unique to this surface live here. The body is a fitted column like `.inherent-group`,
-   with the panel inset every body draws. */
+   seams unique to this readout live here. A fitted column like `.inherent-group`; the panel
+   inset is the Info body's own, so this one draws none. */
 .henchmen {
-  padding: var(--pad-panel);
   display: flex; flex-direction: column; gap: var(--gap-stack);
   min-width: 0;
 }
