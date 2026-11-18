@@ -1,6 +1,7 @@
-//! Henchmen — the pets ONE summon power fields, shown in the Info panel in place of the
-//! generic power card (owner ruling: the henchmen info belongs to the power that summons
-//! them, not a surface of its own): the roster's damage headline and, per pet, survivability,
+//! Henchmen — the pets ONE summon power fields, shown in the Info panel below the summon
+//! power's own card as its damage section (owner ruling: the card keeps its information and
+//! gains the pets' damage readout, the way any damage power carries one): the roster's damage
+//! headline and, per pet, survivability,
 //! the upgrade tier that swaps its attack set, and every attack's damage. Reads
 //! [`coh_math::henchmen`]'s read-only per-power projection and nothing else; the view computes
 //! no stat of its own.
@@ -93,6 +94,10 @@ pub fn HenchmanView(database: Db, power: Power) -> Element {
                     "No henchmen fielded — this power summons no Mastermind henchmen at the build's current level."
                 }
             } else {
+                div { class: "info-block",
+                    div { class: "info-block__head",
+                        h4 { "Henchmen" }
+                    }
                 div { class: "damage-hero",
                     span { class: "damage-hero__value", "{headline:.2}" }
                     span { class: "damage-hero__base",
@@ -160,6 +165,7 @@ pub fn HenchmanView(database: Db, power: Power) -> Element {
                             }
                         }
                     }
+                }
                 }
                 if let Some((entity, count)) = open {
                     PetDrillIn {

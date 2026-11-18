@@ -17,12 +17,13 @@ the worklog item it answers is named. Agent-runnable checks are already ticked t
 
 - [ ] Open a level-50 Mercenaries Mastermind build on Homecoming with Soldiers, Spec Ops,
       Commando, Equip Mercenary and Tactical Upgrade picked (worklog `henchman-panel-2`).
-      Done: pointing at Soldiers shows its henchmen IN the Info panel, in place of the generic
-      power card — a damage headline meter in the dashboard's damage hue reading ≈6.75 dmg/s
+      Done: pointing at Soldiers keeps the generic power card (description, cost, slotting)
+      AND adds a "Henchmen" damage section below it, the way any damage power carries a Damage
+      block — a damage headline meter in the dashboard's damage hue reading ≈6.75 dmg/s
       over Soldier ×2 + Medic ×1 (the Medic counts, it fires SMG_Burst), with the basis label
       "best-attack spam proxy · L50 pet-class tables". Spec Ops reads its own roster (≈12.38)
-      and Commando its own (≈4.13); every other power still reads its normal card. Clicking a
-      roster row opens that pet's detail. Judge the meter scale and the readout's fit inside
+      and Commando its own (≈4.13); every other power still reads only its normal card. Clicking
+      a roster row opens that pet's detail. Judge the meter scale and the readout's fit inside
       the Info panel.
 - [ ] In the pet detail (worklog `henchman-panel-3`). Done: survivability is stat-colored
       (Soldier ≈26.1% smashing/lethal resistance); an upgrade selector (Base / +Equip /

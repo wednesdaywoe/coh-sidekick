@@ -1133,7 +1133,8 @@ pub fn Info(
             resolve_selected_view(&database, &build, &totals, &shown())
         }));
 
-    // Owner ruling: a power that summons henchmen reads as its pets, in place of the generic card.
+    // Owner ruling: a summon power keeps its card and adds its pets' damage readout below it,
+    // as a damage section — not in place of the card.
     let henchman_power: Memo<Option<Power>> = use_memo(use_reactive!(|database| {
         let selected = shown()?;
         let build = session.build.read();
@@ -1258,33 +1259,34 @@ pub fn Info(
                     LockMark { closed: false }
                 }
             }
+            match selected_view() {
+                Some(Ok(view)) => rsx! {
+                    PowerViewCard {
+                        view,
+                        adjusters: adjusters(),
+                        slotted_procs: slotted_procs(),
+                        perma_track: true,
+                        rank_options: crate::panels::combat::target_options(&database),
+                    }
+                },
+                Some(Err(power)) => rsx! {
+                    div { class: "info-power",
+                        p { class: "faint", "“{power}” isn’t in the {database.manifest.dataset} dataset." }
+                    }
+                },
+                // Nothing pointed at. The panel names what fills it rather than sitting blank,
+                // since hovering a card is not a discoverable act on its own.
+                None => rsx! {
+                    div { class: "empty-state",
+                        "Point at a power to read it here."
+                        div { class: "hint", "Its stats, effects and slotting all resolve against this build." }
+                    }
+                },
+            }
+            // A summon power keeps its card and gains its pets' damage readout below it, the way
+            // any damage power carries a Damage section (owner ruling).
             if let Some(power) = henchman_power() {
                 crate::panels::henchmen::HenchmanView { database: database.clone(), power }
-            } else {
-                match selected_view() {
-                    Some(Ok(view)) => rsx! {
-                        PowerViewCard {
-                            view,
-                            adjusters: adjusters(),
-                            slotted_procs: slotted_procs(),
-                            perma_track: true,
-                            rank_options: crate::panels::combat::target_options(&database),
-                        }
-                    },
-                    Some(Err(power)) => rsx! {
-                        div { class: "info-power",
-                            p { class: "faint", "“{power}” isn’t in the {database.manifest.dataset} dataset." }
-                        }
-                    },
-                    // Nothing pointed at. The panel names what fills it rather than sitting blank,
-                    // since hovering a card is not a discoverable act on its own.
-                    None => rsx! {
-                        div { class: "empty-state",
-                            "Point at a power to read it here."
-                            div { class: "hint", "Its stats, effects and slotting all resolve against this build." }
-                        }
-                    },
-                }
             }
         }
     }
