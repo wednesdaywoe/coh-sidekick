@@ -607,9 +607,12 @@ pub fn in_section(section: StatSection) -> impl Iterator<Item = &'static StatDef
 /// (2026-10-11, user-reported): the panel is the build's whole resistance picture, and leaving
 /// two types out reads as the build having none.
 ///
+/// AoE defense joined Melee and Ranged (2026-11-18, user-reported): positional defense is read
+/// as all three, and a panel showing two looked fixed rather than customisable.
+///
 /// The seven-row set this replaced (2026-07-27) left out to-hit, regeneration and the endurance
 /// rows, which a new user had to find in the organizer before the dashboard said much.
-pub const DEFAULT_VISIBLE: [&str; 20] = [
+pub const DEFAULT_VISIBLE: [&str; 21] = [
     // Offense
     "damage",
     "accuracy",
@@ -619,6 +622,7 @@ pub const DEFAULT_VISIBLE: [&str; 20] = [
     // Defense
     "defense_melee",
     "defense_ranged",
+    "defense_aoe",
     // Resistance
     "res_smashing",
     "res_lethal",

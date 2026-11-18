@@ -272,14 +272,16 @@ fn interpolate_scaling_value(floor: f64, cap: f64, hp_pct: f64) -> f64 {
 /// Resolve a variable proc's steady-state contribution under its override, the beta
 /// `resolveProcContribution`. With no override (or `auto`) this is the honest default: a
 /// stacking buff contributes one DISCRETE stack (never a fractional expected-uptime average, a
-/// moment the player is never in), an HP-scaling global contributes its always-on
-/// floor, a plain proc its full value. A disabled proc contributes nothing.
+/// moment the player is never in), an HP-scaling global reads at the dashboard's Health %
+/// (`combat_hp_pct`, its always-on floor at full health), a plain proc its full value. A
+/// per-proc `hp` pin overrides the dashboard. A disabled proc contributes nothing.
 fn resolve_proc_contribution(
     control: ControlType,
     per_unit: f64,
     cap_value: Option<f64>,
     max_stacks: Option<u32>,
     override_: Option<&ProcOverride>,
+    combat_hp_pct: f64,
 ) -> f64 {
     if override_.is_some_and(|o| !o.enabled) {
         return 0.0;
@@ -298,15 +300,11 @@ fn resolve_proc_contribution(
         ControlType::Hp => {
             let floor = per_unit;
             let cap = cap_value.unwrap_or(floor);
-            if mode == "hp" {
-                interpolate_scaling_value(
-                    floor,
-                    cap,
-                    override_.and_then(|o| o.hp_pct).unwrap_or(100.0),
-                )
-            } else {
-                floor
-            }
+            let hp_pct = match mode {
+                "hp" => override_.and_then(|o| o.hp_pct).unwrap_or(combat_hp_pct),
+                _ => combat_hp_pct,
+            };
+            interpolate_scaling_value(floor, cap, hp_pct)
         }
         ControlType::Toggle => per_unit,
     }
@@ -2219,8 +2217,14 @@ fn apply_variable_procs(
                 let cap_value = eff
                     .value_max
                     .map(|max| resolve_magnitude(Some(max), eff.scale_table.as_deref()));
-                let contribution =
-                    resolve_proc_contribution(control, per_unit, cap_value, eff.max_stacks, over);
+                let contribution = resolve_proc_contribution(
+                    control,
+                    per_unit,
+                    cap_value,
+                    eff.max_stacks,
+                    over,
+                    state.combat.hit_points_percent,
+                );
                 if contribution == 0.0 {
                     continue;
                 }
@@ -2467,4 +2471,38 @@ pub fn apply_build_up_procs(
         }
     }
     breakdown
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Reactive Defenses' scaling +Res: 3% at full health, 13% at zero.
+    fn scaling(over: Option<&ProcOverride>, combat_hp_pct: f64) -> f64 {
+        resolve_proc_contribution(ControlType::Hp, 3.0, Some(13.0), None, over, combat_hp_pct)
+    }
+
+    #[test]
+    fn an_unpinned_hp_proc_follows_the_dashboard_health() {
+        assert_eq!(scaling(None, 100.0), 3.0);
+        assert!((scaling(None, 30.0) - 10.0).abs() < 1e-9);
+        let auto = ProcOverride {
+            enabled: true,
+            mode: "auto".into(),
+            stacks: None,
+            hp_pct: None,
+        };
+        assert!((scaling(Some(&auto), 30.0) - 10.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn a_pinned_hp_proc_ignores_the_dashboard_health() {
+        let pinned = ProcOverride {
+            enabled: true,
+            mode: "hp".into(),
+            stacks: None,
+            hp_pct: Some(100.0),
+        };
+        assert_eq!(scaling(Some(&pinned), 30.0), 3.0);
+    }
 }

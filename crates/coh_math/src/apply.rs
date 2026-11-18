@@ -109,7 +109,7 @@ use crate::appliers::{
     debuff_resistance::debuff_resistance_value,
     defense::{defense_buff_suppressible_value, defense_buff_value, defense_self_debuff_value},
     endurance_discount::endurance_discount_value,
-    hp_scaling_resource::hp_scaling_resource_value,
+    hp_scaling_resource::{hp_scaling_resistance_value, hp_scaling_resource_value},
     maxhp::{max_hp_buff_unenhanced_value, max_hp_buff_value},
     mez_protection::{kb_protection_value, mez_protection_value},
     mez_resistance::mez_resistance_value,
@@ -888,6 +888,27 @@ impl<'a, 'b> WalkCtx<'a, 'b> {
                     self.errors,
                 );
             }
+        }
+        // HP-scaling resistance (Super Reflexes' Agile/Dodge/Lucky), read at the dashboard's
+        // Health %. The reader above sees these atoms too but values them at their `0 ×
+        // Melee_Ones` scale, so the two never overlap. Enhancement reaches the value only through
+        // an `@Strength` the expression names.
+        for (ty, fraction) in hp_scaling_resistance_value(
+            self.power,
+            self.archetype,
+            self.level,
+            self.combat,
+            1.0 + self.enh.get("resistance"),
+            self.db,
+            self.errors,
+        ) {
+            surface_route(
+                g.add_resistance(&ty, fraction * 100.0),
+                "Resistance",
+                &ty,
+                &self.power.name,
+                self.errors,
+            );
         }
         // Self-directed −Resistance penalty (Bio Armor Offensive Adaptation). The applier
         // already restricts to self-directed atoms and returns `|scale|`; negate here.

@@ -395,12 +395,13 @@ fn StackPin(proc: SlottedProc, max: u32) -> Element {
 }
 
 /// The %HP pin for an HP-scaling global. 100% is the always-on floor and near-0 the cap, which
-/// is why the slider reads left-to-right as "hurt → healthy" rather than as a magnitude.
+/// is why the slider reads left-to-right as "hurt → healthy" rather than as a magnitude. Unpinned,
+/// the piece follows the combat panel's Health %, so that is what the slider shows.
 #[component]
 fn HpPin(proc: SlottedProc) -> Element {
     let session = use_context::<BuildSession>();
     let pinned = (proc.mode == "hp").then_some(proc.hp_pct).flatten();
-    let shown = pinned.unwrap_or(FULL_HEALTH);
+    let shown = pinned.unwrap_or_else(|| session.build.read().combat.hit_points_percent);
 
     let write = move |proc: SlottedProc, hp_pct: Option<f64>| {
         session.commit(move |state| {
@@ -460,5 +461,3 @@ fn HpPin(proc: SlottedProc) -> Element {
     }
 }
 
-/// The %HP an unpinned HP-scaling global is read at — full health, its always-on floor.
-const FULL_HEALTH: f64 = 100.0;

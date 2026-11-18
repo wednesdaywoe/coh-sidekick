@@ -603,6 +603,25 @@ pub fn Shell() -> Element {
         }
     });
     use_context_provider(|| panels::powers::SlotLevelsView(slot_levels));
+    // Whether the grid's top-row readouts and Info stay on screen while scrolling — an Options
+    // preference, on by default.
+    let pin_readouts = use_signal(|| true);
+    use_context_provider(|| crate::pin_readouts_store::PinReadouts(pin_readouts));
+    let mut pin_readouts_restored = use_signal(|| false);
+    use_future(move || async move {
+        let mut pinned = pin_readouts;
+        if let Some(saved) = crate::pin_readouts_store::load().await {
+            pinned.set(saved);
+        }
+        pin_readouts_restored.set(true);
+    });
+    use_effect(move || {
+        let pinned = *pin_readouts.read();
+        if !*pin_readouts_restored.read() {
+            return;
+        }
+        crate::pin_readouts_store::persist(pinned);
+    });
     // Whether powers wear a proc-potential badge — an Options preference, off by default.
     let show_proc_potential = use_signal(|| false);
     use_context_provider(|| panels::powers::ShowProcPotential(show_proc_potential));

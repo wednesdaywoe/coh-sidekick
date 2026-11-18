@@ -147,6 +147,7 @@ fn PreferenceEntries() -> Element {
         div { class: "options-group",
             span { class: "field-label", "UI scale" }
             UiScaleControl {}
+            PinReadoutsToggle {}
         }
         div { class: "options-group",
             span { class: "field-label", "Privacy" }
@@ -864,6 +865,25 @@ fn PowerTooltipToggle() -> Element {
                 onchange: move |evt| enabled.set(evt.checked()),
             }
             "Show a power's stats beside the pointer"
+        }
+    }
+}
+
+/// Whether the desktop grid's top-row dashboards and Info follow the page as it scrolls
+/// ([`crate::pin_readouts_store`]).
+#[component]
+fn PinReadoutsToggle() -> Element {
+    let mut pinned = use_context::<crate::pin_readouts_store::PinReadouts>().0;
+    rsx! {
+        label {
+            class: "options-check",
+            title: "Off, every panel scrolls with the page",
+            input {
+                r#type: "checkbox",
+                checked: pinned(),
+                onchange: move |evt| pinned.set(evt.checked()),
+            }
+            "Keep top-row dashboards and Info on screen while scrolling"
         }
     }
 }
