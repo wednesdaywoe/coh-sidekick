@@ -571,6 +571,7 @@ name = "coh_pigg"
 version = "0.1.0"
 dependencies = [
  "flate2",
+ "png 0.18.1",
  "sha2",
  "thiserror 2.0.18",
 ]

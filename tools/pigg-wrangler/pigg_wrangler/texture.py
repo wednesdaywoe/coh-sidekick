@@ -215,8 +215,12 @@ def _rgb565_to_rgba(c: int) -> tuple[int, int, int, int]:
     return (r, g, b, 255)
 
 
-def _decode_dxt1_block(block: bytes) -> list[tuple[int, int, int, int]]:
-    """Decode an 8-byte DXT1 block into 16 RGBA pixels (4x4, row-major)."""
+def _decode_dxt1_block(block: bytes, four_color_only: bool = False) -> list[tuple[int, int, int, int]]:
+    """Decode an 8-byte DXT1 block into 16 RGBA pixels (4x4, row-major).
+
+    DXT3/DXT5 colour blocks pass four_color_only: the S3TC spec says they always
+    use the 4-colour palette, whatever the order of c0 and c1.
+    """
     c0 = struct.unpack_from("<H", block, 0)[0]
     c1 = struct.unpack_from("<H", block, 2)[0]
     lookup = struct.unpack_from("<I", block, 4)[0]
@@ -226,7 +230,7 @@ def _decode_dxt1_block(block: bytes) -> list[tuple[int, int, int, int]]:
 
     # Build color palette
     colors = [(r0, g0, b0, 255), (r1, g1, b1, 255)]
-    if c0 > c1:
+    if c0 > c1 or four_color_only:
         colors.append(((2 * r0 + r1 + 1) // 3, (2 * g0 + g1 + 1) // 3, (2 * b0 + b1 + 1) // 3, 255))
         colors.append(((r0 + 2 * r1 + 1) // 3, (g0 + 2 * g1 + 1) // 3, (b0 + 2 * b1 + 1) // 3, 255))
     else:
@@ -266,7 +270,7 @@ def _decode_dxt5_block(block: bytes) -> list[tuple[int, int, int, int]]:
         alpha_values.append(alphas[idx])
 
     # Last 8 bytes: DXT1 color block
-    color_pixels = _decode_dxt1_block(block[8:16])
+    color_pixels = _decode_dxt1_block(block[8:16], four_color_only=True)
 
     # Combine color + alpha
     pixels = []
@@ -431,7 +435,7 @@ def _decode_dxt3_image(pixel_data: bytes, w: int, h: int) -> bytes:
                 alpha_values.append(a4 * 17)  # scale 0-15 to 0-255
 
             # Last 8 bytes: DXT1 color block
-            color_pixels = _decode_dxt1_block(block[8:16])
+            color_pixels = _decode_dxt1_block(block[8:16], four_color_only=True)
 
             for py in range(4):
                 for px in range(4):

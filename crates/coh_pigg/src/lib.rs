@@ -4,6 +4,8 @@
 //! No file access here. The caller hands over bytes, so the web page can read only the slice it
 //! needs from a 137 MB bundle instead of loading all of it.
 
+pub mod texture;
+
 use std::io::Read;
 use std::ops::Range;
 
@@ -219,7 +221,7 @@ fn trim_trailing_nuls(raw: &[u8]) -> &[u8] {
 }
 
 /// Python's `decode("ascii", errors="replace")`: each non-ASCII byte becomes U+FFFD.
-fn ascii_lossy(raw: &[u8]) -> String {
+pub(crate) fn ascii_lossy(raw: &[u8]) -> String {
     raw.iter()
         .map(|&byte| {
             if byte.is_ascii() {
