@@ -117,6 +117,24 @@ impl ImageKind {
 }
 
 impl Texture {
+    /// Width and height of the picture itself. For a JPEG this is read from the JPEG, not the
+    /// texture header, which can disagree (Homecoming's events_herocon says 1024×768 of a
+    /// 1024×1024 picture). `None` for a JPEG with no size marker.
+    pub fn size(&self) -> Option<(u32, u32)> {
+        match &self.image {
+            TextureImage::Jpeg(bytes) => jpeg_size(bytes),
+            TextureImage::Decoded { width, height, .. } => Some((*width, *height)),
+        }
+    }
+
+    /// `DXT5`, `BGRA`… or `JPEG`.
+    pub fn format_name(&self) -> &'static str {
+        match &self.image {
+            TextureImage::Jpeg(_) => "JPEG",
+            TextureImage::Decoded { format, .. } => format.name(),
+        }
+    }
+
     /// The picture as a file a browser or image viewer opens: PNG, or the JPEG as stored.
     pub fn to_image_file(&self) -> Result<(Vec<u8>, ImageKind), TextureError> {
         match &self.image {
@@ -170,6 +188,36 @@ pub fn encode_png(width: u32, height: u32, rgba: &[u8]) -> Result<Vec<u8>, Textu
     writer.write_image_data(rgba).map_err(png_error)?;
     writer.finish().map_err(png_error)?;
     Ok(file)
+}
+
+/// A JPEG's size, from its first start-of-frame marker.
+fn jpeg_size(jpeg: &[u8]) -> Option<(u32, u32)> {
+    let mut at = 2;
+    while at + 4 <= jpeg.len() {
+        if jpeg[at] != 0xFF {
+            return None;
+        }
+        let marker = jpeg[at + 1];
+        // Fill bytes, and markers that carry no length.
+        if marker == 0xFF {
+            at += 1;
+            continue;
+        }
+        if marker == 0x01 || (0xD0..=0xD9).contains(&marker) {
+            at += 2;
+            continue;
+        }
+        let length = usize::from(u16::from_be_bytes([jpeg[at + 2], jpeg[at + 3]]));
+        // Every SOFn but DHT (C4), JPG (C8) and DAC (CC).
+        if (0xC0..=0xCF).contains(&marker) && ![0xC4, 0xC8, 0xCC].contains(&marker) {
+            let frame = jpeg.get(at + 5..at + 9)?;
+            let height = u16::from_be_bytes([frame[0], frame[1]]);
+            let width = u16::from_be_bytes([frame[2], frame[3]]);
+            return Some((u32::from(width), u32::from(height)));
+        }
+        at += 2 + length;
+    }
+    None
 }
 
 /// The name sits after a `TX2` marker in the header, up to a NUL.
@@ -467,6 +515,22 @@ mod tests {
                 ..
             })
         ));
+    }
+
+    #[test]
+    fn a_jpeg_reports_its_own_size_not_the_headers() {
+        // SOI, an APP0 segment to skip, then a baseline frame of 1024 wide by 768 high.
+        let mut jpeg = vec![0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x04, 0xAA, 0xBB];
+        jpeg.extend([0xFF, 0xC0, 0x00, 0x11, 0x08, 0x03, 0x00, 0x04, 0x00, 0x03]);
+        let mut file = vec![0u8; TEXTURE_HEADER_LEN];
+        file[..4].copy_from_slice(&(TEXTURE_HEADER_LEN as u32).to_le_bytes());
+        file[8..12].copy_from_slice(&64u32.to_le_bytes());
+        file[12..16].copy_from_slice(&64u32.to_le_bytes());
+        file.extend(&jpeg);
+        let texture = decode_texture(&file).unwrap();
+        assert_eq!(texture.format_name(), "JPEG");
+        assert_eq!(texture.size(), Some((1024, 768)));
+        assert_eq!(jpeg_size(&jpeg[..12]), None);
     }
 
     #[test]

@@ -8,7 +8,7 @@
 //!   that one makes the browser say "Upload" and "upload 1,000 files to this site?", which
 //!   put even the owner off (pigg-wrangler-web-11).
 
-use coh_pigg::{parse_index, PiggEntry, PiggError};
+use coh_pigg::{extract_entry, parse_index, PiggEntry, PiggError};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
@@ -134,6 +134,15 @@ function install(pageId) {
   });
 }
 
+// A browser address for bytes in memory, so an <img> can show a decoded picture.
+export function objectUrl(bytes, mime) {
+  return URL.createObjectURL(new Blob([bytes], { type: mime }));
+}
+
+export function revokeUrl(url) {
+  URL.revokeObjectURL(url);
+}
+
 // The next folder or files dropped on the page: {value} or {error}. Never rejects.
 export function nextDrop(pageId) {
   install(pageId);
@@ -152,6 +161,29 @@ extern "C" {
     fn piggs_from_input_js(id: &str) -> Result<JsValue, JsValue>;
     #[wasm_bindgen(js_name = nextDrop)]
     async fn next_drop_js(page_id: &str) -> JsValue;
+    #[wasm_bindgen(js_name = objectUrl)]
+    fn object_url_js(bytes: &[u8], mime: &str) -> String;
+    #[wasm_bindgen(js_name = revokeUrl)]
+    fn revoke_url_js(url: &str);
+}
+
+/// A `blob:` address for bytes held in the page, handed back to the browser when dropped.
+pub struct ObjectUrl(String);
+
+impl ObjectUrl {
+    pub fn new(bytes: &[u8], mime: &str) -> Self {
+        ObjectUrl(object_url_js(bytes, mime))
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl Drop for ObjectUrl {
+    fn drop(&mut self) {
+        revoke_url_js(&self.0);
+    }
 }
 
 /// What a folder pick found: the chosen folder's name, and every `.pigg` under it.
@@ -224,6 +256,13 @@ pub async fn read_index(file: &web_sys::File) -> Result<Vec<PiggEntry>, String> 
             other => return other.map_err(|error| error.to_string()),
         }
     }
+}
+
+/// One file out of a bundle, read from its own stretch of the bundle and unpacked.
+pub async fn read_entry(file: &web_sys::File, entry: &PiggEntry) -> Result<Vec<u8>, String> {
+    let range = entry.stored_range();
+    let stored = read_range(file, range.start as f64, range.end as f64).await?;
+    extract_entry(entry, &stored).map_err(|error| error.to_string())
 }
 
 async fn read_range(file: &web_sys::File, start: f64, end: f64) -> Result<Vec<u8>, String> {

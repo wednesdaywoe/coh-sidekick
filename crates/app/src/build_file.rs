@@ -756,15 +756,31 @@ pub async fn save_text_file_remembering(
 }
 
 /// Write `bytes` out as a PNG the user keeps, offering `suggested_name`.
+pub async fn write_png_file(suggested_name: &str, bytes: &[u8]) -> Result<WrittenTo, String> {
+    write_image_file(suggested_name, bytes, &PNG_FILE).await
+}
+
+pub const PNG_FILE: TextFileKind = TextFileKind {
+    label: "PNG image",
+    extension: "png",
+    mime: "image/png",
+};
+
+/// Write a picture out as a file the user keeps; Pigg Wrangler saves the game's JPEGs as stored.
 ///
 /// The image twin of [`write_text_file`], and per-target for the same reason: the browser downloads a
 /// blob and the desktop webview cannot. Same three outcomes — `Ok(None)` for a save the app
 /// cannot name or a dialog the user cancelled, `Ok(Some(path))` where it can, `Err` otherwise.
 #[cfg(target_arch = "wasm32")]
-pub async fn write_png_file(suggested_name: &str, bytes: &[u8]) -> Result<WrittenTo, String> {
+pub async fn write_image_file(
+    suggested_name: &str,
+    bytes: &[u8],
+    kind: &TextFileKind,
+) -> Result<WrittenTo, String> {
     use dioxus::prelude::*;
 
     let name = serde_json::to_string(suggested_name).map_err(|e| e.to_string())?;
+    let mime = serde_json::to_string(kind.mime).map_err(|e| e.to_string())?;
     let payload =
         serde_json::to_string(&crate::clipboard::base64(bytes)).map_err(|e| e.to_string())?;
     let js = format!(
@@ -772,7 +788,7 @@ pub async fn write_png_file(suggested_name: &str, bytes: &[u8]) -> Result<Writte
            const bin = atob({payload});\
            const bytes = new Uint8Array(bin.length);\
            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);\
-           const blob = new Blob([bytes], {{ type: 'image/png' }});\
+           const blob = new Blob([bytes], {{ type: {mime} }});\
            const url = URL.createObjectURL(blob);\
            const link = document.createElement('a');\
            link.href = url;\
@@ -792,10 +808,14 @@ pub async fn write_png_file(suggested_name: &str, bytes: &[u8]) -> Result<Writte
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-pub async fn write_png_file(suggested_name: &str, bytes: &[u8]) -> Result<WrittenTo, String> {
+pub async fn write_image_file(
+    suggested_name: &str,
+    bytes: &[u8],
+    kind: &TextFileKind,
+) -> Result<WrittenTo, String> {
     let Some(handle) = rfd::AsyncFileDialog::new()
         .set_file_name(suggested_name)
-        .add_filter("PNG image", &["png"])
+        .add_filter(kind.label, &[kind.extension])
         .save_file()
         .await
     else {

@@ -8858,7 +8858,8 @@ button.picker-set-name:hover { color: var(--text-dim); }
   display: grid; grid-template-columns: minmax(240px, 320px) 1fr; gap: 16px;
   margin-top: 12px;
 }
-.pigg-page__tree, .pigg-page__list {
+.pigg-page__browser--preview { grid-template-columns: minmax(220px, 280px) minmax(0, 1fr) minmax(280px, 380px); }
+.pigg-page__tree, .pigg-page__list, .pigg-page__preview {
   max-height: calc(100vh - 260px); min-height: 320px;
   overflow: auto;
   border: 1px solid var(--seam); border-radius: var(--r);
@@ -8908,3 +8909,27 @@ button.picker-set-name:hover { color: var(--text-dim); }
 .pigg-page__row-archive { color: var(--text-dim); white-space: nowrap; }
 .pigg-page__row--chosen td { background: var(--surface-raised); }
 .pigg-page__row--chosen .pigg-page__row-name { color: var(--text-brand); font-weight: 600; }
+.pigg-page__preview { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 12px; }
+.pigg-page__preview-head { display: flex; align-items: flex-start; gap: 8px; width: 100%; }
+.pigg-page__preview-name { flex: 1; margin: 0; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.pigg-page__preview-close {
+  padding: 0 6px; border: 0; border-radius: var(--r);
+  background: transparent; color: var(--text-dim); font: inherit; font-size: 18px; line-height: 1; cursor: pointer;
+}
+.pigg-page__preview-close:hover { color: var(--text); background: var(--surface-raised); }
+.pigg-page__preview-facts { margin: 0; font-size: 13px; font-family: var(--font-data); }
+.pigg-page__preview-note { margin: 0; font-size: 12px; color: var(--text-dim); overflow-wrap: anywhere; }
+/* A checkerboard behind the picture, so its see-through parts show as see-through. */
+.pigg-page__picture {
+  max-width: 100%;
+  border: 1px solid var(--seam);
+  background: repeating-conic-gradient(#8a8a8a 0 25%, #c8c8c8 0 50%) 0 0 / 16px 16px;
+}
+/* Big pictures shrink to fit; the line above gives their real size. Small ones are zoomed in Rust. */
+.pigg-page__picture img { display: block; max-width: 100%; height: auto; }
+.pigg-page__text {
+  width: 100%; max-height: 60vh; margin: 0; padding: 8px;
+  overflow: auto; box-sizing: border-box;
+  border: 1px solid var(--seam); border-radius: var(--r); background: var(--surface-app);
+  font-family: var(--font-data); font-size: 12px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere;
+}

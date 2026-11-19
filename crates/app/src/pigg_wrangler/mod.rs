@@ -99,9 +99,107 @@ fn size_label(bytes: f64) -> String {
     }
 }
 
+/// The kinds of file shown as text, as the Python tool's preview lists them.
+#[cfg(any(target_arch = "wasm32", test))]
+const TEXT_EXTENSIONS: &[&str] = &[
+    "txt",
+    "cfg",
+    "def",
+    "mfx",
+    "ms",
+    "wtf",
+    "inc",
+    "powers",
+    "powersets",
+    "categories",
+    "recipe",
+    "contact",
+    "storyarc",
+    "taskset",
+    "spawndef",
+    "scrollset",
+    "scriptdef",
+    "npc",
+    "villain",
+    "zoneevent",
+    "reward",
+    "cape",
+    "minimap",
+    "bounds",
+    "nd",
+    "ctm",
+    "anim",
+];
+
+/// Text past this many characters is cut, as the Python tool cuts it.
+#[cfg(any(target_arch = "wasm32", test))]
+const TEXT_SHOWN: usize = 100_000;
+
+/// What a file inside a bundle is shown as.
+#[cfg(any(target_arch = "wasm32", test))]
+#[derive(Debug, PartialEq, Eq)]
+enum Kind {
+    Picture,
+    Text,
+    Other,
+}
+
+#[cfg(any(target_arch = "wasm32", test))]
+fn kind_of(name: &str) -> Kind {
+    let extension = name.rsplit_once('.').map_or("", |(_, extension)| extension);
+    if extension.eq_ignore_ascii_case("texture") {
+        Kind::Picture
+    } else if TEXT_EXTENSIONS
+        .iter()
+        .any(|text| extension.eq_ignore_ascii_case(text))
+    {
+        Kind::Text
+    } else {
+        Kind::Other
+    }
+}
+
+/// A file's bytes as text to read, bad bytes shown as �, and whether it was cut short.
+///
+/// Byte-order marks (U+FEFF, invisible) are dropped. Dioxus decodes each page update's strings with
+/// a default `TextDecoder`, which swallows a leading one, and every string after it then lands one
+/// character off: texturewords.ms, which starts with one, showed its name as "exturewords.ms".
+#[cfg(any(target_arch = "wasm32", test))]
+fn text_of(bytes: &[u8]) -> (String, bool) {
+    let text = String::from_utf8_lossy(bytes).replace('\u{feff}', "");
+    match text.char_indices().nth(TEXT_SHOWN).map(|(cut, _)| cut) {
+        Some(cut) => (text[..cut].to_string(), true),
+        None => (text, false),
+    }
+}
+
+/// `fire_blast.texture` saved as a picture: `fire_blast.png`.
+#[cfg(any(target_arch = "wasm32", test))]
+fn picture_name(file_name: &str, extension: &str) -> String {
+    let stem = file_name
+        .rsplit_once('.')
+        .map_or(file_name, |(stem, _)| stem);
+    format!("{stem}.{extension}")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn files_show_as_pictures_text_or_nothing() {
+        assert_eq!(kind_of("Fire_Blast.TEXTURE"), Kind::Picture);
+        assert_eq!(kind_of("Blaster.powersets"), Kind::Text);
+        assert_eq!(kind_of("powers.bin"), Kind::Other);
+        assert_eq!(kind_of("README"), Kind::Other);
+        assert_eq!(picture_name("fire_blast.texture", "png"), "fire_blast.png");
+        let long = "é".repeat(TEXT_SHOWN + 1);
+        let (text, cut) = text_of(long.as_bytes());
+        assert!(cut && text.chars().count() == TEXT_SHOWN);
+        assert_eq!(text_of(b"ok\xff"), ("ok\u{fffd}".to_string(), false));
+        // A byte-order mark is dropped: Dioxus's decoder would swallow it and shift the page's text.
+        assert_eq!(text_of("\u{feff}a\u{feff}b".as_bytes()).0, "ab");
+    }
 
     #[test]
     fn only_its_own_address_opens_the_page() {

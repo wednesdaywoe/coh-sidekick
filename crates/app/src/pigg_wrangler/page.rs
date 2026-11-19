@@ -1,9 +1,13 @@
 //! The page: drop or choose the game folder, then browse its bundles as folder trees and search
 //! every file name in them at once.
 
-use super::browser_files::{self, Picked};
+use super::browser_files::{self, ObjectUrl, Picked};
 use super::tree::{self, Dir};
-use super::{default_folder, group_by_folder, size_label, thousands};
+use super::{
+    default_folder, group_by_folder, kind_of, picture_name, size_label, text_of, thousands, Kind,
+};
+use crate::build_file::{self, TextFileKind};
+use coh_pigg::texture::{decode_texture, ImageKind};
 use coh_pigg::PiggEntry;
 use dioxus::prelude::*;
 use futures_util::StreamExt;
@@ -14,8 +18,7 @@ use std::collections::HashSet;
 struct Bundle {
     name: String,
     size: f64,
-    /// Kept for the later reads: browsing and saving slice the same file.
-    #[allow(dead_code)]
+    /// Sliced again for each file previewed or saved.
     file: web_sys::File,
     index: Result<Vec<PiggEntry>, String>,
     /// The folders inside, empty when the table of contents would not read.
@@ -222,7 +225,8 @@ enum ListLine {
         bundle: usize,
         path: String,
         name: String,
-        count: usize,
+        /// `1 file`, `40 files`.
+        count: String,
     },
     File {
         bundle: usize,
@@ -267,9 +271,9 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
         .filter(|bundle| bundle.index.is_err())
         .count();
     let mut summary = format!(
-        "{} archives, {} files",
-        thousands(folder.bundles.len()),
-        thousands(files)
+        "{}, {}",
+        counted(folder.bundles.len(), "archive"),
+        counted(files, "file")
     );
     // Loose files chosen through the file input have no folder to name.
     if !folder.path.is_empty() {
@@ -362,13 +366,13 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
                 let name = above.rsplit('/').next().unwrap_or(&above).to_string();
                 crumbs.push((*bundle_index, above, name));
             }
-            heading = format!("{} in this folder and below", files_label(dir.count));
+            heading = format!("{} in this folder and below", counted(dir.count, "file"));
             for child in &dir.dirs {
                 list.push(ListLine::Folder {
                     bundle: *bundle_index,
                     path: child.path.clone(),
                     name: child.name.clone(),
-                    count: child.count,
+                    count: counted(child.count, "file"),
                 });
             }
             for &entry in &dir.files {
@@ -398,8 +402,12 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
         })
         .collect();
     let picked_folder = state.folder.is_some();
+    let previewing = state.file.is_some();
     let query = state.query.clone();
-    let archives = folder.bundles.len();
+    let search_hint = match folder.bundles.len() {
+        1 => "in its 1 archive, e.g. powers.bin".to_string(),
+        archives => format!("in all {archives} archives, e.g. powers.bin"),
+    };
     drop(state);
     drop(staged);
 
@@ -439,12 +447,13 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
             input {
                 class: "pigg-page__search-box",
                 r#type: "search",
-                placeholder: "in all {archives} archives, e.g. powers.bin",
+                placeholder: "{search_hint}",
                 value: "{query}",
                 oninput: move |event| view.write().query = event.value(),
             }
         }
-        div { class: "pigg-page__browser",
+        div {
+            class: if previewing { "pigg-page__browser pigg-page__browser--preview" } else { "pigg-page__browser" },
             nav { class: "pigg-page__tree", aria_label: "Archives and their folders",
                 for line in lines {
                     button {
@@ -504,7 +513,7 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
                                                         "{name}/"
                                                     }
                                                 }
-                                                td { class: "pigg-page__number", "{files_label(count)}" }
+                                                td { class: "pigg-page__number", "{count}" }
                                             }
                                         },
                                         ListLine::File { bundle, entry, label, parts, archive, size, chosen } => {
@@ -579,15 +588,257 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
                     }
                 }
             }
+            if previewing {
+                PreviewPane { stage, shown, view }
+            }
         }
     }
 }
 
-/// `12 files`, `1 file`.
-fn files_label(count: usize) -> String {
+/// What the preview pane shows for the picked file.
+enum Preview {
+    Picture {
+        url: ObjectUrl,
+        image: Vec<u8>,
+        kind: ImageKind,
+        size: Option<(u32, u32)>,
+        format: &'static str,
+        original: String,
+    },
+    Text {
+        text: String,
+        cut: bool,
+    },
+    Empty,
+    Other,
+    /// The file would not read out of its bundle.
+    Failed(String),
+    /// A picture the decoder will not draw.
+    Refused(String),
+}
+
+const JPEG_FILE: TextFileKind = TextFileKind {
+    label: "JPEG image",
+    extension: "jpg",
+    mime: "image/jpeg",
+};
+
+/// Small pictures are drawn bigger, by a whole number so each pixel stays square.
+fn zoom_for(size: Option<(u32, u32)>) -> u32 {
+    let longest = size.map_or(0, |(width, height)| width.max(height));
+    if longest == 0 || longest >= 128 {
+        1
+    } else {
+        (256 / longest).clamp(1, 4)
+    }
+}
+
+async fn preview_of(file: web_sys::File, entry: &PiggEntry) -> Preview {
+    // Decided before reading: powers.bin is 50 MB and has nothing to show.
+    let kind = kind_of(entry.file_name());
+    if entry.uncompressed_size == 0 {
+        return Preview::Empty;
+    }
+    if kind == Kind::Other {
+        return Preview::Other;
+    }
+    let bytes = match browser_files::read_entry(&file, entry).await {
+        Ok(bytes) => bytes,
+        Err(reason) => return Preview::Failed(reason),
+    };
+    match kind {
+        Kind::Picture => {
+            let texture = match decode_texture(&bytes) {
+                Ok(texture) => texture,
+                Err(reason) => return Preview::Refused(reason.to_string()),
+            };
+            let (image, kind) = match texture.to_image_file() {
+                Ok(file) => file,
+                Err(reason) => return Preview::Refused(reason.to_string()),
+            };
+            Preview::Picture {
+                url: ObjectUrl::new(&image, kind.mime()),
+                size: texture.size(),
+                format: texture.format_name(),
+                original: texture.original_name,
+                image,
+                kind,
+            }
+        }
+        Kind::Text => {
+            let (text, cut) = text_of(&bytes);
+            Preview::Text { text, cut }
+        }
+        Kind::Other => Preview::Other,
+    }
+}
+
+/// The picked file, shown: a picture with its size and format and a save button, or text.
+#[component]
+fn PreviewPane(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> Element {
+    let picked = use_memo(move || view.read().file);
+    // Which file the last save message is about, and how it went.
+    let mut saved = use_signal(|| None::<((usize, usize), Result<String, String>)>);
+    let preview = use_resource(move || async move {
+        let here = picked()?;
+        let (file, entry) = {
+            let staged = stage.peek();
+            let Stage::Ready(folders) = &*staged else {
+                return None;
+            };
+            let folder = folders.get((*shown.peek()).min(folders.len() - 1))?;
+            let bundle = folder.bundles.get(here.0)?;
+            let entry = bundle.index.as_ref().ok()?.get(here.1)?.clone();
+            (bundle.file.clone(), entry)
+        };
+        let preview = preview_of(file, &entry).await;
+        Some((here, entry, preview))
+    });
+
+    let current = picked();
+    let read = preview.read();
+    // While the next file reads, the last one's result is still held: show neither.
+    let Some(Some((here, entry, shown_preview))) = &*read else {
+        return rsx! {
+            aside { class: "pigg-page__preview", p { class: "pigg-page__list-status", "Reading…" } }
+        };
+    };
+    if Some(*here) != current {
+        return rsx! {
+            aside { class: "pigg-page__preview", p { class: "pigg-page__list-status", "Reading…" } }
+        };
+    }
+    let here = *here;
+    let name = entry.file_name().to_string();
+    let size = size_label(f64::from(entry.uncompressed_size));
+    let message = saved
+        .read()
+        .as_ref()
+        .filter(|(about, _)| *about == here)
+        .map(|(_, outcome)| outcome.clone());
+
+    let body = match shown_preview {
+        Preview::Picture {
+            url,
+            size: picture_size,
+            format,
+            original,
+            kind,
+            ..
+        } => {
+            let zoom = zoom_for(*picture_size);
+            let facts = match picture_size {
+                Some((width, height)) => format!("{width} × {height} pixels · {format}"),
+                None => format!("Size unknown · {format}"),
+            };
+            let style = match picture_size {
+                Some((width, height)) if zoom > 1 => format!(
+                    "width: {}px; height: {}px; image-rendering: pixelated;",
+                    width * zoom,
+                    height * zoom
+                ),
+                _ => String::new(),
+            };
+            let save_label = match kind {
+                ImageKind::Png => "Save as PNG",
+                ImageKind::Jpeg => "Save as JPEG",
+            };
+            let url = url.as_str().to_string();
+            let original = original.clone();
+            rsx! {
+                p { class: "pigg-page__preview-facts", "{facts}" }
+                if zoom > 1 {
+                    p { class: "pigg-page__preview-note", "Shown at {zoom}× its real size." }
+                }
+                div { class: "pigg-page__picture",
+                    img { src: "{url}", alt: "{name}", style: "{style}" }
+                }
+                button {
+                    class: "pigg-page__choose",
+                    r#type: "button",
+                    onclick: move |_| async move {
+                        let file = {
+                            let read = preview.read();
+                            match &*read {
+                                Some(Some((about, entry, Preview::Picture { image, kind, .. }))) if *about == here => {
+                                    Some((picture_name(entry.file_name(), kind.extension()), image.clone(), *kind))
+                                }
+                                _ => None,
+                            }
+                        };
+                        let Some((file_name, image, kind)) = file else { return };
+                        let kind = match kind {
+                            ImageKind::Png => &build_file::PNG_FILE,
+                            ImageKind::Jpeg => &JPEG_FILE,
+                        };
+                        let outcome = build_file::write_image_file(&file_name, &image, kind)
+                            .await
+                            .map(|_| file_name);
+                        saved.set(Some((here, outcome)));
+                    },
+                    "{save_label}"
+                }
+                if !original.is_empty() {
+                    p { class: "pigg-page__preview-note", "Made from {original}" }
+                }
+            }
+        }
+        Preview::Text { text, cut } => {
+            let text = text.clone();
+            let cut = *cut;
+            rsx! {
+                if cut {
+                    p { class: "pigg-page__preview-note", "Only the first 100,000 characters are shown." }
+                }
+                pre { class: "pigg-page__text", "{text}" }
+            }
+        }
+        Preview::Empty => rsx! {
+            p { class: "pigg-page__list-status", "This file is empty." }
+        },
+        Preview::Other => rsx! {
+            p { class: "pigg-page__list-status", "There is no preview for this kind of file." }
+        },
+        Preview::Failed(reason) => rsx! {
+            p { class: "pigg-page__status--error", role: "alert", "This file could not be read: {reason}" }
+        },
+        Preview::Refused(reason) => rsx! {
+            p { class: "pigg-page__status--error", role: "alert", "This picture can't be shown: {reason}" }
+        },
+    };
+
+    rsx! {
+        aside { class: "pigg-page__preview", aria_label: "Preview",
+            div { class: "pigg-page__preview-head",
+                h2 { class: "pigg-page__preview-name", "{name}" }
+                button {
+                    class: "pigg-page__preview-close",
+                    r#type: "button",
+                    aria_label: "Close the preview",
+                    onclick: move |_| view.write().file = None,
+                    "×"
+                }
+            }
+            p { class: "pigg-page__preview-note", "{size}" }
+            {body}
+            match message {
+                Some(Ok(file_name)) => rsx! {
+                    p { class: "pigg-page__preview-note", role: "status", "Saved as {file_name}, wherever your browser puts downloads." }
+                },
+                Some(Err(reason)) => rsx! {
+                    p { class: "pigg-page__status--error", role: "alert", "That could not be saved: {reason}" }
+                },
+                None => rsx! {},
+            }
+        }
+    }
+}
+
+/// `1 file`, `6,696 files`.
+fn counted(count: usize, thing: &str) -> String {
     match count {
-        1 => "1 file".to_string(),
-        _ => format!("{} files", thousands(count)),
+        1 => format!("1 {thing}"),
+        _ => format!("{} {thing}s", thousands(count)),
     }
 }
 
