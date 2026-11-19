@@ -1,4 +1,4 @@
-//! The page: choose the game folder, then see every bundle in it with its file count.
+//! The page: drop or choose the game folder, then see every bundle in it with its file count.
 
 use super::browser_files::{self, Picked};
 use super::{default_folder, group_by_folder, size_label, thousands};
@@ -31,7 +31,9 @@ enum Stage {
     Failed(String),
 }
 
-const FOLDER_INPUT_ID: &str = "pigg-folder-input";
+const FILE_INPUT_ID: &str = "pigg-file-input";
+/// The page root, which takes the "something is being dragged over" highlight.
+const PAGE_ID: &str = "pigg-page";
 
 #[component]
 pub fn Page() -> Element {
@@ -39,15 +41,28 @@ pub fn Page() -> Element {
     let shown = use_signal(|| 0usize);
     // The reading runs here, not in the chooser that started it: the chooser leaves the page
     // while "Reading…" shows, and Dioxus cancels a task when its component goes.
-    use_coroutine(move |mut picks: UnboundedReceiver<Picked>| async move {
+    let loader = use_coroutine(move |mut picks: UnboundedReceiver<Picked>| async move {
         while let Some(picked) = picks.next().await {
             load(picked, stage, shown).await;
+        }
+    });
+    // A folder dropped anywhere on the page, at any stage, is read like a chosen one.
+    use_future(move || {
+        let mut stage = stage;
+        async move {
+            loop {
+                match browser_files::next_drop(PAGE_ID).await {
+                    Ok(Some(picked)) => loader.send(picked),
+                    Ok(None) => {}
+                    Err(reason) => stage.set(Stage::Failed(reason)),
+                }
+            }
         }
     });
 
     rsx! {
         document::Title { "Pigg Wrangler · CoH Sidekick" }
-        div { class: "pigg-page",
+        div { class: "pigg-page", id: PAGE_ID,
             header { class: "pigg-page__head",
                 a { class: "pigg-page__back", href: "/", "← Back to the planner" }
                 h1 { class: "pigg-page__name", "Pigg Wrangler" }
@@ -72,10 +87,22 @@ fn Workspace(stage: Signal<Stage>, shown: Signal<usize>) -> Element {
     match &*stage.read() {
         Stage::Start => rsx! {
             p { class: "pigg-page__lead",
-                "Choose the folder City of Heroes is installed in. Pigg Wrangler reads the \
-                 game's archives (.pigg files) straight from your computer; nothing is uploaded."
+                "Pigg Wrangler reads the game's archives (.pigg files) straight from your \
+                 computer. Nothing is uploaded."
             }
-            ChooseFolder { stage, label: "Choose your game folder…" }
+            div { class: "pigg-page__drop",
+                p { class: "pigg-page__drop-title",
+                    "Drag the folder City of Heroes is installed in onto this page"
+                }
+                p { class: "pigg-page__drop-or", "or" }
+                ChooseFolder { stage, again: false }
+                if !browser_files::has_directory_picker() {
+                    p { class: "pigg-page__drop-hint",
+                        "Open the live folder inside the game's assets folder, select every \
+                         file (Ctrl+A, or ⌘A on a Mac), then click Open."
+                    }
+                }
+            }
         },
         Stage::Reading { done, total } => rsx! {
             p { class: "pigg-page__status", role: "status",
@@ -87,24 +114,27 @@ fn Workspace(stage: Signal<Stage>, shown: Signal<usize>) -> Element {
             }
         },
         Stage::Empty { root } => {
-            let place = if root.is_empty() {
-                "that folder".to_string()
+            // No root means loose files were chosen or dropped, not a folder.
+            let missing = if root.is_empty() {
+                "None of those are game archives (.pigg files).".to_string()
             } else {
-                format!("“{root}”")
+                format!(
+                    "There are no game archives (.pigg files) in “{root}” or any folder inside it."
+                )
             };
             rsx! {
                 p { class: "pigg-page__status", role: "status",
-                    "There are no game archives (.pigg files) in {place} or any folder inside it. \
-                     Choose the folder City of Heroes is installed in."
+                    "{missing} Drag the folder City of Heroes is installed in onto this page, or \
+                     choose again."
                 }
-                ChooseFolder { stage, label: "Choose a different folder…" }
+                ChooseFolder { stage, again: true }
             }
         }
         Stage::Failed(reason) => rsx! {
             p { class: "pigg-page__status pigg-page__status--error", role: "alert",
-                "That folder could not be read: {reason}"
+                "That could not be read: {reason}"
             }
-            ChooseFolder { stage, label: "Choose a different folder…" }
+            ChooseFolder { stage, again: true }
         },
         Stage::Ready(folders) => {
             let current = (*shown.read()).min(folders.len() - 1);
@@ -120,12 +150,15 @@ fn Workspace(stage: Signal<Stage>, shown: Signal<usize>) -> Element {
                 .iter()
                 .filter(|bundle| bundle.index.is_err())
                 .count();
-            let summary = format!(
-                "{} archives, {} files, in {}",
+            let mut summary = format!(
+                "{} archives, {} files",
                 thousands(folder.bundles.len()),
-                thousands(files),
-                folder.path
+                thousands(files)
             );
+            // Loose files chosen through the file input have no folder to name.
+            if !folder.path.is_empty() {
+                summary.push_str(&format!(", in {}", folder.path));
+            }
             let choices: Vec<(usize, String, bool)> = folders
                 .iter()
                 .enumerate()
@@ -153,7 +186,7 @@ fn Workspace(stage: Signal<Stage>, shown: Signal<usize>) -> Element {
                             span { class: "pigg-page__unread", " · {unread} could not be read" }
                         }
                     }
-                    ChooseFolder { stage, label: "Choose a different folder…" }
+                    ChooseFolder { stage, again: true }
                 }
                 if choices.len() > 1 {
                     div { class: "pigg-page__folders",
@@ -198,12 +231,18 @@ fn Workspace(stage: Signal<Stage>, shown: Signal<usize>) -> Element {
     }
 }
 
-/// The folder chooser. Chrome and Edge get their own picker; other browsers get a folder input,
-/// which has to be the thing the player clicks, so it sits inside the label.
+/// The chooser button. Chrome and Edge get their own folder picker; other browsers choose the
+/// `.pigg` files themselves, through a file input that has to be the thing the player clicks, so
+/// it sits inside the label. `again` words it for a second choice.
 #[component]
-fn ChooseFolder(stage: Signal<Stage>, label: String) -> Element {
+fn ChooseFolder(stage: Signal<Stage>, again: bool) -> Element {
     let loader = use_coroutine_handle::<Picked>();
     if browser_files::has_directory_picker() {
+        let label = if again {
+            "Choose a different folder…"
+        } else {
+            "Choose your game folder…"
+        };
         return rsx! {
             button {
                 class: "pigg-page__choose",
@@ -219,16 +258,21 @@ fn ChooseFolder(stage: Signal<Stage>, label: String) -> Element {
             }
         };
     }
+    let label = if again {
+        "Choose different .pigg files…"
+    } else {
+        "Choose the .pigg files…"
+    };
     rsx! {
         label { class: "pigg-page__choose",
             "{label}"
             input {
-                id: FOLDER_INPUT_ID,
-                class: "pigg-page__folder-input",
+                id: FILE_INPUT_ID,
+                class: "pigg-page__file-input",
                 r#type: "file",
-                directory: true,
+                multiple: true,
                 onchange: move |_| async move {
-                    match browser_files::piggs_from_input(FOLDER_INPUT_ID) {
+                    match browser_files::piggs_from_input(FILE_INPUT_ID) {
                         Ok(Some(picked)) => loader.send(picked),
                         Ok(None) => {}
                         Err(reason) => stage.set(Stage::Failed(reason)),

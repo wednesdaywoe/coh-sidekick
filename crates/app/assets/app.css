@@ -8812,13 +8812,27 @@ button.picker-set-name:hover { color: var(--text-dim); }
 .pigg-page__choose:focus-visible,
 .pigg-page__choose:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 /* The same visually-hidden input as the menu's Open file row: still clickable through its label. */
-.pigg-page__folder-input {
+.pigg-page__file-input {
   position: absolute;
   width: 1px; height: 1px;
   padding: 0; margin: -1px;
   overflow: hidden; clip-path: inset(50%);
   white-space: nowrap;
 }
+.pigg-page__drop {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  max-width: 640px; padding: 28px 20px;
+  border: 2px dashed var(--seam-raised); border-radius: var(--r);
+  text-align: center;
+}
+.pigg-page__drop-title { margin: 0; font-size: 15px; font-weight: 600; }
+.pigg-page__drop-or { margin: 0; font-size: 12px; color: var(--text-dim); }
+.pigg-page__drop-hint { margin: 4px 0 0; max-width: 46ch; font-size: 12px; line-height: 1.5; color: var(--text-dim); }
+/* While a folder is dragged over the page: the whole page is the target, not just the box. */
+.pigg-page--dragging .pigg-page__body {
+  outline: 2px dashed var(--focus-ring); outline-offset: 4px; border-radius: var(--r);
+}
+.pigg-page--dragging .pigg-page__drop { border-color: var(--focus-ring); background: var(--surface-raised); }
 .pigg-page__summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .pigg-page__folders { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; }
 .pigg-page__folders-label { font-size: 12px; color: var(--text-dim); }

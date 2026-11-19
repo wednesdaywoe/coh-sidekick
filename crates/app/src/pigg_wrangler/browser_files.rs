@@ -1,8 +1,12 @@
 //! Getting at the player's game files from the browser, and reading only what is needed of them.
 //!
-//! Folder picking is JavaScript because both browser routes hand back JS objects: Chrome and
-//! Edge's `showDirectoryPicker`, and `<input webkitdirectory>` everywhere else. Both return the
-//! same shape, `{root, found: [[path, File]]}`, with only the `.pigg` files in `found`.
+//! Three routes in, all JavaScript because each hands back JS objects, and all returning the same
+//! shape, `{root, found: [[path, File]]}`, with only the `.pigg` files in `found`:
+//! - a folder dropped anywhere on the page, in every browser, with no dialog or prompt;
+//! - Chrome and Edge's `showDirectoryPicker`;
+//! - elsewhere, a plain multi-file input for the `.pigg` files themselves. Not a folder input:
+//!   that one makes the browser say "Upload" and "upload 1,000 files to this site?", which
+//!   put even the owner off (pigg-wrangler-web-11).
 
 use coh_pigg::{parse_index, PiggEntry, PiggError};
 use wasm_bindgen::prelude::*;
@@ -42,10 +46,10 @@ export async function pickDirectory() {
   return { root: root.name, found };
 }
 
-// null when nothing was chosen. Clears the input so choosing the same folder again still fires.
+// null when nothing was chosen. Clears the input so choosing the same files again still fires.
 export function piggsFromInput(id) {
   const input = document.getElementById(id);
-  if (!input) throw new Error('the folder input is missing from the page');
+  if (!input) throw new Error('the file input is missing from the page');
   const files = Array.from(input.files || []);
   input.value = '';
   if (files.length === 0) return null;
@@ -56,6 +60,88 @@ export function piggsFromInput(id) {
     .map((file) => [file.webkitRelativePath || file.name, file]);
   return { root, found };
 }
+
+// Dropped folders arrive as old-style entries, which work in every browser.
+const fileOf = (entry) => new Promise((resolve, reject) => entry.file(resolve, reject));
+const batchOf = (reader) => new Promise((resolve, reject) => reader.readEntries(resolve, reject));
+
+async function walkEntry(entry, path, found, seen) {
+  if (++seen.count > LIMIT) throw new Error(TOO_MANY);
+  if (entry.isDirectory) {
+    const reader = entry.createReader();
+    // readEntries hands back up to 100 at a time; an empty batch is the end.
+    for (let batch = await batchOf(reader); batch.length; batch = await batchOf(reader)) {
+      for (const child of batch) await walkEntry(child, path + '/' + child.name, found, seen);
+    }
+  } else if (isPigg(entry.name)) {
+    found.push([path, await fileOf(entry)]);
+  }
+}
+
+// Drops wait here until the page asks for the next one, so Rust never runs inside a DOM listener.
+const drops = [];
+let waiting = null;
+let installed = false;
+
+function deliver(item) {
+  if (waiting) {
+    const resolve = waiting;
+    waiting = null;
+    resolve(item);
+  } else {
+    drops.push(item);
+  }
+}
+
+function install(pageId) {
+  if (installed) return;
+  installed = true;
+  let depth = 0;
+  const mark = (on) => document.getElementById(pageId)?.classList.toggle('pigg-page--dragging', on);
+  const carriesFiles = (e) => Array.from(e.dataTransfer?.types || []).includes('Files');
+  window.addEventListener('dragenter', (e) => {
+    if (!carriesFiles(e)) return;
+    e.preventDefault();
+    if (depth++ === 0) mark(true);
+  });
+  window.addEventListener('dragleave', (e) => {
+    if (!carriesFiles(e)) return;
+    if (--depth <= 0) { depth = 0; mark(false); }
+  });
+  // Without this the browser opens a dropped file itself and leaves the page.
+  window.addEventListener('dragover', (e) => {
+    if (!carriesFiles(e)) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  });
+  window.addEventListener('drop', (e) => {
+    if (!carriesFiles(e)) return;
+    e.preventDefault();
+    depth = 0;
+    mark(false);
+    // Taken now: a drop's items are unreadable once this listener returns.
+    const entries = Array.from(e.dataTransfer.items)
+      .filter((item) => item.kind === 'file')
+      .map((item) => item.webkitGetAsEntry())
+      .filter(Boolean);
+    (async () => {
+      const found = [];
+      const seen = { count: 0 };
+      for (const entry of entries) await walkEntry(entry, entry.name, found, seen);
+      const root = entries.length === 1 && entries[0].isDirectory ? entries[0].name : '';
+      return { root, found };
+    })().then((value) => deliver({ value }), (error) => deliver({ error }));
+  });
+}
+
+// The next folder or files dropped on the page: {value} or {error}. Never rejects.
+export function nextDrop(pageId) {
+  install(pageId);
+  return new Promise((resolve) => {
+    if (drops.length) resolve(drops.shift());
+    else waiting = resolve;
+  });
+}
 "#)]
 extern "C" {
     #[wasm_bindgen(js_name = hasDirectoryPicker)]
@@ -64,6 +150,8 @@ extern "C" {
     async fn pick_directory_js() -> Result<JsValue, JsValue>;
     #[wasm_bindgen(js_name = piggsFromInput, catch)]
     fn piggs_from_input_js(id: &str) -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(js_name = nextDrop)]
+    async fn next_drop_js(page_id: &str) -> JsValue;
 }
 
 /// What a folder pick found: the chosen folder's name, and every `.pigg` under it.
@@ -72,7 +160,7 @@ pub struct Picked {
     pub found: Vec<(String, web_sys::File)>,
 }
 
-/// Whether this browser has Chrome's folder picker. Without it the page uses a folder input.
+/// Whether this browser has Chrome's folder picker. Without it the page uses a file input.
 pub fn has_directory_picker() -> bool {
     has_directory_picker_js()
 }
@@ -82,9 +170,20 @@ pub async fn pick_directory() -> Result<Option<Picked>, String> {
     picked(pick_directory_js().await.map_err(js_error)?)
 }
 
-/// What the folder input with this id holds. `None` if nothing was chosen.
+/// The `.pigg` files the file input with this id holds. `None` if nothing was chosen.
 pub fn piggs_from_input(id: &str) -> Result<Option<Picked>, String> {
     picked(piggs_from_input_js(id).map_err(js_error)?)
+}
+
+/// Waits for the next folder or files dropped anywhere on the page with this id. The first call
+/// starts listening; the page lives until a reload, so the listeners are never removed.
+pub async fn next_drop(page_id: &str) -> Result<Option<Picked>, String> {
+    let dropped = next_drop_js(page_id).await;
+    let error = js_sys::Reflect::get(&dropped, &"error".into()).map_err(js_error)?;
+    if !error.is_undefined() {
+        return Err(js_error(error));
+    }
+    picked(js_sys::Reflect::get(&dropped, &"value".into()).map_err(js_error)?)
 }
 
 fn picked(value: JsValue) -> Result<Option<Picked>, String> {
