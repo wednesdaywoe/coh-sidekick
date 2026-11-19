@@ -294,22 +294,26 @@ fn App() -> Element {
         document::eval(POINTER_CAPTURE_SHIM);
     });
 
-    // Decided once: the page never changes without a reload.
-    let pigg_wrangler = use_hook(pigg_wrangler::is_current_page);
+    // Pigg Wrangler's page instead of the planner. Decided once: the page never changes without
+    // a reload. Web only, so the desktop build has no such page.
+    #[cfg(target_arch = "wasm32")]
+    if use_hook(pigg_wrangler::is_current_page) {
+        return rsx! {
+            document::Link { rel: "icon", r#type: "image/png", href: TAB_ICON }
+            DocumentAssets {}
+            pigg_wrangler::Page {}
+        };
+    }
 
     rsx! {
+        // The tab's name and mark. Here and not in `DocumentAssets`, which a popped-out panel
+        // also renders: those windows are named by `with_title` in `main`, and each would
+        // otherwise be retitled to the app's name. `dioxus.toml` sets the same title in the web
+        // build's `index.html`, so the tab is named during the download too, before this runs.
+        document::Title { "CoH Sidekick" }
         document::Link { rel: "icon", r#type: "image/png", href: TAB_ICON }
         DocumentAssets {}
-        if pigg_wrangler {
-            pigg_wrangler::Page {}
-        } else {
-            // The tab's name. Here and not in `DocumentAssets`, which a popped-out panel also
-            // renders: those windows are named by `with_title` in `main`, and each would
-            // otherwise be retitled to the app's name. `dioxus.toml` sets the same title in the
-            // web build's `index.html`, so the tab is named during the download too.
-            document::Title { "CoH Sidekick" }
-            shell::Shell {}
-        }
+        shell::Shell {}
     }
 }
 

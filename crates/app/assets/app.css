@@ -8796,3 +8796,45 @@ button.picker-set-name:hover { color: var(--text-dim); }
   .pigg-page__touch { display: block; }
   .pigg-page__workspace { display: none; }
 }
+.pigg-page__lead { margin: 0 0 12px; max-width: 60ch; font-size: 13px; line-height: 1.5; }
+.pigg-page__status { margin: 0; font-size: 13px; }
+.pigg-page__status--error { color: var(--action-danger); }
+.pigg-page__unread { color: var(--action-danger); }
+.pigg-page__choose {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid var(--seam-raised); border-radius: var(--r);
+  background: var(--surface-raised);
+  color: var(--text); font: inherit; font-size: 13px;
+  cursor: pointer;
+}
+.pigg-page__choose:hover { background: var(--action-hover); }
+.pigg-page__choose:focus-visible,
+.pigg-page__choose:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+/* The same visually-hidden input as the menu's Open file row: still clickable through its label. */
+.pigg-page__folder-input {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap;
+}
+.pigg-page__summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.pigg-page__folders { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; }
+.pigg-page__folders-label { font-size: 12px; color: var(--text-dim); }
+.pigg-page__folder {
+  padding: 3px 8px;
+  border: 1px solid var(--seam); border-radius: var(--r);
+  background: transparent; color: var(--text-dim);
+  font: inherit; font-size: 12px; cursor: pointer;
+}
+.pigg-page__folder:hover { color: var(--text); }
+.pigg-page__folder--shown { border-color: var(--focus-ring); color: var(--text); background: var(--surface-raised); }
+.pigg-page__bundles { margin-top: 14px; border-collapse: collapse; font-size: 13px; }
+.pigg-page__bundles th {
+  padding: 4px 16px 4px 0;
+  text-align: left; font-weight: 600; font-size: 11px; color: var(--text-dim);
+  border-bottom: 1px solid var(--seam);
+}
+.pigg-page__bundles td { padding: 3px 16px 3px 0; border-bottom: 1px solid var(--seam); }
+.pigg-page__bundles .pigg-page__number { text-align: right; font-family: var(--font-data); }

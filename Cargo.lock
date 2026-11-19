@@ -58,6 +58,7 @@ dependencies = [
  "chrono",
  "coh_data",
  "coh_math",
+ "coh_pigg",
  "dioxus",
  "futures-util",
  "getrandom 0.4.3",
@@ -73,6 +74,8 @@ dependencies = [
  "serde_json",
  "sha2",
  "tokio",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
  "web-sys",
  "web-time",
 ]

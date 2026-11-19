@@ -130,13 +130,19 @@ gloo-net = "0.6"
 # is made, and `sendBeacon` is the only browser API that promises that. `document::eval` would
 # queue the call against a renderer the panic has already taken down.
 #
-# `Location` is Pigg Wrangler's: which page to draw is settled before the first render, and
-# `document::eval` cannot answer until after it.
-web-sys = { version = "0.3", features = ["console", "Location", "Navigator", "Window"] }
+# The rest are Pigg Wrangler's. `Location`: which page to draw is settled before the first
+# render, and `document::eval` cannot answer until after it. `Blob` and `File`: the page reads a
+# few kilobytes from the front of a 137 MB game file, which `document::eval` cannot hand over.
+web-sys = { version = "0.3", features = ["Blob", "console", "File", "Location", "Navigator", "Window"] }
 # The stack a Rust panic does not have on this target. `wasm32-unknown-unknown` has no backtrace,
 # so the crash reporter reads a fresh `Error`'s stack the way `console_error_panic_hook` does.
 # Already in the graph under dioxus-web, and the version dioxus-web locks.
 js-sys = "0.3"
+# Pigg Wrangler: reads the game's bundles (coh_pigg), from files the browser hands over as JS
+# objects (wasm-bindgen, and -futures for the promises). Versions already in the graph.
+coh_pigg = { path = "../coh_pigg" }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
 
 [features]
 default = []
