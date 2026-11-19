@@ -1,5 +1,13 @@
 [
   {
+     "date": "2026-11-19",
+     "items": [
+      { "id": "beta-retirement", "type": "feat", "message": "The beta of Sidekick is finally retired, the 1.0 planner now occupies coh-sidekick.com" },
+      { "id": "slot-level-labels", "type": "fix", "message": "The level each slot was gained at now sits under the slot in larger text, instead of overlapping the booster mark." }
+    ]
+  },
+
+  {
     "date": "2026-11-18",
     "items": [
       { "id": "henchmen-info", "type": "feat", "message": "Masterminds: the Info panel for a summon power now adds a Henchmen section to hows a damage meter across your henchmen, and you can open each pet to see its stats." },

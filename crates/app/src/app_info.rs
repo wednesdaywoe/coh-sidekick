@@ -385,12 +385,7 @@ pub fn WelcomeHost() -> Element {
                 persist_welcome_seen(true);
             },
             div { class: "welcome",
-                p { class: "welcome__lead", "Sidekick {APP_VERSION} is a ground-up rebuild of the Sidekick planner, in Rust and Dioxus. Three things to know before the first build:" }
-                ul { class: "welcome__points",
-                    li { "File at the left of the header holds the file acts; Options and Help sit at the right, with the preferences and these pages. On a phone the ☰ at the bottom holds all three." }
-                    li { "The quickbar under it holds what you do to the build — pin whatever you reach for." }
-                    li { "Pick a power and the Info panel reads it out of the engine's own projection: base, slotted, total." }
-                }
+                p { class: "welcome__lead", "Sidekick {APP_VERSION} is a City of Heroes planner for everyone, and currently supports Homecoming, Rebirth, and Thunderspy." }
                 if let Some(latest) = DATED_CHANGELOG.first() {
                     div { class: "welcome__news",
                         h3 { class: "changelog__title", "What's new — {format_date(&latest.date)}" }
@@ -425,19 +420,6 @@ pub fn WelcomeHost() -> Element {
 
 /// The in-app "Support Sidekick" flow — the beta's `DonateModal`.
 ///
-/// **The widget is embedded in a real browser and nowhere else.** The same-origin argument for
-/// the iframe is sound in a browser, where BMC's code runs sandboxed by
-/// origin and cannot reach this app's storage. It is not an argument about a webview shell, and
-/// the shell is where this app actually runs: wry 0.53.5 has no main-frame filter, so on Windows
-/// only `add_NavigationStarting` is hooked (`webview2/mod.rs:667`) — the main-frame event —
-/// and the third-party page renders INSIDE the app window; on macOS the subframe load instead
-/// reaches `decidePolicyForNavigationAction`, dioxus's handler, and `webbrowser::open`, so the
-/// frame stays blank and the OS browser opens on its own. One embed, two different wrong
-/// behaviours, and macOS is the RC's primary artifact.
-///
-/// So the desktop build does not embed it. It says where the page opens and opens it there, which
-/// is what the macOS path was doing by accident anyway — and it removes a third-party origin
-/// from inside the app window rather than arguing about what that origin can reach.
 const BMC_WIDGET_URL: &str = "https://buymeacoffee.com/widget/page/Wednesdaywoe";
 const BMC_PAGE_URL: &str = "https://buymeacoffee.com/Wednesdaywoe";
 

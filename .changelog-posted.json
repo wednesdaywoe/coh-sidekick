@@ -740,6 +740,66 @@
       "id": "account-deletion",
       "date": "2026-11-13",
       "preview": "You can now delete your account from File ▸ Delete account… (on mobile, under Mo"
+    },
+    {
+      "id": "beta-retirement",
+      "date": "2026-11-19",
+      "preview": "The beta of Sidekick is finally retired, the 1.0 planner now occupies coh-sideki"
+    },
+    {
+      "id": "slot-level-labels",
+      "date": "2026-11-19",
+      "preview": "The level each slot was gained at now sits under the slot in larger text, instea"
+    },
+    {
+      "id": "henchmen-info",
+      "date": "2026-11-18",
+      "preview": "Masterminds: the Info panel for a summon power now adds a Henchmen section to ho"
+    },
+    {
+      "id": "shopping-list-by-power",
+      "date": "2026-11-18",
+      "preview": "The enhancement list can now be grouped By set (one row per thing to buy) or By "
+    },
+    {
+      "id": "pin-readouts-option",
+      "date": "2026-11-18",
+      "preview": "New option: Keep top-row dashboards and Info on screen while scrolling. Turn it "
+    },
+    {
+      "id": "aoe-defense-default",
+      "date": "2026-11-18",
+      "preview": "The Defense dashboard now shows AoE defense with Melee and Ranged by default."
+    },
+    {
+      "id": "health-scaling-resistance",
+      "date": "2026-11-18",
+      "preview": "Lowering Health % now raises the scaling damage resistance from Super Reflexes' "
+    },
+    {
+      "id": "zoomed-grid-scroll",
+      "date": "2026-11-18",
+      "preview": "Pinned panels should no longer drift out of place while scrolling when the page "
+    },
+    {
+      "id": "pet-only-buffs",
+      "date": "2026-11-17",
+      "preview": "Masterminds: Serum (Mercenaries) and Smoke Flash (Ninjas) no longer add their he"
+    },
+    {
+      "id": "sign-in-retry",
+      "date": "2026-11-17",
+      "preview": "Fixed an occasional sign-in failure where the login window closed without signin"
+    },
+    {
+      "id": "mids-export",
+      "date": "2026-11-13",
+      "preview": "You can save builds for Mids Reborn again. File ▸ Save to file… (on mobile, unde"
+    },
+    {
+      "id": "henchman-owner-buffs",
+      "date": "2026-11-13",
+      "preview": "Masterminds: Protector Bots and Summon Demons now have an ON/OFF switch that add"
     }
   ]
 }
