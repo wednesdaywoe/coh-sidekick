@@ -396,7 +396,7 @@ jobs:
       # `--check` rather than a rewrite, on purpose: a gate that edits the tree to pass reports
       # nothing. `npm run fmt:rust` is the rewrite, for a person to run and read the diff of.
       - name: rustfmt --check
-        run: cargo fmt -p coh_data -p coh_math -p coh_wasm -p app -- --check
+        run: cargo fmt -p coh_data -p coh_math -p coh_pigg -p coh_wasm -p app -- --check
       # `vendor/dioxus-asset-resolver` is EXCLUDED from both steps and that is not an oversight.
       # It is upstream 0.7.9 with a single marked patch (F86, see the root Cargo.toml) and its
       # value is that it stays diffable against the crates.io release; reformatting it or
@@ -410,7 +410,7 @@ jobs:
       # `cargo clippy` run by hand gives a person the same answer this step gives, which is the
       # property the hand-run era did not have.
       - name: clippy -D warnings
-        run: cargo clippy --no-deps -p coh_data -p coh_math -p coh_wasm -p app --all-targets -- -D warnings
+        run: cargo clippy --no-deps -p coh_data -p coh_math -p coh_pigg -p coh_wasm -p app --all-targets -- -D warnings
       # `--no-tests=pass` stood here from 2026-09-25 to 2026-09-26 as a stated absence rather
       # than a fix: the workspace had ZERO `#[test]` functions, so nextest exited 4 on "no tests
       # to run" on every push, and a job red on every push hides the first real failure. The

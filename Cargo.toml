@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/coh_data", "crates/coh_math", "crates/coh_wasm", "crates/app", "vendor/dioxus-asset-resolver"]
+members = ["crates/coh_data", "crates/coh_math", "crates/coh_pigg", "crates/coh_wasm", "crates/app", "vendor/dioxus-asset-resolver"]
 
 # F86 (and the upstream half of F81). `dioxus-asset-resolver` serves any path
 # that already exists on the filesystem, because it consults the bundle root only when the literal
@@ -21,7 +21,7 @@ version = "0.1.0"
 edition = "2021"
 license = "AGPL-3.0-or-later"
 
-# The lint policy, opted into by each of our four crates (`[lints] workspace = true`) and
+# The lint policy, opted into by each of our five crates (`[lints] workspace = true`) and
 # NOT by `vendor/dioxus-asset-resolver`, which is upstream 0.7.9 plus one marked patch and has
 # to stay diffable against it. `npm run lint:rust` gates on this at `-D warnings`.
 #
