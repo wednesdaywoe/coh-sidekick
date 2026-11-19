@@ -679,18 +679,11 @@ fn PreviewPane(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -
     let picked = use_memo(move || view.read().file);
     // Which file the last save message is about, and how it went.
     let mut saved = use_signal(|| None::<((usize, usize), Result<String, String>)>);
+    // Which file is being read to be saved as it is; powers.bin takes a moment.
+    let mut saving = use_signal(|| None::<(usize, usize)>);
     let preview = use_resource(move || async move {
         let here = picked()?;
-        let (file, entry) = {
-            let staged = stage.peek();
-            let Stage::Ready(folders) = &*staged else {
-                return None;
-            };
-            let folder = folders.get((*shown.peek()).min(folders.len() - 1))?;
-            let bundle = folder.bundles.get(here.0)?;
-            let entry = bundle.index.as_ref().ok()?.get(here.1)?.clone();
-            (bundle.file.clone(), entry)
-        };
+        let (file, entry) = picked_entry(stage, shown, here)?;
         let preview = preview_of(file, &entry).await;
         Some((here, entry, preview))
     });
@@ -717,6 +710,32 @@ fn PreviewPane(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -
         .filter(|(about, _)| *about == here)
         .map(|(_, outcome)| outcome.clone());
 
+    // The game's own file, byte for byte. Read again rather than kept: most files are never saved.
+    let save_as_is = move |_| async move {
+        let Some((file, entry)) = picked_entry(stage, shown, here) else {
+            return;
+        };
+        saving.set(Some(here));
+        let outcome = match browser_files::read_entry(&file, &entry).await {
+            Ok(bytes) => {
+                build_file::write_bytes_file(entry.file_name(), &bytes, &build_file::ANY_FILE).await
+            }
+            Err(reason) => Err(reason),
+        };
+        saving.set(None);
+        saved.set(Some((here, outcome.map(|_| entry.file_name().to_string()))));
+    };
+    let busy = *saving.read() == Some(here);
+    let as_is_label = if busy {
+        "Saving…".to_string()
+    } else {
+        format!("Save {name}")
+    };
+    // A file that would not read out of its bundle would not save either.
+    let can_save = !matches!(shown_preview, Preview::Failed(_));
+
+    let mut facts = rsx! {};
+    let mut picture_save = None;
     let body = match shown_preview {
         Preview::Picture {
             url,
@@ -727,7 +746,7 @@ fn PreviewPane(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -
             ..
         } => {
             let zoom = zoom_for(*picture_size);
-            let facts = match picture_size {
+            let line = match picture_size {
                 Some((width, height)) => format!("{width} × {height} pixels · {format}"),
                 None => format!("Size unknown · {format}"),
             };
@@ -739,44 +758,21 @@ fn PreviewPane(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -
                 ),
                 _ => String::new(),
             };
-            let save_label = match kind {
+            picture_save = Some(match kind {
                 ImageKind::Png => "Save as PNG",
                 ImageKind::Jpeg => "Save as JPEG",
+            });
+            facts = rsx! {
+                p { class: "pigg-page__preview-facts", "{line}" }
+                if zoom > 1 {
+                    p { class: "pigg-page__preview-note", "Shown at {zoom}× its real size." }
+                }
             };
             let url = url.as_str().to_string();
             let original = original.clone();
             rsx! {
-                p { class: "pigg-page__preview-facts", "{facts}" }
-                if zoom > 1 {
-                    p { class: "pigg-page__preview-note", "Shown at {zoom}× its real size." }
-                }
                 div { class: "pigg-page__picture",
                     img { src: "{url}", alt: "{name}", style: "{style}" }
-                }
-                button {
-                    class: "pigg-page__choose",
-                    r#type: "button",
-                    onclick: move |_| async move {
-                        let file = {
-                            let read = preview.read();
-                            match &*read {
-                                Some(Some((about, entry, Preview::Picture { image, kind, .. }))) if *about == here => {
-                                    Some((picture_name(entry.file_name(), kind.extension()), image.clone(), *kind))
-                                }
-                                _ => None,
-                            }
-                        };
-                        let Some((file_name, image, kind)) = file else { return };
-                        let kind = match kind {
-                            ImageKind::Png => &build_file::PNG_FILE,
-                            ImageKind::Jpeg => &JPEG_FILE,
-                        };
-                        let outcome = build_file::write_image_file(&file_name, &image, kind)
-                            .await
-                            .map(|_| file_name);
-                        saved.set(Some((here, outcome)));
-                    },
-                    "{save_label}"
                 }
                 if !original.is_empty() {
                     p { class: "pigg-page__preview-note", "Made from {original}" }
@@ -820,6 +816,45 @@ fn PreviewPane(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -
                 }
             }
             p { class: "pigg-page__preview-note", "{size}" }
+            {facts}
+            if can_save {
+                div { class: "pigg-page__saves",
+                    if let Some(label) = picture_save {
+                        button {
+                            class: "pigg-page__choose",
+                            r#type: "button",
+                            onclick: move |_| async move {
+                                let file = {
+                                    let read = preview.read();
+                                    match &*read {
+                                        Some(Some((about, entry, Preview::Picture { image, kind, .. }))) if *about == here => {
+                                            Some((picture_name(entry.file_name(), kind.extension()), image.clone(), *kind))
+                                        }
+                                        _ => None,
+                                    }
+                                };
+                                let Some((file_name, image, kind)) = file else { return };
+                                let kind = match kind {
+                                    ImageKind::Png => &build_file::PNG_FILE,
+                                    ImageKind::Jpeg => &JPEG_FILE,
+                                };
+                                let outcome = build_file::write_bytes_file(&file_name, &image, kind)
+                                    .await
+                                    .map(|_| file_name);
+                                saved.set(Some((here, outcome)));
+                            },
+                            "{label}"
+                        }
+                    }
+                    button {
+                        class: if picture_save.is_some() { "pigg-page__choose pigg-page__choose--quiet" } else { "pigg-page__choose" },
+                        r#type: "button",
+                        disabled: busy,
+                        onclick: save_as_is,
+                        "{as_is_label}"
+                    }
+                }
+            }
             {body}
             match message {
                 Some(Ok(file_name)) => rsx! {
@@ -832,6 +867,22 @@ fn PreviewPane(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -
             }
         }
     }
+}
+
+/// The bundle file and table-of-contents entry of a picked file, if it is still there.
+fn picked_entry(
+    stage: Signal<Stage>,
+    shown: Signal<usize>,
+    here: (usize, usize),
+) -> Option<(web_sys::File, PiggEntry)> {
+    let staged = stage.peek();
+    let Stage::Ready(folders) = &*staged else {
+        return None;
+    };
+    let folder = folders.get((*shown.peek()).min(folders.len() - 1))?;
+    let bundle = folder.bundles.get(here.0)?;
+    let entry = bundle.index.as_ref().ok()?.get(here.1)?.clone();
+    Some((bundle.file.clone(), entry))
 }
 
 /// `1 file`, `6,696 files`.

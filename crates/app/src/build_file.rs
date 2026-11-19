@@ -757,7 +757,7 @@ pub async fn save_text_file_remembering(
 
 /// Write `bytes` out as a PNG the user keeps, offering `suggested_name`.
 pub async fn write_png_file(suggested_name: &str, bytes: &[u8]) -> Result<WrittenTo, String> {
-    write_image_file(suggested_name, bytes, &PNG_FILE).await
+    write_bytes_file(suggested_name, bytes, &PNG_FILE).await
 }
 
 pub const PNG_FILE: TextFileKind = TextFileKind {
@@ -766,59 +766,71 @@ pub const PNG_FILE: TextFileKind = TextFileKind {
     mime: "image/png",
 };
 
-/// Write a picture out as a file the user keeps; Pigg Wrangler saves the game's JPEGs as stored.
-///
-/// The image twin of [`write_text_file`], and per-target for the same reason: the browser downloads a
-/// blob and the desktop webview cannot. Same three outcomes — `Ok(None)` for a save the app
-/// cannot name or a dialog the user cancelled, `Ok(Some(path))` where it can, `Err` otherwise.
-#[cfg(target_arch = "wasm32")]
-pub async fn write_image_file(
-    suggested_name: &str,
-    bytes: &[u8],
-    kind: &TextFileKind,
-) -> Result<WrittenTo, String> {
-    use dioxus::prelude::*;
+/// A file of no particular kind, saved byte for byte: Pigg Wrangler's game files. An empty
+/// extension leaves the desktop's save dialog unfiltered.
+#[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
+pub const ANY_FILE: TextFileKind = TextFileKind {
+    label: "File",
+    extension: "",
+    mime: "application/octet-stream",
+};
 
-    let name = serde_json::to_string(suggested_name).map_err(|e| e.to_string())?;
-    let mime = serde_json::to_string(kind.mime).map_err(|e| e.to_string())?;
-    let payload =
-        serde_json::to_string(&crate::clipboard::base64(bytes)).map_err(|e| e.to_string())?;
-    let js = format!(
-        "try {{\
-           const bin = atob({payload});\
-           const bytes = new Uint8Array(bin.length);\
-           for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);\
-           const blob = new Blob([bytes], {{ type: {mime} }});\
-           const url = URL.createObjectURL(blob);\
-           const link = document.createElement('a');\
-           link.href = url;\
-           link.download = {name};\
-           document.body.appendChild(link);\
-           link.click();\
-           document.body.removeChild(link);\
-           URL.revokeObjectURL(url);\
-           return '';\
-         }} catch (e) {{ return String(e); }}"
-    );
-    let value = document::eval(&js).await.map_err(|e| format!("{e:?}"))?;
-    match value.as_str().unwrap_or_default() {
-        "" => Ok(None),
-        message => Err(message.to_string()),
+#[cfg(target_arch = "wasm32")]
+mod download {
+    use wasm_bindgen::prelude::*;
+
+    // The bytes go straight from wasm memory into a Blob, so a 50 MB game file is copied once
+    // rather than spelled out as base64 inside a script. The address is handed back a minute
+    // later, not at once: a big download may not have started reading it yet.
+    #[wasm_bindgen(inline_js = r#"
+export function downloadBytes(bytes, mime, name) {
+  try {
+    const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (e) {
+    throw String(e);
+  }
+}
+"#)]
+    extern "C" {
+        #[wasm_bindgen(js_name = downloadBytes, catch)]
+        pub fn download_bytes(bytes: &[u8], mime: &str, name: &str) -> Result<(), JsValue>;
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-pub async fn write_image_file(
+/// Write bytes out as a file the user keeps: a picture, or a game file exactly as stored.
+///
+/// The binary twin of [`write_text_file`], and per-target for the same reason: the browser downloads a
+/// blob and the desktop webview cannot. Same three outcomes — `Ok(None)` for a save the app
+/// cannot name or a dialog the user cancelled, `Ok(Some(path))` where it can, `Err` otherwise.
+#[cfg(target_arch = "wasm32")]
+pub async fn write_bytes_file(
     suggested_name: &str,
     bytes: &[u8],
     kind: &TextFileKind,
 ) -> Result<WrittenTo, String> {
-    let Some(handle) = rfd::AsyncFileDialog::new()
-        .set_file_name(suggested_name)
-        .add_filter(kind.label, &[kind.extension])
-        .save_file()
-        .await
-    else {
+    download::download_bytes(bytes, kind.mime, suggested_name)
+        .map(|()| None)
+        .map_err(|error| error.as_string().unwrap_or_default())
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub async fn write_bytes_file(
+    suggested_name: &str,
+    bytes: &[u8],
+    kind: &TextFileKind,
+) -> Result<WrittenTo, String> {
+    let mut dialog = rfd::AsyncFileDialog::new().set_file_name(suggested_name);
+    if !kind.extension.is_empty() {
+        dialog = dialog.add_filter(kind.label, &[kind.extension]);
+    }
+    let Some(handle) = dialog.save_file().await else {
         return Ok(None);
     };
     let path = handle.path().to_path_buf();

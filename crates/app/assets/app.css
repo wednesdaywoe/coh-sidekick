@@ -8917,6 +8917,10 @@ button.picker-set-name:hover { color: var(--text-dim); }
   background: transparent; color: var(--text-dim); font: inherit; font-size: 18px; line-height: 1; cursor: pointer;
 }
 .pigg-page__preview-close:hover { color: var(--text); background: var(--surface-raised); }
+.pigg-page__saves { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Saving the game's own file sits beside Save as PNG, quieter, for the few who want it. */
+.pigg-page__choose--quiet { background: transparent; color: var(--text-dim); overflow-wrap: anywhere; }
+.pigg-page__choose:disabled { cursor: progress; opacity: 0.7; }
 .pigg-page__preview-facts { margin: 0; font-size: 13px; font-family: var(--font-data); }
 .pigg-page__preview-note { margin: 0; font-size: 12px; color: var(--text-dim); overflow-wrap: anywhere; }
 /* A checkerboard behind the picture, so its see-through parts show as see-through. */

@@ -83,8 +83,7 @@ pub async fn copy_png(bytes: &[u8]) -> Result<(), String> {
 }
 
 /// Standard base64, no line breaks. Hand-rolled because binary-to-JavaScript is the only place
-/// this app needs it and a crate would be the whole dependency for these twenty lines. Shared
-/// with [`crate::build_file::write_png_file`], which hands the browser a blob the same way.
+/// this app needs it and a crate would be the whole dependency for these twenty lines.
 pub(crate) fn base64(bytes: &[u8]) -> String {
     const ALPHABET: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut out = String::with_capacity(bytes.len().div_ceil(3) * 4);
