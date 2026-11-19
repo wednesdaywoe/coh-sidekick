@@ -2503,35 +2503,34 @@ button.power-pick--empty {
   pointer-events: none;
 }
 
-/* Slot level (level-up mode): the character level this slot was granted at, centred under the
-   cell like the beta's label. Small and quiet — it is read when levelling, not at a glance. The
-   unplaced variant is a slot the schedule has no grant for, and it takes pointer events so its
-   explanation can show on hover. */
+/* Slot level: the character level this slot was granted at, as a caption UNDER the cell. It sat
+   on the cell's bottom edge until it kept colliding with the booster pip. Hung off the slot's box
+   so that box stays one cell wide for the slot drag's measure; the row reserves the room below.
+   The unplaced variant takes pointer events so its explanation can show on hover. */
 .slot-level {
   position: absolute;
-  z-index: 1;
-  bottom: -5px;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  min-width: 12px;
-  padding: 0 2px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  background: var(--surface-app);
+  /* Clears the booster pip, which hangs 2px below the cell. */
+  margin-top: 2px;
   color: var(--text-dim);
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
-  line-height: 10px;
-  text-align: center;
+  line-height: 12px;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
   pointer-events: none;
 }
 .slot-level--unplaced {
-  border-color: var(--action-danger);
   color: var(--action-danger);
   pointer-events: auto;
   cursor: help;
 }
+/* The caption's room: under the cells, and level with it beside the controls so they stay
+   centred on the circles rather than on circles-plus-captions. */
+.slot-capsule__cells:has(.slot-level) { padding-bottom: 14px; }
+.slot-capsule:has(.slot-level) .slot-capsule__controls { margin-bottom: 14px; }
 
 /* Under-level mark: this piece is crafted below the level it could reach. Top-left, the last
    free corner — proc dot top-right, booster pip bottom-left.
@@ -7342,6 +7341,8 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
   .slot-capsule__cells { flex-wrap: wrap; }
   .slot-capsule__cells,
   .slot-capsule__controls { gap: 6px; }
+  /* A folded second line clears the first line's captions. */
+  .slot-capsule__cells:has(.slot-level) { row-gap: 20px; }
 }
 
 /* ---- the enhancement list ----
