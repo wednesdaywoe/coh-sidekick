@@ -4,14 +4,16 @@
 use super::browser_files::{self, ObjectUrl, Picked};
 use super::tree::{self, Dir};
 use super::{
-    default_folder, group_by_folder, kind_of, picture_name, size_label, text_of, thousands, Kind,
+    default_folder, group_by_folder, kind_of, picture_name, size_label, text_of, thousands,
+    zip_name, zip_refusal, Kind, ZipNames, ZIP_LIMIT,
 };
 use crate::build_file::{self, TextFileKind};
 use coh_pigg::texture::{decode_texture, ImageKind};
-use coh_pigg::PiggEntry;
+use coh_pigg::zip::{DosTime, Zip};
+use coh_pigg::{extract_entry, PiggEntry};
 use dioxus::prelude::*;
 use futures_util::StreamExt;
-use std::collections::HashSet;
+use std::collections::{BTreeSet, HashSet};
 
 /// One `.pigg` found in the chosen folder. A table of contents that would not read stays in the
 /// list with its reason, rather than the bundle quietly vanishing.
@@ -51,6 +53,8 @@ struct View {
     /// The file picked from a list or a search, by bundle and entry.
     file: Option<(usize, usize)>,
     query: String,
+    /// Files ticked for a zip, by bundle and entry. Kept while the player moves between folders.
+    ticked: BTreeSet<(usize, usize)>,
 }
 
 /// Matches past this many are counted but not listed: a word like `texture` matches thousands.
@@ -238,6 +242,7 @@ enum ListLine {
         archive: String,
         size: String,
         chosen: bool,
+        ticked: bool,
     },
 }
 
@@ -247,6 +252,9 @@ enum ListLine {
 fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> Element {
     // Bumped when a search match is opened, so the tree and list scroll to it once drawn.
     let reveal = use_signal(|| 0u32);
+    let zipping = use_signal(|| Zipping::Idle);
+    // Most players are here for the artwork, so a zip turns pictures into PNGs unless told not to.
+    let as_png = use_signal(|| true);
     use_effect(move || {
         if reveal() > 0 {
             document::eval(
@@ -344,6 +352,7 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
                         archive: bundle.name.clone(),
                         size: size_label(f64::from(entries[entry].uncompressed_size)),
                         chosen: false,
+                        ticked: state.ticked.contains(&(bundle_index, entry)),
                     });
                 }
             }
@@ -384,11 +393,29 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
                     archive: String::new(),
                     size: size_label(f64::from(entries[entry].uncompressed_size)),
                     chosen: state.file == Some((*bundle_index, entry)),
+                    ticked: state.ticked.contains(&(*bundle_index, entry)),
                 });
             }
         }
     }
     let searching = !words.is_empty();
+    let listed: Vec<(usize, usize)> = list
+        .iter()
+        .filter_map(|line| match line {
+            ListLine::File { bundle, entry, .. } => Some((*bundle, *entry)),
+            ListLine::Folder { .. } => None,
+        })
+        .collect();
+    let all_ticked = !listed.is_empty() && listed.iter().all(|file| state.ticked.contains(file));
+    let ticked_count = state.ticked.len();
+    // The listed folder, if any: what "Save this folder as a zip" saves.
+    let folder_zip = match (&state.folder, searching) {
+        (Some((bundle, path)), false) => folder.bundles[*bundle]
+            .tree
+            .find(path)
+            .map(|dir| (*bundle, path.clone(), dir.count)),
+        _ => None,
+    };
     let overview: Vec<(usize, String, Result<String, String>, String)> = folder
         .bundles
         .iter()
@@ -488,11 +515,33 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
                 if !heading.is_empty() {
                     p { class: "pigg-page__list-status", role: "status", "{heading}" }
                 }
+                if searching || picked_folder || ticked_count > 0 {
+                    ZipBar { stage, shown, view, zipping, as_png, folder_zip, ticked_count }
+                }
                 if searching || picked_folder {
                     if !list.is_empty() {
                         table { class: "pigg-page__files",
                             thead {
                                 tr {
+                                    th { class: "pigg-page__tick",
+                                        input {
+                                            r#type: "checkbox",
+                                            aria_label: "Tick every file listed",
+                                            title: "Tick every file listed",
+                                            checked: all_ticked,
+                                            disabled: listed.is_empty(),
+                                            onchange: move |_| {
+                                                let mut state = view.write();
+                                                for file in &listed {
+                                                    if all_ticked {
+                                                        state.ticked.remove(file);
+                                                    } else {
+                                                        state.ticked.insert(*file);
+                                                    }
+                                                }
+                                            },
+                                        }
+                                    }
                                     th { if searching { "File" } else { "Name" } }
                                     if searching {
                                         th { "Archive" }
@@ -505,6 +554,7 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
                                     match line {
                                         ListLine::Folder { bundle, path, name, count } => rsx! {
                                             tr { key: "d{bundle}/{path}",
+                                                td { class: "pigg-page__tick" }
                                                 td {
                                                     button {
                                                         class: "pigg-page__row-name pigg-page__row-name--folder",
@@ -516,12 +566,25 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
                                                 td { class: "pigg-page__number", "{count}" }
                                             }
                                         },
-                                        ListLine::File { bundle, entry, label, parts, archive, size, chosen } => {
+                                        ListLine::File { bundle, entry, label, parts, archive, size, chosen, ticked } => {
                                             let path = label.clone();
                                             rsx! {
                                                 tr {
                                                     key: "f{bundle}/{entry}",
                                                     class: if chosen { "pigg-page__row--chosen" } else { "" },
+                                                    td { class: "pigg-page__tick",
+                                                        input {
+                                                            r#type: "checkbox",
+                                                            aria_label: "Tick {label}",
+                                                            checked: ticked,
+                                                            onchange: move |_| {
+                                                                let mut state = view.write();
+                                                                if !state.ticked.remove(&(bundle, entry)) {
+                                                                    state.ticked.insert((bundle, entry));
+                                                                }
+                                                            },
+                                                        }
+                                                    }
                                                     td {
                                                         button {
                                                             class: "pigg-page__row-name",
@@ -593,6 +656,249 @@ fn Browser(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> El
             }
         }
     }
+}
+
+/// What the zip buttons are doing.
+#[derive(Clone, PartialEq)]
+enum Zipping {
+    Idle,
+    Working {
+        done: usize,
+        total: usize,
+    },
+    /// The saved zip's name and size, or why there is none.
+    Done(Result<String, String>),
+}
+
+const ZIP_FILE: TextFileKind = TextFileKind {
+    label: "Zip archive",
+    extension: "zip",
+    mime: "application/zip",
+};
+
+/// The zip buttons over the file list: the listed folder, or the ticked files, as one zip.
+#[component]
+fn ZipBar(
+    stage: Signal<Stage>,
+    shown: Signal<usize>,
+    view: Signal<View>,
+    zipping: Signal<Zipping>,
+    as_png: Signal<bool>,
+    /// The listed folder (bundle, path) and how many files are in it and below.
+    folder_zip: Option<(usize, String, usize)>,
+    ticked_count: usize,
+) -> Element {
+    let state = zipping();
+    let working = matches!(state, Zipping::Working { .. });
+    let mut view = view;
+    let mut as_png = as_png;
+    let folder_button = folder_zip.map(|(bundle, path, count)| {
+        let label = if path.is_empty() {
+            format!("Save this archive as a zip ({})", counted(count, "file"))
+        } else {
+            format!("Save this folder as a zip ({})", counted(count, "file"))
+        };
+        (bundle, path, label)
+    });
+    rsx! {
+        div { class: "pigg-page__zip",
+            div { class: "pigg-page__zip-row",
+                if let Some((bundle, path, label)) = folder_button {
+                    button {
+                        class: "pigg-page__choose",
+                        r#type: "button",
+                        disabled: working,
+                        onclick: move |_| {
+                            let path = path.clone();
+                            async move {
+                                let Some((name, files)) = folder_files(stage, shown, bundle, &path) else { return };
+                                save_zip(stage, shown, files, name, as_png(), zipping).await;
+                            }
+                        },
+                        "{label}"
+                    }
+                }
+                if ticked_count > 0 {
+                    span { class: "pigg-page__zip-count", "{counted(ticked_count, \"file\")} ticked" }
+                    button {
+                        class: "pigg-page__choose",
+                        r#type: "button",
+                        disabled: working,
+                        onclick: move |_| async move {
+                            let files: Vec<(usize, usize)> = view.peek().ticked.iter().copied().collect();
+                            save_zip(stage, shown, files, "pigg-wrangler-files.zip".to_string(), as_png(), zipping).await;
+                        },
+                        "Save the ticked files as a zip"
+                    }
+                    button {
+                        class: "pigg-page__choose pigg-page__choose--quiet",
+                        r#type: "button",
+                        disabled: working,
+                        onclick: move |_| view.write().ticked.clear(),
+                        "Clear"
+                    }
+                }
+            }
+            label { class: "pigg-page__zip-option",
+                input {
+                    r#type: "checkbox",
+                    checked: as_png(),
+                    disabled: working,
+                    onchange: move |event| as_png.set(event.checked()),
+                }
+                " Turn pictures (.texture) into PNGs in the zip. Zips can be up to 1 GB."
+            }
+            match state {
+                Zipping::Idle => rsx! {},
+                Zipping::Working { done, total } => rsx! {
+                    p { class: "pigg-page__preview-note", role: "status",
+                        "Zipping {thousands(done)} of {thousands(total)} files…"
+                    }
+                },
+                Zipping::Done(Ok(saved)) => rsx! {
+                    p { class: "pigg-page__preview-note", role: "status",
+                        "Saved {saved}, wherever your browser puts downloads."
+                    }
+                },
+                Zipping::Done(Err(reason)) => rsx! {
+                    p { class: "pigg-page__status--error", role: "alert", "{reason}" }
+                },
+            }
+        }
+    }
+}
+
+/// A folder's zip name and every file in it and below.
+fn folder_files(
+    stage: Signal<Stage>,
+    shown: Signal<usize>,
+    bundle: usize,
+    path: &str,
+) -> Option<(String, Vec<(usize, usize)>)> {
+    let staged = stage.peek();
+    let Stage::Ready(folders) = &*staged else {
+        return None;
+    };
+    let folder = folders.get((*shown.peek()).min(folders.len() - 1))?;
+    let found = folder.bundles.get(bundle)?;
+    let files = found.tree.find(path)?.all_files();
+    let name = zip_name(&found.name, path);
+    Some((
+        name,
+        files.into_iter().map(|entry| (bundle, entry)).collect(),
+    ))
+}
+
+/// Zip these files and hand the zip to the browser, reporting progress in `zipping`.
+async fn save_zip(
+    stage: Signal<Stage>,
+    shown: Signal<usize>,
+    files: Vec<(usize, usize)>,
+    name: String,
+    as_png: bool,
+    mut zipping: Signal<Zipping>,
+) {
+    if matches!(*zipping.peek(), Zipping::Working { .. }) {
+        return;
+    }
+    // Everything the zip needs is gathered first, so moving around the page meanwhile is safe.
+    let mut items = Vec::with_capacity(files.len());
+    {
+        let staged = stage.peek();
+        let Stage::Ready(folders) = &*staged else {
+            return;
+        };
+        let Some(folder) = folders.get((*shown.peek()).min(folders.len() - 1)) else {
+            return;
+        };
+        for (bundle, entry) in files {
+            let Some(found) = folder.bundles.get(bundle) else {
+                continue;
+            };
+            let Some(entry) = found.index.as_ref().ok().and_then(|index| index.get(entry)) else {
+                continue;
+            };
+            items.push((found.file.clone(), found.name.clone(), entry.clone()));
+        }
+    }
+    let stored: u64 = items
+        .iter()
+        .map(|(_, _, entry)| entry.stored_range().end - entry.stored_range().start)
+        .sum();
+    if let Some(reason) = zip_refusal(items.len(), stored) {
+        zipping.set(Zipping::Done(Err(reason)));
+        return;
+    }
+    let total = items.len();
+    zipping.set(Zipping::Working { done: 0, total });
+    let outcome = match make_zip(items, stored, as_png, zipping).await {
+        Ok(bytes) => {
+            let size = size_label(bytes.len() as f64);
+            build_file::write_bytes_file(&name, &bytes, &ZIP_FILE)
+                .await
+                .map(|_| format!("{name} ({size})"))
+        }
+        Err(reason) => Err(reason),
+    };
+    zipping.set(Zipping::Done(outcome.map_err(|reason| {
+        if reason.starts_with("That ") || reason.starts_with("The zip") {
+            reason
+        } else {
+            format!("The zip could not be made: {reason}")
+        }
+    })));
+}
+
+async fn make_zip(
+    items: Vec<(web_sys::File, String, PiggEntry)>,
+    stored: u64,
+    as_png: bool,
+    mut zipping: Signal<Zipping>,
+) -> Result<Vec<u8>, String> {
+    // A zip's dates are the player's clock time, not UTC.
+    let now = js_sys::Date::new_0();
+    let local = now.get_time() / 1000.0 - now.get_timezone_offset() * 60.0;
+    // Room for the stored bytes and each file's two headers, so the buffer needn't regrow.
+    let capacity = stored as usize + items.len() * 200;
+    let mut zip = Zip::new(capacity, DosTime::from_unix(local.max(0.0) as u64));
+    let mut names = ZipNames::default();
+    let total = items.len();
+    for (done, (file, bundle_name, entry)) in items.into_iter().enumerate() {
+        let packed = browser_files::read_stored(&file, &entry).await?;
+        let picture = (as_png && kind_of(&entry.path) == Kind::Picture)
+            .then(|| {
+                let bytes = extract_entry(&entry, &packed).ok()?;
+                decode_texture(&bytes).ok()?.to_image_file().ok()
+            })
+            .flatten();
+        match picture {
+            // A picture that won't convert goes in as the game's own file, as in the Python tool.
+            Some((image, kind)) => {
+                let name = names.name(&bundle_name, &picture_name(&entry.path, kind.extension()));
+                zip.add_file(&name, &image)
+            }
+            None => {
+                let name = names.name(&bundle_name, &entry.path);
+                zip.add_entry(&name, &entry, &packed).map(|_| ())
+            }
+        }
+        .map_err(|error| error.to_string())?;
+        // Pictures turned into PNGs can grow past what was checked up front.
+        if zip.len() as u64 > ZIP_LIMIT {
+            return Err(
+                "The zip passed 1 GB, more than the browser can hold, so it was \
+                        stopped. Choose a smaller folder, or leave pictures as game files."
+                    .to_string(),
+            );
+        }
+        if done % 25 == 24 {
+            zipping.set(Zipping::Working {
+                done: done + 1,
+                total,
+            });
+        }
+    }
+    Ok(zip.finish())
 }
 
 /// What the preview pane shows for the picked file.

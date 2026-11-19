@@ -260,9 +260,14 @@ pub async fn read_index(file: &web_sys::File) -> Result<Vec<PiggEntry>, String> 
 
 /// One file out of a bundle, read from its own stretch of the bundle and unpacked.
 pub async fn read_entry(file: &web_sys::File, entry: &PiggEntry) -> Result<Vec<u8>, String> {
-    let range = entry.stored_range();
-    let stored = read_range(file, range.start as f64, range.end as f64).await?;
+    let stored = read_stored(file, entry).await?;
     extract_entry(entry, &stored).map_err(|error| error.to_string())
+}
+
+/// One file's bytes as the bundle stores them, still packed: what a zip copies.
+pub async fn read_stored(file: &web_sys::File, entry: &PiggEntry) -> Result<Vec<u8>, String> {
+    let range = entry.stored_range();
+    read_range(file, range.start as f64, range.end as f64).await
 }
 
 async fn read_range(file: &web_sys::File, start: f64, end: f64) -> Result<Vec<u8>, String> {

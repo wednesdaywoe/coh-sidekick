@@ -8917,6 +8917,13 @@ button.picker-set-name:hover { color: var(--text-dim); }
   background: transparent; color: var(--text-dim); font: inherit; font-size: 18px; line-height: 1; cursor: pointer;
 }
 .pigg-page__preview-close:hover { color: var(--text); background: var(--surface-raised); }
+.pigg-page__zip { display: flex; flex-direction: column; gap: 6px; margin: 0 0 8px; }
+.pigg-page__zip-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pigg-page__zip-row:empty { display: none; }
+.pigg-page__zip-count { font-size: 13px; }
+.pigg-page__zip-option { font-size: 12px; color: var(--text-dim); }
+.pigg-page__zip .pigg-page__status--error { margin: 0; font-size: 13px; }
+.pigg-page__tick { width: 22px; padding-right: 0; }
 .pigg-page__saves { display: flex; flex-wrap: wrap; gap: 8px; }
 /* Saving the game's own file sits beside Save as PNG, quieter, for the few who want it. */
 .pigg-page__choose--quiet { background: transparent; color: var(--text-dim); overflow-wrap: anywhere; }

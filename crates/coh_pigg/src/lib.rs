@@ -5,6 +5,7 @@
 //! needs from a 137 MB bundle instead of loading all of it.
 
 pub mod texture;
+pub mod zip;
 
 use std::io::Read;
 use std::ops::Range;

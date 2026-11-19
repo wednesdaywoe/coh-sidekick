@@ -90,7 +90,10 @@ fn thousands(count: usize) -> String {
 fn size_label(bytes: f64) -> String {
     const KB: f64 = 1024.0;
     const MB: f64 = KB * 1024.0;
-    if bytes >= MB {
+    const GB: f64 = MB * 1024.0;
+    if bytes >= GB {
+        format!("{:.1} GB", bytes / GB)
+    } else if bytes >= MB {
         format!("{:.1} MB", bytes / MB)
     } else if bytes >= KB {
         format!("{:.0} KB", bytes / KB)
@@ -182,9 +185,95 @@ fn picture_name(file_name: &str, extension: &str) -> String {
     format!("{stem}.{extension}")
 }
 
+/// The most a zip made in the page may hold. The whole zip sits in the tab's memory, then the
+/// browser copies it once more to save it; a gigabyte twice over is about what a tab can take.
+/// The biggest archive in a Homecoming install (issue24's mapsMissions.pigg) stores 182 MB.
+#[cfg(any(target_arch = "wasm32", test))]
+const ZIP_LIMIT: u64 = 1 << 30;
+
+/// Why a zip of `stored` bytes in `files` files can't be made, or `None` if it can.
+#[cfg(any(target_arch = "wasm32", test))]
+fn zip_refusal(files: usize, stored: u64) -> Option<String> {
+    // coh_pigg::zip::MOST_FILES; that crate is in the web build only.
+    if files > usize::from(u16::MAX) {
+        return Some(format!(
+            "That is {} files, and a zip can hold at most 65,535. Choose a smaller folder inside it.",
+            thousands(files)
+        ));
+    }
+    (stored > ZIP_LIMIT).then(|| {
+        format!(
+            "That comes to {}, more than the 1 GB a zip made in the browser can hold. Choose a \
+             smaller folder inside it, or fewer files.",
+            size_label(stored as f64)
+        )
+    })
+}
+
+/// What a folder's zip is called: the folder's own name, or the archive's for its top.
+#[cfg(any(target_arch = "wasm32", test))]
+fn zip_name(bundle_name: &str, folder: &str) -> String {
+    let name = match folder.rsplit('/').next() {
+        Some(last) if !last.is_empty() => last,
+        _ => bundle_name.strip_suffix(".pigg").unwrap_or(bundle_name),
+    };
+    format!("{name}.zip")
+}
+
+/// The names inside one zip: each file under its path in its archive, as the Python tool does.
+/// Two archives can hold the same path; the second copy goes under its archive's name instead of
+/// overwriting the first when unzipped.
+#[cfg(any(target_arch = "wasm32", test))]
+#[derive(Default)]
+struct ZipNames(std::collections::HashSet<String>);
+
+#[cfg(any(target_arch = "wasm32", test))]
+impl ZipNames {
+    fn name(&mut self, bundle_name: &str, path: &str) -> String {
+        if self.0.insert(path.to_string()) {
+            return path.to_string();
+        }
+        let stem = bundle_name.strip_suffix(".pigg").unwrap_or(bundle_name);
+        let mut name = format!("{stem}/{path}");
+        let mut again = 2;
+        while !self.0.insert(name.clone()) {
+            name = format!("{stem} {again}/{path}");
+            again += 1;
+        }
+        name
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn zips_are_named_and_sized_before_they_are_made() {
+        assert_eq!(
+            zip_name("texture_gui.pigg", "texture_library/gui/icons"),
+            "icons.zip"
+        );
+        assert_eq!(zip_name("texture_gui.pigg", ""), "texture_gui.zip");
+        let mut names = ZipNames::default();
+        assert_eq!(names.name("bin.pigg", "bin/powers.bin"), "bin/powers.bin");
+        assert_eq!(
+            names.name("bin_powers.pigg", "bin/powers.bin"),
+            "bin_powers/bin/powers.bin"
+        );
+        assert_eq!(
+            names.name("bin_powers.pigg", "bin/powers.bin"),
+            "bin_powers 2/bin/powers.bin"
+        );
+        assert_eq!(zip_refusal(1_216, 49 << 20), None);
+        assert_eq!(zip_refusal(1, ZIP_LIMIT), None);
+        let big = zip_refusal(1, ZIP_LIMIT + 1).unwrap();
+        assert!(
+            big.starts_with("That comes to 1.0 GB, more than the 1 GB"),
+            "{big}"
+        );
+        assert!(zip_refusal(70_000, 1).unwrap().contains("70,000 files"));
+    }
 
     #[test]
     fn files_show_as_pictures_text_or_nothing() {
@@ -258,5 +347,6 @@ mod tests {
         assert_eq!(size_label(137.0 * 1024.0 * 1024.0), "137.0 MB");
         assert_eq!(size_label(48.0 * 1024.0), "48 KB");
         assert_eq!(size_label(512.0), "512 bytes");
+        assert_eq!(size_label(1.5 * 1024.0 * 1024.0 * 1024.0), "1.5 GB");
     }
 }

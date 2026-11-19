@@ -47,6 +47,20 @@ impl Dir {
             })
     }
 
+    /// Every file in this folder and below, in table-of-contents order: what its zip holds.
+    pub fn all_files(&self) -> Vec<usize> {
+        fn gather(dir: &Dir, out: &mut Vec<usize>) {
+            out.extend_from_slice(&dir.files);
+            for child in &dir.dirs {
+                gather(child, out);
+            }
+        }
+        let mut out = Vec::with_capacity(self.count);
+        gather(self, &mut out);
+        out.sort_unstable();
+        out
+    }
+
     /// The tree's visible rows under this folder, opening only the folders `is_open` names.
     pub fn rows(&self, depth: usize, is_open: &dyn Fn(&str) -> bool, out: &mut Vec<Row>) {
         for dir in &self.dirs {
@@ -154,6 +168,8 @@ mod tests {
         // Sorted by name ignoring case: A before b, though b came first.
         assert_eq!(powers.files, [2, 1]);
         assert!(root.find("texture_library/gui").is_none());
+        assert_eq!(root.find("texture_library").unwrap().all_files(), [1, 2, 3]);
+        assert_eq!(root.all_files(), [0, 1, 2, 3, 4]);
 
         let open = |path: &str| path == "texture_library";
         let mut rows = Vec::new();

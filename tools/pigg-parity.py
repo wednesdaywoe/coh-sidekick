@@ -3,10 +3,14 @@
 Files: hashes every entry of every .pigg in a folder with both readers.
 Textures (--textures): decodes every .texture in those bundles with both, compares pixels, then
 does the same for generated images in every format texture.py knows, including the ones no
-shipped game uses. Needs real game files, so it runs by hand, not in CI.
+shipped game uses.
+Zips (--zips): zips every bundle whole in Rust, as the page zips a folder, then opens each zip with
+Python's zipfile and `unzip -t` and checks every file in it against the Python reader.
+Needs real game files, so it runs by hand, not in CI.
 
     python3 tools/pigg-parity.py ~/.wine/drive_c/Games/Homecoming/assets/live
     python3 tools/pigg-parity.py --textures ~/.wine/drive_c/Games/Homecoming/assets/live
+    python3 tools/pigg-parity.py --zips ~/.wine/drive_c/Games/Homecoming/assets/live
 """
 
 from __future__ import annotations
@@ -195,15 +199,52 @@ def check_textures(folder: Path) -> bool:
     return real_ok and generated_ok
 
 
+# ---- zips ----
+
+
+def zip_lines(folder: Path) -> tuple[list[str], list[str]]:
+    """(Python's extraction, what the Rust zips hold), one line per file, in bundle order."""
+    import zipfile
+
+    python, rust_out = [], []
+    with tempfile.TemporaryDirectory() as out:
+        rust_zips = Path(out)
+        command = ["cargo", "run", "-q", "--release", "-p", "coh_pigg"]
+        command += ["--example", "zip_bundles", "--", str(folder), str(rust_zips)]
+        subprocess.run(command, cwd=REPO, check=True)
+        for bundle in sorted(folder.glob("*.pigg")):
+            archive = PiggArchive(bundle)
+            for entry in archive.entries:
+                data = archive.extract(entry)
+                python.append(f"{bundle.name}\t{entry.path}\t{len(data)}\t{sha(data)}")
+            made = rust_zips / f"{bundle.stem}.zip"
+            tested = subprocess.run(["unzip", "-tqq", str(made)], check=False)
+            with zipfile.ZipFile(made) as zf:
+                bad = zf.testzip()
+                for info in zf.infolist():
+                    data = zf.read(info)
+                    rust_out.append(
+                        f"{bundle.name}\t{info.filename}\t{len(data)}\t{sha(data)}"
+                    )
+            if tested.returncode != 0 or bad is not None:
+                rust_out.append(
+                    f"{bundle.name}\tunzip -t exit {tested.returncode}, testzip {bad}"
+                )
+    return python, rust_out
+
+
 def main() -> None:
     args = sys.argv[1:]
     textures = "--textures" in args
-    args = [arg for arg in args if arg != "--textures"]
+    zips = "--zips" in args
+    args = [arg for arg in args if arg not in ("--textures", "--zips")]
     if len(args) != 1:
         sys.exit(__doc__)
     folder = Path(args[0]).expanduser()
     if textures:
         ok = check_textures(folder)
+    elif zips:
+        ok = compare("zipped files", *zip_lines(folder))
     else:
         ok = compare("files", file_lines(folder), rust("pigg_hashes", folder))
     if not ok:
