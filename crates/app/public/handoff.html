@@ -27,6 +27,7 @@
   function travels(key) {
     if (key === 'sk-handed-off' || key === 'sk-beta-carried') return false;
     return key.indexOf('sk-') === 0 || key.indexOf('coh-planner-') === 0 ||
+      key === 'sidekick-save-visibility' ||
       (key.indexOf('sb-') === 0 && key.slice(-11) === '-auth-token');
   }
 
@@ -74,8 +75,8 @@
       }
       event.source.postMessage({ type: 'sk-handoff-done' }, SENDER);
     } catch (_) {
-      // Storage refused (private mode, quota). Say nothing; the sender redirects on its timeout
-      // and tries again on the next visit.
+      // Storage refused (private mode, quota): the sender redirects now, unmarked, and retries.
+      event.source.postMessage({ type: 'sk-handoff-failed' }, SENDER);
     }
   });
 })();

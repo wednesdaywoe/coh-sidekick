@@ -37,7 +37,8 @@
                 if (location.hostname !== 'next.coh-sidekick.com') return;
                 var TARGET = 'https://coh-sidekick.com';
                 var destination = TARGET + location.pathname + location.search + location.hash;
-                document.documentElement.style.visibility = 'hidden';
+                // Shows the boot screen's "Moving" line and keeps the app hidden here.
+                document.documentElement.classList.add('sk-moving');
                 function go() { location.replace(destination); }
 
                 var entries = {};
@@ -53,12 +54,18 @@
                 var frame = document.createElement('iframe');
                 frame.style.display = 'none';
                 frame.src = TARGET + '/handoff.html';
-                // Not marked as handed off on a timeout, so the next visit tries again.
-                var timeout = setTimeout(go, 5000);
+                // Not marked as handed off on a timeout or a failure, so the next visit tries again.
+                // 10s leaves room for the beta's service worker, which can answer the frame
+                // first, to be replaced by sw.js and reload it.
+                var timeout = setTimeout(go, 10000);
                 window.addEventListener('message', function (event) {
-                    if (event.origin !== TARGET || !event.data || event.data.type !== 'sk-handoff-done') return;
+                    if (event.origin !== TARGET || !event.data) return;
+                    var type = event.data.type;
+                    if (type !== 'sk-handoff-done' && type !== 'sk-handoff-failed') return;
                     clearTimeout(timeout);
-                    try { localStorage.setItem('sk-handed-off', '1'); } catch (_) {}
+                    if (type === 'sk-handoff-done') {
+                        try { localStorage.setItem('sk-handed-off', '1'); } catch (_) {}
+                    }
                     go();
                 });
                 frame.onload = function () {
@@ -70,5 +77,103 @@
     </head>
     <body>
         <div id="main"></div>
+        <!-- The beta's landing page, shown until the app mounts. Dioxus appends to #main without
+             clearing it, so this sits beside it and the :not(:empty) rule hides it. Also what
+             search engines read. -->
+        <style>
+            /* :where() keeps this at zero weight, so the app's own body rule wins once it loads. */
+            :where(body) { margin: 0; background: #0f172a; }
+            @keyframes sk-spin { to { transform: rotate(360deg); } }
+            #boot { background: #0f172a; color: #e2e8f0; font-family: 'SN Pro', 'Nunito', system-ui, sans-serif;
+                    min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+            #main:not(:empty) ~ #boot { display: none; }
+            html.sk-moving #main { display: none; }
+            html.sk-moving #main ~ #boot { display: flex; }
+            #boot .moving { display: none; }
+            html.sk-moving #boot .moving { display: inline; }
+            html.sk-moving #boot .loading { display: none; }
+            #boot .hero { text-align: center; padding: 48px 24px 32px; max-width: 640px; }
+            #boot .hero img { margin: 0 auto 32px; display: block; width: 100%; max-width: 560px; height: auto; }
+            #boot h1 { font-size: 32px; font-weight: 700; margin: 0 0 12px; color: #fff; line-height: 1.2; }
+            #boot .tagline { font-size: 18px; color: #94a3b8; margin: 0 0 32px; line-height: 1.5; }
+            #boot .spinner-row { display: flex; align-items: center; justify-content: center; gap: 12px; color: #64748b; font-size: 14px; }
+            #boot .spinner { width: 20px; height: 20px; border: 2px solid #1e293b; border-top-color: #3b82f6;
+                             border-radius: 50%; animation: sk-spin 1s linear infinite; }
+            #load-trouble { display: none; margin: 28px auto 0; max-width: 480px; background: #1e293b;
+                            border: 1px solid #f59e0b; border-left: 4px solid #f59e0b; border-radius: 10px;
+                            padding: 16px 18px; text-align: left; }
+            #load-trouble.shown { display: block; }
+            #load-trouble strong { display: block; font-size: 15px; color: #fbbf24; margin: 0 0 6px; }
+            #load-trouble p { font-size: 13px; color: #cbd5e1; margin: 0; line-height: 1.6; }
+            #load-trouble kbd { display: inline-block; background: #0f172a; border: 1px solid #475569; border-bottom-width: 2px;
+                                border-radius: 4px; padding: 1px 6px; margin: 0 1px; font-size: 12px; color: #e2e8f0;
+                                font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.4; }
+            #boot .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 24px 48px;
+                           max-width: 960px; width: 100%; box-sizing: border-box; }
+            #boot .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; }
+            #boot .card h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+            #boot .card p { font-size: 13px; color: #94a3b8; margin: 0; line-height: 1.5; }
+            #boot .about { max-width: 720px; padding: 0 24px 48px; text-align: center; font-size: 13px; color: #475569; line-height: 1.6; }
+            @media (max-width: 720px) {
+                #boot .cards { grid-template-columns: 1fr; }
+                #boot h1 { font-size: 26px; }
+            }
+        </style>
+        <div id="boot">
+            <div class="hero">
+                <img src="/img/sidekick-banner.svg" alt="Sidekick - City of Heroes Build Planner">
+                <h1>Plan Your City of Heroes Builds</h1>
+                <p class="tagline">A <strong style="color: #67e8f9;">City of Heroes</strong> build planner for Homecoming and beyond.</p>
+                <div class="spinner-row">
+                    <div class="spinner"></div>
+                    <span class="loading">Loading planner...</span>
+                    <span class="moving">Moving to coh-sidekick.com...</span>
+                </div>
+                <div id="load-trouble" role="alert">
+                    <strong>Taking a while to load?</strong>
+                    <p>
+                        If Sidekick appears to be taking a long time to load or not loading at all,
+                        perform a hard refresh on your browser with
+                        <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> (PC), or
+                        <kbd>&#8984;</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> (Mac).
+                    </p>
+                </div>
+            </div>
+            <div class="cards">
+                <div class="card" style="border-top: 3px solid #22d3ee;">
+                    <h2 style="color: #22d3ee;">Build</h2>
+                    <p>Plan your build! Choose your archetype and powersets, quickly add slots with click and drag, and easily add enhancements with multi-select. You can even import your Mids Reborn build files!</p>
+                </div>
+                <div class="card" style="border-top: 3px solid #a78bfa;">
+                    <h2 style="color: #a78bfa;">Find Set Bonuses</h2>
+                    <p>Built-in stat tracking highlights sets that have the IO set bonuses you want, and the Set Bonus Finder can sort and filter sets to only show you the sets that your build can accept.</p>
+                </div>
+                <div class="card" style="border-top: 3px solid #34d399;">
+                    <h2 style="color: #34d399;">Incarnate Component Calculator</h2>
+                    <p>Just finished a BAF and you're not sure which component to pick? The Incarnate Component Calculator keeps a handy checklist of all the components needed to craft the Incarnate Powers you selected.</p>
+                </div>
+            </div>
+            <p class="about">
+                Sidekick is a free City of Heroes character build planner for Homecoming, Rebirth and Thunderspy.
+                Supports all archetypes and powersets: Blasters, Tankers, Scrappers, Defenders, Controllers, Masterminds, Brutes, Stalkers, Corruptors, Dominators, Sentinels.
+                Full support for invention origin (IO) enhancement sets, incarnate abilities, set bonus calculations, and Mids Reborn build imports.
+            </p>
+            <noscript>
+                <p class="about">Sidekick requires JavaScript to run. Please enable JavaScript in your browser to use the build planner.</p>
+            </noscript>
+        </div>
+        <script>
+            // The hard-refresh tip: at once if the app's code fails to load, or after 20s of
+            // waiting. Once the app mounts, #boot is hidden, so a later error shows nothing.
+            (function () {
+                function show() { var el = document.getElementById('load-trouble'); if (el) el.className = 'shown'; }
+                window.addEventListener('error', function (e) {
+                    var t = e && e.target;
+                    if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) show();
+                }, true);
+                window.addEventListener('unhandledrejection', show);
+                setTimeout(show, 20000);
+            })();
+        </script>
     </body>
 </html>

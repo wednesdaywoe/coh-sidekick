@@ -1161,6 +1161,7 @@ fn read_beta_carry_over() -> String {
            beta: localStorage.getItem({BETA_BUILD_KEY:?}), \
            ours: localStorage.getItem({ours:?}) !== null, \
            fragment: (window.location.hash || '').length > 1 \
+             || /^\\/(builds|author)\\//.test(window.location.pathname) \
          }}; }} catch (_) {{ return null; }}"
     )
 }
@@ -1193,8 +1194,8 @@ fn beta_working_build(raw: &str) -> Option<String> {
 ///
 /// Skipped, and marked done, when this browser already has a working build here: that is
 /// someone who has used this app on this origin, and replacing their build would be the loss.
-/// Skipped WITHOUT marking when the visit arrived with a fragment, a shared build or a sign-in
-/// coming back, so the two never race for the working build. The next boot decides.
+/// Skipped WITHOUT marking when the visit arrived with a fragment or a `/builds/` or `/author/`
+/// link, so the two never race for the working build. The next boot decides.
 #[component]
 pub fn BetaCarryOverHost(dataset: Signal<DatasetId>) -> Element {
     let session = use_context::<BuildSession>();
