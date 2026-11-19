@@ -1,0 +1,58 @@
+{
+  "version": 5,
+  "build": {
+    "name": "Echinoderm",
+    "dataset": "homecoming",
+    "archetype": "tanker",
+    "origin": "Natural",
+    "level": 50,
+    "primary": {
+      "id": "tanker/bio-armor",
+      "powers": [
+        { "internalName": "Hardened_Carapace", "level": 1, "slots": [
+          { "type": "io-set", "setId": "reactive_defenses", "pieceNum": 1, "level": 50, "booster": 5 },
+          { "type": "io-set", "setId": "reactive_defenses", "pieceNum": 2, "attuned": true },
+          { "type": "io-generic", "stat": "Resistance", "level": 50 },
+          { "type": "special", "category": "hamidon", "id": "endoplasm" },
+          { "type": "origin", "stat": "Resistance", "tier": "SO", "relativeLevel": 3 },
+          null
+        ] },
+        { "internalName": "Efficient_Adaptation", "level": 0, "slots": [null], "isActive": true }
+      ]
+    },
+    "secondary": {
+      "id": "tanker/spines",
+      "powers": [
+        { "internalName": "Barb_Swipe", "level": 1, "slots": [
+          { "type": "io-set", "setId": "kinetic_combat", "pieceNum": 1, "attuned": true }
+        ] }
+      ]
+    },
+    "pools": [
+      { "id": "fighting", "powers": [
+        { "internalName": "Kick", "level": 4, "slots": [null] },
+        { "internalName": "Tough", "level": 6, "slots": [null], "isActive": true }
+      ] }
+    ],
+    "epicPool": {
+      "id": "energy_mastery",
+      "powers": [
+        { "internalName": "Physical_Perfection", "level": 41, "slots": [null] }
+      ]
+    },
+    "inherents": [
+      { "internalName": "Health", "level": 0, "slots": [
+        { "type": "io-set", "setId": "panacea", "pieceNum": 6, "level": 10 }
+      ] }
+    ],
+    "accolades": ["portal_jockey", "task_force_commander", "freedom_phalanx_reserve"],
+    "incarnates": {
+      "alpha": { "power": "Agility_Partial_Radial_Revamp", "active": true },
+      "judgement": { "power": "Mighty_Core_Final_Judgement", "active": true },
+      "interface": { "power": "Spectral_Interface", "active": true },
+      "lore": { "power": "Banished_Pantheon_Partial_Core_Improved_Ally", "active": true },
+      "destiny": { "power": "Incandescence_Total_Core_Invocation", "active": true },
+      "hybrid": { "power": "Melee_Genome_6", "active": true }
+    }
+  }
+}
