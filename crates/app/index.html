@@ -77,57 +77,118 @@
     </head>
     <body>
         <div id="main"></div>
-        <!-- The beta's landing page, shown until the app mounts. Dioxus appends to #main without
-             clearing it, so this sits beside it and the :not(:empty) rule hides it. Also what
-             search engines read. -->
+        <!-- The boot screen, shown until the app mounts, and give search engines reading material. -->
         <style>
+            @font-face { font-family: 'Saira'; font-style: italic; font-weight: 900; font-display: swap;
+                         src: url('/fonts/saira-black-italic.woff2') format('woff2'); }
             /* :where() keeps this at zero weight, so the app's own body rule wins once it loads. */
-            :where(body) { margin: 0; background: #0f172a; }
-            @keyframes sk-spin { to { transform: rotate(360deg); } }
-            #boot { background: #0f172a; color: #e2e8f0; font-family: 'SN Pro', 'Nunito', system-ui, sans-serif;
-                    min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-            #main:not(:empty) ~ #boot { display: none; }
+            :where(body) { margin: 0; background: #111827; }
+            /* One screen: the splash and the features share it, centred, with no scrolling
+               on a laptop or a phone. */
+            #boot { --brand: #d62bce; background: #111827; color: #f3f4f6;
+                    font-family: 'SN Pro', 'Nunito', system-ui, sans-serif;
+                    min-height: 100vh; min-height: 100svh; box-sizing: border-box;
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    gap: 24px; padding: 20px 16px; }
+            /* The app draws before its stylesheets arrive, so it stays out of sight (and out of
+               the page's flow) until the script at the end marks it styled. */
+            html:not(.sk-styled) #main { position: fixed; inset: 0; overflow: hidden; visibility: hidden; }
+            html.sk-styled #boot { display: none; }
             html.sk-moving #main { display: none; }
             html.sk-moving #main ~ #boot { display: flex; }
             #boot .moving { display: none; }
             html.sk-moving #boot .moving { display: inline; }
             html.sk-moving #boot .loading { display: none; }
-            #boot .hero { text-align: center; padding: 48px 24px 32px; max-width: 640px; }
-            #boot .hero img { margin: 0 auto 32px; display: block; width: 100%; max-width: 560px; height: auto; }
-            #boot h1 { font-size: 32px; font-weight: 700; margin: 0 0 12px; color: #fff; line-height: 1.2; }
-            #boot .tagline { font-size: 18px; color: #94a3b8; margin: 0 0 32px; line-height: 1.5; }
-            #boot .spinner-row { display: flex; align-items: center; justify-content: center; gap: 12px; color: #64748b; font-size: 14px; }
-            #boot .spinner { width: 20px; height: 20px; border: 2px solid #1e293b; border-top-color: #3b82f6;
-                             border-radius: 50%; animation: sk-spin 1s linear infinite; }
-            #load-trouble { display: none; margin: 28px auto 0; max-width: 480px; background: #1e293b;
+
+            #boot .stage { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+            #boot .emblem { width: 112px; height: 112px; position: relative; }
+            #boot .emblem::before { content: ""; position: absolute; inset: -28px; border-radius: 50%;
+                                    background: radial-gradient(circle, rgba(214, 43, 206, .35), transparent 65%);
+                                    animation: sk-breathe 3.2s ease-in-out infinite; }
+            #boot .emblem img { position: relative; width: 100%; height: 100%; display: block; }
+            @keyframes sk-breathe { 50% { opacity: .55; transform: scale(.94); } }
+            #boot .word { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+            #boot h1 { margin: 0; padding-right: .08em; font: italic 900 46px/1 'Saira', 'Arial Black', sans-serif;
+                       letter-spacing: .02em; text-transform: uppercase; color: var(--brand);
+                       text-shadow: 0 0 28px rgba(214, 43, 206, .45); }
+            #boot .tagline { margin: 0; font-size: 14px; color: #8a92a1; letter-spacing: .02em; }
+            #boot .tagline b { color: var(--brand); font-weight: 600; }
+
+            #boot .loader { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+            #boot .slots { display: flex; gap: 10px; }
+            #boot .slot { width: 22px; height: 22px; box-sizing: border-box; border-radius: 50%; position: relative;
+                          border: 2px solid rgba(138, 146, 161, .55); }
+            #boot .slot::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--c);
+                                 opacity: 0; }
+            #boot .slot.working::after { animation: sk-fill 1.8s ease-in-out infinite; }
+            #boot .slot:nth-child(1) { --c: #facc15; }
+            #boot .slot:nth-child(2) { --c: #60a5fa; }
+            #boot .slot:nth-child(3) { --c: #c084fc; }
+            #boot .slot:nth-child(2)::after { animation-delay: .3s; }
+            #boot .slot:nth-child(3)::after { animation-delay: .6s; }
+            @keyframes sk-fill { 0%, 100% { opacity: .15; transform: scale(.5); } 50% { opacity: .9; transform: scale(1); } }
+            #boot .status { margin: 0; font-size: 14px; color: #b5bdc9; }
+            #boot .step { display: block; margin-top: 2px; font-size: 12px; color: #8a92a1; }
+            html.sk-moving #boot .step { display: none; }
+
+            #load-trouble { display: none; max-width: 480px; background: #1f2937;
                             border: 1px solid #f59e0b; border-left: 4px solid #f59e0b; border-radius: 10px;
                             padding: 16px 18px; text-align: left; }
             #load-trouble.shown { display: block; }
             #load-trouble strong { display: block; font-size: 15px; color: #fbbf24; margin: 0 0 6px; }
             #load-trouble p { font-size: 13px; color: #cbd5e1; margin: 0; line-height: 1.6; }
-            #load-trouble kbd { display: inline-block; background: #0f172a; border: 1px solid #475569; border-bottom-width: 2px;
-                                border-radius: 4px; padding: 1px 6px; margin: 0 1px; font-size: 12px; color: #e2e8f0;
+            #load-trouble kbd { display: inline-block; background: #111827; border: 1px solid #4b5563; border-bottom-width: 2px;
+                                border-radius: 4px; padding: 1px 6px; margin: 0 1px; font-size: 12px; color: #f3f4f6;
                                 font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.4; }
-            #boot .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 24px 48px;
-                           max-width: 960px; width: 100%; box-sizing: border-box; }
-            #boot .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; }
-            #boot .card h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
-            #boot .card p { font-size: 13px; color: #94a3b8; margin: 0; line-height: 1.5; }
-            #boot .about { max-width: 720px; padding: 0 24px 48px; text-align: center; font-size: 13px; color: #475569; line-height: 1.6; }
-            @media (max-width: 720px) {
-                #boot .cards { grid-template-columns: 1fr; }
-                #boot h1 { font-size: 26px; }
+
+            #boot .below { width: 100%; max-width: 960px; border-top: 1px solid #1f2937; padding-top: 20px;
+                           display: flex; flex-direction: column; align-items: center; gap: 16px; }
+            #boot h2 { margin: 0; font-size: 16px; font-weight: 600; }
+            #boot .features { margin: 0; width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+            #boot .feature { font-size: 13px; line-height: 1.5; }
+            #boot .feature dt { font-weight: 600; margin-bottom: 4px; }
+            #boot .feature dd { margin: 0; color: #b5bdc9; }
+            #boot .about { margin: 0; max-width: 620px; text-align: center; font-size: 12px; color: #8a92a1; line-height: 1.55; }
+            /* Short windows (a small laptop): a smaller emblem buys back the room. */
+            @media (max-height: 760px) {
+                #boot .emblem { width: 88px; height: 88px; }
+                #boot { gap: 18px; }
+            }
+            @media (max-width: 760px) {
+                #boot .features { grid-template-columns: 1fr; gap: 12px; }
+                #boot .feature dt { margin-bottom: 2px; }
+            }
+            @media (max-width: 560px) {
+                #boot { gap: 14px; padding-block: 10px; }
+                #boot .stage { gap: 10px; }
+                #boot h1 { font-size: 36px; }
+                #boot .emblem { width: 72px; height: 72px; }
+                #boot .emblem::before { inset: -18px; }
+                #boot .below { padding-top: 14px; gap: 10px; }
+                #boot .feature { font-size: 12.5px; line-height: 1.45; }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                #boot .emblem::before { animation: none; }
+                #boot .slot.working::after { animation: none; opacity: .5; transform: scale(.8); }
             }
         </style>
         <div id="boot">
-            <div class="hero">
-                <img src="/img/sidekick-banner.svg" alt="Sidekick - City of Heroes Build Planner">
-                <h1>Plan Your City of Heroes Builds</h1>
-                <p class="tagline">A <strong style="color: #67e8f9;">City of Heroes</strong> build planner for Homecoming and beyond.</p>
-                <div class="spinner-row">
-                    <div class="spinner"></div>
-                    <span class="loading">Loading planner...</span>
-                    <span class="moving">Moving to coh-sidekick.com...</span>
+            <div class="stage">
+                <div class="emblem"><img src="/img/favicon-256x256.png" alt="" width="168" height="168"></div>
+                <div class="word">
+                    <h1>Sidekick</h1>
+                    <p class="tagline">City of Heroes build planner &middot; <b>1.0</b></p>
+                </div>
+                <div class="loader" role="status" aria-live="polite">
+                    <div class="slots" aria-hidden="true">
+                        <span class="slot working"></span><span class="slot working"></span><span class="slot working"></span>
+                        <span class="slot"></span><span class="slot"></span><span class="slot"></span>
+                    </div>
+                    <p class="status">
+                        <span class="loading">Loading the planner&hellip;</span>
+                        <span class="moving">Moving to coh-sidekick.com&hellip;</span>
+                        <span class="step">Step 1 of 2</span>
+                    </p>
                 </div>
                 <div id="load-trouble" role="alert">
                     <strong>Taking a while to load?</strong>
@@ -139,28 +200,29 @@
                     </p>
                 </div>
             </div>
-            <div class="cards">
-                <div class="card" style="border-top: 3px solid #22d3ee;">
-                    <h2 style="color: #22d3ee;">Build</h2>
-                    <p>Plan your build! Choose your archetype and powersets, quickly add slots with click and drag, and easily add enhancements with multi-select. You can even import your Mids Reborn build files!</p>
-                </div>
-                <div class="card" style="border-top: 3px solid #a78bfa;">
-                    <h2 style="color: #a78bfa;">Find Set Bonuses</h2>
-                    <p>Built-in stat tracking highlights sets that have the IO set bonuses you want, and the Set Bonus Finder can sort and filter sets to only show you the sets that your build can accept.</p>
-                </div>
-                <div class="card" style="border-top: 3px solid #34d399;">
-                    <h2 style="color: #34d399;">Incarnate Component Calculator</h2>
-                    <p>Just finished a BAF and you're not sure which component to pick? The Incarnate Component Calculator keeps a handy checklist of all the components needed to craft the Incarnate Powers you selected.</p>
-                </div>
+            <div class="below">
+                <h2>Features</h2>
+                <dl class="features">
+                    <div class="feature">
+                        <dt style="color: #22d3ee;">So many tools!</dt>
+                        <dd>Sidekick is stuffed full handy tools for making your builds. Search for set bonuses, compare different enhancement configurations of the same power, plan out an attack chain, see a shopping list for the enhancements in your build, open Mids files, and lots more! Just open the Tools menu and explore what's there.</dd>
+                    </div>
+                    <div class="feature">
+                        <dt style="color: #c084fc;">Save, share, and browse builds!</dt>
+                        <dd>Sidekick features a database where you can save your builds (both privately and publicly) to a searchable library. You can also save and download your builds as files, create share links, and create a post-friendly PNG image that summarizes your build. </dd>
+                    </div>
+                    <div class="feature">
+                        <dt style="color: #4ade80;">Incarnate salvage calculator!</dt>
+                        <dd>Choose your incarnate powers and get an interative checklist of every component you need to craft them.</dd>
+                    </div>
+                </dl>
+                <p class="about">
+                    Sidekick is a free City of Heroes character build planner that supports Homecoming, Rebirth and Thunderspy. It is built in Rust and Dioxus to be cross platform and accessible for everyone.
+                </p>
+                <noscript>
+                    <p class="about">Sidekick requires JavaScript to run. Please enable JavaScript in your browser to use the build planner.</p>
+                </noscript>
             </div>
-            <p class="about">
-                Sidekick is a free City of Heroes character build planner for Homecoming, Rebirth and Thunderspy.
-                Supports all archetypes and powersets: Blasters, Tankers, Scrappers, Defenders, Controllers, Masterminds, Brutes, Stalkers, Corruptors, Dominators, Sentinels.
-                Full support for invention origin (IO) enhancement sets, incarnate abilities, set bonus calculations, and Mids Reborn build imports.
-            </p>
-            <noscript>
-                <p class="about">Sidekick requires JavaScript to run. Please enable JavaScript in your browser to use the build planner.</p>
-            </noscript>
         </div>
         <script>
             // The hard-refresh tip: at once if the app's code fails to load, or after 20s of
@@ -173,6 +235,28 @@
                 }, true);
                 window.addEventListener('unhandledrejection', show);
                 setTimeout(show, 20000);
+            })();
+
+            // Swaps the boot screen for the app once the app has drawn and every stylesheet it
+            // asked for has loaded, so the planner never shows unstyled. Shows it anyway 20s
+            // after drawing, so a stylesheet that never arrives can't hide the app for good.
+            (function () {
+                var root = document.documentElement, main = document.getElementById('main');
+                var drawnAt = 0;
+                function styled() {
+                    var links = document.querySelectorAll('link[rel="stylesheet"]');
+                    if (!links.length) return false;
+                    for (var i = 0; i < links.length; i++) if (!links[i].sheet) return false;
+                    return getComputedStyle(root).getPropertyValue('--sk-app-css').trim() !== '';
+                }
+                var timer = setInterval(function () {
+                    if (!main.firstElementChild) return;
+                    if (!drawnAt) drawnAt = Date.now();
+                    if (styled() || Date.now() - drawnAt > 20000) {
+                        root.classList.add('sk-styled');
+                        clearInterval(timer);
+                    }
+                }, 50);
             })();
         </script>
     </body>

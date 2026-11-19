@@ -45,6 +45,7 @@ mod layout_store;
 mod layout_sync;
 mod level_control;
 mod level_up_store;
+mod loading_card;
 mod main_menu;
 mod mobile_nav;
 mod mobile_order;

@@ -1309,7 +1309,7 @@ pub fn Shell() -> Element {
                     div { class: "load-state error", "Dataset failed to load: {e}" }
                 },
                 None => rsx! {
-                    div { class: "load-state", "Loading {dataset().as_str()}…" }
+                    crate::loading_card::LoadingCard {}
                 },
             }
         }
@@ -1394,7 +1394,7 @@ pub fn Shell() -> Element {
                     div { class: "load-state error", "Dataset failed to load: {e}" }
                 },
                 None => rsx! {
-                    div { class: "load-state", "Loading {dataset().as_str()}…" }
+                    crate::loading_card::LoadingCard {}
                 },
             }
         }

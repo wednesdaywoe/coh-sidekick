@@ -5,6 +5,9 @@
    the 2D grid is the wide-viewport enhancement.
    ============================================================ */
 
+/* index.html keeps the boot screen up until it can read this, i.e. until this file has loaded. */
+:root { --sk-app-css: 1; }
+
 /* ---- header ---- */
 /* The one band of chrome above both layout roots, so its height is a tax on every panel
    below it — it carries the tightest vertical padding in the app for that reason, while
@@ -5796,6 +5799,39 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 .empty-state .hint { color: var(--text-faint); }
 .load-state { padding: 40px; color: var(--text-dim); }
 .load-state.error { color: var(--action-danger); }
+
+/* Step two of the loading sequence (`loading_card.rs`). The six slots match index.html's boot
+   screen: the first three arrive lit, the last three pulse until the dataset lands. */
+.loading-card {
+  min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 40px 16px; text-align: center; font-family: var(--font-chrome);
+}
+.loading-card__title { margin: 0 0 4px; font-size: 18px; font-weight: 600; color: var(--text); }
+.loading-card__status { margin: 0; font-size: 14px; color: var(--text-dim); }
+.loading-card__step { margin: -8px 0 0; font-size: 12px; color: var(--text-faint); }
+.loading-slots { display: flex; gap: 10px; }
+.loading-slot {
+  width: 22px; height: 22px; border-radius: 50%; position: relative; box-sizing: border-box;
+  border: 2px solid color-mix(in srgb, var(--text-faint) 55%, transparent);
+}
+.loading-slot::after {
+  content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--c);
+}
+.loading-slot:nth-child(1) { --c: var(--stat-tohit); }
+.loading-slot:nth-child(2) { --c: var(--stat-endurance); }
+.loading-slot:nth-child(3) { --c: var(--stat-defense); }
+.loading-slot:nth-child(4) { --c: var(--stat-damage); }
+.loading-slot:nth-child(5) { --c: var(--stat-heal); }
+.loading-slot:nth-child(6) { --c: var(--stat-resistance); }
+.loading-slot.is-on { border-color: color-mix(in srgb, var(--c) 60%, transparent); }
+.loading-slot.is-on::after { box-shadow: 0 0 10px var(--c); }
+.loading-slot.is-working::after { animation: loading-slot-fill 1.8s ease-in-out infinite; opacity: .15; transform: scale(.5); }
+.loading-slot.is-working:nth-child(5)::after { animation-delay: .3s; }
+.loading-slot.is-working:nth-child(6)::after { animation-delay: .6s; }
+@keyframes loading-slot-fill { 50% { opacity: .9; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .loading-slot.is-working::after { animation: none; opacity: .5; transform: scale(.8); }
+}
 
 /* ---- Mobile reorder UI (<900px) ---- */
 .reorder-overlay {
