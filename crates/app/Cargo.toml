@@ -129,7 +129,10 @@ gloo-net = "0.6"
 # panic hook cannot await, so the crash report has to be complete from this side the instant it
 # is made, and `sendBeacon` is the only browser API that promises that. `document::eval` would
 # queue the call against a renderer the panic has already taken down.
-web-sys = { version = "0.3", features = ["console", "Navigator", "Window"] }
+#
+# `Location` is Pigg Wrangler's: which page to draw is settled before the first render, and
+# `document::eval` cannot answer until after it.
+web-sys = { version = "0.3", features = ["console", "Location", "Navigator", "Window"] }
 # The stack a Rust panic does not have on this target. `wasm32-unknown-unknown` has no backtrace,
 # so the crash reporter reads a fresh `Error`'s stack the way `console_error_panic_hook` does.
 # Already in the graph under dioxus-web, and the version dioxus-web locks.

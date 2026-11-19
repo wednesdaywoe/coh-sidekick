@@ -6992,7 +6992,11 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 /* A phone or tablet cannot run the Windows, macOS or Linux downloads, so the row is noise there.
    The pointer, not the width, as the touch layer below argues. `.app-actions__download` repeats
    this after `.app-actions__button`, which would otherwise win on source order. */
-@media (pointer: coarse) { .main-menu__item--desktop-download { display: none; } }
+a.main-menu__item { text-decoration: none; }
+@media (pointer: coarse) {
+  .main-menu__item--desktop-download,
+  .main-menu__item--pigg-wrangler { display: none; }
+}
 /* Hidden from the eye, not from the accessibility tree or the keyboard: `display: none` would
    take it out of the tab order and out of the label's activation, which is the whole mechanism
    this row runs on. */
@@ -8767,4 +8771,28 @@ button.picker-set-name:hover { color: var(--text-dim); }
   padding: 6px 8px;
   border: 1px solid var(--seam-raised);
   border-radius: 4px;
+}
+
+/* ---- Pigg Wrangler (pigg_wrangler.rs) ---- a page of its own, not part of the planner. */
+.pigg-page {
+  max-width: 1200px; margin: 0 auto;
+  padding: 16px 20px 32px;
+  font-family: var(--font-chrome);
+  color: var(--text);
+}
+.pigg-page__head { padding-bottom: 14px; border-bottom: 1px solid var(--seam); }
+.pigg-page__back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+.pigg-page__back:hover { color: var(--text); text-decoration: underline; }
+.pigg-page__name {
+  margin: 10px 0 2px;
+  font-size: 22px; font-weight: 700; letter-spacing: 0.4px;
+  color: var(--text-brand);
+}
+.pigg-page__about { margin: 0; font-size: 13px; color: var(--text-dim); }
+.pigg-page__body { padding-top: 16px; }
+/* The pointer, not the width, as the menu row's rule argues. */
+.pigg-page__touch { display: none; margin: 0; font-size: 14px; line-height: 1.5; }
+@media (pointer: coarse) {
+  .pigg-page__touch { display: block; }
+  .pigg-page__workspace { display: none; }
 }

@@ -60,6 +60,7 @@ mod picker_memory;
 mod picker_queue;
 mod picker_sets;
 mod picker_store;
+mod pigg_wrangler;
 mod pin_readouts_store;
 mod pinned_powers;
 mod popmenu_export;
@@ -293,15 +294,22 @@ fn App() -> Element {
         document::eval(POINTER_CAPTURE_SHIM);
     });
 
+    // Decided once: the page never changes without a reload.
+    let pigg_wrangler = use_hook(pigg_wrangler::is_current_page);
+
     rsx! {
-        // The tab's name and mark. Here and not in `DocumentAssets`, which a popped-out panel
-        // also renders: those windows are named by `with_title` in `main`, and each would
-        // otherwise be retitled to the app's name. `dioxus.toml` sets the same title in the web
-        // build's `index.html`, so the tab is named during the download too, before this runs.
-        document::Title { "CoH Sidekick" }
         document::Link { rel: "icon", r#type: "image/png", href: TAB_ICON }
         DocumentAssets {}
-        shell::Shell {}
+        if pigg_wrangler {
+            pigg_wrangler::Page {}
+        } else {
+            // The tab's name. Here and not in `DocumentAssets`, which a popped-out panel also
+            // renders: those windows are named by `with_title` in `main`, and each would
+            // otherwise be retitled to the app's name. `dioxus.toml` sets the same title in the
+            // web build's `index.html`, so the tab is named during the download too.
+            document::Title { "CoH Sidekick" }
+            shell::Shell {}
+        }
     }
 }
 

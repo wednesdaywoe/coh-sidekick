@@ -169,6 +169,7 @@ fn AboutEntries() -> Element {
         AboutEntry {}
         DiscordEntry {}
         DesktopDownloadEntry {}
+        PiggWranglerEntry {}
         DonateEntry {}
     }
 }
@@ -665,6 +666,26 @@ fn DesktopDownloadEntry() -> Element {
             },
             span { class: "main-menu__label", "Get the desktop app" }
             span { class: "main-menu__hint", "Windows, macOS and Linux downloads" }
+        }
+    }
+}
+
+/// Pigg Wrangler's door: a plain link, since it is a page of its own. Leaving the planner loses
+/// nothing because the build is already in storage. Web only, and hidden on touch screens
+/// (app.css) like the download row: the page needs a computer with the game installed.
+#[component]
+fn PiggWranglerEntry() -> Element {
+    if cfg!(not(target_arch = "wasm32")) {
+        return rsx! {};
+    }
+    rsx! {
+        a {
+            class: "main-menu__item main-menu__item--pigg-wrangler",
+            href: crate::pigg_wrangler::PATH,
+            span { class: "main-menu__label", "Pigg Wrangler" }
+            span { class: "main-menu__hint",
+                "Browse data and save artwork and other assets from your CoH install"
+            }
         }
     }
 }
