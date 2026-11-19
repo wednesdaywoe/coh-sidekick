@@ -8844,11 +8844,67 @@ button.picker-set-name:hover { color: var(--text-dim); }
 }
 .pigg-page__folder:hover { color: var(--text); }
 .pigg-page__folder--shown { border-color: var(--focus-ring); color: var(--text); background: var(--surface-raised); }
-.pigg-page__bundles { margin-top: 14px; border-collapse: collapse; font-size: 13px; }
-.pigg-page__bundles th {
+.pigg-page__search { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.pigg-page__search-label { font-size: 12px; color: var(--text-dim); }
+.pigg-page__search-box {
+  flex: 0 1 420px;
+  padding: 6px 10px;
+  border: 1px solid var(--seam-raised); border-radius: var(--r);
+  background: var(--surface-panel); color: var(--text); font: inherit; font-size: 13px;
+}
+.pigg-page__search-box:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+/* Tree on the left, list on the right; each scrolls on its own so the other stays put. */
+.pigg-page__browser {
+  display: grid; grid-template-columns: minmax(240px, 320px) 1fr; gap: 16px;
+  margin-top: 12px;
+}
+.pigg-page__tree, .pigg-page__list {
+  max-height: calc(100vh - 260px); min-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--seam); border-radius: var(--r);
+}
+.pigg-page__tree { padding: 4px 0; }
+.pigg-page__list { padding: 8px 12px; }
+.pigg-page__node {
+  display: flex; align-items: baseline; gap: 4px; width: 100%;
+  padding: 2px 8px 2px 6px;
+  border: 0; background: transparent; color: var(--text);
+  font: inherit; font-size: 13px; text-align: left; cursor: pointer;
+}
+.pigg-page__node:hover { background: var(--surface-raised); }
+.pigg-page__node:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+.pigg-page__node:disabled { cursor: default; color: var(--text-dim); background: transparent; }
+.pigg-page__node--current,
+.pigg-page__node--current:hover { background: var(--surface-warmed); box-shadow: inset 2px 0 0 var(--focus-ring); }
+.pigg-page__node-marker { flex: 0 0 12px; color: var(--text-dim); font-size: 11px; }
+.pigg-page__node-name { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pigg-page__node-count { flex: 0 0 auto; font-family: var(--font-data); font-size: 11px; color: var(--text-dim); }
+.pigg-page__crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; margin-bottom: 4px; }
+.pigg-page__crumb {
+  padding: 1px 4px; border: 0; border-radius: var(--r);
+  background: transparent; color: var(--text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.pigg-page__crumb + .pigg-page__crumb::before { content: "/"; margin-right: 6px; color: var(--text-dim); font-weight: 400; }
+.pigg-page__crumb:hover { text-decoration: underline; }
+.pigg-page__list-status { margin: 0 0 8px; font-size: 12px; color: var(--text-dim); }
+.pigg-page__files { width: 100%; border-collapse: collapse; font-size: 13px; }
+.pigg-page__files th {
+  position: sticky; top: -8px;
   padding: 4px 16px 4px 0;
+  background: var(--surface-app);
   text-align: left; font-weight: 600; font-size: 11px; color: var(--text-dim);
   border-bottom: 1px solid var(--seam);
 }
-.pigg-page__bundles td { padding: 3px 16px 3px 0; border-bottom: 1px solid var(--seam); }
-.pigg-page__bundles .pigg-page__number { text-align: right; font-family: var(--font-data); }
+.pigg-page__files td { padding: 1px 16px 1px 0; border-bottom: 1px solid var(--seam); }
+.pigg-page__files .pigg-page__number { text-align: right; font-family: var(--font-data); white-space: nowrap; }
+.pigg-page__row-name {
+  padding: 2px 0; border: 0; background: transparent; color: var(--text);
+  font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere;
+}
+.pigg-page__row-name:hover { text-decoration: underline; }
+.pigg-page__row-name:disabled { cursor: default; text-decoration: none; color: var(--text-dim); }
+.pigg-page__row-name:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.pigg-page__row-name--folder { font-weight: 600; }
+.pigg-page__row-archive { color: var(--text-dim); white-space: nowrap; }
+.pigg-page__row--chosen td { background: var(--surface-raised); }
+.pigg-page__row--chosen .pigg-page__row-name { color: var(--text-brand); font-weight: 600; }

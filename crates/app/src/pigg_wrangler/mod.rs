@@ -11,6 +11,8 @@ mod browser_files;
 mod page;
 #[cfg(target_arch = "wasm32")]
 pub use page::Page;
+#[cfg(any(target_arch = "wasm32", test))]
+mod tree;
 
 /// The page's address. The host answers any unknown path with `index.html` (wrangler.toml).
 pub const PATH: &str = "/pigg-wrangler";
