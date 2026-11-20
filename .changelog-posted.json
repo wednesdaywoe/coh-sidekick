@@ -800,6 +800,11 @@
       "id": "henchman-owner-buffs",
       "date": "2026-11-13",
       "preview": "Masterminds: Protector Bots and Summon Demons now have an ON/OFF switch that add"
+    },
+    {
+      "id": "pigg-wrangler",
+      "date": "2026-11-19",
+      "preview": "Pigg Wrangler is a tool for browsing and extracting assets from CoH pigg files, "
     }
   ]
 }

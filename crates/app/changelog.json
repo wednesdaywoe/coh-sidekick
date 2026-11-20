@@ -2,6 +2,7 @@
   {
      "date": "2026-11-19",
      "items": [
+      { "id": "pigg-wrangler", "type": "feat", "message": "Pigg Wrangler is a tool for browsing and extracting assets from CoH pigg files, and it can now be used directly from Sidekick through the Help menu." },      
       { "id": "beta-retirement", "type": "feat", "message": "The beta of Sidekick is finally retired, the 1.0 planner now occupies coh-sidekick.com" },
       { "id": "slot-level-labels", "type": "fix", "message": "The level each slot was gained at now sits under the slot in larger text, instead of overlapping the booster mark." }
     ]
