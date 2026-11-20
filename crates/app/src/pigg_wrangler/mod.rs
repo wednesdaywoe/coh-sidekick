@@ -185,6 +185,25 @@ fn picture_name(file_name: &str, extension: &str) -> String {
     format!("{stem}.{extension}")
 }
 
+/// A browser error as words a player can act on. The browser's own text ("Must be handling a user
+/// gesture") means nothing to them; its kind says what happened.
+#[cfg(any(target_arch = "wasm32", test))]
+fn plain_reason(kind: &str, message: &str) -> String {
+    match kind {
+        "SecurityError" => "The browser wouldn't open its folder window this time. Press the \
+                            button again, or drag the folder onto this page instead."
+            .to_string(),
+        "NotAllowedError" => "The browser wasn't allowed to read that folder. Press the button \
+                              again and choose View files, or drag the folder onto this page."
+            .to_string(),
+        "NotFoundError" | "NotReadableError" => "A game file changed or moved after it was \
+                                                 chosen, perhaps because the game's launcher \
+                                                 is updating it. Choose the folder again."
+            .to_string(),
+        _ => message.to_string(),
+    }
+}
+
 /// The most a zip made in the page may hold. The whole zip sits in the tab's memory, then the
 /// browser copies it once more to save it; a gigabyte twice over is about what a tab can take.
 /// The biggest archive in a Homecoming install (issue24's mapsMissions.pigg) stores 182 MB.
@@ -247,6 +266,24 @@ impl ZipNames {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn browser_errors_read_as_what_to_do() {
+        let gesture = plain_reason(
+            "SecurityError",
+            "Must be handling a user gesture to show a file picker.",
+        );
+        assert!(
+            gesture.contains("drag the folder onto this page"),
+            "{gesture}"
+        );
+        assert!(plain_reason("NotReadableError", "x").contains("Choose the folder again"));
+        // The page's own errors are already sentences, and pass through.
+        assert_eq!(
+            plain_reason("Error", "That folder holds over 200,000 files."),
+            "That folder holds over 200,000 files."
+        );
+    }
 
     #[test]
     fn zips_are_named_and_sized_before_they_are_made() {

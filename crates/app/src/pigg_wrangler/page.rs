@@ -126,13 +126,8 @@ fn Workspace(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> 
                 }
                 p { class: "pigg-page__drop-or", "or" }
                 ChooseFolder { stage, again: false }
-                if !browser_files::has_directory_picker() {
-                    p { class: "pigg-page__drop-hint",
-                        "Open the live folder inside the game's assets folder, select every \
-                         file (Ctrl+A, or ⌘A on a Mac), then click Open."
-                    }
-                }
             }
+            FolderHelp {}
         },
         Stage::Reading { done, total } => rsx! {
             p { class: "pigg-page__status", role: "status",
@@ -158,15 +153,67 @@ fn Workspace(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> 
                      choose again."
                 }
                 ChooseFolder { stage, again: true }
+                FolderHelp {}
             }
         }
         Stage::Failed(reason) => rsx! {
-            p { class: "pigg-page__status pigg-page__status--error", role: "alert",
-                "That could not be read: {reason}"
-            }
+            p { class: "pigg-page__status pigg-page__status--error", role: "alert", "{reason}" }
             ChooseFolder { stage, again: true }
+            FolderHelp {}
         },
         Stage::Ready(_) => rsx! { Browser { stage, shown, view } },
+    }
+}
+
+/// Where each launcher puts the game, and what the browser will ask, before the player picks.
+#[component]
+fn FolderHelp() -> Element {
+    let picker = browser_files::has_directory_picker();
+    rsx! {
+        section { class: "pigg-page__help",
+            h2 { "Where is the game folder?" }
+            ul {
+                li {
+                    strong { "Windows, Homecoming: " }
+                    "usually "
+                    code { "C:\\Games\\Homecoming" }
+                    ". Open File Explorer, go to "
+                    code { "C:\\Games" }
+                    " and drag the Homecoming folder onto this page. If you installed it somewhere \
+                     else, right-click your Homecoming shortcut and choose Open file location."
+                }
+                li {
+                    strong { "Windows, Rebirth or Thunderspy (Sweet Tea launcher): " }
+                    "press Windows+R, paste "
+                    code { "%LOCALAPPDATA%\\Thunderspy Gaming" }
+                    " and press Enter, then drag the Sweet Tea folder onto this page."
+                }
+                li {
+                    strong { "Mac (LaunchCat): " }
+                    "the game is inside your Library folder, which Finder hides. In Finder, press \
+                     ⌘⇧G (Go to Folder), paste "
+                    code { "~/Library/Application Support/LaunchCat" }
+                    " and press Return, then drag the coh folder onto this page."
+                }
+                li {
+                    strong { "Linux (Wine): " }
+                    "usually "
+                    code { "~/.wine/drive_c/Games/Homecoming" }
+                    ". Folders whose names start with a dot are hidden; press Ctrl+H in your file \
+                     manager to show them."
+                }
+            }
+            p {
+                "Dragging a folder one level too high or too low is fine: Pigg Wrangler looks \
+                 inside it for the game's archives."
+            }
+            h2 { "NOTHING IS UPLOADED" }
+            ul {
+                li {
+                    strong { "Pigg Wrangler is just tool for browsing and extracting files from game files that are already on your computer.\
+                    Dragging a folder onto this page, or choosing a folder does not upload anything. The files are read in your browser and never leave your computer." }
+                }
+        }
     }
 }
 

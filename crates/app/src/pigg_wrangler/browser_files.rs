@@ -278,11 +278,12 @@ async fn read_range(file: &web_sys::File, start: f64, end: f64) -> Result<Vec<u8
     Ok(js_sys::Uint8Array::new(&buffer).to_vec())
 }
 
-/// A thrown JS value as a sentence: an `Error`'s message, or whatever the value prints as.
+/// A thrown JS value as a sentence a player can act on (see [`super::plain_reason`]).
 fn js_error(value: JsValue) -> String {
-    value
-        .dyn_ref::<js_sys::Error>()
-        .map(|error| String::from(error.message()))
-        .or_else(|| value.as_string())
-        .unwrap_or_else(|| format!("{value:?}"))
+    match value.dyn_ref::<js_sys::Error>() {
+        Some(error) => {
+            super::plain_reason(&String::from(error.name()), &String::from(error.message()))
+        }
+        None => value.as_string().unwrap_or_else(|| format!("{value:?}")),
+    }
 }
