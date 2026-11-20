@@ -100,9 +100,8 @@ Tests live in `crates/coh_math/tests/`: replay harnesses that grade `recalculate
 records in `fixtures/` (updated per game patch; see CLAUDE.md) — whole-build totals, per-power projections, set bonuses, procs and
 movement.
 
-CI (`.github/workflows/`). `ci.yml` holds seven jobs: `pipeline` (the regen-and-diff),
-`rust` (the suite, under nextest), `desktop-build`, `web`, `beta-engine-staleness`,
-`engine-rebuild-reproduces` and `mutants-diff`. `rc-bundle.yml` bundles release candidates for
+CI (`.github/workflows/`). `ci.yml` holds five jobs: `pipeline` (the regen-and-diff),
+`rust` (the suite, under nextest), `desktop-build`, `web` and `mutants-diff`. `rc-bundle.yml` bundles release candidates for
 Linux, macOS and Windows. `advisories.yml` watches dependencies. `playwright.yml` runs no browser
 tests — there is no suite; the browser gate that does run is
 `scripts/audit-grid-viewport-fit.cjs`, in `ci.yml`'s `web` job.
