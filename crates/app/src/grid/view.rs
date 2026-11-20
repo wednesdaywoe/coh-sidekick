@@ -943,8 +943,8 @@ fn GridSurface(
     // bottom meets the grid's. Only readouts on the top row, because a stuck readout anywhere
     // else would ride over the band. Not during a drag, whose geometry is the cells'. Not at all
     // when the reader has switched it off in Options.
-    let pin_enabled = try_use_context::<crate::pin_readouts_store::PinReadouts>()
-        .is_none_or(|pref| (pref.0)());
+    let pin_enabled =
+        try_use_context::<crate::pin_readouts_store::PinReadouts>().is_none_or(|pref| (pref.0)());
     let pinned = pin_enabled
         && (item.panel.dashboard().is_some() && rendered.y == 0 || item.panel == PanelKind::Info)
         && !drag.read().as_ref().is_some_and(|d| d.moved);

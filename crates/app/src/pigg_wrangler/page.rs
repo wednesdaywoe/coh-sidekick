@@ -168,7 +168,6 @@ fn Workspace(stage: Signal<Stage>, shown: Signal<usize>, view: Signal<View>) -> 
 /// Where each launcher puts the game, and what the browser will ask, before the player picks.
 #[component]
 fn FolderHelp() -> Element {
-    let picker = browser_files::has_directory_picker();
     rsx! {
         section { class: "pigg-page__help",
             h2 { "Where is the game folder?" }
@@ -210,9 +209,14 @@ fn FolderHelp() -> Element {
             h2 { "NOTHING IS UPLOADED" }
             ul {
                 li {
-                    strong { "Pigg Wrangler is just tool for browsing and extracting files from game files that are already on your computer.\
-                    Dragging a folder onto this page, or choosing a folder does not upload anything. The files are read in your browser and never leave your computer." }
+                    strong {
+                        "Pigg Wrangler is just a tool for browsing and extracting files from game \
+                         files that are already on your computer. Dragging a folder onto this \
+                         page, or choosing a folder, does not upload anything. The files are read \
+                         in your browser and never leave your computer."
+                    }
                 }
+            }
         }
     }
 }

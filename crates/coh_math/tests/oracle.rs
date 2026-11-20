@@ -413,8 +413,14 @@ const KNOWN_DIVERGENCE: [(&str, &str); 1] = [(
 const PET_ONLY_STAMP_DIVERGENCE: [(&str, &str); 4] = [
     ("damageBuffValue", "powerset/mastermind/mercenaries/Serum@0"),
     ("toHitBuffValue", "powerset/mastermind/mercenaries/Serum@0"),
-    ("recoveryBuffValue", "powerset/mastermind/mercenaries/Serum@0"),
-    ("resistanceBuffValue", "powerset/mastermind/mercenaries/Serum@0"),
+    (
+        "recoveryBuffValue",
+        "powerset/mastermind/mercenaries/Serum@0",
+    ),
+    (
+        "resistanceBuffValue",
+        "powerset/mastermind/mercenaries/Serum@0",
+    ),
 ];
 
 /// The same answer with every per-target increment dropped — the one transformation

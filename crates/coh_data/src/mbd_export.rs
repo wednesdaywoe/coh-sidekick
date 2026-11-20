@@ -631,10 +631,7 @@ impl<'a> Writer<'a> {
             return String::new();
         };
         let Some(path) = self.game_path(set_id) else {
-            self.note(
-                set_id,
-                "this set has no game path.",
-            );
+            self.note(set_id, "this set has no game path.");
             return String::new();
         };
         // Mids' path table pairs every set its database has, so a miss is a set it lacks.
@@ -1034,10 +1031,7 @@ impl<'a> Writer<'a> {
         let mut entries = Vec::new();
         for id in &self.state.accolades {
             let Some(toggle) = toggles.iter().find(|toggle| &toggle.id == id) else {
-                self.note(
-                    id.as_str(),
-                    "Mids has no accolade by that name",
-                );
+                self.note(id.as_str(), "Mids has no accolade by that name");
                 continue;
             };
             let path = self
@@ -1046,10 +1040,7 @@ impl<'a> Writer<'a> {
                 .find(|(_, power)| std::ptr::eq(*power, toggle.power))
                 .and_then(|(set_id, _)| self.game_path(set_id));
             let Some(path) = path else {
-                self.note(
-                    id.as_str(),
-                    "its set has no game path",
-                );
+                self.note(id.as_str(), "its set has no game path");
                 continue;
             };
             entries.push(MbdPowerEntry {
@@ -1173,10 +1164,12 @@ fn loss_text(loss: &PieceLoss) -> String {
     match loss {
         PieceLoss::Attunement {
             written_attuned: false,
-        } => "Mids only has the crafted form of this piece, so it gets converted to crafted".to_string(),
+        } => "Mids only has the crafted form of this piece, so it gets converted to crafted"
+            .to_string(),
         PieceLoss::Attunement {
             written_attuned: true,
-        } => "Mids only has the attuned form of this piece, so it gets converted to attuned".to_string(),
+        } => "Mids only has the attuned form of this piece, so it gets converted to attuned"
+            .to_string(),
         PieceLoss::LevelClamped { asked, kept } => format!(
             "crafted at level {asked}, which Mids doesn't allow for it; Mids will show it at {kept}"
         ),

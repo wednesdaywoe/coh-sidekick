@@ -247,10 +247,11 @@ fn upgrade_choices(db: &Db, entity: &str) -> Vec<UpgradeChoice> {
 fn build_choice(build: &CharacterState, choices: &[UpgradeChoice]) -> usize {
     let mut choice = 0;
     for (index, tier) in choices.iter().enumerate().skip(1) {
-        let held = tier
-            .granters
-            .iter()
-            .any(|granter| build.picked_powers().any(|pick| &pick.internal_name == granter));
+        let held = tier.granters.iter().any(|granter| {
+            build
+                .picked_powers()
+                .any(|pick| &pick.internal_name == granter)
+        });
         if held {
             choice = index;
         } else {
@@ -382,8 +383,7 @@ fn PetDrillIn(database: Db, entity: String, count: f64, on_close: EventHandler<(
             let mut hits: Vec<(String, f64, u32)> = Vec::new();
             for component in &attack.components {
                 if let Some(last) = hits.last_mut() {
-                    if last.0 == component.damage_type
-                        && (last.1 - component.per_hit).abs() < 1e-9
+                    if last.0 == component.damage_type && (last.1 - component.per_hit).abs() < 1e-9
                     {
                         last.2 += 1;
                         continue;
@@ -431,7 +431,10 @@ fn PetDrillIn(database: Db, entity: String, count: f64, on_close: EventHandler<(
             }
         }
         if delta.to_hit > 0.0 {
-            buff_rows.push(("To-hit".to_string(), format!("+{:.1}%", delta.to_hit * 100.0)));
+            buff_rows.push((
+                "To-hit".to_string(),
+                format!("+{:.1}%", delta.to_hit * 100.0),
+            ));
         }
         if delta.recovery > 0.0 {
             buff_rows.push((

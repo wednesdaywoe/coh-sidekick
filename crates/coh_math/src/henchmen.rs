@@ -30,7 +30,9 @@ use crate::expr::{eval_bool, EvalContext, EvalError, Value};
 use crate::granted::{active_entity_abilities, mastermind_henchman};
 use crate::scaled::resolve_scaled_effect_for;
 use crate::totals::CalcError;
-use coh_data::{Aspect, AtomicEffect, CharacterState, EffectType, Power, PowerDatabase, TableScope, ToWho};
+use coh_data::{
+    Aspect, AtomicEffect, CharacterState, EffectType, Power, PowerDatabase, TableScope, ToWho,
+};
 use serde_json::Value as Json;
 use std::collections::BTreeMap;
 
@@ -172,7 +174,14 @@ pub fn project_power(
     let mut pets = Vec::new();
     let mut headline_dps = 0.0;
     for entry in &roster {
-        if let Some(detail) = pet_detail(db, &entry.entity, i32::from(level), entry.count, holds, &mut errors) {
+        if let Some(detail) = pet_detail(
+            db,
+            &entry.entity,
+            i32::from(level),
+            entry.count,
+            holds,
+            &mut errors,
+        ) {
             headline_dps += detail.best_proxy * entry.count;
             pets.push(detail);
         }
@@ -269,8 +278,14 @@ pub fn pet_detail(
                 per_hit,
             });
         }
-        let recharge = ability.get("recharge").and_then(Json::as_f64).unwrap_or(0.0);
-        let cast_time = ability.get("castTime").and_then(Json::as_f64).unwrap_or(0.0);
+        let recharge = ability
+            .get("recharge")
+            .and_then(Json::as_f64)
+            .unwrap_or(0.0);
+        let cast_time = ability
+            .get("castTime")
+            .and_then(Json::as_f64)
+            .unwrap_or(0.0);
         let cycle = recharge.max(cast_time);
         attacks.push(AttackRow {
             display_name: ability
@@ -369,8 +384,14 @@ pub fn buff_delta(
                 continue;
             }
             let scale = atom.scale.unwrap_or(0.0).abs();
-            let value =
-                resolve_scaled_effect_for(scale, atom.modifier_table.as_deref(), scope, level, db, errors);
+            let value = resolve_scaled_effect_for(
+                scale,
+                atom.modifier_table.as_deref(),
+                scope,
+                level,
+                db,
+                errors,
+            );
             match atom.effect_type {
                 Some(EffectType::Resistance) if atom.aspect == Some(Aspect::Res) => {
                     if let Some(sub) = atom.sub_type {
@@ -407,7 +428,11 @@ pub fn buffed_pet(base: &PetDetail, delta: &BuffDelta) -> PetDetail {
     for attack in &mut out.attacks {
         let mut total = 0.0;
         for c in &mut attack.components {
-            let buff = delta.damage.get(&c.damage_type.to_lowercase()).copied().unwrap_or(0.0);
+            let buff = delta
+                .damage
+                .get(&c.damage_type.to_lowercase())
+                .copied()
+                .unwrap_or(0.0);
             c.per_hit *= 1.0 + buff;
             total += c.per_hit;
         }
@@ -439,7 +464,8 @@ pub fn project(
     let mut pets = Vec::new();
     let mut headline_dps = 0.0;
     for entry in &roster {
-        if let Some(detail) = pet_detail(db, &entry.entity, level, entry.count, holds, &mut errors) {
+        if let Some(detail) = pet_detail(db, &entry.entity, level, entry.count, holds, &mut errors)
+        {
             headline_dps += detail.best_proxy * entry.count;
             pets.push(detail);
         }

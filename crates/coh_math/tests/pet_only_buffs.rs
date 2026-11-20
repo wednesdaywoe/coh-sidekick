@@ -127,14 +127,23 @@ fn the_pet_buff_atoms_stay_on_the_card_stamped() {
         let db = load(dataset);
         let serum = db
             .all_powers()
-            .find(|p| p.ident() == "Serum" && p.targets_affected().unwrap_or_default().iter().all(|t| *t == "MyPet"))
+            .find(|p| {
+                p.ident() == "Serum"
+                    && p.targets_affected()
+                        .unwrap_or_default()
+                        .iter()
+                        .all(|t| *t == "MyPet")
+            })
             .expect("the mercenaries Serum");
         assert!(!serum.atoms.is_empty(), "{dataset:?}: Serum lost its atoms");
         let flash = db
             .all_powers()
             .find(|p| {
                 p.ident() == "Smoke_Flash"
-                    && p.targets_affected().unwrap_or_default().iter().all(|t| *t == "MyPet")
+                    && p.targets_affected()
+                        .unwrap_or_default()
+                        .iter()
+                        .all(|t| *t == "MyPet")
             })
             .expect("the ninjas Smoke Flash");
         for p in [serum, flash] {
@@ -169,7 +178,12 @@ fn fortify_pack_and_rally_the_militia_are_unchanged() {
     for dataset in FORKS {
         let db = load(dataset);
         let off = mm(&db, dataset, "mastermind/beast-mastery", None);
-        let on = mm(&db, dataset, "mastermind/beast-mastery", Some("Fortify_Pack"));
+        let on = mm(
+            &db,
+            dataset,
+            "mastermind/beast-mastery",
+            Some("Fortify_Pack"),
+        );
         let face = |g: &GlobalBonuses| {
             vec![
                 g.defense_melee,
@@ -181,11 +195,20 @@ fn fortify_pack_and_rally_the_militia_are_unchanged() {
                 g.recovery,
             ]
         };
-        assert_same(&format!("{dataset:?} Fortify_Pack"), &face(&off), &face(&on));
+        assert_same(
+            &format!("{dataset:?} Fortify_Pack"),
+            &face(&off),
+            &face(&on),
+        );
     }
     let db = load(DatasetId::Thunderspy);
     let off = mm(&db, DatasetId::Thunderspy, "mastermind/knights", None);
-    let on = mm(&db, DatasetId::Thunderspy, "mastermind/knights", Some("Rally_The_Militia"));
+    let on = mm(
+        &db,
+        DatasetId::Thunderspy,
+        "mastermind/knights",
+        Some("Rally_The_Militia"),
+    );
     assert!(
         (on.defense_melee - off.defense_melee - 7.5).abs() < 1e-4,
         "Rally's genuine self defense moved: {} -> {}",
@@ -225,7 +248,10 @@ fn a_genuine_self_buff_still_folds_beside_serum() {
                 1,
             )];
             let faults = coh_data::granted_powers::sync_granted_powers(&mut state, &db);
-            assert!(faults.is_empty(), "{dataset:?}: grant reconcile faults: {faults:?}");
+            assert!(
+                faults.is_empty(),
+                "{dataset:?}: grant reconcile faults: {faults:?}"
+            );
             let g = coh_math::recalculate(&state, &db).bonuses;
             assert!(g.errors.is_empty(), "{dataset:?}: {:?}", g.errors);
             assert!(

@@ -49,9 +49,15 @@ fn super_reflexes_resistance_rises_as_health_falls() {
     assert_eq!(full, fire(60.0), "nothing at 60% health and above");
     // Each passive: (60 − 30) / 60 × 20% = 10%.
     let hurt = fire(30.0) - full;
-    assert!((hurt - 30.0).abs() < 1e-6, "three passives at 30% health: {hurt}");
+    assert!(
+        (hurt - 30.0).abs() < 1e-6,
+        "three passives at 30% health: {hurt}"
+    );
     let floor = fire(0.0) - full;
-    assert!((floor - 60.0).abs() < 1e-6, "three passives at 0% health: {floor}");
+    assert!(
+        (floor - 60.0).abs() < 1e-6,
+        "three passives at 0% health: {floor}"
+    );
 }
 
 #[test]

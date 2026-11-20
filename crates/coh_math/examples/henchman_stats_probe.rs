@@ -180,20 +180,43 @@ fn mm_headline(db: &PowerDatabase, dataset: DatasetId) {
 fn roster_headline(db: &PowerDatabase) {
     let mut total = 0.0;
     for (entity_name, count, upgrades) in [
-        ("MastermindPets_Soldier", 2.0, &["Equip_Mercenary", "Tactical_Upgrade"][..]),
-        ("MastermindPets_Spec_Ops", 2.0, &["Equip_Mercenary", "Tactical_Upgrade"][..]),
-        ("MastermindPets_Commando", 1.0, &["Equip_Mercenary", "Tactical_Upgrade"][..]),
-        ("MastermindPets_Medic", 1.0, &["Equip_Mercenary", "Tactical_Upgrade"][..]),
+        (
+            "MastermindPets_Soldier",
+            2.0,
+            &["Equip_Mercenary", "Tactical_Upgrade"][..],
+        ),
+        (
+            "MastermindPets_Spec_Ops",
+            2.0,
+            &["Equip_Mercenary", "Tactical_Upgrade"][..],
+        ),
+        (
+            "MastermindPets_Commando",
+            1.0,
+            &["Equip_Mercenary", "Tactical_Upgrade"][..],
+        ),
+        (
+            "MastermindPets_Medic",
+            1.0,
+            &["Equip_Mercenary", "Tactical_Upgrade"][..],
+        ),
     ] {
         let Some(entity) = mastermind_henchman(db, entity_name) else {
             continue;
         };
-        let class = entity.get("characterClass").and_then(Value::as_str).unwrap_or("");
+        let class = entity
+            .get("characterClass")
+            .and_then(Value::as_str)
+            .unwrap_or("");
         let abilities = active_entity_abilities(entity, &|name| upgrades.contains(&name));
         let mut best = 0.0f64;
         let mut best_name = String::new();
         for a in abilities {
-            let Some(components) = a.get("damage").and_then(Value::as_array).filter(|c| !c.is_empty()) else {
+            let Some(components) = a
+                .get("damage")
+                .and_then(Value::as_array)
+                .filter(|c| !c.is_empty())
+            else {
                 continue;
             };
             let total_dmg: f64 = components
@@ -215,10 +238,17 @@ fn roster_headline(db: &PowerDatabase) {
                 .max(a.get("castTime").and_then(Value::as_f64).unwrap_or(0.0));
             if cycle > 0.0 && total_dmg / cycle > best {
                 best = total_dmg / cycle;
-                best_name = a.get("displayName").and_then(Value::as_str).unwrap_or("?").to_string();
+                best_name = a
+                    .get("displayName")
+                    .and_then(Value::as_str)
+                    .unwrap_or("?")
+                    .to_string();
             }
         }
-        println!("    {entity_name} x{count}: best proxy {best:.2} dmg/s ({best_name}) -> {:.2} dmg/s", best * count);
+        println!(
+            "    {entity_name} x{count}: best proxy {best:.2} dmg/s ({best_name}) -> {:.2} dmg/s",
+            best * count
+        );
         total += best * count;
     }
     println!("  ROSTER DAMAGE HEADLINE (fully upgraded, spam proxy, no buffs): {total:.2} dmg/s");
@@ -227,17 +257,32 @@ fn roster_headline(db: &PowerDatabase) {
 fn main() {
     for dataset in FORKS {
         let db = load(dataset);
-        println!("=== {dataset:?} — henchmen at L{LEVEL} (pet class tables; level offset unmodeled) ===");
-        for entity_name in ["MastermindPets_Soldier", "MastermindPets_Spec_Ops", "MastermindPets_Commando"] {
+        println!(
+            "=== {dataset:?} — henchmen at L{LEVEL} (pet class tables; level offset unmodeled) ==="
+        );
+        for entity_name in [
+            "MastermindPets_Soldier",
+            "MastermindPets_Spec_Ops",
+            "MastermindPets_Commando",
+        ] {
             let Some(entity) = mastermind_henchman(&db, entity_name) else {
                 println!("  {entity_name}: absent on this fork");
                 continue;
             };
-            let class = entity.get("characterClass").and_then(Value::as_str).unwrap_or("");
+            let class = entity
+                .get("characterClass")
+                .and_then(Value::as_str)
+                .unwrap_or("");
             println!("  --- {entity_name} (class {class}) ---");
             print_loadout(entity, class, &db, "base", &[]);
             print_loadout(entity, class, &db, "+Equip Mercenary", &["Equip_Mercenary"]);
-            print_loadout(entity, class, &db, "+Equip +Tactical Upgrade", &["Equip_Mercenary", "Tactical_Upgrade"]);
+            print_loadout(
+                entity,
+                class,
+                &db,
+                "+Equip +Tactical Upgrade",
+                &["Equip_Mercenary", "Tactical_Upgrade"],
+            );
         }
         roster(&db);
         println!("  ROSTER (L50, per Soldiers help: third Soldier is a Medic; every damage henchman counts):");

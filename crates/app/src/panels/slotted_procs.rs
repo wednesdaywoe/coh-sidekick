@@ -460,4 +460,3 @@ fn HpPin(proc: SlottedProc) -> Element {
         }
     }
 }
-

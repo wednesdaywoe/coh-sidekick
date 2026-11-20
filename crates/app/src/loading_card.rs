@@ -10,7 +10,7 @@ const STATUS_LINES: &[&str] = &[
     "Rolling another alt...",
     "Waiting for the last player to click the button...",
     "Killing the anchor...",
-    "Killing skuls..."
+    "Killing skuls...",
 ];
 
 #[component]

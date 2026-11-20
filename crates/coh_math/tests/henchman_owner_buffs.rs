@@ -129,11 +129,10 @@ fn force_shield_reaches_the_masterminds_defense() {
 /// a fact about Protector Bots, and it is logged on its own.
 #[test]
 fn force_shield_takes_the_summons_defense_slotting() {
-    for dataset in [
-        DatasetId::Homecoming,
-        DatasetId::Thunderspy,
-        DatasetId::Brainstorm,
-    ] {
+    for dataset in DatasetId::ALL
+        .into_iter()
+        .filter(|dataset| *dataset != DatasetId::Rebirth)
+    {
         let db = load(dataset);
         let base = protector(&db, dataset, &[], true);
         let slotted = protector(&db, dataset, &["Defense", "Defense", "Defense"], true);

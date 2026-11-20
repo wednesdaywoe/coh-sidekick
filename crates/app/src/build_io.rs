@@ -1407,11 +1407,14 @@ mod tests {
     /// A beta autosave, built from a real beta export: the persisted envelope around the build,
     /// with the definition fields the stored `Build` carries and the export strips.
     fn beta_autosave(skif: &str, active: &str) -> (String, serde_json::Value) {
-        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/skif/v4").join(skif);
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../fixtures/skif/v4")
+            .join(skif);
         let file: serde_json::Value =
             serde_json::from_str(&std::fs::read_to_string(&path).expect("fixture")).unwrap();
         let mut build = file["build"].clone();
-        build["sets"] = serde_json::json!({ "basilisks_gaze": { "count": 4, "pieces": [1, 2, 3, 4] } });
+        build["sets"] =
+            serde_json::json!({ "basilisks_gaze": { "count": 4, "pieces": [1, 2, 3, 4] } });
         for power in build["primary"]["powers"].as_array_mut().unwrap() {
             power["description"] = "a definition the export strips".into();
             power["effects"] = serde_json::json!({ "damage": [] });
@@ -1446,7 +1449,11 @@ mod tests {
         let (raw, _) = beta_autosave("homecoming-troller.skif", "homecoming");
         let mut persisted: serde_json::Value = serde_json::from_str(&raw).unwrap();
         persisted["state"]["activeServerId"] = "rebirth".into();
-        assert_eq!(beta_working_build(&persisted.to_string()), None, "rebirth has no build");
+        assert_eq!(
+            beta_working_build(&persisted.to_string()),
+            None,
+            "rebirth has no build"
+        );
 
         let build = persisted["state"]["buildsByServer"]["homecoming"].clone();
         let v0 = serde_json::json!({ "state": { "build": build }, "version": 0 });

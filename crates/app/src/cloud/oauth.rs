@@ -577,7 +577,10 @@ mod tests {
 
     #[test]
     fn a_transient_refusal_after_one_restart_is_left_to_the_modal() {
-        assert_eq!(retry_provider(&refusal(STATE_NOT_FOUND), Some(pending(true))), None);
+        assert_eq!(
+            retry_provider(&refusal(STATE_NOT_FOUND), Some(pending(true))),
+            None
+        );
     }
 
     #[test]
@@ -596,7 +599,10 @@ mod tests {
     fn the_error_code_is_read_before_error_when_both_are_present() {
         let mut params = refusal(STATE_NOT_FOUND);
         params.insert("error".to_string(), "server_error".to_string());
-        assert_eq!(retry_provider(&params, Some(pending(false))), Some(AuthProvider::SimpleLogin));
+        assert_eq!(
+            retry_provider(&params, Some(pending(false))),
+            Some(AuthProvider::SimpleLogin)
+        );
 
         let mut params = refusal("otp_expired");
         params.insert("error".to_string(), STATE_NOT_FOUND.to_string());
@@ -611,7 +617,10 @@ mod tests {
             "error_description".to_string(),
             "OAuth state not found".to_string(),
         );
-        assert_eq!(retry_provider(&params, Some(pending(false))), Some(AuthProvider::SimpleLogin));
+        assert_eq!(
+            retry_provider(&params, Some(pending(false))),
+            Some(AuthProvider::SimpleLogin)
+        );
     }
 
     #[test]
