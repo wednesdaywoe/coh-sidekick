@@ -1,5 +1,12 @@
 [
   {
+     "date": "2026-11-21",
+     "items": [
+      { "id": "profile-byline", "type": "fix", "message": "Your display name in File ▸ Public profile… now signs every build you have shared. Change it once and all your builds show the new name without re-sharing; builds shared without signing in keep the name they were shared with." }
+    ]
+  },
+
+  {
      "date": "2026-11-19",
      "items": [
       { "id": "pigg-wrangler", "type": "feat", "message": "Pigg Wrangler is a tool for browsing and extracting assets from CoH pigg files, and it can now be used directly from Sidekick through the Help menu." },      

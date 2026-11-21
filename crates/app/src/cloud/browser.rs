@@ -1914,7 +1914,11 @@ fn BuildCard(shared: SharedBuildSummary, database: Option<Db>) -> Element {
     let account = use_context::<Account>();
     let mut open = use_context::<BrowserOpen>().0;
     let created = share_date(&shared.created_at);
-    let author = profile::author_identity(&shared.author_name, shared.author_handle.as_deref());
+    let author = profile::author_identity(
+        &shared.author_name,
+        shared.author_handle.as_deref(),
+        shared.author_display_name.as_deref(),
+    );
 
     let mut starred = use_signal(|| None::<bool>);
     let read_id = shared.id.clone();
@@ -2235,7 +2239,11 @@ fn DetailBody(
         BuildVisibility::Public => None,
     };
     let date = share_date(&shared.created_at);
-    let author = profile::author_identity(&shared.author_name, shared.author_handle.as_deref());
+    let author = profile::author_identity(
+        &shared.author_name,
+        shared.author_handle.as_deref(),
+        shared.author_display_name.as_deref(),
+    );
     let chips = power_chips(&build_json);
 
     rsx! {

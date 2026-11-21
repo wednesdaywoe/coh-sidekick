@@ -301,9 +301,10 @@ pub enum AuthorIdentity {
     /// A display name with nothing behind it. It carries no sigil and is not a link — a click
     /// has nowhere honest to go when there is no account at the other end.
     Unverified { display: String },
-    /// A handle the join proved, and whatever free-text name the share carried beside it.
+    /// A handle the join proved, and the name to draw beside it: the owner's saved profile
+    /// display name when they have one, otherwise the free-text name the share carried.
     ///
-    /// `display` is empty when the share named no author. The handle then stands alone rather
+    /// `display` is empty when neither name is present. The handle then stands alone rather
     /// than the line reading "Anonymous", because this row demonstrably has an owner and saying
     /// otherwise would be the same class of lie in the other direction. Not a hypothetical arm:
     /// of the 1,328 public rows whose author holds a handle, **101 carry no `author_name`**, and
@@ -352,10 +353,17 @@ fn opens_a_name(c: char) -> bool {
         || GeneralCategoryGroup::Punctuation.contains(category)
 }
 
-/// Decide what an author line says, from the two columns that carry it.
+/// Decide what an author line says, from the name columns the build row carries.
 ///
-/// The sigil comes off `author_name` here rather than in the markup, because a stripped name is
-/// what the whole app should see: `author_name` is the label, and the label was never allowed to
+/// `author_display_name` is the owner's saved profile name, joined from `profiles` by the same
+/// view that proves the handle. It wins when there is one: a name saved in Public profile signs
+/// every build the account holds, including ones shared before that name was chosen. The
+/// per-build `author_name` is the fallback — it is all an anonymous share has, and it still
+/// names legacy rows whose owner has no display name. Both go through the same cleaning, so a
+/// profile name that turns out to be blank or email-shaped cannot put an unfit string on a card.
+///
+/// The sigil comes off the name here rather than in the markup, because a stripped name is
+/// what the whole app should see: the name is a label, and the label was never allowed to
 /// be a handle. Case survives, unlike [`normalize_handle`]: a display name is not a lookup key,
 /// and `Savant` is not `savant`.
 ///
@@ -381,22 +389,32 @@ fn opens_a_name(c: char) -> bool {
 /// could not have found the thing that broke the bound it was supporting. The residual is now a
 /// row hiding a sigil behind a blank-renderer *after* the first ink character, where it claims
 /// nothing, rather than in front of it, where it claimed everything.
-pub fn author_identity(author_name: &str, author_handle: Option<&str>) -> AuthorIdentity {
-    let display = author_name
-        .trim_start_matches(|c: char| c == '@' || !opens_a_name(c))
-        .trim_end()
-        .to_string();
-    // Rows quick-shared from the web client before the server dropped addresses still carry them.
-    let display = if contains_email(&display) {
-        String::new()
-    } else {
-        display
-    };
+pub fn author_identity(
+    author_name: &str,
+    author_handle: Option<&str>,
+    author_display_name: Option<&str>,
+) -> AuthorIdentity {
+    let display = author_display_name
+        .and_then(clean_author_name)
+        .or_else(|| clean_author_name(author_name))
+        .unwrap_or_default();
     match author_handle.and_then(normalize_handle) {
         Some(handle) => AuthorIdentity::Verified { display, handle },
         None if display.is_empty() => AuthorIdentity::Anonymous,
         None => AuthorIdentity::Unverified { display },
     }
+}
+
+/// The usable part of a name: no leading sigil or blank, no address, no trailing space.
+///
+/// Rows quick-shared from the web client before the server dropped addresses still carry them,
+/// and a profile name can predate the server's refusal too. `None` means there is nothing fit to
+/// draw, which is what lets the caller fall through to the other column.
+fn clean_author_name(name: &str) -> Option<String> {
+    let cleaned = name
+        .trim_start_matches(|c: char| c == '@' || !opens_a_name(c))
+        .trim_end();
+    (!cleaned.is_empty() && !contains_email(cleaned)).then(|| cleaned.to_string())
 }
 
 /// An address shape anywhere in a name: `local@domain.tld`, no whitespace. Mirrors
@@ -920,22 +938,68 @@ mod email_tests {
     #[test]
     fn an_address_is_never_an_author_line() {
         assert_eq!(
-            author_identity("jane.smith@example.com", None),
+            author_identity("jane.smith@example.com", None, None),
             AuthorIdentity::Anonymous
         );
         assert_eq!(
-            author_identity("Jane (jane.smith@example.com)", Some("jane")),
+            author_identity("Jane (jane.smith@example.com)", Some("jane"), None),
             AuthorIdentity::Verified {
                 display: String::new(),
                 handle: "jane".to_string()
             }
         );
         assert_eq!(
-            author_identity("Savant @ Everlasting", None),
+            author_identity("Savant @ Everlasting", None, None),
             AuthorIdentity::Unverified {
                 display: "Savant @ Everlasting".to_string()
             }
         );
+    }
+
+    #[test]
+    fn a_saved_display_name_signs_an_old_build() {
+        assert_eq!(
+            author_identity("aceaer", Some("guyver"), Some("Guyver")),
+            AuthorIdentity::Verified {
+                display: "Guyver".to_string(),
+                handle: "guyver".to_string()
+            }
+        );
+        // No handle claimed yet: the profile name still replaces the stored one.
+        assert_eq!(
+            author_identity("aceaer", None, Some("Guyver")),
+            AuthorIdentity::Unverified {
+                display: "Guyver".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn an_unusable_profile_name_falls_back_to_the_stored_one() {
+        assert_eq!(
+            author_identity("aceaer", Some("guyver"), Some("  ")),
+            AuthorIdentity::Verified {
+                display: "aceaer".to_string(),
+                handle: "guyver".to_string()
+            }
+        );
+        assert_eq!(
+            author_identity("aceaer", None, Some("a.user@example.com")),
+            AuthorIdentity::Unverified {
+                display: "aceaer".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn an_anonymous_row_keeps_only_its_stored_name() {
+        assert_eq!(
+            author_identity("Savant", None, None),
+            AuthorIdentity::Unverified {
+                display: "Savant".to_string()
+            }
+        );
+        assert_eq!(author_identity("", None, None), AuthorIdentity::Anonymous);
     }
 
     #[test]
