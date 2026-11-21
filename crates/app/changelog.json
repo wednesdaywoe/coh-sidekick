@@ -2,7 +2,7 @@
   {
      "date": "2026-11-21",
      "items": [
-      { "id": "profile-byline", "type": "fix", "message": "Your display name in File ▸ Public profile… now signs every build you have shared. Change it once and all your builds show the new name without re-sharing; builds shared without signing in keep the name they were shared with." }
+      { "id": "profile-byline", "type": "fix", "message": "Your display name in File ▸ Public profile… now signs every build you have shared. When you change it, all your builds will be updated." }
     ]
   },
 

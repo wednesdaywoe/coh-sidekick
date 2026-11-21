@@ -805,6 +805,11 @@
       "id": "pigg-wrangler",
       "date": "2026-11-19",
       "preview": "Pigg Wrangler is a tool for browsing and extracting assets from CoH pigg files, "
+    },
+    {
+      "id": "profile-byline",
+      "date": "2026-11-21",
+      "preview": "Your display name in File ▸ Public profile… now signs every build you have share"
     }
   ]
 }
