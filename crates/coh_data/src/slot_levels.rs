@@ -451,27 +451,41 @@ pub fn levels_of<'a>(
         .map(Vec::as_slice)
 }
 
-/// Drop entries that address no user slot — a power since removed, or an index past its row.
-fn prune(state: &mut CharacterState) -> bool {
+/// Per entry of `slot_order`, whether it still addresses a user slot. An entry for a power
+/// since removed, or an index past its row, is dead.
+fn live_mask(state: &CharacterState) -> Vec<bool> {
     let live: BTreeMap<SlotKey, Range<usize>> = placed_powers(state)
         .into_iter()
         .map(|(category, power)| ((category, power.internal_name.clone()), user_band(power)))
         .collect();
-    let categories: Vec<Option<SlotCategory>> = state
+    state
         .slot_order
         .iter()
-        .map(|entry| entry_category(state, entry))
-        .collect();
-    let before = state.slot_order.len();
-    let mut index = 0;
-    state.slot_order.retain(|entry| {
-        let category = categories[index];
-        index += 1;
-        category.is_some_and(|category| {
-            live.get(&(category, entry.power_name.clone()))
-                .is_some_and(|band| band.contains(&usize::from(entry.slot_index)))
+        .map(|entry| {
+            entry_category(state, entry).is_some_and(|category| {
+                live.get(&(category, entry.power_name.clone()))
+                    .is_some_and(|band| band.contains(&usize::from(entry.slot_index)))
+            })
         })
-    });
+        .collect()
+}
+
+/// The `slot_order` entries that still address a user slot. Removing a whole power doesn't
+/// prune, so a saved file reads through this rather than carrying a removed power's history.
+pub fn live_slot_order(state: &CharacterState) -> impl Iterator<Item = &SlotOrderEntry> {
+    state
+        .slot_order
+        .iter()
+        .zip(live_mask(state))
+        .filter_map(|(entry, live)| live.then_some(entry))
+}
+
+/// Drop entries that address no user slot — a power since removed, or an index past its row.
+fn prune(state: &mut CharacterState) -> bool {
+    let mask = live_mask(state);
+    let before = state.slot_order.len();
+    let mut keep = mask.into_iter();
+    state.slot_order.retain(|_| keep.next().unwrap_or(false));
     state.slot_order.len() != before
 }
 
@@ -676,6 +690,47 @@ mod tests {
         // Named under the wrong set, it is still not found.
         assert_eq!(SlotCategory::of(&state, "Other.Set", "FRT_Aim"), None);
         assert!(state.selected_power("Other.Set", "FRT_Aim").is_none());
+    }
+
+    #[test]
+    fn a_saved_build_forgets_the_slots_of_a_removed_power() {
+        // A user report's attachment listed slots on powers the build no longer had: removing
+        // a power doesn't prune, so the save has to.
+        let mut state = build(50, vec![power("Kept", 1, 1), power("Dropped", 1, 1)]);
+        for name in ["Kept", "Dropped"] {
+            let index = state
+                .selected_power("Primary.Set", name)
+                .unwrap()
+                .slots
+                .len();
+            state
+                .selected_power_mut("Primary.Set", name)
+                .unwrap()
+                .slots
+                .push(None);
+            record_added_slot(&mut state, SlotCategory::Primary, name, index, Some(3));
+        }
+        state
+            .primary
+            .powers
+            .retain(|p| p.internal_name != "Dropped");
+        assert_eq!(
+            state.slot_order.len(),
+            2,
+            "the dead entry is still in memory"
+        );
+
+        let live: Vec<&str> = live_slot_order(&state)
+            .map(|e| e.power_name.as_str())
+            .collect();
+        assert_eq!(live, ["Kept"]);
+        let saved = crate::skif::slim(&state).expect("slims");
+        let saved: Vec<&str> = saved
+            .slot_order
+            .iter()
+            .map(|e| e.power_name.as_str())
+            .collect();
+        assert_eq!(saved, ["Kept"]);
     }
 
     #[test]

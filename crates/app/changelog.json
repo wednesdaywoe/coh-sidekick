@@ -2,7 +2,8 @@
   {
      "date": "2026-11-22",
      "items": [
-      { "id": "strength-label", "type": "fix", "message": "Buffs to your own powers' strength now read +Strength instead of +Special. Fate Sealed shows +Strength: Hold 33%, which makes your holds last a third longer." }
+      { "id": "strength-label", "type": "fix", "message": "Buffs to your own powers' strength now read +Strength instead of +Special. Fate Sealed shows +Strength: Hold 33%, which makes your holds last a third longer." },
+      { "id": "slot-history-prune", "type": "fix", "message": "Saved builds no longer keep the slot history of powers you have removed." }
     ]
   },
 

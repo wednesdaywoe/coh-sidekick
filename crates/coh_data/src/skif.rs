@@ -501,7 +501,10 @@ pub fn slim(build: &CharacterState) -> Result<SkifBuild, SkifError> {
             .collect::<Result<_, _>>()?,
         accolades: build.accolades.clone(),
         incarnates: slim_incarnates(build),
-        slot_order: build.slot_order.iter().map(SkifSlotOrder::from).collect(),
+        // Only entries that still address a slot: a removed power's history isn't the build's.
+        slot_order: crate::slot_levels::live_slot_order(build)
+            .map(SkifSlotOrder::from)
+            .collect(),
         stances: build.combat.global_conditionals.clone(),
         modes: build
             .combat
