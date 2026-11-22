@@ -346,7 +346,7 @@
       ]
     },
     "specialDebuff": {
-      "label": "-Special",
+      "label": "-Strength",
       "category": "debuff",
       "format": "percent",
       "priority": 12,
@@ -554,7 +554,7 @@
       ]
     },
     "specialBuff": {
-      "label": "+Special",
+      "label": "+Strength",
       "category": "buff",
       "format": "percent",
       "priority": 20,

@@ -1,5 +1,12 @@
 [
   {
+     "date": "2026-11-22",
+     "items": [
+      { "id": "strength-label", "type": "fix", "message": "Buffs to your own powers' strength now read +Strength instead of +Special. Fate Sealed shows +Strength: Hold 33%, which makes your holds last a third longer." }
+    ]
+  },
+
+  {
      "date": "2026-11-21",
      "items": [
       { "id": "profile-byline", "type": "fix", "message": "Your display name in File ▸ Public profile… now signs every build you have shared. When you change it, all your builds will be updated." },
