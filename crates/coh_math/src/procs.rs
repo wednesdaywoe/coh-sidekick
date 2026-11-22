@@ -1520,7 +1520,15 @@ pub enum ProcRoll {
         working: ChanceWorking,
     },
     /// An auto or toggle power: `chance` per check, one check every `period` seconds.
-    PerCheck { ppm: f64, chance: f64, period: f64 },
+    /// `area_factor` and `ppm_mod` are the host power's contribution to that chance, so a reader
+    /// can redo the arithmetic from this row alone.
+    PerCheck {
+        ppm: f64,
+        chance: f64,
+        period: f64,
+        area_factor: f64,
+        ppm_mod: f64,
+    },
     /// The power is flagged `ProcAllowed: none`, so the piece never rolls against it. With
     /// `via_pet` the summon copies its slotting, and the piece fires off the pet instead.
     Never { via_pet: bool },
@@ -1582,14 +1590,21 @@ fn proc_roll(
     };
     let ptype = power_type_lower(def);
     if ptype == "auto" || ptype == "toggle" {
-        // The auto/toggle pass scores on single-target geometry; see `apply_ppm_procs`.
+        // A toggle's procs roll against every foe its area reaches, so the host power's geometry
+        // scores the denominator just as a click power's does. The check CLOCK is still the
+        // piece's own period (PPM-1); only the area factor comes from the power. Hardcoding
+        // single-target geometry here made a 15ft Entangling Aura read 50% where the game gives
+        // 18.6% (unfiled-21).
         let Some(period) = proc.activate_period else {
             return ProcRoll::Unknown("no activate period in the proc data".to_string());
         };
+        let area = roll_area(site.as_ref(), proc_area(def, db));
         return ProcRoll::PerCheck {
             ppm,
-            chance: calculate_auto_toggle_proc_chance(ppm, period, ProcArea::single_target()),
+            chance: calculate_auto_toggle_proc_chance(ppm, period, area),
             period,
+            area_factor: ppm_area_denominator(area),
+            ppm_mod: area.ppm_mod,
         };
     }
     let base_recharge = stat_or_default(def, "recharge", 4.0);
@@ -2034,18 +2049,18 @@ fn apply_ppm_procs(
             let (ProcType::Proc, Some(ppm)) = (proc.proc_type, proc.ppm) else {
                 continue;
             };
-            // A site changes nothing here: an auto/toggle host rolls on the PIECE's own
-            // activate period, not on any recharge, so the only question this pass asks the
-            // routing is whether the piece fires at all. No delegating power is an auto or
-            // a toggle today, so it never answers yes.
-            match proc_fires_in(def, proc, set_name, io_name) {
+            // A site changes no CLOCK here: an auto/toggle host rolls on the PIECE's own
+            // activate period, not on any recharge. It can still carry geometry, though, so
+            // keep the routed site for the area factor below. No delegating power is an auto
+            // or a toggle today, so this never answers with a site.
+            let site = match proc_fires_in(def, proc, set_name, io_name) {
                 Err(e) => {
                     errors.push(e);
                     continue;
                 }
                 Ok(None) => continue,
-                Ok(Some(_)) => {}
-            }
+                Ok(Some(site)) => site,
+            };
             // The piece's own switch reaches this pass too. The beta gates only the always-on
             // and variable passes on it, so a Performance Shifter switched off in its slot went
             // on feeding recovery from here: invisible while nothing wrote an override, and a
@@ -2064,15 +2079,14 @@ fn apply_ppm_procs(
                 ));
                 continue;
             };
-            // Single-target geometry regardless of the toggle's own radius, which is the
-            // oracle's shape (`calculateAutoToggleProcsPerMinute` takes `radius = 0` by
-            // default and this pass passes none). Not the same claim as PPM-3's flag: that
-            // one says the game charges no area penalty, this one says the beta never asked.
-            let procs_per_min = calculate_auto_toggle_procs_per_minute(
-                ppm,
-                activate_period,
-                ProcArea::single_target(),
-            );
+            // The host power's geometry scores the denominator, as it does for a click: its
+            // procs roll against every foe the area reaches. The beta's legacy-totals oracle
+            // called `calculateAutoToggleProcsPerMinute` with its radius default of 0, which
+            // is why this pass and the beta's own Enhancement Info panel disagreed; unfiled-21
+            // settles it on the game's shape, not the oracle's. `procsOnlyOnMainTarget` and a
+            // routed child's geometry still short-circuit to single-target through roll_area.
+            let area = roll_area(site.as_ref(), proc_area(def, db));
+            let procs_per_min = calculate_auto_toggle_procs_per_minute(ppm, activate_period, area);
             let source = ProcSource {
                 set_name,
                 proc_name: io_name,

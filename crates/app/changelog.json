@@ -2,7 +2,8 @@
   {
      "date": "2026-11-21",
      "items": [
-      { "id": "profile-byline", "type": "fix", "message": "Your display name in File ▸ Public profile… now signs every build you have shared. When you change it, all your builds will be updated." }
+      { "id": "profile-byline", "type": "fix", "message": "Your display name in File ▸ Public profile… now signs every build you have shared. When you change it, all your builds will be updated." },
+      { "id": "toggle-proc-area", "type": "fix", "message": "Proc chances in area toggles now include the power's area factor. The +Absorb proc in Entangling Aura reads 18.6% every 10s, matching the game, instead of 50%." }
     ]
   },
 

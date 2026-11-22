@@ -137,6 +137,34 @@ fn SlottedProcRowView(row: SlottedProcRow) -> Element {
     }
 }
 
+/// The auto/toggle row's readout and its arithmetic, kept pure so the printed number can be
+/// graded without a Dioxus render. `area_factor` is the host power's contribution (unfiled-21).
+fn per_check_text(
+    ppm: f64,
+    chance: f64,
+    period: f64,
+    area_factor: f64,
+    ppm_mod: f64,
+) -> (String, String) {
+    let effective_ppm = ppm * ppm_mod;
+    let mod_note = if ppm_mod == 1.0 {
+        String::new()
+    } else {
+        format!(" × {ppm_mod} PPMMod")
+    };
+    (
+        format!("{:.1}% every {}s", chance * 100.0, period),
+        format!(
+            "{ppm} PPM{mod_note}. An auto or toggle power checks its procs every {period}s \
+             while it runs.\n{effective_ppm} × {period}s ÷ (60 × {area_factor:.4}) = {:.1}%, \
+             clamped to {:.1}%–90% → {:.1}%",
+            effective_ppm * period / (60.0 * area_factor) * 100.0,
+            (0.05 + effective_ppm * 0.015) * 100.0,
+            chance * 100.0,
+        ),
+    )
+}
+
 /// How often the piece fires in this power (the beta's Proc Chance row, per piece). The hover
 /// states the arithmetic with this power's own numbers, so a reader can check it by hand; the
 /// rule a reader most often gets wrong rides with it: global recharge makes the power fire more
@@ -153,17 +181,10 @@ fn ProcChance(roll: ProcRoll) -> Element {
             };
             (text, chance_working(ppm, chance, rolls, fixed_period, working), false)
         }
-        ProcRoll::PerCheck { ppm, chance, period } => (
-            format!("{} every {}s", pct(chance), period),
-            format!(
-                "{ppm} PPM. An auto or toggle power checks its procs every {period}s while it \
-                 runs.\n{ppm} × {period}s ÷ 60 = {:.1}%, clamped to {:.1}%–90% → {:.1}%",
-                ppm * period / 60.0 * 100.0,
-                (0.05 + ppm * 0.015) * 100.0,
-                chance * 100.0,
-            ),
-            false,
-        ),
+        ProcRoll::PerCheck { ppm, chance, period, area_factor, ppm_mod } => {
+            let (text, title) = per_check_text(ppm, chance, period, area_factor, ppm_mod);
+            (text, title, false)
+        }
         ProcRoll::Never { via_pet: true } => (
             "rolls on the pet, not this cast".to_string(),
             "This power is flagged to fire no procs itself; its summon copies the slotting and rolls it instead.".to_string(),
@@ -458,5 +479,30 @@ fn HpPin(proc: SlottedProc) -> Element {
                 "{shown:.0}%"
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::per_check_text;
+
+    #[test]
+    fn an_area_toggle_row_prints_18_6_percent_with_its_denominator() {
+        // Entangling Aura + Superior Entomb's +Absorb: 3 PPM, 10s, 15ft sphere.
+        let chance = 3.0 * 10.0 / (60.0 * 2.6875);
+        let (text, title) = per_check_text(3.0, chance, 10.0, 2.6875, 1.0);
+        assert_eq!(text, "18.6% every 10s");
+        assert!(title.contains("3 × 10s ÷ (60 × 2.6875) = 18.6%"), "{title}");
+        assert!(!title.contains("PPMMod"), "{title}");
+    }
+
+    #[test]
+    fn a_single_target_toggle_row_keeps_25_percent() {
+        let (text, title) = per_check_text(1.5, 0.25, 10.0, 1.0, 1.0);
+        assert_eq!(text, "25.0% every 10s");
+        assert!(
+            title.contains("1.5 × 10s ÷ (60 × 1.0000) = 25.0%"),
+            "{title}"
+        );
     }
 }
