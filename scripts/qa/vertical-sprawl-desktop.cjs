@@ -212,7 +212,26 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
     assert.equal(s.expanded, OPEN_BY_DEFAULT.has(s.title),
       `${s.title} should be ${OPEN_BY_DEFAULT.has(s.title) ? 'open' : 'folded'} on a fresh profile, got ${s.expanded}`);
   }
+  // Description and Adjusters ride the same rail: folded on a fresh profile, and nothing
+  // of theirs is stored yet — their keys live under `card:`, outside the two tabs.
+  for (const title of ['Description', 'Adjusters']) {
+    const s = f.find((x) => x.title === title);
+    assert.ok(s, `Soul Drain's card carries a ${title} section, got ${JSON.stringify(f)}`);
+    assert.equal(s.expanded, false, `${title} starts folded on a fresh profile`);
+  }
   await qa.shot('07-info-default-folds');
+
+  // Opening each writes its card: key; the Adjusters' controls come back with the fold.
+  await card.locator('h4.is-foldable', { hasText: 'Adjusters' }).click();
+  assert.ok(await card.locator('.adjuster-row, .adjuster-choice').first().isVisible(),
+    'the adjuster inputs return with the fold');
+  await card.locator('h4.is-foldable', { hasText: 'Description' }).click();
+  assert.ok(await card.locator('.info-description p, .short-help').first().isVisible(),
+    'the prose returns with the fold');
+  const cardKeys = await page.evaluate(() => localStorage.getItem('sk-info-folds'));
+  assert.match(cardKeys, /"card:description":false/, `the open description persisted, got ${cardKeys}`);
+  assert.match(cardKeys, /"card:adjusters":false/, `the open adjusters persisted, got ${cardKeys}`);
+  await qa.shot('07b-description-adjusters-open');
 
   // The Damage section folds its body but keeps its head row.
   await card.locator('h4.is-foldable', { hasText: 'Damage' }).click();
@@ -229,10 +248,17 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
   assert.match(stored, /"info:effects":true/, `fold persisted, got ${stored}`);
   await qa.shot('08-effects-folded');
 
-  // Details tab: everything starts folded; opening Accepts is a preference too.
+  // Details tab: everything starts folded; opening Accepts is a preference too. The sweep
+  // is pane-scoped on purpose — Description and Adjusters live OUTSIDE the pane (true on
+  // every face) and are open here, by this walk's own doing; only the pane's own sections
+  // claim "starts folded" when the tab opens.
   await info.getByRole('tab', { name: 'Details', exact: true }).click();
-  f = await folds(card);
+  f = await folds(card.locator('.info-pane'));
   for (const s of f) assert.equal(s.expanded, false, `Details starts folded, ${s.title} was open`);
+  const cardLevel = await folds(card.locator(':scope > .info-block'));
+  for (const s of cardLevel) {
+    assert.equal(s.expanded, true, `${s.title} is true on every face — it stayed open across the tab switch`);
+  }
   const accepts = card.locator('h4.is-foldable', { hasText: 'Accepts' });
   if (await accepts.count()) await accepts.click();
   else await card.locator('h4.is-foldable').first().click();
@@ -254,6 +280,17 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
   }
   await info.getByRole('tab', { name: 'Info', exact: true }).click();
 
+  // The card-level opens survived the reload too, on a power this walk never touched:
+  // Cloak of Fear carries both headings, and both come up open from storage.
+  await available.locator('.power-row', { hasText: 'Cloak of Fear' }).first().hover();
+  f = await folds(card);
+  assert.equal(f.find((s) => s.title === 'Description').expanded, true,
+    'the open description follows to another power, across a reload');
+  assert.equal(f.find((s) => s.title === 'Adjusters').expanded, true,
+    'the open adjusters follow too');
+  assert.ok(await card.locator('.adjuster-row, .adjuster-choice').first().isVisible(),
+    'and the inputs are really there, not just the aria state');
+
   // The pool picker's preview honours the same preference.
   await adders.first().click(); // the Pools trigger
   const picker = page.locator('.pool-picker');
@@ -264,7 +301,12 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
   f = await folds(preview);
   assert.ok(f.length >= 2, 'the preview shows the foldable card');
   for (const s of f) {
-    const expected = s.title === 'Effects' ? false : OPEN_BY_DEFAULT.has(s.title);
+    // Effects: the walk folded it. Description: the walk OPENED it, and the `card:` key
+    // is storage like any other — the preview must honour it too. Everything else is on
+    // the authored default. (Adjusters never appears here: the picker passes no adjusters.)
+    const expected = s.title === 'Effects' ? false
+      : s.title === 'Description' ? true
+      : OPEN_BY_DEFAULT.has(s.title);
     assert.equal(s.expanded, expected, `preview ${s.title}: stored fold must reach the picker (${JSON.stringify(f)})`);
   }
   await qa.shot('09-picker-preview-folded');

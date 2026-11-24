@@ -128,6 +128,14 @@ run({ build: BUILD }, async (qa) => {
   }
   await qa.shot('05-phone-sheet-defaults');
 
+  // The two card-level sections are in the same sweep — both must show folded. Say it by
+  // name so a regression points at the section, not at a bare loop count.
+  for (const title of ['Description', 'Adjusters']) {
+    const s = f.find((x) => x.title === title);
+    if (s) assert.equal(s.expanded, false, `${title} starts folded on a fresh profile`);
+  }
+  assert.ok(f.some((s) => s.title === 'Description'), 'the prose carries a foldable heading');
+
   // Tap the heading — the coarse-pointer seat gets the fold.
   const effects = card.locator('h4.is-foldable', { hasText: 'Effects' }).first();
   const seat = await effects.boundingBox();
@@ -136,9 +144,39 @@ run({ build: BUILD }, async (qa) => {
   await page.waitForTimeout(200);
   const after = await effects.getAttribute('aria-expanded');
   assert.equal(after, 'false', 'a tap folds the section');
-  const stored = await page.evaluate(() => localStorage.getItem('sk-info-folds'));
+  let stored = await page.evaluate(() => localStorage.getItem('sk-info-folds'));
   assert.match(stored, /"info:effects":true/, `tap persisted the fold, got ${stored}`);
   await qa.shot('06-phone-effects-folded');
+
+  // Opening Description by tap writes its card: key and the prose returns.
+  const desc = card.locator('h4.is-foldable', { hasText: 'Description' }).first();
+  await desc.tap();
+  await page.waitForTimeout(200);
+  assert.equal(await desc.getAttribute('aria-expanded'), 'true', 'a tap opens the description');
+  assert.ok(await card.locator('.info-description p, .short-help').first().isVisible(),
+    'the prose returns with the fold');
+  stored = await page.evaluate(() => localStorage.getItem('sk-info-folds'));
+  assert.match(stored, /"card:description":false/, `the open description persisted, got ${stored}`);
+
+  // Adjusters, on a power that has inputs: tap opens the switches back in. The sheet's
+  // close button is in the Modal's header, OUTSIDE the .power-info-sheet content div.
+  const sheetClose = page.locator('.modal-header .modal-close');
+  await sheetClose.tap();
+  await page.waitForTimeout(250);
+  await page.getByRole('button', { name: 'About Cloak of Darkness' }).first().tap();
+  const adjCard = page.locator('.power-info-sheet');
+  await adjCard.waitFor({ state: 'visible' });
+  await page.waitForTimeout(350);
+  const adj = adjCard.locator('h4.is-foldable', { hasText: 'Adjusters' }).first();
+  assert.equal(await adj.getAttribute('aria-expanded'), 'false', 'the adjusters start folded');
+  await adj.tap();
+  await page.waitForTimeout(200);
+  assert.ok(await adjCard.locator('.adjuster-row, .adjuster-label').first().isVisible(),
+    'the adjuster inputs return with the fold');
+  stored = await page.evaluate(() => localStorage.getItem('sk-info-folds'));
+  assert.match(stored, /"card:adjusters":false/, `the open adjusters persisted, got ${stored}`);
+  await qa.shot('07-phone-adjusters-open');
+  await sheetClose.tap();
 
   console.log('phone sprawl check passed');
 });
