@@ -124,7 +124,17 @@ impl InfoFold {
 /// Written as one JSON object keyed by the section ids. Anything unreadable on the way back
 /// in is treated as nothing stored — the defaults are the honest answer, and a corrupt key
 /// must not fold sections the user left open.
+///
+/// An empty map stores nothing: the map only ever grows (a toggle inserts, nothing deletes),
+/// so empty means the reader has not folded or opened a single section yet — and the start-up
+/// restore, which reads the stored map back into the signal, would otherwise write the
+/// defaults to storage on every fresh profile. A key the app never wrote is worth more than
+/// a key saying `{}`: the first is the authored default, the second is one stale answer away
+/// from overriding a future one.
 pub fn persist(folds: &std::collections::BTreeMap<String, bool>) {
+    if folds.is_empty() {
+        return;
+    }
     let Ok(json) = serde_json::to_string(folds) else {
         return;
     };
