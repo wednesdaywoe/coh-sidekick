@@ -187,13 +187,28 @@ pub fn AccoladeStrip(database: Db) -> Element {
         format!("{enabled_count} of {}", toggles.len())
     };
 
+    // The surface hosting this row, if it is one: the Build Settings popover on desktop,
+    // the phone sheet on a phone (MobileSheet proxies its open flag). The strip always
+    // rides inside one, but this is `try_` so the component keeps its word if that ever
+    // changes.
+    let host = try_use_context::<crate::popover::PopoverOpen>().map(|host| host.0);
+
     rsx! {
         div { class: "picker-strip",
             span { class: "picker-strip__title", "Accolades" }
             button {
                 class: "picker-strip__open",
                 title: "Toggle the build's earned accolades",
-                onclick: move |_| picker.set(true),
+                onclick: move |_| {
+                    // The picker is a modal, so the surface hosting this row gets out of the
+                    // way — the tool launcher's rule (RosterRow): a popover left open would
+                    // stack an unreachable menu behind the picker, and on a phone the sheet
+                    // would stand over the picker it just raised.
+                    if let Some(mut host) = host {
+                        host.set(false);
+                    }
+                    picker.set(true);
+                },
                 span {
                     class: if enabled_count == 0 {
                         "picker-strip__power is-empty"
