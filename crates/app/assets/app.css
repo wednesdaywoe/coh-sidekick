@@ -2295,12 +2295,16 @@ button.power-pick--empty {
    Each trigger doubles as a readout (pools taken / epic held), so this row reports the
    build's standing state even when nothing is being chosen. */
 .set-adders {
-  display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px;
+  /* One row, always: two stacked triggers is exactly the second row of vertical sprawl
+     the small-screen work exists to remove (2026-11-24, owner: the panel is Pools/Epic
+     tall, not twice that). The buttons shrink instead — the label never wraps and the
+     value ellipsizes beside it, so a narrow panel costs characters, not rows. */
+  display: flex; flex-wrap: nowrap; align-items: stretch; gap: 8px;
   padding-bottom: var(--gap-stack); margin-bottom: 2px;
   border-bottom: 1px solid var(--seam);
 }
 .set-adder-button {
-  flex: 1 1 150px; min-width: 0;
+  flex: 1 1 0; min-width: 0;
   display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
   padding: 4px var(--pad-row-x); text-align: left;
   background: var(--surface-raised);
