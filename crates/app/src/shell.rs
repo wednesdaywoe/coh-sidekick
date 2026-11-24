@@ -567,6 +567,28 @@ pub fn Shell() -> Element {
         }
         crate::inherent_fold_store::persist(&folds);
     });
+    // Which sections of the Info card are open or folded — one preference for every power
+    // and every surface, seeded so a fresh card shows Damage, Effects and Cost and timing
+    // and folds the rest. Held here for the same reason as the inherent folds: the Info
+    // panel, the pool picker preview and the slotting compare all draw the same card, and
+    // a fold that reset on reload would reset the answer to "what do I actually read".
+    let info_folds = use_signal(std::collections::BTreeMap::<String, bool>::new);
+    use_context_provider(|| crate::info_fold_store::InfoFolds(info_folds));
+    let mut info_folds_restored = use_signal(|| false);
+    use_future(move || async move {
+        let mut folds = info_folds;
+        if let Some(saved) = crate::info_fold_store::load().await {
+            folds.set(saved);
+        }
+        info_folds_restored.set(true);
+    });
+    use_effect(move || {
+        let folds = info_folds.read().clone();
+        if !*info_folds_restored.read() {
+            return;
+        }
+        crate::info_fold_store::persist(&folds);
+    });
     // Whether picked powers under the 95% hit cap are badged — an Options preference, off by
     // default.
     let hit_chance_alert = use_signal(|| false);

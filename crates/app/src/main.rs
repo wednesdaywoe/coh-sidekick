@@ -38,6 +38,7 @@ mod hidden_inherents_store;
 mod history;
 mod hit_chance_alert_store;
 mod icon_select;
+mod info_fold_store;
 mod inherent_fold_store;
 mod inherents;
 mod key_stats;
