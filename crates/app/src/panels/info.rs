@@ -41,6 +41,92 @@ enum InfoTab {
     Details,
 }
 
+/// A section heading that doubles as a fold band when the caller passes a persisted fold
+/// ([`crate::info_fold_store`]).
+///
+/// The heading stays an `h4` on every surface, folding or not: the card must read the same —
+/// and expose the same heading structure to a screen reader — in the Info panel, the pool
+/// picker's preview and the slotting compare, and a heading that became a bare button only
+/// where folds happen to live would break that promise in the one way no one would notice
+/// until a keyboard or a reader said so. Folding therefore attaches button semantics to the
+/// heading itself — the role/tabindex/keydown combination the henchman roster rows use —
+/// and borrows the shared `.group-title__caret`, so a folded section carries the app's one
+/// fold mark.
+#[component]
+pub(crate) fn InfoHeading(
+    title: String,
+    /// The section's persisted fold. `None` draws the heading as it has always drawn: no
+    /// caret, no button semantics, nothing to click.
+    #[props(default = None)]
+    fold: Option<crate::info_fold_store::InfoFold>,
+) -> Element {
+    let foldable = fold.is_some();
+    let folded = fold.as_ref().is_some_and(|f| f.folded());
+    let click_fold = fold.clone();
+    let key_fold = fold.clone();
+    rsx! {
+        h4 {
+            class: if foldable { "is-foldable" },
+            role: foldable.then_some("button"),
+            tabindex: foldable.then_some("0"),
+            "aria-expanded": foldable.then_some(!folded),
+            title: foldable.then_some(if folded {
+                "Expand this section"
+            } else {
+                "Fold this section"
+            }),
+            onclick: move |_| {
+                if let Some(fold) = &click_fold {
+                    fold.clone().toggle();
+                }
+            },
+            onkeydown: move |evt: KeyboardEvent| {
+                if !foldable {
+                    return;
+                }
+                if matches!(evt.key(), Key::Enter) || evt.key() == Key::Character(" ".into()) {
+                    evt.prevent_default();
+                    if let Some(fold) = &key_fold {
+                        fold.clone().toggle();
+                    }
+                }
+            },
+            if foldable {
+                span {
+                    class: if folded {
+                        "group-title__caret caret--folded"
+                    } else {
+                        "group-title__caret"
+                    },
+                    "▼"
+                }
+            }
+            "{title}"
+        }
+    }
+}
+
+/// The shape the simple Info blocks share: `info-block` over a foldable heading and a body
+/// that is nothing else — no chips, no switches, no second control on the heading row. The
+/// blocks with a fuller head (Damage, the perma tracker, the henchmen roster) assemble the
+/// same pieces by hand around their own head markup.
+#[component]
+pub(crate) fn FoldedBlock(
+    title: String,
+    #[props(default = None)] fold: Option<crate::info_fold_store::InfoFold>,
+    children: Element,
+) -> Element {
+    let folded = fold.as_ref().is_some_and(|f| f.folded());
+    rsx! {
+        div { class: "info-block",
+            InfoHeading { title, fold }
+            if !folded {
+                {children}
+            }
+        }
+    }
+}
+
 /// One power rendered from its [`PowerView`] — identity, tags, execution stats, the effects it
 /// grants, its perma tracking and its slotted bonuses, across three tabs ([`InfoTab`]).
 ///
@@ -76,6 +162,12 @@ pub fn PowerViewCard(
     // What the slotted damage procs add to one cast on average, before the reader's switch:
     // `None` when nothing slotted here deals damage per cast, so the switch is not offered.
     let proc_per_cast = proc_per_cast(&slotted_procs);
+    // Each section's persisted fold — one preference for every power and every surface,
+    // from the shell root. A card mounted somewhere the shell is not (a future surface,
+    // an example) reads `None` and draws its sections as static headings: a fold needs a
+    // memory to be honest about, and without one every section is only ever open.
+    let folds = try_use_context::<crate::info_fold_store::InfoFolds>().map(|f| f.0);
+    let fold = |id: String| folds.map(|folds| crate::info_fold_store::InfoFold::new(folds, id));
 
     let has_details = view.damage.is_some()
         || !view.sections.is_empty()
@@ -199,33 +291,49 @@ pub fn PowerViewCard(
                                 damage: damage.clone(),
                                 rank_options: rank_options.clone(),
                                 proc_per_cast,
+                                fold: fold(crate::info_fold_store::section::DAMAGE.to_string()),
                             }
                         }
-                        // A summon's pets are its damage, so they take the Damage slot.
+                        // A summon's pets are its damage, so they take the Damage slot — and
+                        // fold with it: one key, two headings, one answer to "do I look at
+                        // this power's damage".
                         if let Some((database, power)) = &henchmen {
                             crate::panels::henchmen::HenchmanView {
                                 database: database.clone(),
                                 power: power.clone(),
+                                fold: fold(crate::info_fold_store::section::DAMAGE.to_string()),
                             }
                         }
                         if !view.headline_rows.is_empty() {
-                            EffectLines { title: "Effects", rows: view.headline_rows.clone() }
+                            EffectLines {
+                                title: "Effects",
+                                rows: view.headline_rows.clone(),
+                                fold: fold(crate::info_fold_store::section::EFFECTS.to_string()),
+                            }
                         }
                         for group in &view.execution_groups {
-                            StatTiles { title: group.title, rows: group.rows.clone() }
+                            StatTiles {
+                                title: group.title,
+                                rows: group.rows.clone(),
+                                fold: fold(crate::info_fold_store::section::execution(group.title)),
+                            }
                         }
                         // The slotted procs, with what each does and how often it fires here —
                         // the beta's Proc Chance row and its proc controls, as one block. On
                         // this face because "how often does my proc go off in this power" is
                         // asked of the power, not of its slotting ledger.
                         if !slotted_procs.is_empty() {
-                            SlottedProcBlock { rows: slotted_procs.clone() }
+                            SlottedProcBlock {
+                                rows: slotted_procs.clone(),
+                                fold: fold(crate::info_fold_store::section::SLOTTED_PROCS.to_string()),
+                            }
                         }
                         if let Some(perma) = view.perma {
                             PermaTracker {
                                 perma,
                                 track: perma_track,
                                 internal_name: view.internal_name.clone(),
+                                fold: fold(crate::info_fold_store::section::PERMA.to_string()),
                             }
                         }
                     },
@@ -237,21 +345,30 @@ pub fn PowerViewCard(
                     // because it decides whether the power lands at all.
                     InfoTab::Details => rsx! {
                         if let Some(damage) = &view.damage {
-                            DamageTiers { damage: damage.clone() }
+                            DamageTiers {
+                                damage: damage.clone(),
+                                fold: fold(crate::info_fold_store::section::DAMAGE_TIERS.to_string()),
+                            }
                         }
                         for section in &view.sections {
-                            EffectTable { title: section.title, rows: section.rows.clone() }
+                            EffectTable {
+                                title: section.title,
+                                rows: section.rows.clone(),
+                                fold: fold(crate::info_fold_store::section::effects(section.title)),
+                            }
                         }
                         // Slotted aspects get the ED breakdown; what is left (an Alpha-only aspect,
                         // a power with nothing slotted) keeps the plain after-ED list.
                         if !view.enhancement_breakdown.is_empty() {
-                            div { class: "info-block",
-                                h4 { "Enhancement Diversification" }
+                            FoldedBlock {
+                                title: "Enhancement Diversification",
+                                fold: fold(crate::info_fold_store::section::ENHANCEMENT_DIVERSIFICATION.to_string()),
                                 crate::ed_view::EdBreakdown { rows: view.enhancement_breakdown.clone() }
                             }
                         } else if !view.enhancement_bonuses.is_empty() {
-                            div { class: "info-block",
-                                h4 { "Enhancement bonuses (after ED)" }
+                            FoldedBlock {
+                                title: "Enhancement bonuses (after ED)",
+                                fold: fold(crate::info_fold_store::section::ENHANCEMENT_BONUSES.to_string()),
                                 dl { class: "info-pairs",
                                     for (aspect , value) in &view.enhancement_bonuses {
                                         dt { "{aspect}" }
@@ -261,8 +378,9 @@ pub fn PowerViewCard(
                             }
                         }
                         if !view.allowed_enhancements.is_empty() {
-                            div { class: "info-block",
-                                h4 { "Accepts" }
+                            FoldedBlock {
+                                title: "Accepts",
+                                fold: fold(crate::info_fold_store::section::ACCEPTS.to_string()),
                                 div { class: "info-tags",
                                     for allowed in &view.allowed_enhancements {
                                         span { class: "info-tag", "{allowed}" }
@@ -412,8 +530,14 @@ fn DamageBlock(
     /// Average slotted proc damage per cast, or `None` when the power holds no damage proc.
     #[props(default)]
     proc_per_cast: Option<f64>,
+    /// The section's persisted fold. The head row stays whole when folded — the chips and
+    /// the reading switches are the answer to "a number of what", and a folded section
+    /// still has to say what it is hiding — and everything under the head folds.
+    #[props(default = None)]
+    fold: Option<crate::info_fold_store::InfoFold>,
 ) -> Element {
     let session = use_context::<crate::build_session::BuildSession>();
+    let folded = fold.as_ref().is_some_and(|f| f.folded());
     let target_class = session.build.read().combat.target_class.clone();
     let target_held = session.build.read().combat.target_held;
     // The per-component rows only earn their space where there is more than one component to
@@ -429,10 +553,10 @@ fn DamageBlock(
     let local_procs = use_signal(|| true);
     let mut include_procs = try_use_context::<crate::damage_metric_store::ProcDamagePref>()
         .map_or(local_procs, |pref| pref.0);
-    let local_fold = use_signal(|| true);
-    let mut fold = try_use_context::<crate::damage_metric_store::ProcFoldPref>()
-        .map_or(local_fold, |pref| pref.0);
-    let fold_procs = fold();
+    let local_procs_in_total = use_signal(|| true);
+    let mut procs_in_total = try_use_context::<crate::damage_metric_store::ProcFoldPref>()
+        .map_or(local_procs_in_total, |pref| pref.0);
+    let fold_procs = procs_in_total();
     // Per cast, in damage units — what the bar draws. Zero when switched off or nothing fires.
     let procs_shown = proc_per_cast.filter(|_| include_procs()).unwrap_or(0.0);
     let hero = damage.hero(metric(), if fold_procs { procs_shown } else { 0.0 });
@@ -442,11 +566,9 @@ fn DamageBlock(
     rsx! {
         div { class: "info-block",
             div { class: "info-block__head",
-                h4 {
-                    "Damage"
-                    if damage.capped {
-                        span { class: "info-flag", "at the archetype cap" }
-                    }
+                InfoHeading { title: "Damage", fold }
+                if damage.capped {
+                    span { class: "info-flag", "at the archetype cap" }
                 }
                 // 46.99 of WHAT. They sit on the same line as the word that raises the
                 // question, and they are read off the components the 46.99 was read off — one
@@ -478,7 +600,7 @@ fn DamageBlock(
                             class: "damage-procs",
                             "aria-pressed": fold_procs,
                             title: "Add the proc average into the damage number, rather than only listing it below. The % gain leaves it out either way, since proc damage is flat",
-                            onclick: move |_| fold.set(!fold_procs),
+                            onclick: move |_| procs_in_total.set(!fold_procs),
                             "In total"
                         }
                     }
@@ -507,7 +629,8 @@ fn DamageBlock(
             // The hit this build lands, the hit the game ships, and the gap. One line, because
             // they are one number read three ways — the base is an anchor for the headline, not
             // a second figure competing with it, and the weights say so.
-            match hero {
+            if !folded {
+                match hero {
                 Ok(hero) => rsx! {
                     div { class: "damage-hero",
                         // The card's biggest scan target takes the hue the dashboard gives the same
@@ -582,15 +705,16 @@ fn DamageBlock(
                     div { class: "load-state error", "{e}" }
                 },
             }
-            if damage.waiting_on_rank > 0 {
-                RankPrompt {
-                    count: damage.waiting_on_rank,
-                    options: rank_options.clone(),
-                    chosen: target_class,
+                if damage.waiting_on_rank > 0 {
+                    RankPrompt {
+                        count: damage.waiting_on_rank,
+                        options: rank_options.clone(),
+                        chosen: target_class,
+                    }
                 }
-            }
-            for (index , note) in damage.unresolved.iter().enumerate() {
-                p { key: "{index}", class: "info-gap", "{note}" }
+                for (index , note) in damage.unresolved.iter().enumerate() {
+                    p { key: "{index}", class: "info-gap", "{note}" }
+                }
             }
         }
     }
@@ -720,10 +844,13 @@ fn RankPrompt(
 /// showing "−9.38% base −9.38%" spends a line saying the same number twice; a row that did move
 /// needs the anchor, and its presence is itself the signal that something here is enhanced.
 #[component]
-fn EffectLines(title: String, rows: Vec<EffectRow>) -> Element {
+fn EffectLines(
+    title: String,
+    rows: Vec<EffectRow>,
+    #[props(default = None)] fold: Option<crate::info_fold_store::InfoFold>,
+) -> Element {
     rsx! {
-        div { class: "info-block",
-            h4 { "{title}" }
+        FoldedBlock { title, fold,
             div { class: "info-lines",
                 for row in rows.iter() {
                     InfoLine { key: "{row.key}", row: row.clone() }
@@ -784,10 +911,13 @@ fn InfoLine(row: EffectRow) -> Element {
 /// slotting or a global moved it — the same grammar as the damage headline, and the same reason:
 /// a tile reading "4s / base 4s" spends its second line agreeing with its first.
 #[component]
-fn StatTiles(title: String, rows: Vec<EffectRow>) -> Element {
+fn StatTiles(
+    title: String,
+    rows: Vec<EffectRow>,
+    #[props(default = None)] fold: Option<crate::info_fold_store::InfoFold>,
+) -> Element {
     rsx! {
-        div { class: "info-block",
-            h4 { "{title}" }
+        FoldedBlock { title, fold,
             div { class: "stat-tiles",
                 for row in rows.iter() {
                     div { key: "{row.key}", class: "stat-tile",
@@ -885,10 +1015,12 @@ fn DamageBar(damage: DamageView, #[props(default)] procs: f64) -> Element {
 /// component survives. The headline's delta compares the two ends, and the bar draws all three
 /// in aggregate — neither can say which of two components your slotting reached.
 #[component]
-fn DamageTiers(damage: DamageView) -> Element {
+fn DamageTiers(
+    damage: DamageView,
+    #[props(default = None)] fold: Option<crate::info_fold_store::InfoFold>,
+) -> Element {
     rsx! {
-        div { class: "info-block",
-            h4 { "Damage" }
+        FoldedBlock { title: "Damage", fold,
             if !damage.certain.is_empty() || damage.total.is_some() {
                 div { class: "info-rows",
                     div { class: "info-rows__head",
@@ -989,10 +1121,13 @@ fn DamageRow(row: EffectRow) -> Element {
 ///
 /// The Details face's form, and only its form.
 #[component]
-fn EffectTable(title: String, rows: Vec<EffectRow>) -> Element {
+fn EffectTable(
+    title: String,
+    rows: Vec<EffectRow>,
+    #[props(default = None)] fold: Option<crate::info_fold_store::InfoFold>,
+) -> Element {
     rsx! {
-        div { class: "info-block",
-            h4 { "{title}" }
+        FoldedBlock { title, fold,
             if !rows.is_empty() {
             div { class: "info-rows",
                 div { class: "info-rows__head",
@@ -1056,7 +1191,12 @@ fn PermaTracker(
     perma: PermaInfo,
     #[props(default)] track: bool,
     #[props(default)] internal_name: Option<String>,
+    /// The section's persisted fold. The Track button stays on the head row when folded:
+    /// deciding to follow a power is not something the fold should hide behind.
+    #[props(default = None)]
+    fold: Option<crate::info_fold_store::InfoFold>,
 ) -> Element {
+    let folded = fold.as_ref().is_some_and(|f| f.folded());
     let recharge_in_hand = (perma.total_recharge * 100.0).round();
     let recharge_needed = (perma.recharge_needed * 100.0).round();
     let gap = match perma.is_perma {
@@ -1073,38 +1213,40 @@ fn PermaTracker(
     rsx! {
         div { class: "info-block",
             div { class: "perma-track-head",
-                h4 { "Perma tracker" }
+                InfoHeading { title: "Perma tracker", fold }
                 if track {
                     if let Some(internal_name) = internal_name {
                         PermaTrackButton { internal_name }
                     }
                 }
             }
-            div { class: "perma-bar",
-                div {
-                    class: "perma-bar__fill",
-                    style: "width: {perma.perma_percent}%;",
+            if !folded {
+                div { class: "perma-bar",
+                    div {
+                        class: "perma-bar__fill",
+                        style: "width: {perma.perma_percent}%;",
+                    }
                 }
-            }
-            div { class: "perma-state",
-                if perma.is_perma {
-                    span { class: "is-perma", "Permanent" }
-                } else {
-                    span { "{perma.perma_percent:.1}% of the way" }
+                div { class: "perma-state",
+                    if perma.is_perma {
+                        span { class: "is-perma", "Permanent" }
+                    } else {
+                        span { "{perma.perma_percent:.1}% of the way" }
+                    }
                 }
-            }
-            dl { class: "info-pairs",
-                dt { "+Recharge" }
-                dd { "{recharge_in_hand:.0}% of {recharge_needed:.0}%" }
-                dt { "Effective recharge" }
-                dd { "{perma.effective_recharge:.1}s" }
-                dt { "Base / duration" }
-                dd { "{perma.base_recharge:.1}s / {perma.duration:.1}s" }
-                dt { "Gap" }
-                dd { class: if perma.is_perma { "is-buffed" } else { "is-short" }, "{gap}" }
-                if let Some(recast) = recast {
-                    dt { "Recast" }
-                    dd { "{recast}" }
+                dl { class: "info-pairs",
+                    dt { "+Recharge" }
+                    dd { "{recharge_in_hand:.0}% of {recharge_needed:.0}%" }
+                    dt { "Effective recharge" }
+                    dd { "{perma.effective_recharge:.1}s" }
+                    dt { "Base / duration" }
+                    dd { "{perma.base_recharge:.1}s / {perma.duration:.1}s" }
+                    dt { "Gap" }
+                    dd { class: if perma.is_perma { "is-buffed" } else { "is-short" }, "{gap}" }
+                    if let Some(recast) = recast {
+                        dt { "Recast" }
+                        dd { "{recast}" }
+                    }
                 }
             }
         }

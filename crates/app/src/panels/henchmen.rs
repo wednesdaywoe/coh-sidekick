@@ -22,8 +22,16 @@ use dioxus::prelude::*;
 /// The Info panel's henchman face: the damage headline over the roster one summon power
 /// fields, and the drill-in a roster row opens.
 #[component]
-pub fn HenchmanView(database: Db, power: Power) -> Element {
+pub fn HenchmanView(
+    database: Db,
+    power: Power,
+    /// The fold this roster rides with: the Damage section's. A summon's pets are its
+    /// damage, so the roster folds with the meter and not beside it.
+    #[props(default = None)]
+    fold: Option<crate::info_fold_store::InfoFold>,
+) -> Element {
     let session = use_context::<BuildSession>();
+    let folded = fold.as_ref().is_some_and(|f| f.folded());
     let mut selected = use_signal(|| Option::<String>::None);
 
     // `holds` is the build's own picked powers: an upgrade granter is held exactly when the
@@ -96,8 +104,9 @@ pub fn HenchmanView(database: Db, power: Power) -> Element {
             } else {
                 div { class: "info-block",
                     div { class: "info-block__head",
-                        h4 { "Henchmen" }
+                        crate::panels::info::InfoHeading { title: "Henchmen", fold }
                     }
+                if !folded {
                 div { class: "damage-hero",
                     span { class: "damage-hero__value", "{headline:.2}" }
                     span { class: "damage-hero__base",
@@ -175,6 +184,7 @@ pub fn HenchmanView(database: Db, power: Power) -> Element {
                         count,
                         on_close: move |_| selected.set(None),
                     }
+                }
                 }
             }
         }

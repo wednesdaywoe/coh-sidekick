@@ -58,10 +58,14 @@ pub fn rows(procs: Vec<SlottedProc>, breakdown: &[ProcBreakdownSource]) -> Vec<S
 }
 
 #[component]
-pub fn SlottedProcBlock(rows: Vec<SlottedProcRow>) -> Element {
+pub fn SlottedProcBlock(
+    rows: Vec<SlottedProcRow>,
+    /// The section's persisted fold, threaded from the card. `None` draws it static.
+    #[props(default = None)]
+    fold: Option<crate::info_fold_store::InfoFold>,
+) -> Element {
     rsx! {
-        div { class: "info-block",
-            h4 { "Slotted procs" }
+        crate::panels::info::FoldedBlock { title: "Slotted procs", fold,
             for row in rows.iter() {
                 SlottedProcRowView { key: "{row.proc.key}", row: row.clone() }
             }
