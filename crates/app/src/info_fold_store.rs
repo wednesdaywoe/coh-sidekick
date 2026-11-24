@@ -33,6 +33,11 @@ const KEY_INFO_FOLDS: &str = "sk-info-folds";
 /// Namespaced by tab (`info:` / `details:`) because the two tabs carry sections with the
 /// same heading — both say "Damage" — and they are different content: the meter on one, the
 /// tier table on the other. A player who folds one has not said anything about the other.
+///
+/// Sections that ride OUTSIDE the tab pane take a third namespace, `card:`. The description
+/// is true on both faces and the adjusters resolve the numbers on every face, so neither
+/// belongs to a tab — prefixing one `info:` would read as "a section of the Info tab",
+/// which is a claim about the card's structure the fold key has no business making wrong.
 pub mod section {
     /// The hit: hero number, bar, component rows. A summon's henchmen fold with it — the
     /// roster is that power's damage, drawn where the Damage block sits.
@@ -41,6 +46,15 @@ pub mod section {
     pub const EFFECTS: &str = "info:effects";
     pub const SLOTTED_PROCS: &str = "info:slotted-procs";
     pub const PERMA: &str = "info:perma";
+
+    /// The authored prose at the foot of the card, on every face — with the `shortHelp`
+    /// fallback folded in beside it, because a power with no authored description occupies
+    /// the same slot and a section that folds but leaves its fallback standing would lie
+    /// exactly for those powers (decided 2026-11-24).
+    pub const DESCRIPTION: &str = "card:description";
+    /// The adjuster inputs above the tab strip. Folding hides the controls, never their
+    /// effect on the numbers the faces show.
+    pub const ADJUSTERS: &str = "card:adjusters";
 
     /// The tier-by-tier damage table on the Details tab.
     pub const DAMAGE_TIERS: &str = "details:damage-tiers";
@@ -170,6 +184,8 @@ mod tests {
             "info:other",
             section::SLOTTED_PROCS,
             section::PERMA,
+            section::DESCRIPTION,
+            section::ADJUSTERS,
             section::DAMAGE_TIERS,
             &section::effects("Mez"),
             &section::effects("Buffs"),
@@ -185,6 +201,18 @@ mod tests {
             open,
             vec![section::DAMAGE, section::EFFECTS, "info:cost-and-timing"]
         );
+    }
+
+    /// The description and the adjusters ride OUTSIDE the tab pane — the prose is true on
+    /// both faces, the inputs resolve the numbers on every face — so their keys carry the
+    /// `card:` namespace, neither tab's, and both start folded: the fresh card stays
+    /// damage-first (owner, 2026-11-24).
+    #[test]
+    fn the_card_sections_are_outside_both_tab_namespaces_and_folded() {
+        for id in [section::DESCRIPTION, section::ADJUSTERS] {
+            assert!(id.starts_with("card:"), "{id} must not claim a tab");
+            assert!(default_folded(id), "{id} must start folded");
+        }
     }
 
     /// The default list's one derived-looking key IS the derived key for the heading the

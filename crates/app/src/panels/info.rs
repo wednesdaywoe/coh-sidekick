@@ -243,9 +243,15 @@ pub fn PowerViewCard(
             // Above the rows they move, so a number is never read before the state it was read
             // under — the beta's order for the same reason. That is also why they stay OUTSIDE
             // the tabs: an adjuster resolves the numbers on every face, and one parked inside
-            // Info would silently be the state an Effects row was read under.
+            // Info would silently be the state an Effects row was read under. Folding the block
+            // (folded by default since the owner asked for collapsible sections, 2026-11-24)
+            // hides the controls, not their effect — the state they set keeps moving every
+            // number below, exactly as it did unfolded.
             if !adjusters.is_empty() {
-                AdjusterBlock { adjusters: adjusters.clone() }
+                AdjusterBlock {
+                    adjusters: adjusters.clone(),
+                    fold: fold(crate::info_fold_store::section::ADJUSTERS.to_string()),
+                }
             }
 
             // A face with nothing on it is offered disabled rather than dropped: the strip
@@ -396,7 +402,10 @@ pub fn PowerViewCard(
             // reason: prose is the least dense thing on the card and the least often read
             // twice, so it yields the space above the fold to the numbers someone opened the
             // panel for. It sits OUTSIDE the pane rather than under Info's last block, because
-            // it is the one piece of the card that is true on every face.
+            // it is the one piece of the card that is true on every face. Since 2026-11-24 it
+            // folds like the rest of the card (owner), and folding it is what this seat was
+            // always conceding: the heading costs one row, the folded prose hands back
+            // several.
             //
             // The authored description, and not `shortHelp` beside it. `shortHelp`
             // is the designers' shorthand — `Ranged, DMG(Negative), Foe -To Hit` — and every
@@ -404,19 +413,28 @@ pub fn PowerViewCard(
             // tag, the damage type is a chip on the Damage heading, and the debuff is a row
             // under Effects. It still does the work it is good at, one layer down, where
             // [`PowerView`] reads it to decide WHICH effects lead. A power the export gave no
-            // description keeps it as the fallback rather than showing nothing.
-            match (view.description.is_empty(), &view.short_help) {
-                (false, _) => rsx! {
-                    div { class: "info-description",
-                        for (index , paragraph) in view.description.iter().enumerate() {
-                            p { key: "{index}", "{paragraph}" }
-                        }
+            // description keeps it as the fallback rather than showing nothing — and the
+            // fallback folds under the same key: the one slot, one fold; a section that
+            // claimed to fold but left its fallback standing would lie for exactly the
+            // powers that need it most.
+            if !view.description.is_empty() || view.short_help.is_some() {
+                FoldedBlock {
+                    title: "Description".to_string(),
+                    fold: fold(crate::info_fold_store::section::DESCRIPTION.to_string()),
+                    match (view.description.is_empty(), &view.short_help) {
+                        (false, _) => rsx! {
+                            div { class: "info-description",
+                                for (index , paragraph) in view.description.iter().enumerate() {
+                                    p { key: "{index}", "{paragraph}" }
+                                }
+                            }
+                        },
+                        (true, Some(help)) => rsx! {
+                            p { class: "short-help", "{help}" }
+                        },
+                        (true, None) => rsx! {},
                     }
-                },
-                (true, Some(help)) => rsx! {
-                    p { class: "short-help", "{help}" }
-                },
-                (true, None) => rsx! {},
+                }
             }
         }
     }

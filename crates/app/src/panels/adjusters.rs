@@ -30,6 +30,7 @@
 //! ([`crate::panels::combat`]). Two controls over one value can disagree; one cannot.
 
 use crate::build_session::BuildSession;
+use crate::panels::info::FoldedBlock;
 use crate::panels::stat_registry;
 use coh_math::adjusters::{toggle_writes, PowerAdjuster};
 use coh_math::buff_pets::BuffPetSource;
@@ -85,8 +86,20 @@ pub struct TargetsHit {
     pub value: Option<u32>,
 }
 
+/// The block of per-power adjuster inputs, under its `Adjusters` heading.
+///
+/// The fold hides the controls, never their effect: an adjuster parked above the tabs has
+/// already resolved the numbers on every face, and folding the block says "I know what
+/// state I left this in" — the state keeps moving the projection exactly as it did.
 #[component]
-pub fn AdjusterBlock(adjusters: PowerAdjusters) -> Element {
+pub fn AdjusterBlock(
+    adjusters: PowerAdjusters,
+    /// The section's persisted fold (see [`crate::info_fold_store`] with
+    /// [`crate::info_fold_store::section::ADJUSTERS`]). `None` — anywhere the fold store is
+    /// not provided — keeps the heading static, as it was before folding existed.
+    #[props(default = None)]
+    fold: Option<crate::info_fold_store::InfoFold>,
+) -> Element {
     // Grouped conditionals are a choice between target states and render as one choice strip;
     // ungrouped ones are independent switches. Grouping preserves the export's order — the
     // first member's position decides where its group sits.
@@ -104,8 +117,9 @@ pub fn AdjusterBlock(adjusters: PowerAdjusters) -> Element {
     }
 
     rsx! {
-        div { class: "info-block",
-            h4 { "Adjusters" }
+        FoldedBlock {
+            title: "Adjusters".to_string(),
+            fold,
             for (name , members) in groups.iter() {
                 AdjusterChoice {
                     key: "{name}",
