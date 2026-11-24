@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 /**
- * QA check for the vertical-sprawl plan, phone layout (plan items 3, 4, 6, 7 on touch).
+ * QA check for the planner's vertical layout, phone (vertical-sprawl items 3, 4, 6, 7 on
+ * touch; accolades-and-pool-headers items 1, 2 on touch).
  *
  * Needs serve.cjs running on 8787 (see the qa-check skill). Run:
  *   QA_DEVICE='Pixel 7' node scripts/qa/vertical-sprawl-phone.cjs
  *
  * What it walks:
- *  1. the Stats stack carries the panel in the authored order (Powers, Incarnates, Available)
- *     with both strips inside it;
- *  2. the Pools / Epic triggers stay one row tall at phone width;
- *  3. the power details sheet opens on the damage-first defaults and a tap on a section
+ *  1. the Stats stack carries the Incarnates panel in the authored order (Powers,
+ *     Incarnates, Available) with the socket row and no accolade strip inside it;
+ *  2. the Pools / Epic triggers stay one row tall at phone width, and the set headers hold
+ *     one line with the full name in the title;
+ *  3. Build Settings in the More sheet carries the Accolades row and its picker opens;
+ *  4. the power details sheet opens on the damage-first defaults and a tap on a section
  *     heading folds it — and writes the same preference storage the desktop uses.
  *
  * Every interaction is a `.tap()`, never `.click()`, and every shot is the viewport, never
@@ -27,30 +30,32 @@ const BUILD = 'fixtures/buildsave/homecoming/charnel.txt';
 run({ build: BUILD }, async (qa) => {
   const { page } = qa;
 
-  // ---- 1. the Stats stack carries the panel, with both strips ------------------------
+  // ---- 1. the Stats stack carries the panel, sockets only ----------------------------
   await page.locator('nav.mobile-nav button', { hasText: 'Stats' }).tap();
   const stack = page.locator('.mobile-stack');
   const panelFor = (title) => stack.locator('.panel').filter({ has: page.locator('.panel-title', { hasText: title }) });
-  const incarnates = panelFor('Incarnates & Accolades').first();
+  const incarnates = panelFor('Incarnates').first();
   await incarnates.waitFor({ state: 'visible' });
   const titles = await stack.locator('.panel-title').evaluateAll((els) => els.map((e) => e.textContent.trim()));
   const at = titles.findIndex((t) => t.includes('Incarnates'));
   assert.ok(at > 0, `the panel is in the phone stack, got ${JSON.stringify(titles)}`);
+  assert.ok(!titles[at].includes('Accolades'), `the panel is titled Incarnates, got "${titles[at]}"`);
   assert.match(titles[at - 1], /Powers/, 'directly after Powers, the authored order');
   assert.match(titles[at + 1], /Available/, 'and Available follows it');
   // A folded panel shows only its title; open it to read the body.
-  const foldBtn = incarnates.locator('.panel-fold');
-  const incHasAccolades = async () =>
-    (await incarnates.evaluate((e) => e.textContent)).toLowerCase().includes('accolades');
-  if (!(await incHasAccolades())) {
-    await foldBtn.tap();
+  const incBodyHas = async (re) =>
+    re.test(await incarnates.evaluate((e) => e.textContent));
+  if ((await incarnates.locator('.incarnate-socket').count()) === 0) {
+    await incarnates.locator('.panel-fold').tap();
     await page.waitForTimeout(200);
   }
-  assert.ok(await incHasAccolades(), 'the accolade strip rides in the panel');
+  assert.ok(await incarnates.locator('.incarnate-socket').count() > 0,
+    'the socket row rides the panel');
+  assert.ok(!(await incBodyHas(/accolades/i)), 'the accolade strip has left the panel');
   await incarnates.scrollIntoViewIfNeeded();
   await qa.shot('01-phone-incarnates-panel');
 
-  // ---- 2. the set adders are one row at phone width ---------------------------------
+  // ---- 2. the set adders are one row at phone width; headers hold one line -----------
   const pools = panelFor('Power Pools').first();
   await pools.scrollIntoViewIfNeeded();
   if (!(await pools.locator('.set-adder-button').count())) {
@@ -63,9 +68,44 @@ run({ build: BUILD }, async (qa) => {
   for (const a of await adders.all()) boxes.push(await a.boundingBox());
   assert.equal(new Set(boxes.map((b) => Math.round(b.y))).size, 1, 'one row at phone width');
   assert.ok(boxes.every((b) => b.height <= 48), `row height ${boxes.map((b) => b.height)}`);
+  const nameInfo = await pools.locator('.powerset-group__name').evaluateAll((els) =>
+    els.map((e) => ({
+      text: e.textContent.trim(),
+      title: e.getAttribute('title'),
+      whiteSpace: getComputedStyle(e).whiteSpace,
+      oneLine: e.scrollHeight <= e.clientHeight + 1 && e.clientHeight <= 24,
+    })));
+  assert.ok(nameInfo.length > 0, 'the pools panel shows set headers');
+  for (const n of nameInfo) {
+    assert.equal(n.whiteSpace, 'nowrap', `"${n.text}" must not wrap`);
+    assert.ok(n.oneLine, `"${n.text}" must hold one line, got ${JSON.stringify(n)}`);
+    assert.equal(n.title, n.text, `"${n.text}" title carries the full name`);
+  }
   await qa.shot('02-phone-set-adders');
 
-  // ---- 3. the details sheet folds, by tap, on the fresh defaults ---------------------
+  // ---- 3. Build Settings in the More sheet carries the Accolades row ------------------
+  // Popovers render inline in the sheet (PopoverInline): no trigger to tap, the form is
+  // just there, and the Accolades row rides its foot.
+  await page.locator('nav.mobile-nav button', { hasText: 'More' }).tap();
+  const sheet = page.locator('.mobile-sheet');
+  await sheet.waitFor({ state: 'visible' });
+  const bs = sheet.locator('.popover-inline[aria-label="Build Settings"]');
+  await bs.scrollIntoViewIfNeeded();
+  const strip = bs.locator('.picker-strip');
+  assert.equal(await strip.count(), 1, 'an Accolades row rides the foot of Build Settings');
+  assert.match(await strip.innerText(), /accolades/i);
+  const summary = (await strip.locator('.picker-strip__power').innerText()).trim();
+  assert.match(summary, /^(none|\d+ of \d+)$/, `row carries the enabled summary, got "${summary}"`);
+  await qa.shot('03-phone-build-settings-accolades');
+  await strip.locator('.picker-strip__open').tap();
+  const accPicker = page.locator('.floating-panel[aria-label="Accolades"]');
+  await accPicker.waitFor({ state: 'visible' });
+  assert.ok(await accPicker.locator('.accolade-row').count() > 0, 'the picker lists the toggles');
+  await qa.shot('04-phone-accolades-picker');
+  await accPicker.locator('.modal-close').tap();
+  await accPicker.waitFor({ state: 'hidden' });
+
+  // ---- 4. the details sheet folds, by tap, on the fresh defaults ---------------------
   assert.equal(await page.evaluate(() => localStorage.getItem('sk-info-folds')), null,
     'nothing stored before the first toggle');
   await page.locator('nav.mobile-nav button', { hasText: 'Build' }).tap();
@@ -79,15 +119,14 @@ run({ build: BUILD }, async (qa) => {
     els.map((e) => ({
       title: e.textContent.replace('▼', '').trim(),
       expanded: e.getAttribute('aria-expanded') === 'true',
-    })),
-  );
+    })));
   assert.ok(f.length >= 2, `the sheet's card has foldable sections, got ${JSON.stringify(f)}`);
   const OPEN = new Set(['Effects', 'Cost and timing', 'Damage']);
   for (const s of f) {
     assert.equal(s.expanded, OPEN.has(s.title),
       `${s.title} should be ${OPEN.has(s.title) ? 'open' : 'folded'} by default, got ${s.expanded}`);
   }
-  await qa.shot('03-phone-sheet-defaults');
+  await qa.shot('05-phone-sheet-defaults');
 
   // Tap the heading — the coarse-pointer seat gets the fold.
   const effects = card.locator('h4.is-foldable', { hasText: 'Effects' }).first();
@@ -99,7 +138,7 @@ run({ build: BUILD }, async (qa) => {
   assert.equal(after, 'false', 'a tap folds the section');
   const stored = await page.evaluate(() => localStorage.getItem('sk-info-folds'));
   assert.match(stored, /"info:effects":true/, `tap persisted the fold, got ${stored}`);
-  await qa.shot('04-phone-effects-folded');
+  await qa.shot('06-phone-effects-folded');
 
   console.log('phone sprawl check passed');
 });

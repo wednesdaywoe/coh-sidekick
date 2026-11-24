@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 /**
- * QA check for the vertical-sprawl plan, desktop layout (plan items 3, 4, 6, 7).
+ * QA check for the planner's vertical layout, desktop (vertical-sprawl items 3, 4, 6, 7;
+ * accolades-and-pool-headers items 1, 2).
  *
  * Needs serve.cjs running on 8787 (see the qa-check skill). Run:
  *   node scripts/qa/vertical-sprawl-desktop.cjs
  *
  * What it walks, in order:
- *  1. the incarnate sockets + accolades live in their own panel and Available shows neither,
- *     and the panel can be hidden and put back from the Display menu;
- *  2. the Pools / Epic triggers are one row tall, also at the panel's minimum width;
+ *  1. the Incarnates panel carries the sockets and nothing else, Available shows neither
+ *     strip, the panel hides and returns via the Display menu, and the Accolades row rides
+ *     the foot of Build Settings — its picker opens and a toggle moves the row's summary
+ *     (and flipping back leaves the build as found);
+ *  2. the Pools / Epic triggers are one row tall at minimum width, and the set headers hold
+ *     one ellipsized line with the full name in the hover title;
  *  3. a fresh profile opens the Info card with Damage, Effects and Cost and timing and
  *     nothing else, folding one section survives a reload, follows to another power, to the
  *     Details tab and into the pool picker's preview, and the heading answers to Enter.
@@ -38,12 +42,13 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
   const incarnates = surface('incarnates');
   const pools = surface('pools');
 
-  // ---- 1. the strips moved into their own panel ------------------------------------
+  // ---- 1. sockets alone on their panel; Accolades rides Build Settings --------------
   await incarnates.scrollIntoViewIfNeeded();
-  assert(await (await incarnates.evaluate((e) => e.textContent)).includes('Incarnates & Accolades'),
-    'the panel is titled Incarnates & Accolades');
-  assert((await incarnates.evaluate((e) => e.textContent)).includes('Accolades'),
-    'the accolade strip must ride in the new panel');
+  const incText = await incarnates.evaluate((e) => e.textContent);
+  assert.ok(incText.includes('Incarnates'), 'the panel is titled Incarnates');
+  assert.ok(!incText.includes('Accolades'), 'the accolade strip has left the panel');
+  assert.ok(await incarnates.locator('.incarnate-socket').count() > 0,
+    'the socket row still rides the panel');
   const availText = await available.evaluate((e) => e.textContent);
   assert.ok(!availText.includes('Accolades'), 'Available must no longer draw the accolade strip');
   assert.ok(!/socket/i.test(availText), 'Available must no longer draw incarnate sockets');
@@ -54,17 +59,61 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
 
   // Hide it from its header, put it back from the Display menu — the routes a panel that
   // ships on the grid has (no quickbar pill unless the user pins one).
-  await page.getByRole('button', { name: 'Hide Incarnates & Accolades panel' }).click();
+  await page.getByRole('button', { name: 'Hide Incarnates panel' }).click();
   assert.equal(await incarnates.isVisible(), false, 'hidden means off the grid');
   const display = page.getByRole('button', { name: /Display/ });
   await display.click();
   await page
-    .locator('.quickbar-menu button[title="Put Incarnates & Accolades back on the grid"]')
+    .locator('.quickbar-menu button[title="Put Incarnates back on the grid"]')
     .first()
     .click();
   await incarnates.waitFor({ state: 'visible' });
   await page.keyboard.press('Escape');
   await qa.shot('02-panel-restored-from-display-menu', incarnates);
+
+  // Build Settings carries the Accolades row, at the foot of the combat form. The trigger
+  // is found by its label; the drift text would rename it for a drifted build, and this
+  // fixture is not one.
+  const bsTrigger = page
+    .locator('.popover-trigger')
+    .filter({ has: page.locator('.popover-label', { hasText: 'Build Settings' }) });
+  await bsTrigger.click();
+  const bs = page.locator('.popover-panel[aria-label="Build Settings"]');
+  await bs.waitFor({ state: 'visible' });
+  const strip = bs.locator('.picker-strip');
+  assert.equal(await strip.count(), 1, 'an Accolades row rides the foot of Build Settings');
+  assert.match(await strip.innerText(), /accolades/i);
+  const summaryOf = async () => (await strip.locator('.picker-strip__power').innerText()).trim();
+  const summary0 = await summaryOf();
+  assert.match(summary0, /^(none|\d+ of \d+)$/, `row carries the enabled summary, got "${summary0}"`);
+  // The last control in the form — the combat inputs lead, the accolades are the rare dip.
+  const bodyKids = await bs.locator('.combat > *').evaluateAll((els) =>
+    els.map((e) => e.className));
+  assert.match(String(bodyKids.at(-1)), /picker-strip/,
+    `the strip is last in the form, got ${JSON.stringify(bodyKids)}`);
+  await qa.shot('03-build-settings-accolades');
+
+  // The row opens the picker and closes its host surface on the way — the tool launcher's
+  // rule, so no popover stands over the modal it raised. The picker is shell-level state
+  // and outlives the popover. A toggle moves the count, and flipping back leaves the
+  // build exactly as it found it.
+  await strip.locator('.picker-strip__open').click();
+  const accPicker = page.locator('.floating-panel[aria-label="Accolades"]');
+  await accPicker.waitFor({ state: 'visible' });
+  await bs.waitFor({ state: 'hidden' });
+  assert.equal(await accPicker.isVisible(), true, 'the picker is build state, not popover state');
+  assert.ok(await accPicker.locator('.accolade-row').count() > 0, 'the picker lists the toggles');
+  const countOf = async () => (await accPicker.locator('.accolade-picker__count').innerText()).trim();
+  const count0 = await countOf();
+  const row = accPicker.locator('.accolade-row').first();
+  await row.click();
+  const count1 = await countOf();
+  assert.notEqual(count1, count0, `the toggle updates the enabled count (${count0} -> ${count1})`);
+  await qa.shot('04-accolades-picker-open');
+  await row.click();
+  assert.equal(await countOf(), count0, 'flipping back restores the count');
+  await accPicker.locator('.modal-close').click();
+  await accPicker.waitFor({ state: 'hidden' });
 
   // ---- 2. the set adders are one row tall, at minimum width too --------------------
   await pools.scrollIntoViewIfNeeded();
@@ -85,10 +134,10 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
   await page.mouse.wheel(0, -220); // the stat band is pinned and stays at the top while the
   //                                 page scrolls; scroll up until the pools head clears it
   await page.waitForTimeout(150);
-  await qa.shot('03-set-adders-default');
+  await qa.shot('05-set-adders-default');
 
   // Drag the panel narrower with its bottom-edge handle. Wheel back down first: the
-  // scroll-up that freed the header for shot 03 pushed the panel's bottom — and its
+  // scroll-up that freed the header for shot 05 pushed the panel's bottom — and its
   // handle — past the window edge, and a mouse.down off-window starts nothing. The drag
   // stays inside the viewport: the drag-overlay listens for pointerup on itself, so a
   // release outside the window would strand the overlay over the whole app (pre-existing,
@@ -113,10 +162,40 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
   const fits = await adders.locator('.set-adder-button__label')
     .evaluateAll((els) => els.map((e) => ({ text: e.textContent, scroll: e.scrollWidth, client: e.clientWidth })));
   for (const f of fits) assert.ok(f.scroll <= f.client + 1, `"${f.text}" truncated at minimum width`);
+
+  // Headers hold one line however narrow: nowrap, one line box, the full name in the
+  // hover title, and the ellipsis machinery armed (overflow + text-overflow — with them
+  // set, a name too long for the track truncates by the browser's own rule; which build
+  // name trips it is fixture luck, so truncation itself is reported, not asserted).
+  const nameInfo = await pools.locator('.powerset-group__name').evaluateAll((els) =>
+    els.map((e) => {
+      const cs = getComputedStyle(e);
+      return {
+        text: e.textContent.trim(),
+        title: e.getAttribute('title'),
+        whiteSpace: cs.whiteSpace,
+        overflow: cs.overflowX,
+        textOverflow: cs.textOverflow,
+        boxH: e.clientHeight,
+        oneLine: e.scrollHeight <= e.clientHeight + 1,
+        truncated: e.scrollWidth > e.clientWidth + 1,
+      };
+    }));
+  assert.ok(nameInfo.length > 0, 'the pools panel shows set headers');
+  for (const n of nameInfo) {
+    assert.equal(n.whiteSpace, 'nowrap', `"${n.text}" must not wrap`);
+    assert.equal(n.overflow, 'hidden', `"${n.text}" must clip rather than spill`);
+    assert.equal(n.textOverflow, 'ellipsis', `"${n.text}" must carry an ellipsis`);
+    assert.ok(n.oneLine && n.boxH <= 20,
+      `"${n.text}" must hold one line, got box ${n.boxH}px scroll ${JSON.stringify(n)}`);
+    assert.equal(n.title, n.text, `"${n.text}" hover title carries the full name`);
+  }
+  console.log('headers at minimum width:',
+    JSON.stringify(nameInfo.map((n) => `${n.text}${n.truncated ? ' …' : ''}`)));
   await pools.scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, -220);
   await page.waitForTimeout(150);
-  await qa.shot('04-set-adders-minimum-width');
+  await qa.shot('06-set-adders-minimum-width');
 
   // ---- 3. the Info card folds, and remembers ----------------------------------------
   assert.equal(await page.evaluate(() => localStorage.getItem('sk-info-folds')), null,
@@ -133,7 +212,7 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
     assert.equal(s.expanded, OPEN_BY_DEFAULT.has(s.title),
       `${s.title} should be ${OPEN_BY_DEFAULT.has(s.title) ? 'open' : 'folded'} on a fresh profile, got ${s.expanded}`);
   }
-  await qa.shot('05-info-default-folds');
+  await qa.shot('07-info-default-folds');
 
   // The Damage section folds its body but keeps its head row.
   await card.locator('h4.is-foldable', { hasText: 'Damage' }).click();
@@ -148,7 +227,7 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
   assert.equal(f.find((s) => s.title === 'Effects').expanded, false);
   const stored = await page.evaluate(() => localStorage.getItem('sk-info-folds'));
   assert.match(stored, /"info:effects":true/, `fold persisted, got ${stored}`);
-  await qa.shot('06-effects-folded');
+  await qa.shot('08-effects-folded');
 
   // Details tab: everything starts folded; opening Accepts is a preference too.
   await info.getByRole('tab', { name: 'Details', exact: true }).click();
@@ -188,7 +267,7 @@ run({ build: BUILD, width: 1440, height: 900 }, async (qa) => {
     const expected = s.title === 'Effects' ? false : OPEN_BY_DEFAULT.has(s.title);
     assert.equal(s.expanded, expected, `preview ${s.title}: stored fold must reach the picker (${JSON.stringify(f)})`);
   }
-  await qa.shot('07-picker-preview-folded');
+  await qa.shot('09-picker-preview-folded');
   await page.keyboard.press('Escape');
 
   console.log('desktop sprawl check passed');
