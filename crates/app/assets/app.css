@@ -2319,6 +2319,11 @@ button.power-pick--empty {
 .set-adder-button__label {
   font-size: 11px; color: var(--text-dim);
   text-transform: uppercase; letter-spacing: 0.06em;
+  /* The label names the trigger and nothing more — the panel header already says Power
+     Pools — so it never spends a second row: one long label wrapping was making the whole
+     trigger two rows tall on the narrow panels the small-screen layouts hand out (2026-11-24).
+     The values beside it carry the build state and ellipsize instead. */
+  white-space: nowrap; flex: 0 0 auto;
 }
 .set-adder-button__value {
   font-size: 13px; color: var(--text); font-weight: 600;

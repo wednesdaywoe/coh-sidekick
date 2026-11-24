@@ -1789,7 +1789,7 @@ fn SetAdders(database: Db) -> Element {
                 onclick: move |_| {
                     picker.set(Some(crate::panels::pool_picker::PoolPickerMode::Pool))
                 },
-                span { class: "set-adder-button__label", "Power pools" }
+                span { class: "set-adder-button__label", "Pools" }
                 span { class: "set-adder-button__value mono", "{held} / {pool_cap}" }
             }
 
@@ -1804,7 +1804,7 @@ fn SetAdders(database: Db) -> Element {
                 onclick: move |_| {
                     picker.set(Some(crate::panels::pool_picker::PoolPickerMode::Epic))
                 },
-                span { class: "set-adder-button__label", "Epic pool" }
+                span { class: "set-adder-button__label", "Epic" }
                 match &epic_name {
                     Some(name) => rsx! {
                         span { class: "set-adder-button__value", "{name}" }
