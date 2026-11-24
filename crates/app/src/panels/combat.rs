@@ -651,6 +651,17 @@ pub fn Combat(database: Option<Db>) -> Element {
             }
 
             CasterStateSections { state: caster_state() }
+
+            // Accolades — the build's earned toggles, at the foot because they are the rarer
+            // dip: the combat inputs above earned this popover its name, the accolade list is
+            // settled once a week at most. It rides here rather than on the Incarnates panel
+            // (owner, 2026-11-24) because they read as settings you settle, not as part of the
+            // socket row they used to sit under. It is NOT part of the drift summary the
+            // trigger dot reads: accolades are build state, and build state must not light a
+            // dot that means "your combat inputs have moved the numbers".
+            if let Some(database) = database.clone() {
+                crate::panels::accolade_picker::AccoladeStrip { database }
+            }
         }
     }
 }

@@ -585,14 +585,14 @@ pub const TOPICS: &[Topic] = &[
     },
     Topic {
         id: "powers-incarnates-panel",
-        title: "The Incarnates & Accolades panel",
+        title: "The Incarnates panel",
         category: Category::Powers,
         surface: Surface::IncarnatesPanel,
-        body: "The incarnate sockets and the accolade strip share a panel: both are loadouts you \
-               toggle rather than browse, and neither needs a panel to itself. It takes as much \
-               height as the two strips draw and can be dragged, resized or closed like any \
-               other panel. It used to sit at the top of the Available panel, where its rows \
-               pushed the powersets down the page on smaller screens.",
+        body: "The incarnate sockets, on a panel that takes as much height as the row draws \
+               and can be dragged, resized or closed like any other panel. It used to sit at \
+               the top of the Available panel, where its rows pushed the powersets down the \
+               page on smaller screens. The accolade switches live in Build Settings — they \
+               read as settings you settle rather than as part of the socket row.",
         keywords: &[
             "incarnates panel",
             "accolades panel",

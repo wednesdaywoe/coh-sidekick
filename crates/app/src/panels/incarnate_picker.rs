@@ -133,7 +133,7 @@ fn toggle_active(session: BuildSession, slot_id: String) {
 /// Clicking a socket opens the picker on that slot. Rarity rides the ring and the corner pip;
 /// an equipped socket also carries the dot for whether it feeds the totals.
 ///
-/// **It rides the [Incarnates & Accolades](crate::panels::powers::IncarnatesPanel) panel.**
+/// **It rides the [Incarnates](crate::panels::powers::IncarnatesPanel) panel.**
 /// `PanelKind::Incarnates` owned this row once, was retired 2026-09-13 onto the head of the
 /// Available rail, and came back 2026-11-24. The retirement's argument was compactness: a
 /// panel spends a title bar and a seat on one row of six rings, and the surface it bought was
@@ -143,7 +143,7 @@ fn toggle_active(session: BuildSession, slot_id: String) {
 /// pushed the powersets below the fold. This panel is the answer that holds both: it is
 /// seated by default at every width (the row under the columns, [grid
 /// `default_layout`](crate::grid::model::GridItem::default_layout_sized)) and it is fitted,
-/// so its whole chrome is spent on the two strips, never on a scrollbar nobody scrolled.
+/// so its whole chrome is spent on the row, never on a scrollbar nobody scrolled.
 #[component]
 pub fn IncarnateSockets(database: Db) -> Element {
     let session = use_context::<BuildSession>();

@@ -157,12 +157,13 @@ fn AccoladePickerPanel(database: Db, on_close: EventHandler<()>) -> Element {
     }
 }
 
-/// The [Incarnates & Accolades](crate::panels::powers::IncarnatesPanel) strip that opens the
-/// picker: one button carrying the enabled count, in the shared `picker-strip` chrome the pool
-/// triggers sit in.
+/// The [Build Settings](crate::panels::combat::Combat) row that opens the picker: one button
+/// carrying the enabled count, in the shared `picker-strip` chrome the pool triggers sit in.
 ///
-/// Under the incarnate sockets, both on their own panel: both are loadouts the build carries
-/// rather than powers it picks, and neither is browsed the way the powerset lists are.
+/// At the foot of the combat form (owner, 2026-11-24): accolades are settings you settle,
+/// not powers you pick, and they sat under the incarnate sockets only until the owner read
+/// the panel and saw the mismatch. It deliberately does not feed the trigger's drift dot —
+/// accolades are build state, the dot means combat inputs moved.
 #[component]
 pub fn AccoladeStrip(database: Db) -> Element {
     let session = use_context::<BuildSession>();

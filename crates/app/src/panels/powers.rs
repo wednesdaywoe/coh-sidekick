@@ -1694,25 +1694,26 @@ pub fn PoolsPanel(database: Db) -> Element {
     }
 }
 
-/// The two loadout strips — the incarnate sockets over the accolade strip — on a surface of
-/// their own.
+/// The incarnate sockets on a surface of their own.
 ///
-/// These strips led the Available rail since 2026-09-13, when `PanelKind::Incarnates` was
+/// This strip led the Available rail since 2026-09-13, when `PanelKind::Incarnates` was
 /// retired and its socket row moved there. The argument for the move (loadouts first, then
 /// the sets they modify) has not changed; what changed is what it costs. The rail's first
-/// two rows belong to content a level-50 question decides, and they sat above everything
-/// the panel exists to show — on the small windows that reported the sprawl (2026-11-24),
-/// the powersets started below the fold the strips put there. A surface whose height is
-/// fixed by its content, fitted and placeable like the inherent panels, is what buys that
-/// height back for the rail: the strips need one short rectangle, and now they get exactly
-/// one rather than a share of the tallest neighbour's.
+/// rows belong to content a level-50 question decides, and they sat above everything the
+/// panel exists to show — on the small windows that reported the sprawl (2026-11-24), the
+/// powersets started below the fold the strip put there. A surface whose height is fixed
+/// by its content, fitted and placeable like the inherent panels, is what buys that height
+/// back for the rail: the strip needs one short rectangle, and now it gets exactly one
+/// rather than a share of the tallest neighbour's.
 ///
-/// One surface, not two, for the reason the strips were already one block: both are loadouts
-/// you toggle rather than browse, and neither fills a panel alone.
+/// It briefly shared this panel with the accolade strip (vertical-sprawl, 2026-11-24, same
+/// day): one surface for the two strips that were one block on the rail. The owner moved
+/// the accolades to [Build Settings](crate::panels::combat::Combat) the same week — they
+/// read as settings you settle rather than as part of the incarnate row they sat under —
+/// and the panel kept the sockets and lost the "& Accolades" from its title.
 ///
 /// The archetype guard is [`AvailablePanel`]'s, restated rather than shared: the socket
-/// offers and the accolade list both read the archetype, so without one this panel has
-/// nothing to offer either.
+/// offers read the archetype, so without one this panel has nothing to offer.
 #[component]
 pub fn IncarnatesPanel(database: Db) -> Element {
     let session = use_context::<BuildSession>();
@@ -1731,8 +1732,7 @@ pub fn IncarnatesPanel(database: Db) -> Element {
 
     rsx! {
         div { class: "powers",
-            crate::panels::incarnate_picker::IncarnateSockets { database: database.clone() }
-            crate::panels::accolade_picker::AccoladeStrip { database: database.clone() }
+            crate::panels::incarnate_picker::IncarnateSockets { database }
         }
     }
 }

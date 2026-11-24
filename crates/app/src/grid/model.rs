@@ -136,8 +136,10 @@ pub enum PanelKind {
     /// the control from the list it fills would put the reason for the choice on a different
     /// panel from the choice.
     Pools,
-    /// The two loadout strips you toggle rather than browse: the incarnate sockets and the
-    /// accolade strip.
+    /// The incarnate socket row — the loadout you toggle rather than browse.
+    ///
+    /// (The accolade strip shared this panel briefly — vertical-sprawl, 2026-11-24 — and
+    /// moved to Build Settings the same week; see `panels::combat::Combat`.)
     ///
     /// This surface existed once before and was retired 2026-09-13, when its socket row moved
     /// to the head of the Available rail. The move bought the rail an order (loadouts first,
@@ -298,7 +300,7 @@ impl PanelKind {
             PanelKind::Powers => Some("Powers"),
             PanelKind::Available => Some("Available"),
             PanelKind::Pools => Some("Power Pools"),
-            PanelKind::Incarnates => Some("Incarnates & Accolades"),
+            PanelKind::Incarnates => Some("Incarnates"),
             PanelKind::SetBonuses => Some("Set Bonuses"),
             PanelKind::Info => Some("Info"),
             PanelKind::Inherent(group) => Some(inherent_group_title(*group)),
