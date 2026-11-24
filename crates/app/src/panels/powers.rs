@@ -1491,18 +1491,17 @@ fn branch_offer(
 ///
 /// Since LAY4 the primary and secondary choices are here too, on the heads of their own columns.
 ///
-/// The rail's order, top to bottom, is still the order a build is decided in: the incarnate
-/// sockets and the accolade strip (loadouts you toggle rather than browse), then the two
-/// powersets. The incarnate row arrived here when `PanelKind::Incarnates` was retired — see
-/// [`IncarnateSockets`](crate::panels::incarnate_picker::IncarnateSockets).
+/// **The two loadout strips left this panel in November 2026** for [`IncarnatesPanel`] and
+/// [`PanelKind::Incarnates`](crate::grid::PanelKind::Incarnates). They led the rail on the
+/// 2026-09-13 argument that the rail reads in the order a build is decided — loadouts first,
+/// then the sets they modify — and that argument still holds for the ORDER of the surfaces;
+/// what it never settled is that the order has to be paid for inside this panel. The strips'
+/// height is decided by a level-50 question and was spent above everything the rail exists to
+/// show, which on a small window put the powersets below the fold (the sprawl report,
+/// 2026-11-24). What remains is only the powersets: their height is fixed the moment the
+/// archetype is, which is the shape a shared rectangle can hold.
 #[component]
-pub fn AvailablePanel(
-    database: Db,
-    /// Only the powerset lists: a phone's pick sheet borrows them without the incarnate and
-    /// accolade strips that ride at the panel's top on desktop.
-    #[props(default)]
-    picks_only: bool,
-) -> Element {
+pub fn AvailablePanel(database: Db) -> Element {
     let session = use_context::<BuildSession>();
     let build = session.build;
 
@@ -1562,22 +1561,11 @@ pub fn AvailablePanel(
 
     rsx! {
         div { class: "powers",
-            // The rail reads top to bottom in the order a build is actually decided
-            // (2026-09-13, user-directed): the two loadouts you toggle rather than browse —
-            // incarnates, then accolades — then the powersets, then the pools. The pool
-            // triggers used to lead the panel, which put the LAST decision first: a pool is
-            // chosen late, after the primary and secondary have taken the picks they are
-            // going to take.
-            if !picks_only {
-                crate::panels::incarnate_picker::IncarnateSockets { database: database.clone() }
-                crate::panels::accolade_picker::AccoladeStrip { database: database.clone() }
-            }
             // Available powers — level-ordered numbered rows, one group per set.
             //
-            // Two flow containers rather than one, because the pool triggers sit between
-            // them. Each is its own `auto-fit` grid, so the powersets seat side by side and
-            // the pools seat side by side, and a build holding four pools no longer pushes
-            // the secondary powerset out of the primary's row.
+            // One flow container, an `auto-fit` grid, so the two powersets seat side by side
+            // and a build's branches continue their own column beneath their parent set rather
+            // than joining a shared row they would crowd.
             div { class: "available-powers",
                 // The two powerset columns lead, always both, chosen or not: the head IS the
                 // select (LAY4), so an unchosen set is an empty column offering itself rather

@@ -157,11 +157,12 @@ fn AccoladePickerPanel(database: Db, on_close: EventHandler<()>) -> Element {
     }
 }
 
-/// The Available-panel strip that opens the picker: one button carrying the enabled count, in
-/// the shared `picker-strip` chrome the pool triggers further down the rail sit in.
+/// The [Incarnates & Accolades](crate::panels::powers::IncarnatesPanel) strip that opens the
+/// picker: one button carrying the enabled count, in the shared `picker-strip` chrome the pool
+/// triggers sit in.
 ///
-/// Second from the top, under the incarnate sockets: both are loadouts the build carries rather
-/// than powers it picks, and neither is browsed the way the lists below them are.
+/// Under the incarnate sockets, both on their own panel: both are loadouts the build carries
+/// rather than powers it picks, and neither is browsed the way the powerset lists are.
 #[component]
 pub fn AccoladeStrip(database: Db) -> Element {
     let session = use_context::<BuildSession>();

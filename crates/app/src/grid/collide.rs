@@ -640,6 +640,56 @@ mod tests {
         assert!(added.y > item(&before, PanelKind::Dashboard(DashboardId(1))).y);
     }
 
+    /// The state every reader of a pre-November-2026 save lands in: the roster gained the
+    /// incarnate panel, the stored layout never had one. The panel arrives under the build
+    /// columns — `compact` may float it into a clear cell at the columns' foot, but never
+    /// into the columns themselves — and nothing the user arranged moves; the rectangles
+    /// are the user's, and an upgrade that reshuffles them reads as the app having
+    /// rearranged the workspace.
+    #[test]
+    fn a_saved_layout_predating_the_incarnates_panel_gains_it_without_disturbing_the_rest() {
+        let before_roster: Vec<PanelKind> = crate::grid::model::DEFAULT_SURFACES
+            .iter()
+            .copied()
+            .filter(|panel| *panel != PanelKind::Incarnates)
+            .collect();
+        let before =
+            GridItem::default_layout_sized(crate::grid::model::DEFAULT_COLUMN_ROWS, &before_roster);
+        let after_roster: Vec<PanelKind> = crate::grid::model::DEFAULT_SURFACES.to_vec();
+
+        let after = reconcile_layout(before.clone(), &after_roster);
+
+        assert!(validate_layout(
+            &after,
+            &GridConfig::default(),
+            &after_roster
+        ));
+        let gained = item(&after, PanelKind::Incarnates);
+        assert!(
+            !gained.hidden,
+            "the panel arrives on the grid, not parked off it"
+        );
+        let deepest_before = before
+            .iter()
+            .filter(|item| !item.hidden)
+            .map(|item| item.y + item.height())
+            .max()
+            .unwrap();
+        assert!(
+            gained.y
+                >= crate::grid::model::COLUMN_START_ROW + crate::grid::model::DEFAULT_COLUMN_ROWS
+                && gained.y <= deepest_before,
+            "a new surface belongs under the columns, never inside them: {gained:?}"
+        );
+        for panel in before_roster {
+            assert_eq!(
+                item(&after, panel),
+                item(&before, panel),
+                "{panel:?} moved when only the incarnate panel arrived"
+            );
+        }
+    }
+
     // ---- a row of readouts shares one height ------------------------------------------------
 
     /// The default's top row, fitted to measured heights of 3, 1, 6 and 5 rows.

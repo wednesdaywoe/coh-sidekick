@@ -133,14 +133,17 @@ fn toggle_active(session: BuildSession, slot_id: String) {
 /// Clicking a socket opens the picker on that slot. Rarity rides the ring and the corner pip;
 /// an equipped socket also carries the dot for whether it feeds the totals.
 ///
-/// **It leads the [Available](crate::panels::powers::AvailablePanel) rail rather than owning a
-/// grid panel** (2026-09-13, user-directed). `PanelKind::Incarnates` argued the other way —
-/// that this is a second loadout, level-50 choices rather than part of choosing which powers to
-/// pick, so it deserved its own surface. What that argument did not weigh is that the surface
-/// it bought was hidden by default at every width below twelve columns, and that its content is
-/// one row: a whole panel, its title bar, its drag handle and its seat in the band, spent on a
-/// row of six rings. As a row at the head of the rail it is always present and costs the rail
-/// nothing it was using, which is the compactness the panel could not offer at any width.
+/// **It rides the [Incarnates & Accolades](crate::panels::powers::IncarnatesPanel) panel.**
+/// `PanelKind::Incarnates` owned this row once, was retired 2026-09-13 onto the head of the
+/// Available rail, and came back 2026-11-24. The retirement's argument was compactness: a
+/// panel spends a title bar and a seat on one row of six rings, and the surface it bought was
+/// hidden by default below twelve columns. Both halves held at the time. What the argument
+/// could not see was the cost on the other side of the ledger — two strip rows spent above
+/// everything the rail exists to show, which on the small windows that reported the sprawl
+/// pushed the powersets below the fold. This panel is the answer that holds both: it is
+/// seated by default at every width (the row under the columns, [grid
+/// `default_layout`](crate::grid::model::GridItem::default_layout_sized)) and it is fitted,
+/// so its whole chrome is spent on the two strips, never on a scrollbar nobody scrolled.
 #[component]
 pub fn IncarnateSockets(database: Db) -> Element {
     let session = use_context::<BuildSession>();

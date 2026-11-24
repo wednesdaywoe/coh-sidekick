@@ -697,7 +697,7 @@ pub fn PickSheet(level: u8, database: Db) -> Element {
 
     rsx! {
         div { class: "pick-sheet",
-            crate::panels::powers::AvailablePanel { database: database.clone(), picks_only: true }
+            crate::panels::powers::AvailablePanel { database: database.clone() }
             h3 { class: "popover-inline__title pick-sheet__pools", "Power pools" }
             crate::panels::powers::PoolsPanel { database }
         }
