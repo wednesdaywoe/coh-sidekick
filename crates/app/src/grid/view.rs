@@ -1423,6 +1423,7 @@ fn SurfaceBody(panel: PanelKind, database: Db, selection: Signal<Selection>) -> 
         PanelKind::Powers => rsx! { panels::powers::PowersPanel { database } },
         PanelKind::Available => rsx! { panels::powers::AvailablePanel { database } },
         PanelKind::Pools => rsx! { panels::powers::PoolsPanel { database } },
+        PanelKind::Incarnates => rsx! { panels::powers::IncarnatesPanel { database } },
         PanelKind::SetBonuses => rsx! { panels::set_bonus_totals::SetBonusTotals { database } },
         PanelKind::Info => rsx! { panels::info::Info { database, selection } },
         PanelKind::Inherent(group) => {

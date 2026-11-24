@@ -132,6 +132,7 @@ pub enum Surface {
     PowersPanel,
     InfoPanel,
     PoolsPanel,
+    IncarnatesPanel,
     PoolPicker,
     IncarnatePicker,
     IncarnateCrafting,
@@ -186,7 +187,7 @@ impl Surface {
     /// list cannot silently fall behind the enum — and `help_covers_every_surface` reads this
     /// array, so a surface added here with no topic reds rather than disappearing.
     #[allow(dead_code)] // read by the coverage and symbol tests; that is the whole job.
-    pub const ALL: [Surface; 50] = {
+    pub const ALL: [Surface; 51] = {
         match Surface::Identity {
             Surface::Identity
             | Surface::PowersetSelect
@@ -197,6 +198,7 @@ impl Surface {
             | Surface::PowersPanel
             | Surface::InfoPanel
             | Surface::PoolsPanel
+            | Surface::IncarnatesPanel
             | Surface::PoolPicker
             | Surface::IncarnatePicker
             | Surface::IncarnateCrafting
@@ -249,6 +251,7 @@ impl Surface {
             Surface::PowersPanel,
             Surface::InfoPanel,
             Surface::PoolsPanel,
+            Surface::IncarnatesPanel,
             Surface::PoolPicker,
             Surface::IncarnatePicker,
             Surface::IncarnateCrafting,
@@ -311,6 +314,7 @@ impl Surface {
             Surface::PowersPanel => "panels::powers::PowersPanel",
             Surface::InfoPanel => "panels::info::Info",
             Surface::PoolsPanel => "panels::powers::PoolsPanel",
+            Surface::IncarnatesPanel => "panels::powers::IncarnatesPanel",
             Surface::PoolPicker => "panels::pool_picker::PoolPickerHost",
             Surface::IncarnatePicker => "panels::incarnate_picker::IncarnatePickerHost",
             Surface::IncarnateCrafting => "panels::incarnate_crafting::IncarnateCraftingHost",
@@ -391,6 +395,7 @@ fn surface_of_panel(panel: PanelKind) -> Surface {
         PanelKind::Powers => Surface::PowersPanel,
         PanelKind::Available => Surface::AvailablePanel,
         PanelKind::Pools => Surface::PoolsPanel,
+        PanelKind::Incarnates => Surface::IncarnatesPanel,
         PanelKind::SetBonuses => Surface::SetBonusTotals,
         PanelKind::Info => Surface::InfoPanel,
         PanelKind::Inherent(_) => Surface::Inherents,
@@ -576,6 +581,25 @@ pub const TOPICS: &[Topic] = &[
             "epic pool",
             "patron pool",
             "layout",
+        ],
+    },
+    Topic {
+        id: "powers-incarnates-panel",
+        title: "The Incarnates & Accolades panel",
+        category: Category::Powers,
+        surface: Surface::IncarnatesPanel,
+        body: "The incarnate sockets and the accolade strip share a panel: both are loadouts you \
+               toggle rather than browse, and neither needs a panel to itself. It takes as much \
+               height as the two strips draw and can be dragged, resized or closed like any \
+               other panel. It used to sit at the top of the Available panel, where its rows \
+               pushed the powersets down the page on smaller screens.",
+        keywords: &[
+            "incarnates panel",
+            "accolades panel",
+            "sockets",
+            "panel",
+            "layout",
+            "level 50",
         ],
     },
     Topic {

@@ -332,7 +332,7 @@ impl Dashboards {
     // the CARD the way it already has one on the rows, and write through it.
 }
 
-/// Every surface that exists right now: the fixed five, with the user's panels between
+/// Every surface that exists right now: the fixed six, with the user's panels between
 /// Power Pools and Set Bonuses.
 ///
 /// **This is what `PanelKind::ALL` used to be**, and the difference is that it has to be asked
@@ -345,7 +345,12 @@ impl Dashboards {
 /// stands in their stead. It is not cosmetic: `hidden_panels` reports in it, so two callers
 /// comparing lists compare the same list, and `MobileOrder::default_order` is literally it.
 pub fn surfaces(dashboards: &Dashboards) -> Vec<PanelKind> {
-    let mut roster = vec![PanelKind::Powers, PanelKind::Available, PanelKind::Pools];
+    let mut roster = vec![
+        PanelKind::Powers,
+        PanelKind::Incarnates,
+        PanelKind::Available,
+        PanelKind::Pools,
+    ];
     // The five granted-inherent groups, in the order the Inherents section drew them before
     // they became panels. They sit here rather than after the dashboards because they are
     // fixed surfaces — they exist whether or not the user has built anything — and because

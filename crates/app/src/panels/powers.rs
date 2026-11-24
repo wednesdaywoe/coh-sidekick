@@ -1706,6 +1706,49 @@ pub fn PoolsPanel(database: Db) -> Element {
     }
 }
 
+/// The two loadout strips — the incarnate sockets over the accolade strip — on a surface of
+/// their own.
+///
+/// These strips led the Available rail since 2026-09-13, when `PanelKind::Incarnates` was
+/// retired and its socket row moved there. The argument for the move (loadouts first, then
+/// the sets they modify) has not changed; what changed is what it costs. The rail's first
+/// two rows belong to content a level-50 question decides, and they sat above everything
+/// the panel exists to show — on the small windows that reported the sprawl (2026-11-24),
+/// the powersets started below the fold the strips put there. A surface whose height is
+/// fixed by its content, fitted and placeable like the inherent panels, is what buys that
+/// height back for the rail: the strips need one short rectangle, and now they get exactly
+/// one rather than a share of the tallest neighbour's.
+///
+/// One surface, not two, for the reason the strips were already one block: both are loadouts
+/// you toggle rather than browse, and neither fills a panel alone.
+///
+/// The archetype guard is [`AvailablePanel`]'s, restated rather than shared: the socket
+/// offers and the accolade list both read the archetype, so without one this panel has
+/// nothing to offer either.
+#[component]
+pub fn IncarnatesPanel(database: Db) -> Element {
+    let session = use_context::<BuildSession>();
+    let build = session.build;
+
+    let has_archetype = build.read().archetype.id.is_some();
+    if !has_archetype {
+        return rsx! {
+            div { class: "powers",
+                p { class: "hint",
+                    "Choose an archetype in the Build Identity menu to start picking powers."
+                }
+            }
+        };
+    }
+
+    rsx! {
+        div { class: "powers",
+            crate::panels::incarnate_picker::IncarnateSockets { database: database.clone() }
+            crate::panels::accolade_picker::AccoladeStrip { database: database.clone() }
+        }
+    }
+}
+
 /// The two pool triggers, over the pool lists they add to: open the picker on the standard
 /// pools, or on the epic ones.
 ///

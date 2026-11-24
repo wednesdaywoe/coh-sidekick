@@ -60,8 +60,9 @@ pub fn inherent_group_slug(group: InherentGroup) -> &'static str {
 /// default would be the grid learning it. So this is a restatement, and a restatement drifts:
 /// `the_authored_default_seats_exactly_the_default_roster` in `panels::dashboards` is what holds
 /// the two together, from the side that can see both.
-pub const DEFAULT_SURFACES: [PanelKind; 14] = [
+pub const DEFAULT_SURFACES: [PanelKind; 15] = [
     PanelKind::Powers,
+    PanelKind::Incarnates,
     PanelKind::Available,
     PanelKind::Pools,
     PanelKind::Inherent(InherentCategory::Fitness),
@@ -135,6 +136,21 @@ pub enum PanelKind {
     /// the control from the list it fills would put the reason for the choice on a different
     /// panel from the choice.
     Pools,
+    /// The two loadout strips you toggle rather than browse: the incarnate sockets and the
+    /// accolade strip.
+    ///
+    /// This surface existed once before and was retired 2026-09-13, when its socket row moved
+    /// to the head of the Available rail. The move bought the rail an order (loadouts first,
+    /// then the sets they modify) and cost it height: on a small window the strip's two rows
+    /// sit above everything the panel exists to show, and a panel the grid hands a rectangle
+    /// is the only place height can be bought back (vertical-sprawl, 2026-11-24).
+    ///
+    /// Accolades ride with incarnates rather than taking a seventh surface because that is
+    /// what they have been since they arrived: one strip under the other, both loadouts,
+    /// neither browsed. Naming the panel for both is the same honesty the inherent panels
+    /// learned — a power hidden behind a name that does not mention it reads as a power
+    /// that is missing.
+    Incarnates,
     /// What the build's slotted IO sets are granting, one row per stat they feed. A surface of
     /// its own rather than a section of the stat panels, because it answers a question about the
     /// SLOTTING rather than about a stat: the stat panels are read while planning a number, this
@@ -234,11 +250,12 @@ impl PanelKind {
     // runtime caller would be nice to have and is not what makes it load-bearing. Annotated
     // rather than deleted 2026-09-26; deleting it removes a check, not a leftover.
     #[allow(dead_code)]
-    pub const FIXED: [PanelKind; 10] = {
+    pub const FIXED: [PanelKind; 11] = {
         match PanelKind::Powers {
             PanelKind::Powers
             | PanelKind::Available
             | PanelKind::Pools
+            | PanelKind::Incarnates
             | PanelKind::SetBonuses
             | PanelKind::Info
             | PanelKind::Inherent(_)
@@ -248,6 +265,7 @@ impl PanelKind {
             PanelKind::Powers,
             PanelKind::Available,
             PanelKind::Pools,
+            PanelKind::Incarnates,
             PanelKind::SetBonuses,
             PanelKind::Info,
             PanelKind::Inherent(InherentCategory::Archetype),
@@ -280,6 +298,7 @@ impl PanelKind {
             PanelKind::Powers => Some("Powers"),
             PanelKind::Available => Some("Available"),
             PanelKind::Pools => Some("Power Pools"),
+            PanelKind::Incarnates => Some("Incarnates & Accolades"),
             PanelKind::SetBonuses => Some("Set Bonuses"),
             PanelKind::Info => Some("Info"),
             PanelKind::Inherent(group) => Some(inherent_group_title(*group)),
@@ -302,6 +321,7 @@ impl PanelKind {
             PanelKind::Powers
             | PanelKind::Available
             | PanelKind::Pools
+            | PanelKind::Incarnates
             | PanelKind::SetBonuses
             | PanelKind::Inherent(_) => PanelGroup::Loadout,
             PanelKind::Info => PanelGroup::Reference,
@@ -320,6 +340,7 @@ impl PanelKind {
             PanelKind::Powers
             | PanelKind::Available
             | PanelKind::Pools
+            | PanelKind::Incarnates
             | PanelKind::SetBonuses
             | PanelKind::Info
             | PanelKind::Dashboard(_) => 4,
@@ -342,6 +363,7 @@ impl PanelKind {
             PanelKind::Powers => "powers".to_string(),
             PanelKind::Available => "available".to_string(),
             PanelKind::Pools => "pools".to_string(),
+            PanelKind::Incarnates => "incarnates".to_string(),
             PanelKind::SetBonuses => "set-bonuses".to_string(),
             PanelKind::Info => "info".to_string(),
             PanelKind::Inherent(group) => inherent_group_slug(*group).to_string(),
@@ -372,6 +394,7 @@ impl PanelKind {
             | PanelKind::Powers
             | PanelKind::Available
             | PanelKind::Pools
+            | PanelKind::Incarnates
             | PanelKind::Inherent(_) => true,
             PanelKind::SetBonuses | PanelKind::Info => false,
         }
@@ -397,6 +420,9 @@ impl PanelKind {
             // be saying anything. [`POOLS_MIN_ROWS`] is this number, and the default's split
             // is derived from the pair: see [`POOLS_SPLIT_ROWS`].
             PanelKind::Pools => (2, POOLS_MIN_ROWS),
+            // The two strips stacked, which is what they draw at any width — a narrower
+            // floor would clip one of them. Fitted, so this is only what a drag falls back to.
+            PanelKind::Incarnates => (2, 3),
             // A couple of stat rows, which is all an intentionally small panel is. The floor
             // has to admit an EMPTY one too, since a user can make a panel before filling it.
             PanelKind::Dashboard(_) => (2, 3),
@@ -420,6 +446,7 @@ impl PanelKind {
             PanelKind::Powers
             | PanelKind::Available
             | PanelKind::Pools
+            | PanelKind::Incarnates
             | PanelKind::SetBonuses
             | PanelKind::Info
             | PanelKind::Inherent(_)
@@ -866,8 +893,14 @@ impl GridItem {
             GridItem::new(PanelKind::Info, 4, below, 2, tall).off_grid(),
             GridItem::new(PanelKind::SetBonuses, 6, below, 2, tall).off_grid(),
         ];
+        // Same first seat under the columns as the twelve-column default, for the same
+        // reason; the two parked rectangles it may overlap are hidden ones, which cost the
+        // grid nothing — the narrow default already seats the Fitness inherent that way.
+        if expected.contains(&PanelKind::Incarnates) {
+            items.push(GridItem::new(PanelKind::Incarnates, 2, below, 3, 4));
+        }
         seat_dashboards(&mut items, expected, 8, below);
-        seat_inherents(&mut items, expected, 8, 2, below);
+        seat_inherents(&mut items, expected, 8, 5, below);
         items
     }
 
@@ -910,8 +943,17 @@ impl GridItem {
             GridItem::new(PanelKind::Info, 10, 0, 2, full),
             GridItem::new(PanelKind::SetBonuses, 6, below, 2, tall).off_grid(),
         ];
+        // The two loadout strips got the first seat under the columns, ahead of the Fitness
+        // inherent's — the row the columns' bottom edge frees, for the reason `seat_inherents`
+        // gives: lower and `compact` would lift it on the first drag anywhere. The band could
+        // not take it (vertical-sprawl, 2026-11-24): dashboards share its full width by
+        // design and Info runs the tenth column down, so a new band seat means a squeezed
+        // band, and the strips are neither a readout nor tall enough to pay for one.
+        if expected.contains(&PanelKind::Incarnates) {
+            items.push(GridItem::new(PanelKind::Incarnates, 3, below, 3, 4));
+        }
         seat_dashboards(&mut items, expected, 10, below);
-        seat_inherents(&mut items, expected, 12, 3, below);
+        seat_inherents(&mut items, expected, 12, 6, below);
         items
     }
 }
@@ -1047,11 +1089,12 @@ fn seat_inherents(
         .filter(|panel| expected.contains(panel))
         .collect();
 
-    // The visible seats take the row under the columns, starting beside the left column —
-    // the first cells the columns' bottom edge frees. Authored there rather than at the very
-    // foot of the grid because `compact` lifts a surface to the first clear cell it can reach,
-    // and the columns ARE that cell: a seat written lower would be lifted on the first drag
-    // the user made anywhere (`default_layout_is_already_compact` is the gate that catches it).
+    // The visible seats take the row under the columns, starting where the caller's earlier
+    // seats leave off (the incarnate panel takes the first cells the columns' bottom edge
+    // frees) — authored there rather than at the very foot of the grid because `compact` lifts
+    // a surface to the first clear cell it can reach, and the columns ARE that cell: a seat
+    // written lower would be lifted on the first drag the user made anywhere
+    // (`default_layout_is_already_compact` is the gate that catches it).
     let mut x = start_x;
     let mut y = below;
     for panel in &on_grid {
