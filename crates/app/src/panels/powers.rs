@@ -2165,7 +2165,7 @@ fn AvailablePowersGroup(
                             },
                             "▼"
                         }
-                        span { class: "powerset-group__name", "{set_name}" }
+                        span { class: "powerset-group__name", title: "{set_name}", "{set_name}" }
                         span {
                             class: "powerset-group__count",
                             title: "{picked_count} of {row_count} picked",
