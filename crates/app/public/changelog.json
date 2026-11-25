@@ -2,7 +2,7 @@
   {
     "date":"2026-11-25",
     "items": [
-      { "id": "desktop-update-notification", "type": "feat", "message": "Desktop app now has a check at startup for updates, and will provide a notifaction if a new version is available."},
+      { "id": "desktop-update-notification", "type": "feat", "message": "Desktop app now has a check at startup for updates, and will provide a notification if a new version is available."},
       { "id": "burst-and-tail-buffs", "type": "fix", "message": "Powers that apply the same buff twice for different lengths now show both. Inner Light reads +72% Damage and +18% ToHit for 10s as well as +28.8% and +6.93% for 30s; EMP Arrow, Radiance and Moment of Glory show their shorter half too." },
       { "id": "hc-wind-control-hidden", "type": "fix", "message": "Wind Control is no longer listed for the Homecoming dataset. Rebirth and Thunderspy still list it." }
     ]
