@@ -178,6 +178,14 @@ impl Archetypes {
         Ok(Archetypes { ordered, epic_ids })
     }
 
+    /// Remove every primary/secondary set id `hidden` says to, from every archetype.
+    pub fn drop_sets(&mut self, hidden: impl Fn(&str) -> bool) {
+        for at in &mut self.ordered {
+            at.primary_sets.retain(|id| !hidden(id));
+            at.secondary_sets.retain(|id| !hidden(id));
+        }
+    }
+
     /// Every archetype in canonical (standard-then-epic) order.
     pub fn all(&self) -> &[Archetype] {
         &self.ordered

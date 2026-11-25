@@ -454,8 +454,14 @@ impl PowerDatabase {
     /// consumer and memoizes the result, so this stays a lazy view rather than an eager
     /// `PowerDatabase` field. `Err` on a malformed section (Rule 1); an empty catalog on a
     /// hand-built database that carries no `archetypes` section.
+    ///
+    /// A set this server hasn't released (`dormant`, e.g. Wind Control on Homecoming) is
+    /// dropped from every roster here, so no picker or importer offers it.
     pub fn archetypes(&self) -> Result<crate::archetypes::Archetypes, String> {
-        crate::archetypes::Archetypes::from_section(self.sections.get("archetypes"))
+        let mut catalog =
+            crate::archetypes::Archetypes::from_section(self.sections.get("archetypes"))?;
+        catalog.drop_sets(|id| self.find_powerset(id).is_some_and(|ps| ps.dormant));
+        Ok(catalog)
     }
 
     /// The powerset with this `id`, or `None`.

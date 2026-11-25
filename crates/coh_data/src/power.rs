@@ -822,6 +822,9 @@ pub struct Powerset {
     /// emitter stamps one of the set's own powers (hand-data/powerset-icons.json). Only
     /// primary and secondary sets carry one.
     pub icon_power: Option<String>,
+    /// In the bins but not released on this server: its powers sit behind a dev-only
+    /// `accesslevel > 0` gate. The archetype catalog drops such a set from every roster.
+    pub dormant: bool,
     pub extra: Map<String, Value>,
 }
 
@@ -846,6 +849,8 @@ struct PowersetWire {
     powers: Vec<Value>,
     #[serde(default, rename = "iconPower")]
     icon_power: Option<String>,
+    #[serde(default)]
+    dormant: bool,
     #[serde(flatten)]
     extra: Map<String, Value>,
 }
@@ -877,6 +882,7 @@ impl Powerset {
             category: wire.category,
             powers,
             icon_power: wire.icon_power,
+            dormant: wire.dormant,
             extra: wire.extra,
         })
     }
