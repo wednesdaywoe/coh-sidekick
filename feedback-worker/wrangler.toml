@@ -1,0 +1,63 @@
+name = "coh-planner-feedback"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Secrets (set via `wrangler secret put`):
+# - RESEND_API_KEY
+# - FEEDBACK_EMAIL
+# - DESKTOP_CLIENT_TOKEN  (the desktop build's X-Sidekick-Desktop value; unset closes that arm)
+# - BLOCKED_USER_IDS  (account ids refused with a message; comma separated, unset blocks no one)
+#
+# This list is the deployed list, and keeping it so is F89: a fourth secret,
+# `CODE`, sat on production from 2026-02-03 until 2026-09-23 because it was set
+# by hand and no version of this worker ever read it. `wrangler secret list` is
+# the only thing that can catch that - it does not appear in the source.
+
+# SECURITY_AUDIT.md F12. Config-only: the simple rate-limit binding needs no KV
+# namespace, no Durable Object and nothing created in the dashboard, so it
+# deploys with the worker. Keyed on `cf-connecting-ip`, which is the one
+# address header a caller cannot choose - Cloudflare refuses a request that
+# forges it outright (measured 2026-09-22 against the Supabase edge, HTTP 403
+# `error code: 1000`, and the same proxy sets this one).
+#
+# `period` accepts 10 or 60 seconds and nothing else - measured, not read:
+# wrangler 4.61 refuses 300/3600/86400 at config-processing time. So this
+# bounds a burst and not a day, which is why F12 stays PARTIAL and the daily
+# cap wants KV or Turnstile.
+#
+# DO NOT cite `limit = 3` as a bound. Measured against the deployed worker
+# 2026-09-23, from a drained window: 30 requests in 2.75s were admitted 19 and
+# refused 11, with the first 14 straight through. Cloudflare's counters are
+# per-location and approximate, so the real burst ceiling is ~6x this number.
+# It buys something - 19 of 30 is not 30 of 30 - but any argument that needs
+# an actual limit needs different infrastructure, not a smaller number here.
+[[ratelimits]]
+name = "FEEDBACK_RATE_LIMIT"
+namespace_id = "1001"
+simple = { limit = 3, period = 60 }
+
+# SECURITY_AUDIT.md F12, the half the binding above cannot do. A rate-limit
+# binding bounds a burst approximately; a day's mail spend needs one place
+# doing the counting, and this is it. One object, one instance, two counters -
+# see `src/budget.ts` for why both are charged at the send rather than at the
+# door.
+#
+# SQLite-backed (`new_sqlite_classes`), which is what the Workers free plan
+# offers and is the right storage for this regardless: one small row, read and
+# written once per admitted submission.
+[[durable_objects.bindings]]
+name = "FEEDBACK_BUDGET"
+class_name = "FeedbackBudget"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["FeedbackBudget"]
+
+# The caps, here rather than in the code so that moving them is a config edit
+# and a deploy. `DEFAULT_CAPS` in `src/budget.ts` carries the same numbers and
+# the reasoning: 80 sits under Resend's free 100-a-day so the bound is ours and
+# not the provider's, and 10 per address fixes the cost of draining the day at
+# eight distinct addresses.
+[vars]
+FEEDBACK_DAILY_BUDGET = "80"
+FEEDBACK_DAILY_PER_IP = "10"

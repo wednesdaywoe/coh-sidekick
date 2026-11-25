@@ -1,8 +1,8 @@
 //! The feedback form, and the worker it posts to.
 //!
-//! The worker is a Cloudflare one at [`WORKER_URL`] (`feedback-worker/` in the beta, Resend-backed)
-//! and this module changes nothing about it: it is live, it serves the beta, and a rebuild that
-//! needed its own would be a second address for the same inbox. What that costs is an interface
+//! The worker is a Cloudflare one at [`WORKER_URL`], Resend-backed. Its source moved here from
+//! the beta on 2026-11-25 and lives in `feedback-worker/` at the top of this repo, with its own
+//! `npm test`. The address is the beta's, kept so there is one inbox. What that costs is an interface
 //! this side has to meet exactly — the worker reads `type`, `description`, `globalName`, `userId`,
 //! `userName`, `buildContext`, `buildSnapshot`, `diagnostics`, `userAgent` and `timestamp`, in
 //! camelCase, and renders the ones it recognises into an email. [`Report`] is that interface
@@ -50,7 +50,7 @@ use serde::Serialize;
 #[derive(Clone, Copy)]
 pub struct FeedbackOpen(pub Signal<bool>);
 
-/// The worker. One address, and the beta's — see the module doc.
+/// The worker (`feedback-worker/` in this repo). One address, the beta's — see the module doc.
 pub const WORKER_URL: &str = "https://coh-planner-feedback.wedswoe.workers.dev";
 
 /// The header the desktop sends in place of the `Origin` a browser would have set, matched by the
@@ -466,13 +466,22 @@ pub async fn send(report: &Report) -> Result<(), String> {
     }
     let status = response.status().as_u16();
     let body = response.text().await.unwrap_or_default();
-    let said = serde_json::from_str::<serde_json::Value>(&body)
-        .ok()
+    Err(refusal(status, &body))
+}
+
+/// What the form says when the worker refuses. A blocked account (`"blocked": true`) is shown the
+/// worker's sentence alone; anything else keeps the status, which is what a maintainer needs.
+fn refusal(status: u16, body: &str) -> String {
+    let parsed = serde_json::from_str::<serde_json::Value>(body).ok();
+    let said = parsed
+        .as_ref()
         .and_then(|body| body["error"].as_str().map(str::to_string))
-        .unwrap_or(body);
-    match said.trim().is_empty() {
-        true => Err(format!("The server refused the report ({status}).")),
-        false => Err(format!("The server refused the report ({status}): {said}")),
+        .unwrap_or_else(|| body.to_string());
+    let blocked = parsed.as_ref().is_some_and(|body| body["blocked"] == true);
+    match (blocked, said.trim().is_empty()) {
+        (_, true) => format!("The server refused the report ({status})."),
+        (true, false) => said,
+        (false, false) => format!("The server refused the report ({status}): {said}"),
     }
 }
 
@@ -811,6 +820,26 @@ mod tests {
         assert_eq!(context.secondary, "Radiation Melee");
         assert_eq!(context.pools, vec!["Flight".to_string()]);
         assert_eq!(context.epic_pool.as_deref(), Some("Dark Mastery"));
+    }
+
+    /// A blocked account reads the worker's sentence; every other refusal keeps its status.
+    #[test]
+    fn a_blocked_account_sees_the_reason_alone() {
+        let blocked =
+            r#"{"error":"Feedback from this account has been turned off.","blocked":true}"#;
+        assert_eq!(
+            refusal(403, blocked),
+            "Feedback from this account has been turned off."
+        );
+        assert_eq!(
+            refusal(403, r#"{"error":"Forbidden"}"#),
+            "The server refused the report (403): Forbidden"
+        );
+        assert_eq!(
+            refusal(502, "bad gateway"),
+            "The server refused the report (502): bad gateway"
+        );
+        assert_eq!(refusal(500, ""), "The server refused the report (500).");
     }
 
     /// Before the dataset loads, the ids stand in: never "None" for something the build has.

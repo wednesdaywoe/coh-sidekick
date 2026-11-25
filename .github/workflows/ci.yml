@@ -297,11 +297,29 @@ jobs:
       # The `vitest-canonical` artifact upload went with them. It existed for
       # `shared-pipeline-surface`, which was deleted on 2026-09-25 with the cross-repo machinery,
       # and `npm test` never produced the file it uploaded.
-      - name: no test suite in this repo, stated rather than skipped
+      - name: no test suite for the pipeline, stated rather than skipped
         run: |
-          echo "::notice::no tests exist in this repository. No npm 'test' script, and there never has been one. No vitest. No tools/bin-crawler/tests/. The two #[test] mentions under crates/ are doc comments. The regen-diff step above is this job's gate."
+          echo "::notice::the pipeline has no tests. No npm 'test' script at the top, no tools/bin-crawler/tests/. The regen-diff step above is this job's gate. (feedback-worker/ has its own suite, run by the feedback-worker job.)"
           echo "Add a suite and replace this step -- that is what it is here for."
 
+
+  # The feedback form's Cloudflare worker, moved here from the beta on 2026-11-25. Its own
+  # package and its own vitest suite; deploys stay by hand (`npx wrangler deploy` in the folder).
+  feedback-worker:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: feedback-worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
 
   # The longest job here, and the one that OOM-killed jpc's runner (37.6 GB peak
   # linking 122 integration binaries at -j 32, 2026-08-27). It has now moved
