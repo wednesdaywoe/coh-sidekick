@@ -2206,6 +2206,43 @@ pub fn resolve_display_bag(
             duration: recorded_duration(effects, bag_key, quantity),
             ignores_strength: unenhanceable,
         });
+
+        // The same buff or debuff applied again at a different length (Inner Light's 10s burst
+        // beside its 30s tail) rides the slot as `durationVariants`; each one is its own row.
+        if quantity == GrantedQuantity::Value && percent_form.is_none() {
+            for (index, (scale, seconds)) in duration_variants(value).enumerate() {
+                let mut variant = value.clone();
+                if let Some(object) = variant.as_object_mut() {
+                    object.insert("scale".into(), Value::from(scale));
+                    object.remove("durationVariants");
+                }
+                let Some(base) = effect_base_value(&variant, config, scope, db, level, 1.0)
+                    .filter(|base| *base != 0.0)
+                else {
+                    continue;
+                };
+                let label = rows
+                    .last()
+                    .map_or_else(String::new, |row| row.label.clone());
+                rows.push(GrantedMagnitude {
+                    row_key: format!("{bag_key}_variant{index}"),
+                    effect_key: effect_key.to_string(),
+                    label,
+                    category: config.category,
+                    format,
+                    priority: config.priority,
+                    value: if unenhanceable {
+                        ThreeTier::flat(base)
+                    } else {
+                        tier_for_config(config, base, enhancement, g, clamps)
+                    },
+                    quantity,
+                    by_type_label: None,
+                    duration: Some(seconds),
+                    ignores_strength: unenhanceable,
+                });
+            }
+        }
     }
 
     // A second instance reads as its effect, named for the conditional that casts it.
@@ -2215,6 +2252,23 @@ pub fn resolve_display_bag(
         }
     }
     rows
+}
+
+/// A slot's `durationVariants` as (scale, seconds). Only a plain `{scale, table}` value gets
+/// them; a by-type or multi-term value has no single scale to swap.
+fn duration_variants(value: &Value) -> impl Iterator<Item = (f64, f64)> + '_ {
+    let plain = value.get("scale").is_some() && value.get(SCALE_TERMS_KEY).is_none();
+    value
+        .get("durationVariants")
+        .and_then(Value::as_array)
+        .filter(|_| plain)
+        .into_iter()
+        .flatten()
+        .filter_map(|variant| {
+            let scale = variant.get("scale")?.as_f64()?;
+            let seconds = variant.get("duration")?.as_f64().filter(|d| *d > 0.0)?;
+            Some((scale, seconds))
+        })
 }
 
 /// Classify a `mag`-format effect off the discriminator the atom carries: a mez states its
