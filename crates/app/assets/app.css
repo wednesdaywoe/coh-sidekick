@@ -1962,6 +1962,29 @@ button.power-pick--empty {
 .available-powers--pools {
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 }
+/* With a mouse, lists sit two abreast down to a ~350px panel. At 125% Windows scaling a 1080p
+   screen is 1536px wide, Available is ~370px, and at 190px the powersets stacked and pushed
+   pools ~300px further down than the beta (player feedback, 2026-11-24). Rows give up padding
+   and half a point, and a long name wraps rather than ellipsising. Touch keeps the 190px
+   floor: its 44px remove button leaves a half-width header no room for the name. */
+@media (pointer: fine) {
+  .available-powers { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); column-gap: 6px; }
+  .available-powers--pools { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  .available-powers .power-row { gap: 4px; padding-inline: 4px; font-size: 12.5px; }
+  .available-powers .power-row__level { width: 16px; }
+  .available-powers .power-row__name { white-space: normal; overflow-wrap: anywhere; }
+  .available-powers .powerset-group__header,
+  .available-powers .powerset-group__toggle { gap: 4px; }
+  .available-powers { container: avail-lists / inline-size; }
+  .available-powers .powerset-group__select { gap: 4px; padding-right: 18px; letter-spacing: 0.02em; }
+  /* Two abreast in under 400px, a set name's longest word ("INVULNERABILITY") needs the room
+     the set's icon takes; the rows below carry the art anyway. */
+  @container avail-lists (min-width: 340px) and (max-width: 400px) {
+    .powerset-group__select .icon-select__icon { display: none; }
+  }
+  .available-powers .powerset-group__toggle .powerset-group__name,
+  .available-powers .powerset-group__select .icon-select__label { white-space: normal; text-align: left; }
+}
 /* The set header keeps its one line through the density trade (owner, 2026-11-24): the name
    is the column's whole identity and a wrapped "ELECTRICITY MASTERY" costs the panel a row
    of powers. Too-long names ellipsize again with the full name in the hover title — the same
