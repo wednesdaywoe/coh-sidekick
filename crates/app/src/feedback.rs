@@ -30,12 +30,13 @@
 //! exemplar level, the proc settings, the per-AT mechanic toggles. Without them its reports could
 //! not be reproduced.
 //!
-//! Nearly all of them are on [`CharacterState`] in this tree — `combat`, `incarnates`,
+//! Nearly all of them are on [`CharacterState`] in this tree — `incarnates`,
 //! `disabled_proc_categories`, `proc_overrides`, `accolades` — so the build snapshot already
 //! carries them, and a second copy in a diagnostics blob would be the one that goes stale. What is
-//! genuinely outside the build is what [`Diagnostics`] carries and no more: the app version, which
-//! target is running, the dataset, the page address, the user agent, the viewport and the UI
-//! scale.
+//! outside the snapshot is what [`Diagnostics`] carries: the app version, which target is running,
+//! the dataset, the page address, the user agent, the viewport and the UI scale. Plus the Combat
+//! toggle and target level, which live on `CharacterState` but the `.skif` file leaves out — a
+//! "Super Speed shows suppressed" report couldn't be read without the first.
 
 use crate::build_session::BuildSession;
 use crate::modal::{Modal, ModalSize};
@@ -239,6 +240,10 @@ pub struct DiagnosticsUi {
     /// webview, so the user agent does not say.
     pub target: String,
     pub ui_scale_pct: u32,
+    /// The Combat toggle. The worker already has a row for it under this name.
+    pub combat_mode: bool,
+    /// Target level relative to the character. Same: the worker's `targetLevelOffset` row.
+    pub target_level_offset: i32,
 }
 
 /// The page's own view of itself, read through the document because both targets have one.
@@ -582,6 +587,8 @@ fn FeedbackBody(database: Option<Db>) -> Element {
                                 false => "desktop".to_string(),
                             },
                             ui_scale_pct: scale.peek().to_owned(),
+                            combat_mode: session.build.peek().combat.in_combat,
+                            target_level_offset: session.build.peek().combat.enemy_level_offset,
                         },
                     });
                 let who = user.peek().as_ref().map(|signed_in| Reporter {
