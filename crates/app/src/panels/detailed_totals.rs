@@ -18,9 +18,9 @@
 //!
 //! # Rows that are shown but did not apply
 //!
-//! Three kinds of contribution are real, visible, and NOT in the total: a set bonus the Rule of 5
-//! rejected, a travel buff that lost its suppress group, and a stealth radius superseded by a
-//! larger one. Each keeps its row, marked, because a build paying for a bonus it does not receive
+//! Four kinds of contribution are real, visible, and NOT in the total: a set bonus the Rule of 5
+//! rejected, a travel buff that lost its suppress group, a travel buff the Combat toggle switched
+//! off, and a stealth radius superseded by a larger one. Each keeps its row, marked, because a build paying for a bonus it does not receive
 //! should be told so — the same reason the engine keeps them in its ledgers instead of dropping
 //! them. Only [`RowState::Applied`] rows are summed.
 //!
@@ -99,6 +99,9 @@ pub enum RowState {
     /// Lost its suppress group — a travel buff beaten by a stronger one, or a stealth radius
     /// superseded. Ordinary game mechanics, NOT a cap.
     Superseded,
+    /// Switched off by the Combat toggle — the game drops this buff while you're fighting.
+    /// Kept apart from `Superseded` so the row doesn't blame a power that isn't beating it.
+    OffInCombat,
 }
 
 impl RowState {
@@ -107,6 +110,7 @@ impl RowState {
             RowState::Applied => "",
             RowState::Rejected => "Rule of 5: this copy won't provide a bonus",
             RowState::Superseded => "Superseded; a stronger source in the same group applies",
+            RowState::OffInCombat => "Off in combat; turn off the Combat toggle to count it",
         }
     }
 
@@ -115,6 +119,7 @@ impl RowState {
             RowState::Applied => "applied",
             RowState::Rejected => "rejected",
             RowState::Superseded => "superseded",
+            RowState::OffInCombat => "off-in-combat",
         }
     }
 }
@@ -231,17 +236,19 @@ pub fn breakdown_for_key(
         .iter()
         .filter(|r| r.breakdown_key == key)
     {
+        // Shown on the row as well as in the hover note, since a phone has no hover.
+        let (detail, state) = match (row.off_in_combat, row.suppressed) {
+            (true, _) => ("off in combat".to_string(), RowState::OffInCombat),
+            (false, true) => (String::new(), RowState::Superseded),
+            (false, false) => (String::new(), RowState::Applied),
+        };
         push(
             SourceGroup::ActivePower,
             SourceRow {
                 label: row.power_name.clone(),
-                detail: String::new(),
+                detail,
                 value: row.value,
-                state: if row.suppressed {
-                    RowState::Superseded
-                } else {
-                    RowState::Applied
-                },
+                state,
             },
         );
     }

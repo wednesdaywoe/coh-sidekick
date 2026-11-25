@@ -6561,11 +6561,14 @@ body:has(.modal-backdrop) .grid-root *::-webkit-scrollbar-thumb {
 /* Shown but not applied. Struck through AND dimmed AND a hollow bar AND a `title` — none of
    them colour alone, because "this row is not in your total" is the whole message. */
 .detailed-source.is-rejected,
-.detailed-source.is-superseded { color: var(--text-faint); }
+.detailed-source.is-superseded,
+.detailed-source.is-off-in-combat { color: var(--text-faint); }
 .detailed-source.is-rejected .detailed-source-value,
-.detailed-source.is-superseded .detailed-source-value { text-decoration: line-through; }
+.detailed-source.is-superseded .detailed-source-value,
+.detailed-source.is-off-in-combat .detailed-source-value { text-decoration: line-through; }
 .detailed-source.is-rejected .detailed-meter-fill,
-.detailed-source.is-superseded .detailed-meter-fill {
+.detailed-source.is-superseded .detailed-meter-fill,
+.detailed-source.is-off-in-combat .detailed-meter-fill {
   background: none;
   box-shadow: inset 0 0 0 1px var(--stat-hue, var(--text-dim));
 }

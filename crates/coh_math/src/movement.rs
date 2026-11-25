@@ -132,6 +132,9 @@ pub struct MovementBreakdownSource {
     pub breakdown_key: String,
     pub value: f64,
     pub suppressed: bool,
+    /// Why, when the reason is the Combat toggle rather than a stronger group member. The
+    /// dashboard says "off in combat" for these instead of blaming another power.
+    pub off_in_combat: bool,
     pub power_name: String,
 }
 
@@ -214,20 +217,22 @@ pub fn resolve_movement_totals(
                 .position(|c| eligible(c) && c.stack_key.as_deref() == Some(key) && c.value == best)
         };
         for (index, c) in axis.iter().enumerate().filter(|(_, c)| c.value != 0.0) {
+            let off_in_combat = combat_mode && c.suppressible;
             let suppressed = match c.stack_key.as_deref() {
                 Some(key) => {
-                    (combat_mode && c.suppressible)
+                    off_in_combat
                         || winners
                             .iter()
                             .find(|(k, _)| k == key)
                             .is_none_or(|(_, best)| winning_index(key, *best) != Some(index))
                 }
-                None => combat_mode && c.suppressible,
+                None => off_in_combat,
             };
             breakdown.push(MovementBreakdownSource {
                 breakdown_key: stat.global_field().to_string(),
                 value: c.value,
                 suppressed,
+                off_in_combat,
                 power_name: c.power_name.clone(),
             });
         }
