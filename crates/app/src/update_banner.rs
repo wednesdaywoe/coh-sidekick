@@ -7,13 +7,13 @@
 //! Re-asks every few minutes.
 //!
 //! **Desktop**: Newer live date → the same banner, displays the
-//! releases page on startup, no refresh. 
+//! releases page on startup, no refresh.
 
 use dioxus::prelude::*;
 
 /// How often an open tab asks. A release is rare and the request is one small page.
 #[cfg(target_arch = "wasm32")]
-const CHECK_EVERY_MS: u32 = 5 * 60 * 1000;s
+const CHECK_EVERY_MS: u32 = 5 * 60 * 1000;
 
 /// The deployed changelog — the file the web bundle is built from and the deploy publishes
 /// beside it (see [`crate::app_info`]'s `include_str!` note). Its first date names the newest

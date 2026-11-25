@@ -134,12 +134,27 @@ impl EntryKind {
     }
 }
 
-const DATED_CHANGELOG_JSON: &str = include_str!("../changelog.json");
+// The file lives in `public/` because two builds read it and neither may drift from the other:
+// this `include_str!` compiles it into every binary, and `dx build` copies `public/` verbatim
+// into the deployed bundle, so https://coh-sidekick.com/changelog.json is the changelog of the
+// web build it was deployed with. That URL is what a desktop build compares itself against on
+// startup ([`crate::update_banner`]) — one file, no copy step, nothing to keep in sync.
+const DATED_CHANGELOG_JSON: &str = include_str!("../public/changelog.json");
 
 /// A malformed file is caught by the test below, so the app shows an empty list rather than
 /// taking the process down over its own release notes.
 static DATED_CHANGELOG: std::sync::LazyLock<Vec<DatedGroup>> =
     std::sync::LazyLock::new(|| serde_json::from_str(DATED_CHANGELOG_JSON).unwrap_or_default());
+
+/// The newest date in the changelog compiled into this build, newest-first being the file's
+/// own documented order. This is the build's release stamp for [`crate::update_banner`]'s
+/// desktop check: the deployed `changelog.json` is the changelog of the newest published
+/// build, so a live date past this one means the desktop binary is behind. `None` only when
+/// the file failed to decode — an unreadable own-changelog makes the check silent rather
+/// than guessing this build predates everything.
+pub fn latest_changelog_date() -> Option<String> {
+    DATED_CHANGELOG.first().map(|group| group.date.clone())
+}
 
 /// `2026-09-30` as `Sep 30, 2026`. The file's own text on anything that does not parse.
 fn format_date(date: &str) -> String {

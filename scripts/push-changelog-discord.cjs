@@ -2,7 +2,7 @@
 /**
  * push-changelog-discord.cjs — post new changelog entries to Discord. Run by hand, never by a hook.
  *
- * Reads crates/app/changelog.json (the same file the app's Changelog and Welcome windows read),
+ * Reads crates/app/public/changelog.json (the same file the app's Changelog and Welcome windows read),
  * compares each entry's `id` against the committed record in .changelog-posted.json, and posts
  * only the ones not yet posted, as one embed per date. The record is written only after Discord
  * accepts the post, and it travels in git, so a second machine does not repost.
@@ -28,7 +28,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.join(__dirname, '..');
-const CHANGELOG_PATH = path.join(ROOT, 'crates/app/changelog.json');
+const CHANGELOG_PATH = path.join(ROOT, 'crates/app/public/changelog.json');
 const STATE_PATH = path.join(ROOT, '.changelog-posted.json');
 
 // The beta's record format, kept so the two scripts agree on what a record looks like.

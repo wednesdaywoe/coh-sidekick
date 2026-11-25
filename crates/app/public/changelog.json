@@ -1,0 +1,385 @@
+[
+  {
+     "date": "2026-11-22",
+     "items": [
+      { "id": "strength-label", "type": "fix", "message": "Buffs to your own powers' strength now read +Strength instead of +Special. Fate Sealed shows +Strength: Hold 33%, which makes your holds last a third longer." },
+      { "id": "slot-history-prune", "type": "fix", "message": "Saved builds no longer keep the slot history of powers you have removed." }
+    ]
+  },
+
+  {
+     "date": "2026-11-21",
+     "items": [
+      { "id": "profile-byline", "type": "fix", "message": "Your display name in File ▸ Public profile… now signs every build you have shared. When you change it, all your builds will be updated." },
+      { "id": "toggle-proc-area", "type": "fix", "message": "Proc chances in area toggles now include the power's area factor." }
+    ]
+  },
+
+  {
+     "date": "2026-11-19",
+     "items": [
+      { "id": "pigg-wrangler", "type": "feat", "message": "Pigg Wrangler is a tool for browsing and extracting assets from CoH pigg files, and it can now be used directly from Sidekick through the Help menu." },      
+      { "id": "beta-retirement", "type": "feat", "message": "The beta of Sidekick is finally retired, the 1.0 planner now occupies coh-sidekick.com" },
+      { "id": "slot-level-labels", "type": "fix", "message": "The level each slot was gained at now sits under the slot in larger text, instead of overlapping the booster mark." }
+    ]
+  },
+
+  {
+    "date": "2026-11-18",
+    "items": [
+      { "id": "henchmen-info", "type": "feat", "message": "Masterminds: the Info panel for a summon power now adds a Henchmen section to hows a damage meter across your henchmen, and you can open each pet to see its stats." },
+      { "id": "shopping-list-by-power", "type": "feat", "message": "The enhancement list can now be grouped By set (one row per thing to buy) or By power." },
+      { "id": "pin-readouts-option", "type": "feat", "message": "New option: Keep top-row dashboards and Info on screen while scrolling. Turn it off and every panel scrolls with the page." },
+      { "id": "aoe-defense-default", "type": "feat", "message": "The Defense dashboard now shows AoE defense with Melee and Ranged by default." },
+      { "id": "health-scaling-resistance", "type": "fix", "message": "Lowering Health % now raises the scaling damage resistance from Super Reflexes' Agile, Dodge and Lucky, and from the Reactive Defenses proc." },
+      { "id": "zoomed-grid-scroll", "type": "fix", "message": "Pinned panels should no longer drift out of place while scrolling when the page is zoomed, and reposition when the zoom changes." }
+    ]
+  },
+  {
+    "date": "2026-11-17",
+    "items": [
+      { "id": "pet-only-buffs", "type": "fix", "message": "Masterminds: Serum (Mercenaries) and Smoke Flash (Ninjas) no longer add their henchman-only buffs to your own totals." },
+      { "id": "sign-in-retry", "type": "fix", "message": "Fixed an occasional sign-in failure where the login window closed without signing you in." }
+    ]
+  },
+  {
+    "date": "2026-11-13",
+    "items": [
+      { "id": "mids-export", "type": "feat", "message": "You can save builds for Mids Reborn again. File ▸ Save to file… (on mobile, under More) now asks for Sidekick (.skif) or Mids Reborn (.mbd). Before you save a Mids file it lists anything Mids will show differently, such as chance-based procs Mids doesn't count in its totals." },
+      { "id": "henchman-owner-buffs", "type": "feat", "message": "Masterminds: Protector Bots and Summon Demons now have an ON/OFF switch that adds Force Shield's defense, or the Ember Demon's two Ember Shields' resistance, to your totals. With Enchant Demon taken, Resistance enhancements in Summon Demons raise the Ember Shields." },
+      { "id": "account-deletion", "type": "feat", "message": "You can now delete your account from File ▸ Delete account… (on mobile, under More). This permanently removes your account, your public profile, your favourites and saved layout, and every build saved or published to it. Builds saved as files on your device aren't affected." }
+    ]
+  },
+  {
+    "date": "2026-11-12",
+    "items": [
+      { "id": "phone-build-tab", "type": "feat", "message": "Signifcant UI refactor for mobile." },
+      { "id": "phone-key-numbers", "type": "feat", "message": "Mobile: Stats displayed at the top can be swapped from the Stats tab." },
+      { "id": "phone-slot-cards", "type": "feat", "message": "Mobile: each power shows its slots as representative dots. Tap the slots button to unfold the enhancement section where you can add and remove slots & enhancments. Tap a slot to fill, or drag the handle to add & remove slots." },
+      { "id": "phone-power-info", "type": "feat", "message": "Mobile: Info button to show details about a power." },
+      { "id": "phone-inherent-groups", "type": "feat", "message": "Mobile: inherent powers are sorted into folding groups" },
+      { "id": "clear-build", "type": "feat", "message": "Added a clear build button, for starting over." },
+      { "id": "mbd-legacy-enhancement-names", "type": "fix", "message": "Builds saved by Mids 3.6 or earlier should now open with their enhancements." }
+    ]
+  },
+  {
+    "date": "2026-11-11",
+    "items": [
+      { "id": "unfiled-107", "type": "feat", "message": "HC Brainstorm: Spines attacks count their poison again. A slider sets how many Poison stacks the target already has (0 to 10)." },
+      { "id": "unfiled-108", "type": "fix", "message": "Damage rows should show and label their mechanic more often." }
+    ]
+  },
+  {
+    "date": "2026-11-10",
+    "items": [
+      { "id": "level-order-shift", "type": "feat", "message": "Drag and drop to move powers around has been expanded to allow drag & drop between two powers. This moves the power by inserting it at the new level and makes powers after it to shuffle a level forward. Dragging a power on to another power will still swap the powers." },
+      { "id": "inherent-fold-memory", "type": "feat", "message": "The inherent panels remember whether you left them expanded or collapsed" },
+      { "id": "rarity-order", "type": "feat", "message": "The enhancement picker can order its IO sets by rarity, most common first or rarest first. Each rarity is a block of its own, named and counted, and inside a block the sets run in level order." }
+    ]
+  },
+  {
+    "date": "2026-11-06",
+    "items": [
+      { "id": "auction-prices", "type": "feat", "message": "The Enhancement List now shows what your Homecoming build costs: each set piece, catalyst and booster is priced from recent auction house sales, with a running total of the influence you still need as you check things off." }
+    ]
+  },
+  {
+    "date": "2026-11-05",
+    "items": [
+      { "id": "debuff-resistance-enhancement", "type": "fix", "message": "Debuff resistance now grows with the enhancement slotted in the power that grants it, wherever the game allows it." },
+      { "id": "vault-search", "type": "feat", "message": "My Builds has a search box and filters, and they are remembered between visits." },
+      { "id": "veat-vault-import-names", "type": "fix", "message": "Arachnos Widow, Arachnos Soldier and other branch-set builds opened from Homecoming's Vault (or a /buildsave file) now show the right name and icon on every power." },
+      { "id": "summoned-pet-resistance-and-damage", "type": "fix", "message": "Powers that deal through a summoned entity now show what that entity actually does." },
+      { "id": "drag-preview-committed-size", "type": "fix", "message": "A panel being resized now shows the size it will land on." }
+    ]
+  },
+  {
+    "date": "2026-11-04",
+    "items": [
+      { "id": "vault-import-phantom-picks", "type": "fix", "message": "Builds imported from the Vault (or a /buildsave file) no longer count the powers the game hands you for free — Bio Armor's Adaptation forms, Staff Fighting's staff forms and Dual Pistols' ammo types — as if you had spent power picks on them." },
+      { "id": "inherent-panels", "type": "feat", "message": " Fitness, Basic, Prestige, Archetype and Granted each have moveable, hideable panels instead of in one fixed section of the Powers panel. Fitness is visible by default, the others can be enabled throughthe Display menu." }
+    ]
+  },
+  {
+    "date": "2026-11-03",
+    "items": [
+      { "id": "vault-link-opens-on-homecoming", "type": "fix", "message": "Build links from Homecoming's Vault now open on Homecoming, whichever server you were last on." }
+    ]
+  },
+  {
+    "date": "2026-11-01",
+    "items": [
+      { "id": "picker-preview-shake", "type": "fix", "message": "Hovering near the bottom of the enhancement picker no longer makes the picker shake." },
+      { "id": "picker-resizable", "type": "feat", "message": "The enhancement picker is bigger on desktop, and you can drag its bottom-right corner to resize it." },
+      { "id": "picker-category-list", "type": "feat", "message": "On desktop, the enhancement picker lists set categories down its left side again." },
+      { "id": "reactive-defenses-scaling-cap", "type": "fix", "message": "Reactive Defenses (Scaling Damage Resistance) now scales up to +13% resistance at 0% health instead of stopping at 12.9%. It is 3% at full health plus 1% for every 10% of health you are missing — the in-game tooltip's \"+0% … around 10%\" does not match what the game actually does." }
+    ]
+  },
+  {
+    "date": "2026-10-31",
+    "items": [
+      { "id": "export-image-toggles", "type": "feat", "message": "Export as image now marks powers ON or OFF, and lists any Build Settings you changed, such as In combat, Fury, exemplar level or what-if buffs." },
+      { "id": "build-settings-values", "type": "feat", "message": "The Build Settings button now shows the value of each setting you changed, like Fury 80 or Exemplar 30, not just its name." },
+      { "id": "picker-phone-layout", "type": "fix", "message": "The enhancement picker on desktop and mobile has been cleaned up." },
+      { "id": "picker-hold-piece", "type": "feat", "message": "On a phone, hold a set piece in the enhancement picker to see its full name, what it enhances and its set's bonuses. Let go to close it. Tapping a piece no longer opens these details by accident." },
+      { "id": "picker-enhancement-preview", "type": "feat", "message": "The enhancement picker now shows the power's enhancement values, and how they would change: hover a piece, long tap on on mobile, or mark several in Select mode, and each stat shows its value now and after." },
+      { "id": "picker-filter-dropdowns", "type": "feat", "message": "The enhancement picker's set filters are now dropdowns." }
+    ]
+  },
+  {
+    "date": "2026-10-30",
+    "items": [
+      { "id": "picker-tracked-stats", "type": "feat", "message": "The enhancement picker has a new Tracked stats button. Press it to see only the sets with a bonus to a stat you are tracking" },
+      { "id": "picker-bonus-filter", "type": "feat", "message": "The enhancement picker can now filter sets with a specific bonus you pick." },
+      { "id": "picker-fold-filters", "type": "feat", "message": "The picker's filter rows can be folded: click Category, Rarity, Size or Bonus and it shrinks into one summary line." },
+      { "id": "finder-by-power", "type": "feat", "message": "The Set Bonus Finder has a new By power view. Choose the bonuses you want, or use your tracked stats, and it lists the powers in your build that could take a set with them, what each would cost in slots, and which would hit the Rule of 5" },
+      { "id": "archetype-conversion", "type": "feat", "message": "You can convert a build to another archetype: open Build Identity and choose Convert to another archetype. Shared powersets are transferred, powers move to a level the new archetype allows, and archetype sets (ATOs) turn into the new archetype's own sets, piece for piece." },
+      { "id": "ed-caps", "type": "feat", "message": "Power cards now have a new icon that shows your enhancement amounts for that power." }
+    ]
+  },
+  {
+  "date": "2026-10-29",
+  "items": [
+    { "id": "shopping-list-persistance", "type": "fix", "message": "Your incarnate component and enhancement shopping list progress should now store with both your session and your build." },
+    { "id": "rule-of-five-skip-mez", "type": "fix", "message": "The Rule of 5 warning can now leave out Mez and Repel Resistance. \"Don't warn about Mez or Repel Resistance\" in Options." }
+  ]
+  },
+  {
+    "date": "2026-10-28",
+    "items": [
+      { "id": "placed-attack-damage", "type": "fix", "message": "Attacks that do their damage through something they place now show it: Meteor, Trip Mine, Carrion Creepers, Bonfire from Fire Mastery and Sleet from the Dominator's Ice Mastery. The Dominator's Trip Mine counts as one explosion" },
+      { "id": "pet-damage-by-archetype", "type": "fix", "message": "Powers whose placed effect hits differently for each archetype now show your archetype's damage instead of none: Fallout, Irradiated Ground and Enflame, and on Rebirth and Thunderspy also Savage Leap, Spring Attack, Corrosive Vial, Ignite, Afterburner, Choking Cloud and Quantum Acceleration. Meteor no longer lists the Corruptor's Scourge bonus on other archetypes" },
+      { "id": "carrion-creepers-vines", "type": "fix", "message": "Carrion Creepers now counts the vines it grows: half the time, every 10 seconds, under each foe in the patch. One foe in the patch for its whole two minutes sees six or seven vines" },
+      { "id": "veat-base-sets-from-mids", "type": "fix", "message": "Arachnos Widow and Soldier builds opened from Mids now offer the base Widow Training and Teamwork powers (or Arachnos Soldier and Training and Gadgets) alongside the branch's own. Builds saved after one of those imports open correctly too" }
+    ]
+  },
+    {
+    "date": "2026-10-27",
+    "items": [
+      { "id": "homecoming-data-2026-10-20", "type": "update", "message": "Homecoming data updated to the October 20 patch: Sonic Repulsion is now a hold and no longer takes damage enhancements, Clarity protects allies around the target as well as the target itself, Sonic Cage and Detention Field respect your recharge, Trip Mine's proc rate matches Traps, and Sleet, Ice Storm, Rain of Fire and the other placed area powers no longer make foes run" },
+      { "id": "debuff-resistance-ceilings", "type": "fix", "message": "Debuff resistance now stops at the game's own ceiling on every server, read from each archetype's data: 20% at level 1 rising to 95% at 47. Endurance drain resistance reaches 95% at level 39, Controllers, Dominators and Masterminds top out at 47.5% regeneration debuff resistance, and slow, recharge and perception stop at 100%" }
+    ]
+  },
+  {
+    "date": "2026-10-26",
+    "items": [
+      { "id": "short-link-overwrite", "type": "fix", "message": "Copy short link no longer changes a link you already sent. Copying a link for a different build now makes a new link instead of replacing the last one" },
+      { "id": "picker-filter-to-piece", "type": "feat", "message": "The enhancement picker has a new Filter to piece checkbox. Untick it to see every set when you click an enhancement that's already slotted, instead of only that piece's category and rarity" },
+      { "id": "powers-in-level-order", "type": "fix", "message": "Your chosen powers now list in the order you took them, by level. A power added later no longer drops to the bottom of its group" },
+      { "id": "alpha-movement-boosts", "type": "fix", "message": "Alpha incarnates that boost run, fly or jump speed (Agility, Musculature, Nerve and Spiritual Radial) now raise your travel speeds" },
+      { "id": "cross-punch-boxing-kick", "type": "fix", "message": "Cross Punch's +ToHit and +Recharge now count Boxing and Kick: 5% for each one you have, so 10% with both and nothing with neither" },
+      { "id": "what-if-kept", "type": "fix", "message": "What-if team buffs are now kept on your device when you close the app. They still never go into a saved build file or a shared link" },
+      { "id": "desktop-window-remembered", "type": "fix", "message": "The desktop app now reopens at the size you left it, and maximized if it was" },
+      { "id": "domination-counts", "type": "fix", "message": "Domination now does something. With it on, each control power shows its longer Domination effect as a second row, and Domination's own buffs count in your totals (+25% ToHit on Homecoming, plus mez protection). The Domination switch on the power and the one in the combat menu are now the same switch" }
+    ]
+  },
+
+    {
+    "date": "2026-10-25",
+    "items": [
+      { "id": "my-builds-sort", "type": "feat", "message": "My Builds can now be sorted: last edited (the default), newest, oldest, or by name A–Z and Z–A" },
+      { "id": "browser-keeps-filters", "type": "feat", "message": "The build browser now remembers your search, filters, tags and pinned author." },
+      { "id": "regen-recovery-per-second", "type": "feat", "message": "Regeneration and Recovery now also show their per-second rate: HP/s for Regeneration and End/s for Recovery" }
+    ]
+  },
+
+    {
+    "date": "2026-10-24",
+    "items": [
+      { "id": "defense-debuff-resistance-enhancement", "type": "fix", "message": "Armour toggles like Granite Armor no longer grow their Defense Debuff Resistance when you slot Defense enhancement into them, which is what the game does with them." }
+    ]
+  },
+
+    {
+    "date": "2026-10-20",
+    "items": [
+      { "id": "incarnate-recipe-numbers", "type": "fix", "message": "Fixed an issue that was mixing up the incarnate recipe numbers" },
+      { "id": "same-name-powers", "type": "fix", "message": "Powers that share a name across sets, like Thermal Radiation's and Fire Mastery's Fire Shield, can now both be taken" },
+      { "id": "critical-strikes-proc-chance", "type": "fix", "message": "The Critical Strikes and Superior Critical Strikes +Critical Hit procs now show their chance to fire in a power, instead of saying they're always on" },
+      { "id": "paste-mids-mxd", "type": "fix", "message": "Pasting an older Mids build post (.mxd) into Paste a build now opens it. Paste the whole post, including the data block at the bottom" }
+    ]
+  },
+
+    {
+    "date": "2026-10-18",
+    "items": [
+      { "id": "radial-absorb-boost", "type": "fix", "message": "Resilient Radial's absorb boost shows on absorb powers" },
+      { "id": "identity-menu-icons", "type": "feat", "message": "The Origin, Archetype, Primary and Secondary menus in Build Identity now show icons" },
+      { "id": "build-card-icons", "type": "feat", "message": "Build cards in the build browser now show the archetype, primary and secondary icons" }
+    ]
+  },
+
+  {
+    "date": "2026-10-17",
+    "items": [
+      { "id": "sidekick-desktop-link", "type": "feat", "message": "A desktop version of Sidekick can be downloaded using the new button in the header or under the Help menu. There are builds for PC Mac and Linux. PC and Mac versions are untested, and I can only test on Linux, so it may be rough." },
+      { "id": "conditional-switch-damage", "type": "fix", "message": "A power's own bonus-damage switch, like Propel's Impact, now adds that damage to the power's total in the Info panel and the attack chain." },
+      { "id": "target-held-containment", "type": "feat", "message": "Containment can now be counted in your damage. Turn on Target is held in Build Settings, or the box under an attack's damage in the Info panel.It's off by default" }
+    ]
+  },
+
+  {
+    "date": "2026-10-14",
+    "items": [
+      { "id": "update-saved-build", "type": "feat", "message": "Saving a build you loaded from My Builds now offers Update saved build, which keeps your name, description, tags and visibility, alongside Save as new copy." },
+      { "id": "select-replaces-clicked-slot", "type": "fix", "message": "With Select on in the enhancement picker, the slot you clicked can now be replaced even when it already holds an enhancement. Before, a power with no empty slots said there were 0 slots to fill. Your first marked piece now goes into the clicked slot, and the rest fill the empty slots after it" }
+    ]
+  },
+
+  {
+    "date": "2026-10-13",
+    "items": [
+      { "id": "stat-hover-sources", "type": "feat", "message": "Stat hover cards have made it over from Sidekick Beta. Hovering a stat in a dashboard panel will show a breakdown of every contributor: set bonuses, powers, procs, accolades and incarnates, each with its share, and the total" },
+      { "id": "procs-in-damage-number", "type": "feat", "message": "The Info panel's damage number now includes the average damage of your slotted damage procs while Procs is on. The line under it shows how much of that comes from procs. To keep proc damage on its own line instead, turn off the new In total button beside Procs" }
+    ]
+  },
+
+  {
+    "date": "2026-10-12",
+    "items": [
+      { "id": "picker-select-sticks", "type": "update", "message": "The enhancement picker's Select box now stays active from power to power, and after a reload, until you untick it. Dragging across a set's pieces now marks them while Select is on, too" },
+      { "id": "slotting-switches-on", "type": "update", "message": "Slotting an enhancement into a toggle now switches it on. So does slotting a click buff that lasts a minute or more, such as Hasten. Shorter ones like Build Up stay off until you turn them on." },
+      { "id": "floating-tools", "type": "update", "message": "Every tool on the quickbar now opens in its own window over the planner, like Detailed Totals. You can move and resize each one, it reopens where you left it, and clicking its button again closes it. Several can be open at once, and the one you used last sits on top" },
+      { "id": "tracked-stats", "type": "feat", "message": "Stat tracking is back from Sidekick Beta. Click or tap a stat in a dashboard panel to track it. The enhancement picker then highlights sets with a bonus for that stat and names those bonuses under the set, and set bonus lists mark them. Stats whose bonuses hit the Rule of 5 are tracked for you" }
+    ]
+  },
+
+  {
+    "date": "2026-10-11",
+    "items": [
+      { "id": "popmenu-export", "type": "feat", "message": "File > Test server popmenu saves a .mnu file that gives your character every enhancement in the build on the Brainstorm test server. It shows the folder the file goes in and the command to open it in game, each with a Copy button, and the save window opens in the folder you used last time, in the desktop app and in Chrome and Edge" },
+      { "id": "image-export-poster", "type": "update", "message": "Export as image should now format correctly and not crash the app." },
+      { "id": "radiance-bonuses", "type": "fix", "message": "Homecoming and Brainstorm: Radiance now switches on the Radiance bonuses of the other Light Affinity powers. Blinding Beam adds its extra -ToHit and -Damage, Spotlight its +Damage, Searing Beam its extra damage over time, Protective Beam its extra absorb and Clarifying Beam its bigger heal" },
+      { "id": "mode-bonuses-follow-power", "type": "update", "message": "A bonus that depends on another of your powers running now turns on by itself when that power is on, such as Attune's Sonic Melee bonuses, Bio Armor's adaptations, Rage on Super Strength and the Dual Pistols ammo types. These switches are now named after that power instead of the game's internal name" },
+      { "id": "stacking-bonuses-add", "type": "fix", "message": "When a bonus adds a second copy of an effect the power already has, such as a second -ToHit, absorb or resistance, the Info panel now adds the two together instead of showing only the first" },
+      { "id": "fired-power-bonuses", "type": "fix", "message": "Homecoming and Brainstorm: Sonic Clap and Deafening Wave now include Attune's damage over time, and Radiation Melee's Contaminated hits, EMP Arrow and Power Surge against robots show their bonuses" },
+      { "id": "sonic-attune-bonuses", "type": "fix", "message": "Homecoming and Brainstorm: Attune now switches on the extra damage and effects Sonic Melee attacks deal to an Attuned target" },
+      { "id": "distance-to-target", "type": "feat", "message": "Savage Leap and Feral Charge get a Distance to target choice in the Info panel, and their damage and Blood Frenzy follow it, in the Info panel and the attack chain. Attune's damage and debuffs now count, since its target is always within its reach" },
+      { "id": "foe-debuff-res-is-debuff", "type": "fix", "message": "Homecoming and Brainstorm: Attune, Sonic Thrust, Strident Echo, Earsplitter, Sonic Siphon and Acid Arrow list the debuff resistance they take from an enemy under Debuffs instead of Buffs, and no longer add it to your own totals when switched on" },
+      { "id": "target-alive-damage", "type": "fix", "message": "DNA Siphon and Glitz now show the damage they deal, instead of listing it as waiting on a condition" },
+      { "id": "floating-tool-panel", "type": "update", "message": "Beginning to implement floating tool panels: The Detailed Totals tool now appears as a floating resizble panel instead of a modal." },
+      { "id": "veat-branch-columns", "type": "update", "message": "Arachnos Soldiers and Widows now pick their branch from the primary powerset dropdown. If you switch away from a branch you've already taken powers from, Sidekick asks before removing them" },
+      { "id": "one-page-scroll", "type": "update", "message": "Powers, Available and Power Pools now grow to fit everything in them, and the whole page scrolls as one. I'm trying to make it behave a bit more like Sidekick Beta but the modular flex panels make this awkward." },
+      { "id": "pinned-totals-info", "type": "feat", "message": "Your stat totals and the Info panel now stay at the top of the screen while you scroll down your build" },
+      { "id": "pools-own-column", "type": "update", "message": "On wide screens, the pool powers you've taken get their own column in the Powers panel, and Power Pools moves under Available to make room. If you've moved panels around, you keep your arrangement; Display ▸ Reset to default switches to the new one, but it also removes any dashboards you made" },
+      { "id": "boost-low-level-ios", "type": "fix", "message": "Enhancements from sets that top out below level 50 can now be boosted" },
+      { "id": "autohit-no-accuracy", "type": "fix", "message": "Powers that never roll to hit, like Tough, Hasten and Aim, will now hide their inherent accuracy/tohit in the Info panel. Summons like Rain of Fire still show theirs, since your accuracy carries over to what you summon" },
+      { "id": "foe-teleport-no-toggle", "type": "fix", "message": "Fold Space and Wormhole no longer have an ON/OFF switch. The teleport protection they apply to enemies was being handled like a buff." },
+      { "id": "perma-ring-slot-indent", "type": "fix", "message": "Powers with the perma tracker ring around their icon should no longer push slots out of line with the other powers" }
+    ]
+  },
+
+  {
+    "date": "2026-10-10",
+    "items": [
+      { "id": "cant-believe-that-shipped", "type": "fix", "message": "Fixed the default layout to not be a complete 💩show" },
+      { "id": "freeform-build-guidance", "type": "fix", "message": "Freeform building should now indicate which powers are available without restricting you like level up mode, and when you have missing dependencies." },
+      { "id": "epic-pool-gating", "type": "fix", "message": "Fixed epic pools failing to be gating by your AT selection." }
+    ]
+  },
+  {
+    "date": "2026-10-09",
+    "items": [
+      { "id": "fix-vengeance-buff", "type": "fix", "message": "Fix for Vengeance not affecting totals" },
+      { "id": "max-endurance-full-pool", "type": "fix", "message": "Max Endurance in the Survival panel should now show your whole endurance pool" }
+    ]
+  },
+  {
+    "date": "2026-10-08",
+    "items": [
+      { "id": "fulcrum-shift-rebirth-tspy", "type": "fix", "message": "Rebirth and Thunderspy: Fulcrum Shift and Kinetic Transfer now add their damage bonus, and the slider counts the enemies you hit, up to 20 over two casts. Rebirth's Siphon Power and Fulcrum Flip add theirs too." },
+      { "id": "soul-absorption-per-foe", "type": "fix", "message": "Soul Absorption now adds its Regeneration and Recovery bonus for each enemy it hits" }
+    ]
+  },
+  {
+    "date": "2026-10-07",
+    "items": [
+      { "id": "hit-chance-on-power", "type": "feat", "message": "Attacks now show their chance to hit in the Info panel, beside Accuracy. It follows the Target level and Level shift in Build Settings and counts your To Hit buffs, so setting Target level to +4 shows how often the power lands against +4 enemies" },
+      { "id": "next-pick-readout", "type": "feat", "message": "The top bar now shows the level your next power pick goes in. On phones it is in the bar with the Pwr and Slot counts" },
+      { "id": "tooltip-ui-scale", "type": "fix", "message": "With UI scale above or below 100%, an enhancement's hover card should no longer runs off the bottom or side of the window, a power's ⋮ menu opens under its button again, and the top bar's menus no longer open too far to the side" },
+      { "id": "tall-hover-card", "type": "fix", "message": "An enhancement's hover card that is taller than your window now shows its set pieces and set bonuses beside the rest, so the whole card fits on screen" },
+      { "id": "fixed-recharge-card", "type": "fix", "message": "Strength of Will and other powers whose recharge can't be boosted now show their real recharge on the power card." },
+      { "id": "buff-pet-enhancements", "type": "fix", "message": "Homecoming, Brainstorm and Thunderspy: Prismatic Shield, Force Field Generator, Triage Beacon, Faraday Cage and Spirit Tree now count the enhancements slotted in them when their buff is switched on in your totals. Before, they always added their unenhanced amount" }
+    ]
+  },
+  {
+    "date": "2026-10-06",
+    "items": [
+      { "id": "hc-issue28-page4", "type": "update", "message": "HC database updated to Issue 28: Legacy, Page 4." },
+      { "id": "split-damage-types", "type": "update", "message": "Defense and Resistance are now split on separate rows, so a set like Fiery Aura no longer hides its low Cold resistance behind its Fire." },
+      { "id": "pin-button-on-powers", "type": "feat", "message": "Each power now has a pin button next to its ⋮ menu. One click locks the Info panel on that power, and a second click unlocks it" },
+      { "id": "ammo-forms-adaptations", "type": "feat", "message": "Swap Ammo's ammo types, Staff Fighting's Forms and Bio Armor's Adaptations can be chosen right on the power, and the choice changes your damage and totals. Incendiary Ammunition now adds its burn damage" },
+      { "id": "fulcrum-shift-targets", "type": "fix", "message": "Homecoming and Brainstorm: Fulcrum Shift now lets you set how many enemies you hit, up to 20 over two casts, and each one adds its damage bonus. Siphon Power's stacks now add to your damage too" },
+      { "id": "personal-force-field-passive", "type": "fix", "message": "Homecoming and Brainstorm: Personal Force Field now gives its always-on bonus to defense, resistance and max endurance, and its defense no longer switches off when In combat is on" },
+      { "id": "mission-click-not-combat", "type": "fix", "message": "Arctic Air, the phase powers and a few Rebirth and Thunderspy stealth powers no longer switch off when In combat is on." },
+      { "id": "max-end-in-points", "type": "fix", "message": "The Info panel shows +Max End in endurance points, the same as your totals, so Personal Force Field reads +5 rather than 500%" }
+    ]
+  },
+  {
+    "date": "2026-10-05",
+    "items": [
+      { "id": "light-mode-themes", "type": "update", "message": "Added a few light mode theme options." }
+    ]
+  },
+  {
+    "date": "2026-10-04",
+    "items": [
+      { "id": "endmod-drain-gain-recovery", "type": "fix", "message": "Endurance Modification enhancements now boost endurance drain, endurance given to allies, and -Recovery" },
+      { "id": "rebirth-fighting-synergy-picks", "type": "fix", "message": "Rebirth: Boxing, Kick and Cross Punch now get their +15% damage for each other Fighting attack you've actually taken." }
+    ]
+  },
+  {
+    "date": "2026-10-03",
+    "items": [
+      { "id": "brainstorm-data-2026-09-28", "type": "update", "message": "Brainstorm (open beta) data updated to the September 28 patch: Blinding Powder, Flash Arrow, Flash Pulse and Flash Bang now blind for 20 seconds, Tesla Coil and Vines holds stack twice, and Knockout Blow's description now says KnockUp" },
+      { "id": "combat-teleport-global-range", "type": "fix", "message": "Homecoming: Combat Teleport's range no longer includes range bonuses from the rest of your build" },
+      { "id": "rebirth-force-bolt-damage", "type": "fix", "message": "Rebirth: Force Bolt shows its damage again, so damage per activation and per endurance can be worked out" }
+    ]
+  },
+  {
+    "date": "2026-10-02",
+    "items": [
+      { "id": "drag-picks-by-level", "type": "feat", "message": "Powers can be moved to a different level by dragging again" },
+      { "id": "proc-damage-in-power", "type": "feat", "message": "Damage procs now count toward a power's damage again, shown as \"+N proc\" under the damage number and as a cyan section on the damage bar. The new Procs button on the Damage heading turns this on and off. Attack Chain follows the same setting" },
+      { "id": "proc-chance-working", "type": "feat", "message": "Hovering a proc's chance on the Info tab now shows the calculation for that power." },
+      { "id": "update-banner", "type": "feat", "message": "If Sidekick is updated while you have it open, a banner now asks you to refresh, the same as in the beta. After refreshing, What's new opens so you can see what changed" },
+      { "id": "proc-row-notes", "type": "update", "message": "Slotted damage proc shows its damage per hit and its average per cast." }
+    ]
+  },
+  {
+    "date": "2026-10-01",
+    "items": [
+      { "id": "layout-account-sync", "type": "feat", "message": "When signed in, your dashboard and panel layout now save to your account and follow you to any browser or device you sign in on" },
+      { "id": "panels-by-category", "type": "feat", "message": "New \"Panels by category\" button in the Dashboard settings: one click splits the stats into one panel per category, similar to Sidekick beta." },
+      { "id": "replaced-panels-keep-place", "type": "fix", "message": "Panels that replace other panels now appear where the old ones were, instead of at the bottom of the screen" },
+      { "id": "info-damage-metric", "type": "feat", "message": "Restored DMG / DPA / DPS / DPE buttons to the infopanel" },
+      { "id": "info-proc-chance", "type": "feat", "message": "Procs slotted in a power now show on its Info tab" },
+      { "id": "picker-hover-proc-set", "type": "feat", "message": "Hovering an enhancement in the enhancement picker now shows what it enhances, its proc info, and set bonuses" },
+      { "id": "pool-picker-click-takes", "type": "update", "message": "Power pool picker: taking a power just takes one click now, and pointing at it shows its details first. On touch screens, tap once to read a power and tap again to take it. The window should no longer jump around as you move between powers" },
+      { "id": "keyed-damage-freeze", "type": "fix", "message": "Fixed a freeze where every button stopped responding after looking at certain attacks, such as The Lotus Drops and Whirling Sword. Clicks made during the freeze were still saved, so if this happened to you, check your build for duplicate powers. Sorry!" },
+      { "id": "layout-signed-out-overwrite", "type": "fix", "message": "Signing in no longer replaces your account's saved layout with changes you made while signed out" },
+      { "id": "layout-account-load", "type": "fix", "message": "Fixed a layout saved to your account failing to load" },
+      { "id": "slotted-io-frames", "type": "fix", "message": "Slotted enhancements now show the same frame as in the enhancement picker" },
+      { "id": "mobile-modal-scroll", "type": "fix", "message": "On phones, tall windows now scroll" }
+    ]
+  },
+  {
+    "date": "2026-09-30",
+    "items": [
+      { "id": "power-card-menu", "type": "feat", "message": "The ⋮ button on each power now opens a menu: pin the power to the Info Panel, empty all its slots, or remove all its slots. On mobile this is the way to pin a power" },
+      { "id": "mobile-set-bonus-tap", "type": "feat", "message": "On mobile, tap a set's name in the enhancement picker to see its set bonuses" },
+      { "id": "powerset-list-alphabetical", "type": "fix", "message": "Powersets were listed in the game's internal order, under their internal names. They are now alphabetical, by the display names names used in game" }
+    ]
+  },
+  {
+    "date": "2026-09-29",
+    "items": [
+      { "id": "info-panel-rank-choice", "type": "update", "message": "When some of a power's damage only happens against certain enemy ranks, the Info panel now lets you pick the rank to see it" },
+      { "id": "slot-levels-shown", "type": "feat", "message": "Slot levels should now be visible." },
+      { "id": "import-link-json", "type": "feat", "message": "Builds sent from [redacted] should no open in Sidekick" },
+      { "id": "import-inherent-grants", "type": "fix", "message": "Game import: Inherent power should now be filed correctly, and empty unknown powers are skipped" },
+      { "id": "info-panel-hover-lock", "type": "feat", "message": "Hovering for info should now work over available powers, and right clicking should now lock the info." },
+      { "id": "eight-themes", "type": "feat", "message": "Added color themes." }
+    ]
+  }
+]
