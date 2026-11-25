@@ -23,7 +23,7 @@ use serde::{Deserialize, Serialize};
 
 /// The version the self-description surfaces state. The header's brand tag
 /// carries the same number.
-pub const APP_VERSION: &str = "1.0.0";
+pub const APP_VERSION: &str = "1.1.0";
 
 /// The brand mark at the size the About card draws it — the same 64px cut the
 /// header uses, for the same reason (see `shell::BRAND_ICON`).
