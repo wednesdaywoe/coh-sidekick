@@ -141,13 +141,6 @@ pub const CARD_WIDTH: usize = 1200;
 /// Minimum height for a roughly 16:9 landscape.
 pub const CARD_MIN_HEIGHT: usize = (CARD_WIDTH * 9) / 16;
 
-/// The social-preview card's fixed size, in pixels. `backfill-preview` shape-checks every
-/// upload against exactly this box (the beta's edge fn reads the PNG header and rejects
-/// anything else), so this constant IS the client half of the contract — not a styling
-/// choice. Matches the beta's `PREVIEW_CARD_WIDTH` / `PREVIEW_CARD_HEIGHT`.
-pub const PREVIEW_CARD_WIDTH: usize = 1200;
-pub const PREVIEW_CARD_HEIGHT: usize = 880;
-
 /// Working canvas height before cropping. A full 24-power build with every stat section on
 /// measures well under this; anything taller is clipped rather than silently mis-laid-out.
 const CANVAS_MAX_HEIGHT: usize = 6000;
@@ -165,8 +158,6 @@ const STAT_COLS: usize = 4;
 const BONUS_COLS: usize = 3;
 /// Space left under each band of the poster.
 const ZONE_GAP: usize = 14;
-/// Stat section card dimensions.
-const STAT_CARD_W: usize = 360;
 /// Title band above a stat card's first row, and the pitch of the rows under it.
 /// Gap left around text inside a stat card.
 const CARD_PAD: usize = 6;
@@ -176,10 +167,7 @@ const STAT_CARD_GAP: usize = 8;
 const GLYPH_W: usize = 8;
 const GLYPH_H: usize = 8;
 
-const ZONE_LABEL_SIZE: usize = 14;
 /// Font sizes.
-const TITLE_SIZE: usize = 36;
-const SUBTITLE_SIZE: usize = 22;
 const STAT_LABEL_SIZE: usize = 12;
 const STAT_VALUE_SIZE: usize = 12;
 const SMALL_TEXT_SIZE: usize = 10;
@@ -651,7 +639,7 @@ fn draw_text(img: &mut RgbaImage, x: usize, y: usize, color: Rgba<u8>, size: usi
 /// The one encoder for both the exported poster and the social preview card, since 2026-09-26 --
 /// see the note above for what the poster used to carry and why it stopped. An image is not a
 /// document here: nothing loads one back into the planner, so nothing is stored in one.
-fn encode_plain_png(img: &RgbaImage) -> Result<Vec<u8>, String> {
+pub(crate) fn encode_plain_png(img: &RgbaImage) -> Result<Vec<u8>, String> {
     let mut buf = Vec::new();
     {
         let mut encoder = png::Encoder::new(&mut buf, img.width(), img.height());
@@ -665,202 +653,6 @@ fn encode_plain_png(img: &RgbaImage) -> Result<Vec<u8>, String> {
             .map_err(|e| format!("PNG encode failed: {e}"))?;
     }
     Ok(buf)
-}
-
-// ============================================================
-// Social preview card (RB4d) — the 1200x880 unfurl thumbnail.
-// ============================================================
-
-/// Rows per column in the powers band, mirroring the beta's `BuildPreviewCard`.
-const PREVIEW_ROWS_PER_COL: usize = 8;
-/// Vertical pitch of one power/inherent row.
-const PREVIEW_ROW_PITCH: usize = 16;
-/// Horizontal gap between power columns.
-const PREVIEW_COL_GAP: usize = 10;
-
-/// Draw the social-preview card for a shared build: name, archetype — sets, the compact stat
-/// sections, powers in pick order, inherents.
-///
-/// This is the thumbnail an unfurl shows, not a document. The size is the fixed server
-/// contract rather than cropped content, and like every image this app writes it carries no build
-/// inside it (see [`encode_plain_png`]) — a preview is never expected to become a build. The stats
-/// are drawn by the same [`draw_stat_section`] the poster uses, so the card's numbers are the
-/// poster's numbers, computed from the same [`CalculatedTotals`].
-pub fn render_preview_png(
-    build: &CharacterState,
-    database: &Db,
-    totals: &CalculatedTotals,
-) -> Result<Vec<u8>, String> {
-    let mut img = RgbaImage::new(PREVIEW_CARD_WIDTH as u32, PREVIEW_CARD_HEIGHT as u32);
-    fill_rect(
-        &mut img,
-        0,
-        0,
-        PREVIEW_CARD_WIDTH,
-        PREVIEW_CARD_HEIGHT,
-        BG_COLOR,
-    );
-
-    let mut y = PAD;
-
-    // Header: build name, cut to the card's width. An empty name (a build never titled)
-    // simply draws nothing here, like the poster.
-    if !build.name.is_empty() {
-        let mut title = TextDrawer::new(PAD, y, TEXT_COLOR, TITLE_SIZE);
-        title.write(
-            &mut img,
-            &truncate_to(&build.name, TITLE_SIZE, PREVIEW_CARD_WIDTH - PAD * 2),
-        );
-        y += text_height(TITLE_SIZE) + 4;
-    }
-
-    // Archetype — sets line. The data decides every word; this code only arranges it.
-    let arch = naming::archetype_name(build, database);
-    let primary = naming::powerset_name(&build.primary, database);
-    let secondary = naming::powerset_name(&build.secondary, database);
-    let mut arch_text = format!("Level {}", build.level);
-    if let Some(name) = arch {
-        arch_text = format!("{} {}", arch_text, name);
-    }
-    if let Some(p) = primary {
-        if let Some(s) = secondary {
-            arch_text = format!("{} — {} / {}", arch_text, p, s);
-        }
-    }
-    let mut sub = TextDrawer::new(PAD, y, CYAN, SUBTITLE_SIZE);
-    sub.write(
-        &mut img,
-        &truncate_to(&arch_text, SUBTITLE_SIZE, PREVIEW_CARD_WIDTH - PAD * 2),
-    );
-    y += text_height(SUBTITLE_SIZE) + 8;
-
-    // Divider under the header.
-    fill_rect(
-        &mut img,
-        PAD,
-        y,
-        PREVIEW_CARD_WIDTH - PAD * 2,
-        1,
-        BORDER_COLOR,
-    );
-
-    // Stat band: the compact sections in a 2x2 grid. The height of each card is computed the
-    // way the poster's own grid computes it (the rows the current Dashboard visibility shows),
-    // so a short card next to a tall one never overlaps the row under it.
-    let visibility = Dashboards::default();
-    let mut stat_y = y + 12;
-    let mut col = 0usize;
-    let mut row_tallest = 0usize;
-    for id in StatSectionId::compact() {
-        let Some(section) = stat_section_to_stat_section(*id) else {
-            continue;
-        };
-        let rows = stat_registry::in_section(section)
-            .filter(|stat| visibility.shows(stat.id))
-            .count();
-        let card_h = stat_card_height(rows, 1);
-        draw_stat_section(
-            &mut img,
-            PAD + col * (STAT_CARD_W + STAT_CARD_GAP),
-            stat_y,
-            STAT_CARD_W,
-            &section,
-            totals,
-            &visibility,
-            1,
-        );
-        row_tallest = row_tallest.max(card_h);
-        col += 1;
-        if col == 2 {
-            col = 0;
-            stat_y += row_tallest + STAT_CARD_GAP;
-            row_tallest = 0;
-        }
-    }
-    stat_y += row_tallest;
-    y = stat_y + 12;
-
-    // Powers, in pick order, 8 per column — the same split the poster's inherent section
-    // uses, so a pick is either a power or an inherent, never both.
-    let powers: Vec<&SelectedPower> = build
-        .all_selected()
-        .filter(|p| p.inherent_category.is_none())
-        .collect();
-    let inherents: Vec<&SelectedPower> = build
-        .all_selected()
-        .filter(|p| p.inherent_category.is_some())
-        .collect();
-    if !powers.is_empty() {
-        let mut label = TextDrawer::new(PAD, y, ZONE_LABEL_COLOR, ZONE_LABEL_SIZE);
-        label.write(&mut img, "Powers");
-        y += text_height(ZONE_LABEL_SIZE) + 8;
-        y = draw_preview_power_rows(&mut img, y, &powers, database) + 8;
-    }
-    if !inherents.is_empty() {
-        let mut label = TextDrawer::new(PAD, y, ZONE_LABEL_COLOR, ZONE_LABEL_SIZE);
-        label.write(&mut img, "Inherent");
-        y += text_height(ZONE_LABEL_SIZE) + 8;
-        // The returned cursor is dropped rather than stored: this is the last band on the
-        // card, so nothing below reads `y`. The call is kept for what it draws into `img`.
-        draw_preview_power_rows(&mut img, y, &inherents, database);
-    }
-
-    encode_plain_png(&img)
-}
-
-/// One band of power rows, 8 per column, pick order filling the first column before the next
-/// — the beta's card does the same, so a build reads top-to-bottom like a build list.
-/// Returns the next free y.
-fn draw_preview_power_rows(
-    img: &mut RgbaImage,
-    y: usize,
-    powers: &[&SelectedPower],
-    database: &Db,
-) -> usize {
-    let cols = powers.len().div_ceil(PREVIEW_ROWS_PER_COL).max(1);
-    let content_w = PREVIEW_CARD_WIDTH - PAD * 2;
-    let col_w = (content_w - (cols - 1) * PREVIEW_COL_GAP) / cols;
-    for (i, power) in powers.iter().enumerate() {
-        let col = i % cols;
-        let row = i / cols;
-        draw_preview_power_row(
-            img,
-            PAD + col * (col_w + PREVIEW_COL_GAP),
-            y + row * PREVIEW_ROW_PITCH,
-            col_w,
-            power,
-            database,
-        );
-    }
-    let rows = powers.len().div_ceil(cols);
-    y + rows * PREVIEW_ROW_PITCH
-}
-
-/// A compact single-line power row: name, hard right, `L{level}` beside it. The name keeps
-/// whatever the level's label did not take, cut to fit (see [`truncate_to`]).
-fn draw_preview_power_row(
-    img: &mut RgbaImage,
-    x: usize,
-    y: usize,
-    w: usize,
-    power: &SelectedPower,
-    database: &Db,
-) {
-    let mut name = TextDrawer::new(x, y, TEXT_COLOR, SMALL_TEXT_SIZE);
-    name.write(
-        img,
-        &truncate_to(
-            tile_label(power, database),
-            SMALL_TEXT_SIZE,
-            w.saturating_sub(CARD_PAD),
-        ),
-    );
-    if power.level > 0 {
-        let level = format!("L{}", power.level);
-        let level_w = text_width(&level, SMALL_TEXT_SIZE);
-        let mut level_drawer = TextDrawer::new(x + w - level_w, y, SLATE_400, SMALL_TEXT_SIZE);
-        level_drawer.write(img, &level);
-    }
 }
 
 /// Convert our StatSectionId to the real StatSection.
@@ -1089,7 +881,7 @@ fn tile_label<'a>(power: &'a SelectedPower, database: &'a Db) -> &'a str {
 ///
 /// Anything that would land outside the canvas is skipped, so a tile near the crop edge draws
 /// what fits instead of panicking on a bounds check.
-fn draw_image_scaled(
+pub(crate) fn draw_image_scaled(
     img: &mut RgbaImage,
     source: &RgbaImage,
     x: usize,
@@ -1467,7 +1259,14 @@ fn truncate_to(text: &str, size: usize, max_width: usize) -> String {
 }
 
 /// Fill a rectangle with a solid color.
-fn fill_rect(img: &mut RgbaImage, x: usize, y: usize, w: usize, h: usize, color: Rgba<u8>) {
+pub(crate) fn fill_rect(
+    img: &mut RgbaImage,
+    x: usize,
+    y: usize,
+    w: usize,
+    h: usize,
+    color: Rgba<u8>,
+) {
     for py in y..y.saturating_add(h) {
         for px in x..x.saturating_add(w) {
             if px < img.width() as usize && py < img.height() as usize {

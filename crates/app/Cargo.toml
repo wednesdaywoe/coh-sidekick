@@ -26,6 +26,8 @@ chrono = { workspace = true }
 # API, but the `png` crate it wraps does (`add_itxt_chunk` / `read_header_info`); the version
 # is pinned to the one `image` already locks so there is one `png` in the graph, not two.
 png = { version = "0.18" }
+# Lettering for the export images (`export_text`): draws the bundled SN Pro TTFs on both targets.
+ab_glyph = { version = "0.2.32", default-features = false, features = ["std"] }
 # The power icons the renderer draws, embedded at compile time (see the workspace note).
 include_dir = { workspace = true }
 # The cloud transport (`cloud`). ONE declaration, not two, and that is the point of the choice:

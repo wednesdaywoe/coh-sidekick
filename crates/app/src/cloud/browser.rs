@@ -29,7 +29,7 @@
 //! Enter rather than as you type — [`AuthorFilter`] carries the reason, which is that a
 //! debounce needs a timer neither target shares without a `cfg` this directory forbids. The
 //! social-preview *capture* is here — the 1200×880 card is rendered in-process by
-//! [`crate::export_image::render_preview_png`] and pushed to `backfill-preview` fire-and-forget
+//! [`crate::preview_card::render_preview_png`] and pushed to `backfill-preview` fire-and-forget
 //! from the detail modal, once per open, only for builds whose own dataset is loaded (the beta
 //! hid the same step in a second wasm boot behind `?previewCapture=`; this instance IS the
 //! renderer, so there is no second boot and no empty-build race to hide from).
@@ -2198,9 +2198,13 @@ fn DetailBody(
                         return;
                     };
                     let totals = coh_math::recalculate(&decoded.build, &database);
-                    let Ok(bytes) =
-                        crate::export_image::render_preview_png(&decoded.build, &database, &totals)
-                    else {
+                    let art = crate::power_art::load_for(&decoded.build, &database).await;
+                    let Ok(bytes) = crate::preview_card::render_preview_png(
+                        &decoded.build,
+                        &database,
+                        &totals,
+                        &art,
+                    ) else {
                         return;
                     };
                     let payload = crate::clipboard::base64(&bytes);

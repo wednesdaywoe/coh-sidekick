@@ -26,7 +26,7 @@
 //!
 //! # Where the preview comes from
 //!
-//! The same [`crate::export_image::render_preview_png`] RB4d built, so a card posted at share
+//! The same [`crate::preview_card::render_preview_png`] RB4d built, so a card posted at share
 //! time and a card backfilled later are the same card. Best-effort in the beta's sense — a
 //! capture failure omits the field and the server keeps whatever image the row had — but never
 //! mute: `share-build` shape-checks nothing about the image beyond its size, so a refusal here
@@ -332,12 +332,13 @@ pub struct SaveOutcome {
 ///
 /// Best-effort by contract: the field is then simply absent from the payload, and `share-build`
 /// leaves whatever image the row already had rather than nulling it (`share-build/index.ts:295`).
-fn capture_preview(
+async fn capture_preview(
     build: &CharacterState,
     database: &Db,
     totals: &coh_math::CalculatedTotals,
 ) -> Option<String> {
-    match crate::export_image::render_preview_png(build, database, totals) {
+    let art = crate::power_art::load_for(build, database).await;
+    match crate::preview_card::render_preview_png(build, database, totals, &art) {
         Ok(bytes) => Some(crate::clipboard::base64(&bytes)),
         Err(reason) => {
             // Not mute: the card is what every unfurl of this link will show, and a save that
@@ -444,7 +445,7 @@ pub async fn quick_share(
         &identity.primary_name,
         &identity.secondary_name,
     );
-    let preview = capture_preview(build, database, totals);
+    let preview = capture_preview(build, database, totals).await;
 
     // The update attempt, when there is a row to update.
     if let Some(cache) = &cached {
@@ -698,7 +699,7 @@ fn SaveBuildBody(database: Option<Db>) -> Element {
                         return;
                     }
                 };
-                let preview = capture_preview(&build, &database, &computed);
+                let preview = capture_preview(&build, &database, &computed).await;
                 let author = user
                     .peek()
                     .as_ref()

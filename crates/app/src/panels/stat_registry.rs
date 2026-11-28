@@ -509,8 +509,12 @@ impl StatDef {
 /// HP per second at the build's regeneration: base regeneration refills max HP in 240 s, and the
 /// buff scales that rate.
 fn regen_rate(t: &CalculatedTotals) -> String {
-    let per_sec = t.stats.max_hp_absolute / 240.0 * (1.0 + t.stats.regeneration / 100.0);
-    format!("{per_sec:.2} HP/s")
+    format!("{:.2} HP/s", regen_per_second(t))
+}
+
+/// The rate [`regen_rate`] prints, as a number, for the share card's tile.
+pub fn regen_per_second(t: &CalculatedTotals) -> f64 {
+    t.stats.max_hp_absolute / 240.0 * (1.0 + t.stats.regeneration / 100.0)
 }
 
 /// Endurance per second at the build's recovery: base recovery refills max endurance in 60 s.
