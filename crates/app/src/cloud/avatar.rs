@@ -1,10 +1,12 @@
 //! The desktop client's `img-src`.
 //!
 //! Three surfaces render a stranger's `avatar_url` straight into an `img src`: the
-//! build browser's author card and author filter, and your own profile. The web
-//! build is covered by the CSP `vite.config.ts` injects, which allows exactly
-//! `'self' data: https://cdn.discordapp.com`. The desktop build has no CSP at
-//! all, so this function is that directive, written out.
+//! build browser's author card and author filter, and your own profile. Both
+//! builds also send a CSP whose `img-src` allows only the app's own images and
+//! `https://cdn.discordapp.com`: the web one from the `_headers` file
+//! `scripts/stamp-web-csp.cjs` writes, the desktop one from `desktop-csp.txt`.
+//! This function is that directive written out, so a hostile url is refused
+//! before it reaches either.
 //!
 //! **`https://*.supabase.co` was on both lists until 2026-09-19, and it was the
 //! weakest thing on either.** That pattern admits any Supabase project on the

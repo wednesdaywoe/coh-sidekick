@@ -5,7 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build:web": "rm -rf target/dx/Sidekick/release/web && cd crates/app && dx build --platform web --release --debug-symbols false --keep-names",
+    "build:web": "rm -rf target/dx/Sidekick/release/web && cd crates/app && dx build --platform web --release --debug-symbols false --keep-names && cd ../.. && node scripts/stamp-web-csp.cjs",
     "deploy:web": "scripts/deploy-web.sh",
     "regen": "node scripts/regen-all.cjs",
     "regen:generated": "node scripts/regen-all.cjs --generated-only",
