@@ -41,8 +41,8 @@ use serde::{Deserialize, Serialize};
 
 /// The template [`crate::preview_card`] draws, sent with every picture it uploads as
 /// `preview_template_version`. The server stores what it is told, up to its own
-/// `CURRENT_PREVIEW_TEMPLATE_VERSION` (`supabase/functions/_shared/preview-image.ts` in
-/// coh-sidekick-beta), so bump that one first, deploy, then this. 6 was stamped by the server on
+/// `CURRENT_PREVIEW_TEMPLATE_VERSION` (`supabase/functions/_shared/preview-image.ts`), so bump
+/// that one first, deploy, then this. 6 was stamped by the server on
 /// whatever a client drew, which is how 1.0's plain stand-in card passed for the beta's.
 pub const CURRENT_PREVIEW_TEMPLATE_VERSION: u32 = 7;
 

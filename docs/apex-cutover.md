@@ -52,6 +52,9 @@ origin list, and Supabase's Site URL.
    - Settings → Pages: remove the custom domain and unpublish.
    - Disable `deploy.yml`, and delete `public/CNAME`, so nothing claims the domain again.
    - Archive the repo once nobody needs it.
+   - Note added 2026-11-28: the Supabase schema and edge functions still lived in the beta when
+     it was archived, so they could no longer be pushed. They moved to this repo's `supabase/`
+     that day (the `supabase-move` plan).
 7. **Supabase → Auth → URL Configuration:** keep `https://coh-sidekick.com/**` in the redirect
    list. `next` can stay listed until it is retired.
 
