@@ -133,3 +133,6 @@ GEMINI.md
 .ori/
 .pi/
 .playwright-mcp/
+
+# The supabase CLI's project link (`supabase link`): machine-local state, like the beta kept it.
+supabase/.temp/

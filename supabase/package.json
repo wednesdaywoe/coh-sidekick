@@ -1,0 +1,14 @@
+{
+  "name": "coh-sidekick-supabase",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Supabase project's schema and edge functions. Tests run on node; the functions run on Deno at Supabase.",
+  "scripts": {
+    "test": "vitest run",
+    "identity-sql:check": "node scripts/gen-identity-sql.mjs --check",
+    "identity-sql:write": "node scripts/gen-identity-sql.mjs --write"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.8"
+  }
+}

@@ -321,6 +321,24 @@ jobs:
       - run: npm test
       - run: npm run typecheck
 
+  # The Supabase schema and edge functions, moved here from the beta on 2026-11-28. Their own
+  # package and vitest suite on node; the functions themselves run on Deno at Supabase, and
+  # deploys stay by hand (`supabase functions deploy <name>` from the repo root).
+  supabase:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: supabase
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm test
+
   # The longest job here, and the one that OOM-killed jpc's runner (37.6 GB peak
   # linking 122 integration binaries at -j 32, 2026-08-27). It has now moved
   # twice: off jpc to the mac for that reason, and off the mac to a hosted runner
