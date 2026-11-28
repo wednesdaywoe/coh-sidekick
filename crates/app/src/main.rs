@@ -26,7 +26,6 @@ mod desktop_signin;
 mod ed_view;
 mod enhancement_list;
 mod enhancement_tools;
-mod export_font;
 mod export_image;
 mod export_text;
 mod feedback;

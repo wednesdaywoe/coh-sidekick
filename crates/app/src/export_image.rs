@@ -1,12 +1,14 @@
 //! Build image export — the build as a PNG poster.
 //!
 //! Draws the build to a pixel buffer using the `image` crate — no DOM, no rasterization step.
-//! The card is fixed-width (CARD_WIDTH = 960 CSS px) and the output resolution is this width
-//! times a scale factor. The card draws powers as tiles, stats as bars, and set bonuses as text.
+//! The card is [`CARD_WIDTH`] CSS px wide and the output resolution is this width times a scale
+//! factor. It draws powers as tiles, stats as cards, and set bonuses as text, lettered in SN Pro
+//! ([`crate::export_text`]).
 //!
 //! The modal is a Dioxus component with controls on the left and a preview on the right.
 //! Download and Copy rasterize the card via [`render_to_png`].
 
+use crate::export_text::{Lettering, Weight};
 use crate::modal::{Modal, ModalSize};
 use crate::naming;
 use crate::panels::dashboards::Dashboards;
@@ -147,7 +149,7 @@ const CANVAS_MAX_HEIGHT: usize = 6000;
 /// Card padding.
 const PAD: usize = 24;
 /// Power tile dimensions: the tile, the power's art in it, and the marks under its name.
-const TILE_H: usize = 48;
+const TILE_H: usize = 52;
 const TILE_GAP: usize = 6;
 const TILE_ICON: usize = 36;
 const SLOT_ICON: usize = 20;
@@ -162,20 +164,12 @@ const ZONE_GAP: usize = 14;
 /// Gap left around text inside a stat card.
 const CARD_PAD: usize = 6;
 const STAT_CARD_GAP: usize = 8;
-/// Zone label size.
-/// The bitmap font in `export_font` is 8x8; text scales in whole multiples of it.
-const GLYPH_W: usize = 8;
-const GLYPH_H: usize = 8;
-
-/// Font sizes.
-const STAT_LABEL_SIZE: usize = 12;
-const STAT_VALUE_SIZE: usize = 12;
-const SMALL_TEXT_SIZE: usize = 10;
-/// The poster's text sizes at 1x. Whole multiples of the 8px font, so each draws at the same
-/// proportion at every scale (see [`render_to_png`]).
-const POSTER_TITLE: usize = 24;
-const POSTER_SUBTITLE: usize = 16;
-const POSTER_TEXT: usize = 8;
+/// The poster's text sizes at 1x, in CSS pixels of SN Pro ([`crate::export_text`]): the build's
+/// name (bold), the archetype line, a stat card's title, and everything else.
+const POSTER_TITLE: usize = 30;
+const POSTER_SUBTITLE: usize = 20;
+const STAT_TITLE: usize = 12;
+const POSTER_TEXT: usize = 11;
 
 // ============================================================
 // Colors.
@@ -214,74 +208,6 @@ const ON_TAG_BG: Rgba<u8> = Rgba([6, 78, 59, 255]);
 // ============================================================
 // Simple text renderer.
 // ============================================================
-
-/// A minimal monospace text drawer. Uses a fixed bitmap font embedded in the
-/// module — each character is 8×12 px. Good enough for build posters; not a
-/// font library.
-struct TextDrawer {
-    x: usize,
-    y: usize,
-    color: Rgba<u8>,
-    size: usize,
-}
-
-impl TextDrawer {
-    fn new(x: usize, y: usize, color: Rgba<u8>, size: usize) -> Self {
-        Self { x, y, color, size }
-    }
-
-    /// The image is passed per call rather than held. Holding it meant only one
-    /// drawer could exist at a time, and the header alone needs four.
-    fn write(&mut self, img: &mut RgbaImage, text: &str) {
-        let scale = (self.size / GLYPH_H).max(1);
-        let advance = glyph_advance(self.size);
-        for ch in text.chars().map(basic_latin) {
-            draw_char(img, self.x, self.y, ch, self.color, scale);
-            self.x += advance;
-        }
-    }
-}
-
-/// The Basic Latin stand-in for the punctuation the data and the names use, so a dash or a
-/// curly quote draws as one rather than as a gap. One character for one, so [`text_width`]
-/// stays exact.
-fn basic_latin(ch: char) -> char {
-    match ch {
-        '\u{2010}'..='\u{2015}' | '\u{2212}' => '-',
-        '\u{2018}' | '\u{2019}' => '\'',
-        '\u{201C}' | '\u{201D}' => '"',
-        '\u{00D7}' => 'x',
-        _ => ch,
-    }
-}
-
-/// Blit one glyph from the 8x8 table, each source pixel drawn as a `scale`-sized
-/// square. Anything outside Basic Latin has no glyph and renders as a blank.
-fn draw_char(img: &mut RgbaImage, x: usize, y: usize, ch: char, color: Rgba<u8>, scale: usize) {
-    let code = ch as usize;
-    if code >= 128 {
-        return;
-    }
-    let (iw, ih) = (img.width() as usize, img.height() as usize);
-    for (row_idx, row) in crate::export_font::FONT8X8[code * GLYPH_H..code * GLYPH_H + GLYPH_H]
-        .iter()
-        .enumerate()
-    {
-        for col in 0..GLYPH_W {
-            if row >> col & 1 == 0 {
-                continue;
-            }
-            for dy in 0..scale {
-                for dx in 0..scale {
-                    let (px, py) = (x + col * scale + dx, y + row_idx * scale + dy);
-                    if px < iw && py < ih {
-                        img.put_pixel(px as u32, py as u32, color);
-                    }
-                }
-            }
-        }
-    }
-}
 
 // ============================================================
 // Rendering.
@@ -336,8 +262,9 @@ pub fn render_to_png(
     }
     let name = build.name.trim();
     if !name.is_empty() {
-        let shown = truncate_to(name, POSTER_TITLE * s, inner_w.saturating_sub(level_w));
-        draw_text(&mut img, pad, y, TEXT_COLOR, POSTER_TITLE * s, &shown);
+        let title = Lettering::new((POSTER_TITLE * s) as f32, Weight::Bold, TEXT_COLOR);
+        let shown = title.fit(name, inner_w.saturating_sub(level_w));
+        title.draw(&mut img, pad, y, &shown);
         y += text_height(POSTER_TITLE * s) + 8 * s;
     }
     let archetype = naming::archetype_name(build, database);
@@ -352,7 +279,7 @@ pub fn render_to_png(
         x += text_width(&shown, POSTER_SUBTITLE * s);
     }
     if !sets.is_empty() {
-        let lead = if archetype.is_some() { " - " } else { "" };
+        let lead = if archetype.is_some() { " — " } else { "" };
         let text = format!("{lead}{}", sets.join(" / "));
         let room = (pad + inner_w).saturating_sub(x);
         let shown = truncate_to(&text, POSTER_SUBTITLE * s, room);
@@ -557,10 +484,10 @@ fn assumptions(build: &CharacterState, database: &Db) -> Vec<String> {
     parts
 }
 
-/// `items` joined with ` | ` into lines no wider than `room`. An item too wide for a line of its
-/// own is cut to it. Not the app's `·`: the poster's font is Basic Latin only.
+/// `items` joined with ` · `, as the app joins them, into lines no wider than `room`. An item
+/// too wide for a line of its own is cut to it.
 fn wrap_items(items: &[String], size: usize, room: usize) -> Vec<String> {
-    const SEP: &str = " | ";
+    const SEP: &str = " · ";
     let mut lines: Vec<String> = Vec::new();
     let mut line = String::new();
     for item in items {
@@ -609,7 +536,7 @@ fn zone_label(img: &mut RgbaImage, y: usize, label: &str, s: usize) -> usize {
 
 /// One line of text at `(x, y)`.
 fn draw_text(img: &mut RgbaImage, x: usize, y: usize, color: Rgba<u8>, size: usize, text: &str) {
-    TextDrawer::new(x, y, color, size).write(img, text);
+    lettering(size, color).draw(img, x, y, text);
 }
 
 // THE EXPORTED IMAGE NO LONGER CARRIES THE BUILD INSIDE IT, by decision on 2026-09-26. An
@@ -721,14 +648,14 @@ fn draw_power_tile(
     if power.level > 0 {
         let size = POSTER_TEXT * s;
         let text = power.level.to_string();
-        let badge_w = text_width(&text, size) + 2 * s;
+        let badge_w = text_width(&text, size) + 4 * s;
         let badge_h = text_height(size) + 2 * s;
         fill_rect(img, x + pad / 2, y + pad / 2, badge_w, badge_h, BADGE_BG);
         stroke_rect(img, x + pad / 2, y + pad / 2, badge_w, badge_h, SLATE_600);
         draw_text(
             img,
             x + pad / 2 + 2 * s,
-            y + pad / 2 + 2 * s,
+            y + pad / 2 + s,
             SLATE_400,
             size,
             &text,
@@ -785,7 +712,7 @@ fn draw_power_tile(
     let name = truncate_to(tile_label(power, database), size, room);
     draw_text(img, text_x, y + pad, TEXT_COLOR, size, &name);
 
-    let slots_y = y + pad + text_height(size) + 6 * s;
+    let slots_y = y + pad + text_height(size) + 3 * s;
     if style.show_enhancements {
         let cell = SLOT_ICON * s;
         for (i, slot) in power.slots.iter().enumerate() {
@@ -1112,22 +1039,19 @@ fn draw_set_bonus_card(
 /// `text` broken into lines of at most `max_width`, at word boundaries. A single word longer
 /// than a line is cut with [`truncate_to`].
 fn wrap(text: &str, size: usize, max_width: usize) -> Vec<String> {
-    let per_line = (max_width / glyph_advance(size)).max(1);
     let mut lines = Vec::new();
     let mut line = String::new();
     for word in text.split_whitespace() {
-        let needed = if line.is_empty() {
-            word.chars().count()
+        let joined = if line.is_empty() {
+            word.to_string()
         } else {
-            line.chars().count() + 1 + word.chars().count()
+            format!("{line} {word}")
         };
-        if needed > per_line && !line.is_empty() {
-            lines.push(std::mem::take(&mut line));
+        if line.is_empty() || text_width(&joined, size) <= max_width {
+            line = joined;
+        } else {
+            lines.push(std::mem::replace(&mut line, word.to_string()));
         }
-        if !line.is_empty() {
-            line.push(' ');
-        }
-        line.push_str(word);
     }
     if !line.is_empty() {
         lines.push(line);
@@ -1164,25 +1088,24 @@ fn draw_stat_section(
     fill_rect(img, x, y, w, height, STAT_CARD_BG);
     stroke_rect(img, x, y, w, height, BORDER_COLOR);
 
-    let mut title = TextDrawer::new(
-        x + 8 * scale,
-        y + 8 * scale,
+    let pad = CARD_PAD * scale;
+    draw_text(
+        img,
+        x + pad,
+        y + pad,
         TEXT_COLOR,
-        text_height(STAT_LABEL_SIZE) * scale,
+        STAT_TITLE * scale,
+        section.title(),
     );
-    title.write(img, section.title());
 
-    // Sizes are rounded to the font's step BEFORE scaling, so a card draws at the same
-    // proportion at 1x and 2x.
-    let label_size = text_height(SMALL_TEXT_SIZE) * scale;
-    let value_size = text_height(STAT_VALUE_SIZE) * scale;
-    let row_h = text_height(value_size) + CARD_PAD * scale;
+    let size = POSTER_TEXT * scale;
+    let row_h = stat_row_height(scale);
     for (i, (label, resolved)) in rows.iter().enumerate() {
         let row_y = y + stat_card_header(scale) + i * row_h;
-        let value_w_hint = text_width(&resolved.text, value_size) + CARD_PAD * 4 * scale;
+        let value_w_hint = text_width(&resolved.text, size) + pad * 4;
         let label_space = w.saturating_sub(value_w_hint);
-        let mut name = TextDrawer::new(x + CARD_PAD * scale, row_y, SLATE_400, label_size);
-        name.write(img, &truncate_to(label, label_size, label_space));
+        let shown = truncate_to(label, size, label_space);
+        draw_text(img, x + pad, row_y, SLATE_400, size, &shown);
 
         // The value is right-aligned, so its start depends on how wide it draws.
         let text = if resolved.simulated {
@@ -1193,69 +1116,56 @@ fn draw_stat_section(
         } else {
             resolved.text.clone()
         };
-        let value_w = text_width(&text, value_size);
-        let value_x = (x + w).saturating_sub(CARD_PAD * scale + value_w);
+        let value_w = text_width(&text, size);
+        let value_x = (x + w).saturating_sub(pad + value_w);
         let colour = if resolved.at_cap {
             AMBER
         } else {
             SUBTITLE_COLOR
         };
-        let mut value = TextDrawer::new(value_x, row_y, colour, value_size);
-        value.write(img, &text);
+        draw_text(img, value_x, row_y, colour, size, &text);
     }
 
     if rows.is_empty() {
-        let mut empty = TextDrawer::new(
-            x + CARD_PAD * scale,
-            y + stat_card_header(scale),
-            SLATE_500,
-            label_size,
-        );
-        empty.write(img, "No stats shown");
+        let top = y + stat_card_header(scale);
+        draw_text(img, x + pad, top, SLATE_500, size, "No stats shown");
     }
 }
 
 /// The title band above a card's first row: the title itself plus padding either side.
 fn stat_card_header(scale: usize) -> usize {
-    CARD_PAD * scale + text_height(STAT_LABEL_SIZE) * scale + CARD_PAD * scale
+    CARD_PAD * scale + text_height(STAT_TITLE * scale) + CARD_PAD * scale
+}
+
+/// The pitch of a card's rows.
+fn stat_row_height(scale: usize) -> usize {
+    text_height(POSTER_TEXT * scale) + CARD_PAD * scale
 }
 
 /// How tall a card with `rows` rows draws, so the layout can reserve it before drawing.
 fn stat_card_height(rows: usize, scale: usize) -> usize {
-    let row_h = text_height(STAT_VALUE_SIZE) * scale + CARD_PAD * scale;
-    stat_card_header(scale) + rows.max(1) * row_h + CARD_PAD * scale
+    stat_card_header(scale) + rows.max(1) * stat_row_height(scale) + CARD_PAD * scale
 }
 
-/// How wide `text` draws at `size`. The font is fixed-width, so this is exact rather than an
-/// estimate — right-aligning a value depends on it.
+/// Regular SN Pro at `size` pixels.
+fn lettering(size: usize, color: Rgba<u8>) -> Lettering {
+    Lettering::new(size as f32, Weight::Regular, color)
+}
+
+/// How wide `text` draws at `size`; right-aligning a value depends on it.
 fn text_width(text: &str, size: usize) -> usize {
-    text.chars().count() * glyph_advance(size)
+    lettering(size, TEXT_COLOR).width(text)
 }
 
-/// How tall a line drawn at `size` actually is. `size` is a request; the bitmap font only scales
-/// in whole multiples of 8, so the drawn height is the request rounded down. Row pitch has to
-/// follow the DRAWN height or rows overlap.
+/// How tall a line drawn at `size` is. Row pitch follows it, or rows overlap.
 fn text_height(size: usize) -> usize {
-    (size / GLYPH_H).max(1) * GLYPH_H
+    lettering(size, TEXT_COLOR).height()
 }
 
-/// Distance from one character's left edge to the next.
-fn glyph_advance(size: usize) -> usize {
-    (size / GLYPH_H).max(1) * (GLYPH_W + 1)
-}
-
-/// `text` cut to whatever fits in `max_width`, with `...` when it had to cut. A name that
-/// silently ran past its tile collided with the level label beside it. Three dots rather than
-/// `…`: the font is Basic Latin only, and the ellipsis drew as nothing.
+/// `text` cut to fit `max_width`, ending in `…` when it had to cut. A name that silently ran
+/// past its tile collided with the level label beside it.
 fn truncate_to(text: &str, size: usize, max_width: usize) -> String {
-    if text_width(text, size) <= max_width {
-        return text.to_string();
-    }
-    let fits = max_width / glyph_advance(size);
-    if fits <= 3 {
-        return text.chars().take(fits).collect();
-    }
-    text.chars().take(fits - 3).chain("...".chars()).collect()
+    lettering(size, TEXT_COLOR).fit(text, max_width)
 }
 
 /// Fill a rectangle with a solid color.
@@ -1824,5 +1734,58 @@ mod tests {
             "{lines:?}"
         );
         assert_eq!(lines.join(" | ").matches("Setting").count(), 12);
+    }
+
+    /// Writes the poster at each preset to look at: `PREVIEW_BUILD=<build file> cargo test -p app
+    /// --features desktop poster_sample -- --ignored`, into `target/poster-<preset>.png` (or under
+    /// `PREVIEW_OUT_DIR`). With no `PREVIEW_BUILD` it draws the Maiden Fury fixture.
+    #[test]
+    #[ignore = "writes pictures to look at; run with --ignored"]
+    fn poster_sample() {
+        let database = database();
+        let build = match std::env::var_os("PREVIEW_BUILD") {
+            None => maiden_fury(&database),
+            Some(path) => {
+                let text = std::fs::read_to_string(&path).expect("build file reads");
+                let mut build =
+                    crate::build_file::decode_import(&text, &database.0, DatasetId::Homecoming)
+                        .expect("build imports")
+                        .build;
+                crate::inherents::sync(&mut build, &database.0);
+                crate::granted_powers::sync(&mut build, &database.0);
+                build
+            }
+        };
+        let art = {
+            let mut future = std::pin::pin!(crate::power_art::load_for(&build, &database));
+            let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+            match std::future::Future::poll(future.as_mut(), &mut context) {
+                std::task::Poll::Ready(art) => art,
+                std::task::Poll::Pending => panic!("native art loading waited on something"),
+            }
+        };
+        let totals = coh_math::recalculate(&build, &database.0);
+        let dir = std::env::var_os("PREVIEW_OUT_DIR").map_or_else(
+            || PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../target"),
+            PathBuf::from,
+        );
+        for (name, preset) in [
+            ("compact", ExportPreset::Compact),
+            ("standard", ExportPreset::Standard),
+            ("full", ExportPreset::Full),
+        ] {
+            let mut options = ExportImageOptions::default();
+            options.apply_preset(preset);
+            let png = render_to_png(
+                &build,
+                &database,
+                &totals,
+                &Dashboards::default(),
+                &options,
+                &art,
+            )
+            .expect("renders");
+            std::fs::write(dir.join(format!("poster-{name}.png")), png).expect("the poster writes");
+        }
     }
 }
