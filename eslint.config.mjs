@@ -94,4 +94,16 @@ export default [
       globals: { document: "readonly", window: "readonly" },
     },
   },
+  {
+    // Same story for the in-app QA scripts: their page.evaluate callbacks run in the browser.
+    files: ["scripts/qa/**/*.cjs"],
+    languageOptions: {
+      globals: {
+        document: "readonly",
+        window: "readonly",
+        localStorage: "readonly",
+        getComputedStyle: "readonly",
+      },
+    },
+  },
 ];

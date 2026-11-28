@@ -19,7 +19,7 @@
  */
 
 const assert = require('node:assert/strict');
-const { run, ROOT } = require('../../.claude/skills/qa-check/scripts/session.cjs');
+const { run } = require('../../.claude/skills/qa-check/scripts/session.cjs');
 
 const BUILD = 'fixtures/buildsave/homecoming/charnel.txt';
 const OPEN_BY_DEFAULT = new Set(['Damage', 'Effects', 'Cost and timing']);
