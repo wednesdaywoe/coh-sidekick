@@ -2197,14 +2197,17 @@ fn DetailBody(
                     else {
                         return;
                     };
-                    let totals = coh_math::recalculate(&decoded.build, &database);
-                    let art = crate::power_art::load_for(&decoded.build, &database).await;
-                    let Ok(bytes) = crate::preview_card::render_preview_png(
-                        &decoded.build,
-                        &database,
-                        &totals,
-                        &art,
-                    ) else {
+                    // Prepared as opening it in the planner prepares it, so the card is the one
+                    // its owner's save would draw: without these the inherents are not marked
+                    // as inherents, and the card's inherent row comes out empty.
+                    let mut build = decoded.build;
+                    crate::inherents::sync(&mut build, &database);
+                    crate::granted_powers::sync(&mut build, &database);
+                    let totals = coh_math::recalculate(&build, &database);
+                    let art = crate::power_art::load_for(&build, &database).await;
+                    let Ok(bytes) =
+                        crate::preview_card::render_preview_png(&build, &database, &totals, &art)
+                    else {
                         return;
                     };
                     let payload = crate::clipboard::base64(&bytes);

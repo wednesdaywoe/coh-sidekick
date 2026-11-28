@@ -39,12 +39,12 @@ use super::{Cloud, CloudError};
 use coh_data::DatasetId;
 use serde::{Deserialize, Serialize};
 
-/// The current social-preview template. Mirrors `CURRENT_PREVIEW_TEMPLATE_VERSION` in the
-/// beta's `BuildPreviewCard` and in every edge function that writes the column (`backfill-
-/// preview/index.ts:26`) — hand-kept duplicates, all three, and all three must be bumped
-/// together whenever the card's look changes. The server is the gate that actually refuses a
-/// write; this copy only decides whether the client tries.
-pub const CURRENT_PREVIEW_TEMPLATE_VERSION: u32 = 6;
+/// The template [`crate::preview_card`] draws, sent with every picture it uploads as
+/// `preview_template_version`. The server stores what it is told, up to its own
+/// `CURRENT_PREVIEW_TEMPLATE_VERSION` (`supabase/functions/_shared/preview-image.ts` in
+/// coh-sidekick-beta), so bump that one first, deploy, then this. 6 was stamped by the server on
+/// whatever a client drew, which is how 1.0's plain stand-in card passed for the beta's.
+pub const CURRENT_PREVIEW_TEMPLATE_VERSION: u32 = 7;
 
 /// Default page size for [`search`], matching the beta's `DEFAULT_PAGE_SIZE`.
 pub const DEFAULT_PAGE_SIZE: usize = 20;
@@ -674,6 +674,7 @@ pub async fn submit_preview_backfill(
     let body = serde_json::json!({
         "id": id,
         "preview_image_base64": preview_image_base64,
+        "preview_template_version": CURRENT_PREVIEW_TEMPLATE_VERSION,
     });
     let response = cloud
         .invoke::<_, BackfillResponse>("backfill-preview", &body)
@@ -1020,6 +1021,10 @@ fn share_payload(input: &ShareInput, owner_token: Option<&str>) -> serde_json::V
         map.insert(
             "preview_image_base64".to_string(),
             serde_json::Value::from(image.clone()),
+        );
+        map.insert(
+            "preview_template_version".to_string(),
+            serde_json::Value::from(CURRENT_PREVIEW_TEMPLATE_VERSION),
         );
     }
     payload
@@ -1403,5 +1408,44 @@ mod vault_filter_tests {
         };
         assert!(filter.is_empty());
         assert!(filter.matches(&tanker()));
+    }
+}
+
+#[cfg(test)]
+mod share_payload_tests {
+    use super::*;
+
+    fn input(preview: Option<&str>) -> ShareInput {
+        ShareInput {
+            name: "Charnel".to_string(),
+            description: String::new(),
+            archetype: "Class_Tanker".to_string(),
+            archetype_name: "Tanker".to_string(),
+            primary_set: "Tanker_Defense.Dark_Armor".to_string(),
+            primary_name: "Dark Armor".to_string(),
+            secondary_set: "Tanker_Melee.Dark_Melee".to_string(),
+            secondary_name: "Dark Melee".to_string(),
+            level: 50,
+            author_name: String::new(),
+            server: "homecoming".to_string(),
+            tags: Vec::new(),
+            build_json: serde_json::json!({}),
+            visibility: None,
+            existing_id: None,
+            preview_image_base64: preview.map(str::to_string),
+        }
+    }
+
+    /// The server stores the version a picture comes with, and reads no version as the old
+    /// template. A picture sent without one would be stamped as a card this app no longer draws.
+    #[test]
+    fn a_picture_carries_the_template_that_drew_it() {
+        let sent = share_payload(&input(Some("iVBORw0K")), None);
+        assert_eq!(
+            sent["preview_template_version"],
+            serde_json::json!(CURRENT_PREVIEW_TEMPLATE_VERSION)
+        );
+        let without = share_payload(&input(None), None);
+        assert!(without.get("preview_template_version").is_none());
     }
 }

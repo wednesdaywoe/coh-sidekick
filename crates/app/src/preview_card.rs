@@ -366,7 +366,9 @@ fn headline_tiles(totals: &CalculatedTotals) -> Vec<(&'static str, String, Rgba<
         tiles.push(("REGN", format!("{per_second:.2}/s"), GREEN_400));
     }
     if let Some(recharge) = read("recharge") {
-        tiles.push(("RECH", format!("{:.1}%", 100.0 + recharge), SLATE_200));
+        // Halves round up, as the beta's card did: Rust's `{:.1}` takes 156.25 to 156.2.
+        let shown = ((100.0 + recharge) * 10.0).round() / 10.0;
+        tiles.push(("RECH", format!("{shown:.1}%"), SLATE_200));
     }
     if let Some(net) = read("netend") {
         let colour = if net < 0.0 { RED_400 } else { EMERALD_300 };
