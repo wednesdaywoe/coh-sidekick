@@ -810,6 +810,36 @@
       "id": "profile-byline",
       "date": "2026-11-21",
       "preview": "Your display name in File ▸ Public profile… now signs every build you have share"
+    },
+    {
+      "id": "desktop-update-notification",
+      "date": "2026-11-25",
+      "preview": "Desktop app now has a check at startup for updates, and will provide a notificat"
+    },
+    {
+      "id": "burst-and-tail-buffs",
+      "date": "2026-11-25",
+      "preview": "Powers that apply the same buff twice for different lengths now show both. Inner"
+    },
+    {
+      "id": "hc-wind-control-hidden",
+      "date": "2026-11-25",
+      "preview": "Wind Control is no longer listed for the Homecoming dataset. Rebirth and Thunder"
+    },
+    {
+      "id": "strength-label",
+      "date": "2026-11-22",
+      "preview": "Buffs to your own powers' strength now read +Strength instead of +Special. Fate "
+    },
+    {
+      "id": "slot-history-prune",
+      "date": "2026-11-22",
+      "preview": "Saved builds no longer keep the slot history of powers you have removed."
+    },
+    {
+      "id": "toggle-proc-area",
+      "date": "2026-11-21",
+      "preview": "Proc chances in area toggles now include the power's area factor."
     }
   ]
 }
